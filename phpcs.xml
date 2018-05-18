@@ -99,6 +99,3 @@
     <!-- exclude the actual tests directory from being tested! -->
     <exclude-pattern>*/tests/*</exclude-pattern>
 </ruleset>
-
-<!-- @todo - A Sniff test needs to be added to ensure short echo tags are not used -->
-<!-- @todo - A Sniff test to allow helper functions (normal functions) to be snake case -->
