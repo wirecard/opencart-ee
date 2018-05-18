@@ -12,10 +12,13 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^6.2",
-    "opencart/opencart": "3.0.2.0"
+    "opencart/opencart": "3.0.2.0",
+    "squizlabs/php_codesniffer": "^2.7"
   },
   "type": "opencart-plugin",
   "scripts": {
-    "test": "phpunit --colors=always"
+    "upload-coverage": "coveralls -v",
+    "cs-check": "phpcs --standard=phpcs.xml opencart",
+    "cs-fix": "phpcbf --standard=phpcs.xml opencart"
   }
 }
