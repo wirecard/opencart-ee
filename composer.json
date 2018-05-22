@@ -18,7 +18,7 @@
   "type": "opencart-plugin",
   "scripts": {
     "upload-coverage": "coveralls -v",
-    "cs-check": "phpcs --standard=./phpcs.xml opencart",
-    "cs-fix": "phpcbf --standard=./phpcs.xml opencart"
+    "cs-check": "phpcs --standard=phpcs.xml",
+    "cs-fix": "phpcbf --standard=phpcs.xml"
   }
 }
