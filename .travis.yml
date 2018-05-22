@@ -28,5 +28,6 @@ install:
   - composer show
 
 script:
+  - composer test-coverage
   - composer cs-check
   - sonar-scanner
