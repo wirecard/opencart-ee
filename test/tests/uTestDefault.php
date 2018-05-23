@@ -33,6 +33,6 @@ class uTestDefault extends \PHPUnit_Framework_TestCase
 {
     public function testDefaultUtest()
     {
-        $this->assertEquals(2, 2);
+        $this->assertEquals(3, 3);
     }
 }
