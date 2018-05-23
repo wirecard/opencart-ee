@@ -29,7 +29,7 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-class uTestDefault extends \PHPUnit_Framework_TestCase
+class defaultUTest extends \PHPUnit_Framework_TestCase
 {
     public function testDefaultUtest()
     {
