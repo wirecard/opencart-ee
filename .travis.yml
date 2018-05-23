@@ -28,5 +28,5 @@ install:
   - composer show
 
 script:
-  - composer cs-check
   - sonar-scanner
+  - composer cs-check
