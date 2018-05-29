@@ -28,3 +28,24 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
+
+abstract class ControllerExtensionPaymentGateway extends Controller{
+
+    protected $type;
+
+    public function index() {
+        $this->load->language('extension/payment/wirecard_ee_' . $this->type );
+
+        $this->document->setTitle($this->language->get('heading_title'));
+
+        $this->load->model('setting/setting');
+
+        if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+            $this->model_setting_setting->editSetting('payment_wirecard_ee_' . $this->type, $this->request->post);
+
+            $this->session->data['success'] = $this->language->get('text_success');
+
+            $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
+        }
+    }
+}
