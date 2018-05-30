@@ -36,30 +36,30 @@
  */
 abstract class ModelExtensionPaymentGateway extends Model {
 
-    /**
-     * @var string
-     * @since 1.0.0
-     */
-    protected $prefix = 'payment_wirecard_ee_';
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $prefix = 'payment_wirecard_ee_';
 
-    /**
-     * @var string
-     * @since 1.0.0
-     */
-    protected $type;
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $type;
 
-    public function getMethod($address, $total) {
-        $prefix = $this->prefix . $this->type;
+	public function getMethod($address, $total) {
+		$prefix = $this->prefix . $this->type;
 
-        $this->load->language('extension/payment/wirecard_ee_' . $this->type);
+		$this->load->language('extension/payment/wirecard_ee_' . $this->type);
 
-        $method_data = array(
-            'code'       => 'wirecard_ee_' . $this->type,
-            'title'      => $this->language->get('text_title'),
-            'terms'      => '',
-            'sort_order' => 1
-        );
+		$method_data = array(
+			'code'       => 'wirecard_ee_' . $this->type,
+			'title'      => $this->language->get('text_title'),
+			'terms'      => '',
+			'sort_order' => 1
+		);
 
-        return $method_data;
-    }
+		return $method_data;
+	}
 }

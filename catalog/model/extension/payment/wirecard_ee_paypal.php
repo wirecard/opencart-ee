@@ -39,14 +39,14 @@ require_once(dirname( __FILE__ ) . '/wirecard_ee/gateway.php');
  */
 class ModelExtensionPaymentWirecardEEPayPal extends \ModelExtensionPaymentGateway {
 
-    protected $type = 'paypal';
+	protected $type = 'paypal';
 
-    /**
-     * Basic getMethod method
-     *
-     * @since 1.0.0
-     */
-    public function getMethod($address, $total) {
-        return parent::getMethod($address, $total);
-    }
+	/**
+	 * Basic getMethod method
+	 *
+	 * @since 1.0.0
+	 */
+	public function getMethod($address, $total) {
+		return parent::getMethod($address, $total);
+	}
 }

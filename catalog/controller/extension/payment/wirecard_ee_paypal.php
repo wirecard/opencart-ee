@@ -39,19 +39,19 @@ require_once(dirname( __FILE__ ) . '/wirecard_ee/gateway.php');
  */
 class ControllerExtensionPaymentWirecardEEPayPal extends \ControllerExtensionPaymentGateway {
 
-    protected $type = 'paypal';
+	protected $type = 'paypal';
 
-    /**
-     * Basic index method
-     *
-     * @since 1.0.0
-     */
-    public function index() {
-        return parent::index();
-    }
+	/**
+	 * Basic index method
+	 *
+	 * @since 1.0.0
+	 */
+	public function index() {
+		return parent::index();
+	}
 
-    public function confirm() {
-        parent::confirm();
-    }
+	public function confirm() {
+		parent::confirm();
+	}
 }
 
