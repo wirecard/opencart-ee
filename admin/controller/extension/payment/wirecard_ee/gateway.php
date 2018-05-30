@@ -38,129 +38,129 @@
  */
 abstract class ControllerExtensionPaymentGateway extends Controller{
 
-    /**
-     * @var string
-     * @since 1.0.0
-     */
-    protected $type;
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $type;
 
-    /**
-     * @var string
-     * @since 1.0.0
-     */
-    protected $prefix = 'payment_wirecard_ee_';
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $prefix = 'payment_wirecard_ee_';
 
-    /**
-     * Load common headers and template file including config values
-     *
-     * @since 1.0.0
-     */
-    public function index() {
-        $this->load->language('extension/payment/wirecard_ee');
-        $this->load->language('extension/payment/wirecard_ee_' . $this->type );
+	/**
+	 * Load common headers and template file including config values
+	 *
+	 * @since 1.0.0
+	 */
+	public function index() {
+		$this->load->language('extension/payment/wirecard_ee');
+		$this->load->language('extension/payment/wirecard_ee_' . $this->type );
 
-        $this->load->model('setting/setting');
-        $this->load->model('localisation/order_status');
+		$this->load->model('setting/setting');
+		$this->load->model('localisation/order_status');
 
-        $this->document->setTitle($this->language->get('heading_title'));
+		$this->document->setTitle($this->language->get('heading_title'));
 
-        if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-            $this->model_setting_setting->editSetting($this->prefix . $this->type, $this->request->post);
+		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+			$this->model_setting_setting->editSetting($this->prefix . $this->type, $this->request->post);
 
-            $this->session->data['success'] = $this->language->get('text_success');
+			$this->session->data['success'] = $this->language->get('text_success');
 
-            $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
-        }
+			$this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
+		}
 
-        // prefix for payment type
-        $data['prefix'] = $this->prefix . $this->type . '_';
+		// prefix for payment type
+		$data['prefix'] = $this->prefix . $this->type . '_';
 
-        $data['header'] = $this->load->controller('common/header');
-        $data['column_left'] = $this->load->controller('common/column_left');
-        $data['footer'] = $this->load->controller('common/footer');
+		$data['header'] = $this->load->controller('common/header');
+		$data['column_left'] = $this->load->controller('common/column_left');
+		$data['footer'] = $this->load->controller('common/footer');
 
-        $data['action'] = $this->url->link('extension/payment/wirecard_ee_' . $this->type, 'user_token=' . $this->session->data['user_token'], true);
-        $data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true);
+		$data['action'] = $this->url->link('extension/payment/wirecard_ee_' . $this->type, 'user_token=' . $this->session->data['user_token'], true);
+		$data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true);
 
-        $data = array_merge($data, $this->createBreadcrumbs());
+		$data = array_merge($data, $this->createBreadcrumbs());
 
-        $data = array_merge($data, $this->getConfigText());
+		$data = array_merge($data, $this->getConfigText());
 
-        $data = array_merge($data, $this->getRequestData());
+		$data = array_merge($data, $this->getRequestData());
 
-        $this->response->setOutput($this->load->view('extension/payment/wirecard_ee', $data));
-    }
+		$this->response->setOutput($this->load->view('extension/payment/wirecard_ee', $data));
+	}
 
-    /**
-     * Get text for config fields
-     *
-     * @return mixed
-     * @since 1.0.0
-     */
-    protected function getConfigText() {
-        $data['text_enabled'] = $this->language->get('text_enabled');
-        $data['text_disabled'] = $this->language->get('text_disabled');
-        $data['config_status'] = $this->language->get('config_status');
+	/**
+	 * Get text for config fields
+	 *
+	 * @return mixed
+	 * @since 1.0.0
+	 */
+	protected function getConfigText() {
+		$data['text_enabled'] = $this->language->get('text_enabled');
+		$data['text_disabled'] = $this->language->get('text_disabled');
+		$data['config_status'] = $this->language->get('config_status');
 
-        return $data;
-    }
+		return $data;
+	}
 
-    /**
-     * Create breadcrumbs
-     *
-     * @return mixed
-     * @since 1.0.0
-     */
-    protected function createBreadcrumbs() {
-        $data['breadcrumbs'] = array();
+	/**
+	 * Create breadcrumbs
+	 *
+	 * @return mixed
+	 * @since 1.0.0
+	 */
+	protected function createBreadcrumbs() {
+		$data['breadcrumbs'] = array();
 
-        $data['breadcrumbs'][] = array(
-            'text' => $this->language->get('text_home'),
-            'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
-        );
+		$data['breadcrumbs'][] = array(
+			'text' => $this->language->get('text_home'),
+			'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
+		);
 
-        $data['breadcrumbs'][] = array(
-            'text' => $this->language->get('text_extension'),
-            'href' => $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true)
-        );
+		$data['breadcrumbs'][] = array(
+			'text' => $this->language->get('text_extension'),
+			'href' => $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true)
+		);
 
-        $data['breadcrumbs'][] = array(
-            'text' => $this->language->get('heading_title'),
-            'href' => $this->url->link('extension/payment/wirecard_ee_' . $this->type, 'user_token=' . $this->session->data['user_token'], true)
-        );
+		$data['breadcrumbs'][] = array(
+			'text' => $this->language->get('heading_title'),
+			'href' => $this->url->link('extension/payment/wirecard_ee_' . $this->type, 'user_token=' . $this->session->data['user_token'], true)
+		);
 
-        return $data;
-    }
+		return $data;
+	}
 
-    /**
-     * Set data fields or load config
-     *
-     * @return array
-     * @since 1.0.0
-     */
-    protected function getRequestData() {
-        $data = array();
+	/**
+	 * Set data fields or load config
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	protected function getRequestData() {
+		$data = array();
 
-        if (isset($this->request->post['status'])) {
-            $data['status'] = $this->request->post[$this->prefix . $this->type . '_status'];
-        } else {
-            $data['status'] = $this->config->get($this->prefix . $this->type . '_status');
-        }
+		if (isset($this->request->post['status'])) {
+			$data['status'] = $this->request->post[$this->prefix . $this->type . '_status'];
+		} else {
+			$data['status'] = $this->config->get($this->prefix . $this->type . '_status');
+		}
 
-        return $data;
-    }
+		return $data;
+	}
 
-    /**
-     * Validate specific fields
-     *
-     * @return bool
-     * @since 1.0.0
-     */
-    protected function validate() {
-        if (!$this->user->hasPermission('modify', 'extension/payment/wirecard_ee_' . $this->type )) {
-            $this->error['warning'] = $this->language->get('error_permission');
-        }
+	/**
+	 * Validate specific fields
+	 *
+	 * @return bool
+	 * @since 1.0.0
+	 */
+	protected function validate() {
+		if (!$this->user->hasPermission('modify', 'extension/payment/wirecard_ee_' . $this->type )) {
+			$this->error['warning'] = $this->language->get('error_permission');
+		}
 
-        return !$this->error;
-    }
+		return !$this->error;
+	}
 }

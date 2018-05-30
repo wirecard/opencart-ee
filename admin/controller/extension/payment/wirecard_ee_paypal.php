@@ -28,13 +28,30 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
-$dir = dirname( __FILE__ );
-require_once($dir . '/wirecard_ee/gateway.php');
 
+require_once(dirname( __FILE__ ) . '/wirecard_ee/gateway.php');
+
+/**
+ * Class ControllerExtensionPaymentWirecardEEPayPal
+ *
+ * PayPal payment transaction controller
+ *
+ * @since 1.0.0
+ */
 class ControllerExtensionPaymentWirecardEEPayPal extends \ControllerExtensionPaymentGateway {
-    protected $type = 'paypal';
 
-    public function index() {
-        parent::index();
-    }
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $type = 'paypal';
+
+	/**
+	 * Basic index method
+	 *
+	 * @since 1.0.0
+	 */
+	public function index() {
+		parent::index();
+	}
 }
