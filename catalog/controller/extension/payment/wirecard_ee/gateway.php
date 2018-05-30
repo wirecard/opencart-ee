@@ -29,10 +29,6 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . DIR_SYSTEM . '/library');
-
-require_once 'vendor/autoload.php';
-
 /**
  * Class ControllerExtensionPaymentGateway
  *
