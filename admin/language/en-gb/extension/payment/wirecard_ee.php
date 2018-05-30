@@ -29,8 +29,12 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-// Page Title
-$_['heading_title'] = 'Wirecard PayPal';
+// Breadcrumb
+$_['text_extension'] = 'Extensions';
 
-// Payment specific configuration
-$_['text_edit'] = 'Edit PayPal';
+// Configuration
+$_['text_enabled'] = 'Enabled';
+$_['text_disabled'] = 'Disabled';
+$_['config_status'] = 'Status';
+
+$_['text_success'] = 'Your modifications are saved!';
