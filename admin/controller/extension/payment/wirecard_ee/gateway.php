@@ -30,7 +30,7 @@
  */
 
 /**
- * Class ControllerExtensionPaymentGateway
+ * Class ControllerExtensionPaymentAdminGateway
  *
  * Basic payment extension controller
  *

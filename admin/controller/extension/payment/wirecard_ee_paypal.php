@@ -32,7 +32,7 @@
 require_once(dirname( __FILE__ ) . '/wirecard_ee/gateway.php');
 
 /**
- * Class ControllerExtensionPaymentWirecardEEPayPal
+ * Class ControllerExtensionPaymentAdminWirecardEEPayPal
  *
  * PayPal payment transaction controller
  *
