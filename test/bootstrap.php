@@ -30,3 +30,7 @@
  */
 
 require_once __DIR__ . '/../vendor/autoload.php';
+
+
+//load opencart stubs
+require_once  __DIR__ . '/stubs/Controller.php';
