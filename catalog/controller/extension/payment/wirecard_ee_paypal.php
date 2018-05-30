@@ -47,7 +47,11 @@ class ControllerExtensionPaymentWirecardEEPayPal extends \ControllerExtensionPay
      * @since 1.0.0
      */
     public function index() {
-        parent::index();
+        return parent::index();
+    }
+
+    public function confirm() {
+        parent::confirm();
     }
 }
 

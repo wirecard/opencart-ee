@@ -70,7 +70,23 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
         $this->load->language('extension/payment/wirecard_ee_' . $this->type);
 
         $data['active'] = $this->config->get($this->prefix . $this->type . '_status');
+        $data['button_confirm'] = $this->language->get('button_confirm');
 
         return $this->load->view('extension/payment/wirecard_ee', $data);
+    }
+
+    public function confirm()
+    {
+        $json = array();
+
+        if ($this->session->data['payment_method']['code'] == 'wirecard_ee_' . $this->type) {
+            $this->load->language('extension/payment/wirecard_ee');
+            $this->load->model('checkuot/order');
+
+            $json['redirect'] = $this->url->link('checkout/success');
+        }
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
     }
 }
