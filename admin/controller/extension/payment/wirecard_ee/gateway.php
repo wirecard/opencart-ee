@@ -36,7 +36,7 @@
  *
  * @since 1.0.0
  */
-abstract class ControllerExtensionPaymentAdminGateway extends Controller{
+abstract class ControllerExtensionPaymentGateway extends Controller{
 
 	/**
 	 * @var string
