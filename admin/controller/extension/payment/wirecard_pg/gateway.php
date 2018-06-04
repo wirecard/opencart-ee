@@ -29,6 +29,8 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
+include_once(DIR_SYSTEM . '../vendor/autoload.php');
+
 /**
  * Class ControllerExtensionPaymentGateway
  *
@@ -88,6 +90,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 
 		$data['action'] = $this->url->link('extension/payment/wirecard_pg_' . $this->type, 'user_token=' . $this->session->data['user_token'], true);
 		$data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true);
+        $data['user_token'] = $this->session->data['user_token'];
 
 		$data = array_merge($data, $this->createBreadcrumbs());
 
@@ -221,7 +224,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
         $this->load->model('sale/order');
 
         $json = array();
-        $error = array();
 
 	    $baseUrl = $this->request->post['base_url'];
         $httpUser = $this->request->post['http_user'];
@@ -231,9 +233,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
         $transactionService = new \Wirecard\PaymentSdk\TransactionService($testConfig);
 
         if($transactionService->checkCredentials()) {
-            return $this->language->get('success_credentials');
+            $json['configMessage'] = $this->language->get('success_credentials');
         } else {
-            $error[] = $this->language->get('error_credentials');
+            $json['configMessage'] =$this->language->get('error_credentials');
         }
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
     }
 }

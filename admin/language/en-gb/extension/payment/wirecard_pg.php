@@ -50,3 +50,5 @@ $_['config_http_password'] = 'HTTP Password';
 $_['config_http_password_desc'] = 'HTTP Password as provided in your Wirecard contract.';
 
 $_['text_success'] = 'Your modifications are saved!';
+$_['success_credentials'] = 'Merchant configuration was successfully tested.';
+$_['error_credentials'] = 'Test failed, please check your credentials.';
