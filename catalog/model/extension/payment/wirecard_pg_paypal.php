@@ -28,16 +28,16 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
-require_once(dirname( __FILE__ ) . '/wirecard_ee/gateway.php');
+require_once(dirname( __FILE__ ) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ModelExtensionPaymentWirecardEEPayPal
+ * Class ModelExtensionPaymentWirecardPGPayPal
  *
  * PayPal Transaction model
  *
  * @since 1.0.0
  */
-class ModelExtensionPaymentWirecardEEPayPal extends \ModelExtensionPaymentGateway {
+class ModelExtensionPaymentWirecardPGPayPal extends \ModelExtensionPaymentGateway {
 
 	protected $type = 'paypal';
 

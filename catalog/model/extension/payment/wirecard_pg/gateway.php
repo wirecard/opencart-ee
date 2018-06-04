@@ -40,7 +40,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $prefix = 'payment_wirecard_ee_';
+	protected $prefix = 'payment_wirecard_pg_';
 
 	/**
 	 * @var string
@@ -51,10 +51,10 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	public function getMethod($address, $total) {
 		$prefix = $this->prefix . $this->type;
 
-		$this->load->language('extension/payment/wirecard_ee_' . $this->type);
+		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
 
 		$method_data = array(
-			'code'       => 'wirecard_ee_' . $this->type,
+			'code'       => 'wirecard_pg_' . $this->type,
 			'title'      => $this->language->get('text_title'),
 			'terms'      => '',
 			'sort_order' => 1
