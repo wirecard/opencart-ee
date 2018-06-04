@@ -21,5 +21,11 @@
     "cs-check": "phpcs --standard=phpcs.xml",
     "cs-fix": "phpcbf --standard=phpcs.xml",
     "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
+  },
+  "autoload" : {
+    "psr-4" : {
+      "Admin\\": "admin/",
+      "Catalog\\": "catalog/"
+    }
   }
 }
