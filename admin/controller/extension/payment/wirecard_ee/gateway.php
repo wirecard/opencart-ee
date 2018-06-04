@@ -103,6 +103,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data['config_status'] = $this->language->get('config_status');
 		$data['config_merchant_account_id'] = $this->language->get('config_merchant_account_id');
 		$data['config_merchant_secret'] = $this->language->get('config_merchant_secret');
+		$data['config_base_url'] = $this->language->get('config_base_url');
+		$data['config_http_user'] = $this->language->get('config_http_user');
+		$data['config_http_password'] = $this->language->get('config_http_password');
 
 		return $data;
 	}
@@ -160,6 +163,24 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
             $data[$prefix . 'merchant_secret'] = $this->request->post[$prefix . 'merchant_secret'];
         } else {
             $data[$prefix . 'merchant_secret'] = $this->config->get($prefix . 'merchant_secret');
+        }
+
+        if (isset($this->request->post[$prefix . 'base_url'])) {
+            $data[$prefix . 'base_url'] = $this->request->post[$prefix . 'base_url'];
+        } else {
+            $data[$prefix . 'base_url'] = $this->config->get($prefix . 'base_url');
+        }
+
+        if (isset($this->request->post[$prefix . 'http_user'])) {
+            $data[$prefix . 'http_user'] = $this->request->post[$prefix . 'http_user'];
+        } else {
+            $data[$prefix . 'http_user'] = $this->config->get($prefix . 'http_user');
+        }
+
+        if (isset($this->request->post[$prefix . 'http_password'])) {
+            $data[$prefix . 'http_password'] = $this->request->post[$prefix . 'http_password'];
+        } else {
+            $data[$prefix . 'http_password'] = $this->config->get($prefix . 'http_password');
         }
 
 		return $data;
