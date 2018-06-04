@@ -234,11 +234,15 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 
 		$testConfig = new \Wirecard\PaymentSdk\Config\Config($baseUrl, $httpUser, $httpPass);
 		$transactionService = new \Wirecard\PaymentSdk\TransactionService($testConfig);
-
-		if($transactionService->checkCredentials()) {
-			$json['configMessage'] = $this->language->get('success_credentials');
-		} else {
-			$json['configMessage'] =$this->language->get('error_credentials');
+		try {
+			$result = $transactionService->checkCredentials();
+			if($result) {
+				$json['configMessage'] = $this->language->get('success_credentials');
+			} else {
+				$json['configMessage'] =$this->language->get('error_credentials');
+			}
+		} catch (\Exception $exception) {
+			$json['configMessage'] = $this->language->get('error_credentials');
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
