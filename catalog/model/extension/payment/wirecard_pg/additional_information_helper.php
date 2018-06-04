@@ -28,27 +28,21 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
+use Wirecard\PaymentSdk\Entity\Basket;
 
-// Breadcrumb
-$_['text_extension'] = 'Extensions';
+/**
+ * Class AdditionalHelper
+ *
+ * @since 1.0.0
+ */
+class AdditionalInformationHelper {
+	/**
+	 * @param array $items
+	 * @return \Wirecard\PaymentSdk\Entity\Basket
+	 */
+	public function createShoppingBasket($items) {
+		$basket = new Basket();
+		$basket->add();
 
-// Configuration
-$_['text_enabled'] = 'Enabled';
-$_['text_disabled'] = 'Disabled';
-$_['text_credentials'] = 'Credentials';
-$_['config_status'] = 'Status';
-$_['config_merchant_account_id'] = 'Merchant Account ID';
-$_['config_merchant_account_id_desc'] = 'Unique identifier assigned to your merchant account.';
-$_['config_merchant_secret'] = 'Secret Key';
-$_['config_merchant_secret_desc'] = 'Secret Key is mandatory to calculate the Digital Signature for payments.';
-$_['config_base_url'] = 'Base URL';
-$_['config_base_url_desc'] = 'The Wirecard base URL. (e.g. https://api.wirecard.com)';
-$_['config_http_user'] = 'HTTP User';
-$_['config_http_user_desc'] = 'HTTP User as provided in your Wirecard contract.';
-$_['config_http_password'] = 'HTTP Password';
-$_['config_http_password_desc'] = 'HTTP Password as provided in your Wirecard contract.';
-$_['text_advanced'] = 'Advanced Options';
-$_['config_shopping_basket'] = 'Shopping Basket';
-$_['config_shopping_basket_desc'] = 'For the purpose of confirmation, payment supports shopping basket display during checkout. To enable this feature, activate Shopping Basket.';
-
-$_['text_success'] = 'Your modifications are saved!';
+	}
+}

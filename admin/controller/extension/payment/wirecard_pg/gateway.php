@@ -112,6 +112,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data['config_http_user_desc'] = $this->language->get('config_http_user_desc');
 		$data['config_http_password'] = $this->language->get('config_http_password');
 		$data['config_http_password_desc'] = $this->language->get('config_http_password_desc');
+		$data['text_advanced'] = $this->language->get('text_advanced');
+		$data['config_shopping_basket'] = $this->language->get('config_shopping_basket');
+		$data['config_shopping_basket_desc'] = $this->language->get('config_shopping_basket_desc');
 		$data['text_credentials'] = $this->language->get('text_credentials');
 
 		return $data;
@@ -188,6 +191,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 			$data[$prefix . 'http_password'] = $this->request->post[$prefix . 'http_password'];
 		} else {
 			$data[$prefix . 'http_password'] = $this->config->get($prefix . 'http_password');
+		}
+
+		if (isset($this->request->post[$prefix . 'shopping_basket'])) {
+			$data[$prefix . 'shopping_basket'] = $this->request->post[$prefix . 'shopping_basket'];
+		} else {
+			$data[$prefix . 'shopping_basket'] = $this->config->get($prefix . 'shopping_basket');
 		}
 
 		return $data;
