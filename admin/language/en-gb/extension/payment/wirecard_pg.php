@@ -36,6 +36,7 @@ $_['text_extension'] = 'Extensions';
 $_['text_enabled'] = 'Enabled';
 $_['text_disabled'] = 'Disabled';
 $_['text_credentials'] = 'Credentials';
+$_['test_credentials'] = 'Test Credentials';
 $_['config_status'] = 'Status';
 $_['config_merchant_account_id'] = 'Merchant Account ID';
 $_['config_merchant_account_id_desc'] = 'Unique identifier assigned to your merchant account.';

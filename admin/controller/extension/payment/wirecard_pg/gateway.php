@@ -50,6 +50,15 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	 */
 	protected $prefix = 'payment_wirecard_pg_';
 
+    /**
+     * @var array
+     * @since 1.0.0
+     */
+    protected $default = array(
+        'http_password' => '',
+        'http_user' => ''
+    );
+
 	/**
 	 * Load common headers and template file including config values
 	 *
@@ -74,6 +83,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 
 		// prefix for payment type
 		$data['prefix'] = $this->prefix . $this->type . '_';
+		$data['type'] = $this->type;
 
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
@@ -113,6 +123,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data['config_http_password'] = $this->language->get('config_http_password');
 		$data['config_http_password_desc'] = $this->language->get('config_http_password_desc');
 		$data['text_credentials'] = $this->language->get('text_credentials');
+		$data['test_credentials'] = $this->language->get('test_credentials');
 
 		return $data;
 	}
@@ -161,33 +172,33 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		}
 
 		if (isset($this->request->post[$prefix . 'merchant_account_id'])) {
-			$data[$prefix . 'merchant_account_id'] = $this->request->post[$prefix . 'merchant_account_id'];
+			$data['merchant_account_id'] = $this->request->post[$prefix . 'merchant_account_id'];
 		} else {
-			$data[$prefix . 'merchant_account_id'] = $this->config->get($prefix . 'merchant_account_id');
+			$data['merchant_account_id'] = $this->config->get($prefix . 'merchant_account_id');
 		}
 
 		if (isset($this->request->post[$prefix . 'merchant_secret'])) {
-			$data[$prefix . 'merchant_secret'] = $this->request->post[$prefix . 'merchant_secret'];
+			$data['merchant_secret'] = $this->request->post[$prefix . 'merchant_secret'];
 		} else {
-			$data[$prefix . 'merchant_secret'] = $this->config->get($prefix . 'merchant_secret');
+			$data['merchant_secret'] = $this->config->get($prefix . 'merchant_secret');
 		}
 
 		if (isset($this->request->post[$prefix . 'base_url'])) {
-			$data[$prefix . 'base_url'] = $this->request->post[$prefix . 'base_url'];
+			$data['base_url'] = $this->request->post[$prefix . 'base_url'];
 		} else {
-			$data[$prefix . 'base_url'] = $this->config->get($prefix . 'base_url');
+			$data['base_url'] = $this->config->get($prefix . 'base_url');
 		}
 
 		if (isset($this->request->post[$prefix . 'http_user'])) {
-			$data[$prefix . 'http_user'] = $this->request->post[$prefix . 'http_user'];
+			$data['http_user'] = $this->request->post[$prefix . 'http_user'];
 		} else {
-			$data[$prefix . 'http_user'] = $this->config->get($prefix . 'http_user');
+			$data['http_user'] = strlen($this->config->get($prefix . 'http_user')) ? $this->config->get($prefix . 'http_user') : $this->default['http_user'];
 		}
 
 		if (isset($this->request->post[$prefix . 'http_password'])) {
-			$data[$prefix . 'http_password'] = $this->request->post[$prefix . 'http_password'];
+			$data['http_password'] = $this->request->post[$prefix . 'http_password'];
 		} else {
-			$data[$prefix . 'http_password'] = $this->config->get($prefix . 'http_password');
+			$data['http_password'] = strlen($this->config->get($prefix . 'http_password')) ? $this->config->get($prefix . 'http_password') : $this->default['http_password'];
 		}
 
 		return $data;

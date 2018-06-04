@@ -46,6 +46,15 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	 */
 	protected $type = 'paypal';
 
+    /**
+     * @var array
+     * @since 1.0.0
+     */
+	protected $default = array(
+	    'http_password' => 'qD2wzQ_hrc!8',
+        'http_user' => '70000-APITEST-AP'
+    );
+
 	/**
 	 * Basic index method
 	 *
