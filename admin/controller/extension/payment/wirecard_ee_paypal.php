@@ -38,7 +38,7 @@ require_once(dirname( __FILE__ ) . '/wirecard_ee/gateway.php');
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentAdminWirecardEEPayPal extends \ControllerExtensionPaymentAdminGateway {
+class ControllerExtensionPaymentWirecardEEPayPal extends \ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
