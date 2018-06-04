@@ -43,6 +43,12 @@
 
                             </select>
                         </div>
+                        <div class="form-group">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-10 description">
+                                <i>{{ config_status_desc }}</i>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group required">
                         <label class="col-sm-2 control-label" for="input-merchant-account-id">{{ config_merchant_account_id }}</label>
@@ -53,6 +59,12 @@
                                     class="form-control"
                                     type="text"
                                     value="{{ input[prefix ~ 'merchant_account_id'] }}">
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-10 description">
+                                <i>{{ config_merchant_account_id_desc }}</i>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group required">
@@ -65,8 +77,15 @@
                                     type="text"
                                     value="{{ input[prefix ~ 'merchant_secret'] }}">
                         </div>
+                        <div class="form-group">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-10 description">
+                                <i>{{ config_merchant_secret_desc }}</i>
+                            </div>
+                        </div>
                     </div>
-
+                    <hr>
+                    <h3 class="panel-title"><b>{{ text_credentials }}</b></h3>
                     <div class="form-group required">
                         <label class="col-sm-2 control-label" for="input-base-url">{{ config_base_url }}</label>
                         <div class="col-sm-10">
@@ -76,6 +95,12 @@
                                     class="form-control"
                                     type="text"
                                     value="{{ input[prefix ~ 'base_url'] }}">
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-10 description">
+                                <i>{{ config_base_url_desc }}</i>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group required">
@@ -88,6 +113,12 @@
                                     type="text"
                                     value="{{ input[prefix ~ 'http_user'] }}">
                         </div>
+                        <div class="form-group">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-10 description">
+                                <i>{{ config_http_user_desc }}</i>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group required">
                         <label class="col-sm-2 control-label" for="input-http-password">{{ config_http_password }}</label>
@@ -98,6 +129,12 @@
                                     class="form-control"
                                     type="text"
                                     value="{{ input[prefix ~ 'http_password'] }}">
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-10 description">
+                                <i>{{ config_http_password_desc }}</i>
+                            </div>
                         </div>
                     </div>
                 </form>

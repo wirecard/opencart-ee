@@ -34,3 +34,4 @@ $_['heading_title'] = 'Wirecard PayPal';
 
 // Payment specific configuration
 $_['text_edit'] = 'Edit PayPal';
+$_['config_status_desc'] = 'Activate payment method PayPal to make it available for your consumers.';

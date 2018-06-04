@@ -101,11 +101,18 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data['text_enabled'] = $this->language->get('text_enabled');
 		$data['text_disabled'] = $this->language->get('text_disabled');
 		$data['config_status'] = $this->language->get('config_status');
+		$data['config_status_desc'] = $this->language->get('config_status_desc');
 		$data['config_merchant_account_id'] = $this->language->get('config_merchant_account_id');
+		$data['config_merchant_account_id_desc'] = $this->language->get('config_merchant_account_id_desc');
 		$data['config_merchant_secret'] = $this->language->get('config_merchant_secret');
+		$data['config_merchant_secret_desc'] = $this->language->get('config_merchant_secret_desc');
 		$data['config_base_url'] = $this->language->get('config_base_url');
+		$data['config_base_url_desc'] = $this->language->get('config_base_url_desc');
 		$data['config_http_user'] = $this->language->get('config_http_user');
+        $data['config_http_user_desc'] = $this->language->get('config_http_user_desc');
 		$data['config_http_password'] = $this->language->get('config_http_password');
+        $data['config_http_password_desc'] = $this->language->get('config_http_password_desc');
+		$data['text_credentials'] = $this->language->get('text_credentials');
 
 		return $data;
 	}
