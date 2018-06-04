@@ -167,7 +167,7 @@
             {
                 type: 'POST',
                 url: 'index.php?route=extension/payment/wirecard_pg_{{ type }}/testConfig&user_token={{ user_token }}',
-                data: { 'action' : 'test_payment_method_config', 'base_url' : base_url, 'http_user' : http_user, 'http_pass' : http_pass },
+                data: { 'base_url' : base_url, 'http_user' : http_user, 'http_pass' : http_pass },
                 dataType: 'json',
                 success: function (data) {
                     alert( data.data );
