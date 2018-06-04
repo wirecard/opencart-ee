@@ -54,10 +54,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
      * @var array
      * @since 1.0.0
      */
-    protected $default = array(
-        'http_password' => '',
-        'http_user' => ''
-    );
+    protected $default = array();
 
 	/**
 	 * Load common headers and template file including config values
@@ -174,19 +171,19 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		if (isset($this->request->post[$prefix . 'merchant_account_id'])) {
 			$data['merchant_account_id'] = $this->request->post[$prefix . 'merchant_account_id'];
 		} else {
-			$data['merchant_account_id'] = $this->config->get($prefix . 'merchant_account_id');
+			$data['merchant_account_id'] = strlen($this->config->get($prefix . 'merchant_account_id')) ? $this->config->get($prefix . 'merchant_account_id') : $this->default['merchant_account_id'];
 		}
 
 		if (isset($this->request->post[$prefix . 'merchant_secret'])) {
 			$data['merchant_secret'] = $this->request->post[$prefix . 'merchant_secret'];
 		} else {
-			$data['merchant_secret'] = $this->config->get($prefix . 'merchant_secret');
+			$data['merchant_secret'] = strlen($this->config->get($prefix . 'merchant_secret')) ? $this->config->get($prefix . 'merchant_secret') : $this->default['merchant_secret'];
 		}
 
 		if (isset($this->request->post[$prefix . 'base_url'])) {
 			$data['base_url'] = $this->request->post[$prefix . 'base_url'];
 		} else {
-			$data['base_url'] = $this->config->get($prefix . 'base_url');
+			$data['base_url'] = strlen($this->config->get($prefix . 'base_url')) ? $this->config->get($prefix . 'base_url') : $this->default['base_url'];
 		}
 
 		if (isset($this->request->post[$prefix . 'http_user'])) {
