@@ -29,60 +29,9 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-/**
- * Class ControllerExtensionPaymentGateway
- *
- * Basic payment extension controller
- *
- * @since 1.0.0
- */
-abstract class ControllerExtensionPaymentGateway extends Controller{
+// Page Title
+$_['heading_title'] = 'Wirecard PayPal';
 
-	/**
-	 * @var string
-	 * @since 1.0.0
-	 */
-	private $pluginVersion = '1.0.0';
-
-	/**
-	 * @var string
-	 * @since 1.0.0
-	 */
-	protected $prefix = 'payment_wirecard_ee_';
-
-	/**
-	 * @var string
-	 * @since 1.0.0
-	 */
-	protected $type;
-
-	public function index()
-	{
-		$prefix = $this->prefix . $this->type;
-
-		$this->load->model('checkout/order');
-
-		$this->load->language('extension/payment/wirecard_ee');
-		$this->load->language('extension/payment/wirecard_ee_' . $this->type);
-
-		$data['active'] = $this->config->get($this->prefix . $this->type . '_status');
-		$data['button_confirm'] = $this->language->get('button_confirm');
-
-		return $this->load->view('extension/payment/wirecard_ee', $data);
-	}
-
-	public function confirm()
-	{
-		$json = array();
-
-		if ($this->session->data['payment_method']['code'] == 'wirecard_ee_' . $this->type) {
-			$this->load->language('extension/payment/wirecard_ee');
-			$this->load->model('checkuot/order');
-
-			$json['redirect'] = $this->url->link('checkout/success');
-		}
-
-		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($json));
-	}
-}
+// Payment specific configuration
+$_['text_edit'] = 'Edit PayPal';
+$_['config_status_desc'] = 'Activate payment method PayPal to make it available for your consumers.';

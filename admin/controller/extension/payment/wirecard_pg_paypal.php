@@ -29,12 +29,43 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-// Breadcrumb
-$_['text_extension'] = 'Extensions';
+require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
-// Configuration
-$_['text_enabled'] = 'Enabled';
-$_['text_disabled'] = 'Disabled';
-$_['config_status'] = 'Status';
+/**
+ * Class ControllerExtensionPaymentWirecardPGPayPal
+ *
+ * PayPal payment transaction controller
+ *
+ * @since 1.0.0
+ */
+class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPaymentGateway {
 
-$_['text_success'] = 'Your modifications are saved!';
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $type = 'paypal';
+
+	/**
+	 * PayPal default configuration settings
+	 *
+	 * @var array
+	 * @since 1.0.0
+	 */
+	protected $default = array(
+		'merchant_account_id' => '2a0e9351-24ed-4110-9a1b-fd0fee6bec26',
+		'merchant_secret' => 'dbc5a498-9a66-43b9-bf1d-a618dd399684',
+		'base_url' => 'https://api-test.wirecard.com',
+		'http_password' => 'qD2wzQ_hrc!8',
+		'http_user' => '70000-APITEST-AP'
+	);
+
+	/**
+	 * Basic index method
+	 *
+	 * @since 1.0.0
+	 */
+	public function index() {
+		parent::index();
+	}
+}

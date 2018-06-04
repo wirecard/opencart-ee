@@ -28,30 +28,61 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
-require_once(dirname( __FILE__ ) . '/wirecard_ee/gateway.php');
 
 /**
- * Class ControllerExtensionPaymentWirecardEEPayPal
+ * Class ControllerExtensionPaymentGateway
  *
- * PayPal Transaction controller
+ * Basic payment extension controller
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardEEPayPal extends \ControllerExtensionPaymentGateway {
-
-	protected $type = 'paypal';
+abstract class ControllerExtensionPaymentGateway extends Controller{
 
 	/**
-	 * Basic index method
-	 *
+	 * @var string
 	 * @since 1.0.0
 	 */
-	public function index() {
-		return parent::index();
+	private $pluginVersion = '1.0.0';
+
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $prefix = 'payment_wirecard_pg_';
+
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $type;
+
+	public function index()
+	{
+		$prefix = $this->prefix . $this->type;
+
+		$this->load->model('checkout/order');
+
+		$this->load->language('extension/payment/wirecard_pg');
+		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
+
+		$data['active'] = $this->config->get($this->prefix . $this->type . '_status');
+		$data['button_confirm'] = $this->language->get('button_confirm');
+
+		return $this->load->view('extension/payment/wirecard_pg', $data);
 	}
 
-	public function confirm() {
-		parent::confirm();
+	public function confirm()
+	{
+		$json = array();
+
+		if ($this->session->data['payment_method']['code'] == 'wirecard_pg_' . $this->type) {
+			$this->load->language('extension/payment/wirecard_pg');
+			$this->load->model('checkuot/order');
+
+			$json['redirect'] = $this->url->link('checkout/success');
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
 	}
 }
-

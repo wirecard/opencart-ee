@@ -28,25 +28,27 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
-require_once(dirname( __FILE__ ) . '/wirecard_ee/gateway.php');
 
-/**
- * Class ModelExtensionPaymentWirecardEEPayPal
- *
- * PayPal Transaction model
- *
- * @since 1.0.0
- */
-class ModelExtensionPaymentWirecardEEPayPal extends \ModelExtensionPaymentGateway {
+// Breadcrumb
+$_['text_extension'] = 'Extensions';
 
-	protected $type = 'paypal';
+// Configuration
+$_['text_enabled'] = 'Enabled';
+$_['text_disabled'] = 'Disabled';
+$_['text_credentials'] = 'Credentials';
+$_['test_credentials'] = 'Test Credentials';
+$_['config_status'] = 'Status';
+$_['config_merchant_account_id'] = 'Merchant Account ID';
+$_['config_merchant_account_id_desc'] = 'Unique identifier assigned to your merchant account.';
+$_['config_merchant_secret'] = 'Secret Key';
+$_['config_merchant_secret_desc'] = 'Secret Key is mandatory to calculate the Digital Signature for payments.';
+$_['config_base_url'] = 'Base URL';
+$_['config_base_url_desc'] = 'The Wirecard base URL. (e.g. https://api.wirecard.com)';
+$_['config_http_user'] = 'HTTP User';
+$_['config_http_user_desc'] = 'HTTP User as provided in your Wirecard contract.';
+$_['config_http_password'] = 'HTTP Password';
+$_['config_http_password_desc'] = 'HTTP Password as provided in your Wirecard contract.';
 
-	/**
-	 * Basic getMethod method
-	 *
-	 * @since 1.0.0
-	 */
-	public function getMethod($address, $total) {
-		return parent::getMethod($address, $total);
-	}
-}
+$_['text_success'] = 'Your modifications are saved!';
+$_['success_credentials'] = 'Merchant configuration was successfully tested.';
+$_['error_credentials'] = 'Test failed, please check your credentials.';

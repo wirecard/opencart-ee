@@ -29,29 +29,37 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-require_once(dirname( __FILE__ ) . '/wirecard_ee/gateway.php');
-
 /**
- * Class ControllerExtensionPaymentAdminWirecardEEPayPal
- *
- * PayPal payment transaction controller
+ * Class ModelExtensionPaymentGateway
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardEEPayPal extends \ControllerExtensionPaymentGateway {
+abstract class ModelExtensionPaymentGateway extends Model {
 
 	/**
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'paypal';
+	protected $prefix = 'payment_wirecard_pg_';
 
 	/**
-	 * Basic index method
-	 *
+	 * @var string
 	 * @since 1.0.0
 	 */
-	public function index() {
-		parent::index();
+	protected $type;
+
+	public function getMethod($address, $total) {
+		$prefix = $this->prefix . $this->type;
+
+		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
+
+		$method_data = array(
+			'code'       => 'wirecard_pg_' . $this->type,
+			'title'      => $this->language->get('text_title'),
+			'terms'      => '',
+			'sort_order' => 1
+		);
+
+		return $method_data;
 	}
 }
