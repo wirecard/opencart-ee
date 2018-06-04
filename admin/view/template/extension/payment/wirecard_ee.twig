@@ -66,6 +66,40 @@
                                     value="{{ input[prefix ~ 'merchant_secret'] }}">
                         </div>
                     </div>
+
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="input-base-url">{{ config_base_url }}</label>
+                        <div class="col-sm-10">
+                            <input
+                                    name="{{ prefix ~ 'base_url' }}"
+                                    id="input-base-url"
+                                    class="form-control"
+                                    type="text"
+                                    value="{{ input[prefix ~ 'base_url'] }}">
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="input-http-user">{{ config_http_user }}</label>
+                        <div class="col-sm-10">
+                            <input
+                                    name="{{ prefix ~ 'http_user' }}"
+                                    id="input-http-user"
+                                    class="form-control"
+                                    type="text"
+                                    value="{{ input[prefix ~ 'http_user'] }}">
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="input-http-password">{{ config_http_password }}</label>
+                        <div class="col-sm-10">
+                            <input
+                                    name="{{ prefix ~ 'http_password' }}"
+                                    id="input-http-password"
+                                    class="form-control"
+                                    type="text"
+                                    value="{{ input[prefix ~ 'http_password'] }}">
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
