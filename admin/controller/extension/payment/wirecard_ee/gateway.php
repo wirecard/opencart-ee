@@ -36,7 +36,7 @@
  *
  * @since 1.0.0
  */
-abstract class ControllerExtensionPaymentAdminGateway extends Controller{
+abstract class ControllerExtensionPaymentGateway extends Controller{
 
 	/**
 	 * @var string
@@ -101,6 +101,8 @@ abstract class ControllerExtensionPaymentAdminGateway extends Controller{
 		$data['text_enabled'] = $this->language->get('text_enabled');
 		$data['text_disabled'] = $this->language->get('text_disabled');
 		$data['config_status'] = $this->language->get('config_status');
+		$data['config_merchant_account_id'] = $this->language->get('config_merchant_account_id');
+		$data['config_merchant_secret'] = $this->language->get('config_merchant_secret');
 
 		return $data;
 	}
@@ -140,12 +142,25 @@ abstract class ControllerExtensionPaymentAdminGateway extends Controller{
 	 */
 	protected function getRequestData() {
 		$data = array();
+		$prefix = $this->prefix . $this->type . '_';
 
 		if (isset($this->request->post['status'])) {
-			$data['status'] = $this->request->post[$this->prefix . $this->type . '_status'];
+			$data['status'] = $this->request->post[$prefix . 'status'];
 		} else {
-			$data['status'] = $this->config->get($this->prefix . $this->type . '_status');
+			$data['status'] = $this->config->get($prefix . 'status');
 		}
+
+        if (isset($this->request->post[$prefix . 'merchant_account_id'])) {
+            $data[$prefix . 'merchant_account_id'] = $this->request->post[$prefix . 'merchant_account_id'];
+        } else {
+            $data[$prefix . 'merchant_account_id'] = $this->config->get($prefix . 'merchant_account_id');
+        }
+
+        if (isset($this->request->post[$prefix . 'merchant_secret'])) {
+            $data[$prefix . 'merchant_secret'] = $this->request->post[$prefix . 'merchant_secret'];
+        } else {
+            $data[$prefix . 'merchant_secret'] = $this->config->get($prefix . 'merchant_secret');
+        }
 
 		return $data;
 	}
