@@ -29,16 +29,16 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-require_once(dirname( __FILE__ ) . '/wirecard_ee/gateway.php');
+require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ControllerExtensionPaymentAdminWirecardEEPayPal
+ * Class ControllerExtensionPaymentWirecardPGPayPal
  *
  * PayPal payment transaction controller
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardEEPayPal extends \ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string

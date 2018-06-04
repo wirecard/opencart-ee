@@ -30,7 +30,7 @@
  */
 
 /**
- * Class ControllerExtensionPaymentAdminGateway
+ * Class ControllerExtensionPaymentGateway
  *
  * Basic payment extension controller
  *
@@ -48,7 +48,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $prefix = 'payment_wirecard_ee_';
+	protected $prefix = 'payment_wirecard_pg_';
 
 	/**
 	 * Load common headers and template file including config values
@@ -56,8 +56,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	 * @since 1.0.0
 	 */
 	public function index() {
-		$this->load->language('extension/payment/wirecard_ee');
-		$this->load->language('extension/payment/wirecard_ee_' . $this->type );
+		$this->load->language('extension/payment/wirecard_pg');
+		$this->load->language('extension/payment/wirecard_pg_' . $this->type );
 
 		$this->load->model('setting/setting');
 		$this->load->model('localisation/order_status');
@@ -79,7 +79,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 
-		$data['action'] = $this->url->link('extension/payment/wirecard_ee_' . $this->type, 'user_token=' . $this->session->data['user_token'], true);
+		$data['action'] = $this->url->link('extension/payment/wirecard_pg_' . $this->type, 'user_token=' . $this->session->data['user_token'], true);
 		$data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true);
 
 		$data = array_merge($data, $this->createBreadcrumbs());
@@ -88,7 +88,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 
 		$data = array_merge($data, $this->getRequestData());
 
-		$this->response->setOutput($this->load->view('extension/payment/wirecard_ee', $data));
+		$this->response->setOutput($this->load->view('extension/payment/wirecard_pg', $data));
 	}
 
 	/**
@@ -109,9 +109,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data['config_base_url'] = $this->language->get('config_base_url');
 		$data['config_base_url_desc'] = $this->language->get('config_base_url_desc');
 		$data['config_http_user'] = $this->language->get('config_http_user');
-        $data['config_http_user_desc'] = $this->language->get('config_http_user_desc');
+		$data['config_http_user_desc'] = $this->language->get('config_http_user_desc');
 		$data['config_http_password'] = $this->language->get('config_http_password');
-        $data['config_http_password_desc'] = $this->language->get('config_http_password_desc');
+		$data['config_http_password_desc'] = $this->language->get('config_http_password_desc');
 		$data['text_credentials'] = $this->language->get('text_credentials');
 
 		return $data;
@@ -138,7 +138,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('extension/payment/wirecard_ee_' . $this->type, 'user_token=' . $this->session->data['user_token'], true)
+			'href' => $this->url->link('extension/payment/wirecard_pg_' . $this->type, 'user_token=' . $this->session->data['user_token'], true)
 		);
 
 		return $data;
@@ -160,35 +160,35 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 			$data['status'] = $this->config->get($prefix . 'status');
 		}
 
-        if (isset($this->request->post[$prefix . 'merchant_account_id'])) {
-            $data[$prefix . 'merchant_account_id'] = $this->request->post[$prefix . 'merchant_account_id'];
-        } else {
-            $data[$prefix . 'merchant_account_id'] = $this->config->get($prefix . 'merchant_account_id');
-        }
+		if (isset($this->request->post[$prefix . 'merchant_account_id'])) {
+			$data[$prefix . 'merchant_account_id'] = $this->request->post[$prefix . 'merchant_account_id'];
+		} else {
+			$data[$prefix . 'merchant_account_id'] = $this->config->get($prefix . 'merchant_account_id');
+		}
 
-        if (isset($this->request->post[$prefix . 'merchant_secret'])) {
-            $data[$prefix . 'merchant_secret'] = $this->request->post[$prefix . 'merchant_secret'];
-        } else {
-            $data[$prefix . 'merchant_secret'] = $this->config->get($prefix . 'merchant_secret');
-        }
+		if (isset($this->request->post[$prefix . 'merchant_secret'])) {
+			$data[$prefix . 'merchant_secret'] = $this->request->post[$prefix . 'merchant_secret'];
+		} else {
+			$data[$prefix . 'merchant_secret'] = $this->config->get($prefix . 'merchant_secret');
+		}
 
-        if (isset($this->request->post[$prefix . 'base_url'])) {
-            $data[$prefix . 'base_url'] = $this->request->post[$prefix . 'base_url'];
-        } else {
-            $data[$prefix . 'base_url'] = $this->config->get($prefix . 'base_url');
-        }
+		if (isset($this->request->post[$prefix . 'base_url'])) {
+			$data[$prefix . 'base_url'] = $this->request->post[$prefix . 'base_url'];
+		} else {
+			$data[$prefix . 'base_url'] = $this->config->get($prefix . 'base_url');
+		}
 
-        if (isset($this->request->post[$prefix . 'http_user'])) {
-            $data[$prefix . 'http_user'] = $this->request->post[$prefix . 'http_user'];
-        } else {
-            $data[$prefix . 'http_user'] = $this->config->get($prefix . 'http_user');
-        }
+		if (isset($this->request->post[$prefix . 'http_user'])) {
+			$data[$prefix . 'http_user'] = $this->request->post[$prefix . 'http_user'];
+		} else {
+			$data[$prefix . 'http_user'] = $this->config->get($prefix . 'http_user');
+		}
 
-        if (isset($this->request->post[$prefix . 'http_password'])) {
-            $data[$prefix . 'http_password'] = $this->request->post[$prefix . 'http_password'];
-        } else {
-            $data[$prefix . 'http_password'] = $this->config->get($prefix . 'http_password');
-        }
+		if (isset($this->request->post[$prefix . 'http_password'])) {
+			$data[$prefix . 'http_password'] = $this->request->post[$prefix . 'http_password'];
+		} else {
+			$data[$prefix . 'http_password'] = $this->config->get($prefix . 'http_password');
+		}
 
 		return $data;
 	}
@@ -200,7 +200,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	 * @since 1.0.0
 	 */
 	protected function validate() {
-		if (!$this->user->hasPermission('modify', 'extension/payment/wirecard_ee_' . $this->type )) {
+		if (!$this->user->hasPermission('modify', 'extension/payment/wirecard_pg_' . $this->type )) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 

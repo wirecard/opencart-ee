@@ -48,7 +48,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $prefix = 'payment_wirecard_ee_';
+	protected $prefix = 'payment_wirecard_pg_';
 
 	/**
 	 * @var string
@@ -62,21 +62,21 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 
 		$this->load->model('checkout/order');
 
-		$this->load->language('extension/payment/wirecard_ee');
-		$this->load->language('extension/payment/wirecard_ee_' . $this->type);
+		$this->load->language('extension/payment/wirecard_pg');
+		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
 
 		$data['active'] = $this->config->get($this->prefix . $this->type . '_status');
 		$data['button_confirm'] = $this->language->get('button_confirm');
 
-		return $this->load->view('extension/payment/wirecard_ee', $data);
+		return $this->load->view('extension/payment/wirecard_pg', $data);
 	}
 
 	public function confirm()
 	{
 		$json = array();
 
-		if ($this->session->data['payment_method']['code'] == 'wirecard_ee_' . $this->type) {
-			$this->load->language('extension/payment/wirecard_ee');
+		if ($this->session->data['payment_method']['code'] == 'wirecard_pg_' . $this->type) {
+			$this->load->language('extension/payment/wirecard_pg');
 			$this->load->model('checkuot/order');
 
 			$json['redirect'] = $this->url->link('checkout/success');
