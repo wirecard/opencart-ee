@@ -52,11 +52,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	 */
 	protected $prefix = 'payment_wirecard_pg_';
 
-    /**
-     * @var array
-     * @since 1.0.0
-     */
-    protected $default = array();
+	/**
+	 * @var array
+	 * @since 1.0.0
+	 */
+	protected $default = array();
 
 	/**
 	 * Load common headers and template file including config values
@@ -90,7 +90,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 
 		$data['action'] = $this->url->link('extension/payment/wirecard_pg_' . $this->type, 'user_token=' . $this->session->data['user_token'], true);
 		$data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true);
-        $data['user_token'] = $this->session->data['user_token'];
+		$data['user_token'] = $this->session->data['user_token'];
 
 		$data = array_merge($data, $this->createBreadcrumbs());
 
@@ -218,27 +218,30 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		return !$this->error;
 	}
 
+	/**
+	 * Test payment specific credentials
+	 *
+	 * @since 1.0.0
+	 */
 	public function testConfig() {
-        $this->load->language('extension/payment/wirecard_pg');
+		$this->load->language('extension/payment/wirecard_pg');
 
-        $this->load->model('sale/order');
+		$json = array();
 
-        $json = array();
+		$baseUrl = $this->request->post['base_url'];
+		$httpUser = $this->request->post['http_user'];
+		$httpPass = $this->request->post['http_pass'];
 
-	    $baseUrl = $this->request->post['base_url'];
-        $httpUser = $this->request->post['http_user'];
-        $httpPass = $this->request->post['http_pass'];
+		$testConfig = new \Wirecard\PaymentSdk\Config\Config($baseUrl, $httpUser, $httpPass);
+		$transactionService = new \Wirecard\PaymentSdk\TransactionService($testConfig);
 
-        $testConfig = new \Wirecard\PaymentSdk\Config\Config($baseUrl, $httpUser, $httpPass);
-        $transactionService = new \Wirecard\PaymentSdk\TransactionService($testConfig);
+		if($transactionService->checkCredentials()) {
+			$json['configMessage'] = $this->language->get('success_credentials');
+		} else {
+			$json['configMessage'] =$this->language->get('error_credentials');
+		}
 
-        if($transactionService->checkCredentials()) {
-            $json['configMessage'] = $this->language->get('success_credentials');
-        } else {
-            $json['configMessage'] =$this->language->get('error_credentials');
-        }
-
-        $this->response->addHeader('Content-Type: application/json');
-        $this->response->setOutput(json_encode($json));
-    }
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
 }
