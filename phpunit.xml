@@ -13,6 +13,7 @@
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">*</directory>
             <exclude>
+                <directory>admin</directory>
                 <directory>vendor</directory>
                 <directory>test</directory>
             </exclude>
