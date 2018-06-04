@@ -29,9 +29,6 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
-
-//load opencart stubs
-require_once __DIR__ . '/stubs/Controller.php';
-require_once __DIR__ . '/stubs/Model.php';
+// Method Title
+$_['text_title'] = 'Wirecard PayPal';
+$_['button_confirm'] = 'Confirm Order';

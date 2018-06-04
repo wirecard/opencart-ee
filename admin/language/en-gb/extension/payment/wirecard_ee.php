@@ -29,9 +29,12 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-require_once __DIR__ . '/../vendor/autoload.php';
+// Breadcrumb
+$_['text_extension'] = 'Extensions';
 
+// Configuration
+$_['text_enabled'] = 'Enabled';
+$_['text_disabled'] = 'Disabled';
+$_['config_status'] = 'Status';
 
-//load opencart stubs
-require_once __DIR__ . '/stubs/Controller.php';
-require_once __DIR__ . '/stubs/Model.php';
+$_['text_success'] = 'Your modifications are saved!';

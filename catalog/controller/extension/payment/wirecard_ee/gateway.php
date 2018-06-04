@@ -28,3 +28,61 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
+
+/**
+ * Class ControllerExtensionPaymentGateway
+ *
+ * Basic payment extension controller
+ *
+ * @since 1.0.0
+ */
+abstract class ControllerExtensionPaymentGateway extends Controller{
+
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $pluginVersion = '1.0.0';
+
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $prefix = 'payment_wirecard_ee_';
+
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $type;
+
+	public function index()
+	{
+		$prefix = $this->prefix . $this->type;
+
+		$this->load->model('checkout/order');
+
+		$this->load->language('extension/payment/wirecard_ee');
+		$this->load->language('extension/payment/wirecard_ee_' . $this->type);
+
+		$data['active'] = $this->config->get($this->prefix . $this->type . '_status');
+		$data['button_confirm'] = $this->language->get('button_confirm');
+
+		return $this->load->view('extension/payment/wirecard_ee', $data);
+	}
+
+	public function confirm()
+	{
+		$json = array();
+
+		if ($this->session->data['payment_method']['code'] == 'wirecard_ee_' . $this->type) {
+			$this->load->language('extension/payment/wirecard_ee');
+			$this->load->model('checkuot/order');
+
+			$json['redirect'] = $this->url->link('checkout/success');
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+}

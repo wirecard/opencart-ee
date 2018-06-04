@@ -28,10 +28,25 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
+require_once(dirname( __FILE__ ) . '/wirecard_ee/gateway.php');
 
-require_once __DIR__ . '/../vendor/autoload.php';
+/**
+ * Class ModelExtensionPaymentWirecardEEPayPal
+ *
+ * PayPal Transaction model
+ *
+ * @since 1.0.0
+ */
+class ModelExtensionPaymentWirecardEEPayPal extends \ModelExtensionPaymentGateway {
 
+	protected $type = 'paypal';
 
-//load opencart stubs
-require_once __DIR__ . '/stubs/Controller.php';
-require_once __DIR__ . '/stubs/Model.php';
+	/**
+	 * Basic getMethod method
+	 *
+	 * @since 1.0.0
+	 */
+	public function getMethod($address, $total) {
+		return parent::getMethod($address, $total);
+	}
+}

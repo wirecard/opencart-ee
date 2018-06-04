@@ -29,9 +29,8 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-require_once __DIR__ . '/../vendor/autoload.php';
+// Page Title
+$_['heading_title'] = 'Wirecard PayPal';
 
-
-//load opencart stubs
-require_once __DIR__ . '/stubs/Controller.php';
-require_once __DIR__ . '/stubs/Model.php';
+// Payment specific configuration
+$_['text_edit'] = 'Edit PayPal';

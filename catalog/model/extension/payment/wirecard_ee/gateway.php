@@ -29,9 +29,37 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-require_once __DIR__ . '/../vendor/autoload.php';
+/**
+ * Class ModelExtensionPaymentGateway
+ *
+ * @since 1.0.0
+ */
+abstract class ModelExtensionPaymentGateway extends Model {
 
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $prefix = 'payment_wirecard_ee_';
 
-//load opencart stubs
-require_once __DIR__ . '/stubs/Controller.php';
-require_once __DIR__ . '/stubs/Model.php';
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $type;
+
+	public function getMethod($address, $total) {
+		$prefix = $this->prefix . $this->type;
+
+		$this->load->language('extension/payment/wirecard_ee_' . $this->type);
+
+		$method_data = array(
+			'code'       => 'wirecard_ee_' . $this->type,
+			'title'      => $this->language->get('text_title'),
+			'terms'      => '',
+			'sort_order' => 1
+		);
+
+		return $method_data;
+	}
+}
