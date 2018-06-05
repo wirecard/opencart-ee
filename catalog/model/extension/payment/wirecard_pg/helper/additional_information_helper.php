@@ -53,4 +53,50 @@ class AdditionalInformationHelper extends Model {
 
 		return $transaction;
 	}
+
+	/**
+	 * Create identification data
+	 *
+	 * @param Transaction $transaction
+	 * @param ModelCheckoutOrder $order
+	 * @return Transaction
+	 * @since 1.0.0
+	 */
+	public function setIdentificationData($transaction, $order)
+	{
+		$customFields = new \Wirecard\PaymentSdk\Entity\CustomFieldCollection();
+		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('orderId', $order['order_id']));
+		$transaction->setCustomFields($customFields);
+		$transaction->setLocale(substr($order['language_code'], 0, 2));
+
+		//Send only for additional data
+		$transaction->setOrderDetail(sprintf(
+			'%s %s %s',
+			$order['email'],
+			$order['firstname'],
+			$order['lastname']
+		));
+		//$transaction->setOrderNumber($order['order_id']);
+		if ($order['ip']) {
+			$transaction->setIpAddress($order['ip']);
+		} else {
+			$transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
+		}
+		return $transaction;
+	}
+
+	/**
+	 * Create descriptor including shopname and ordernumber
+	 *
+	 * @param ModelCheckoutOrder $order
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function createDescriptor($order) {
+		return sprintf(
+			'%s %s',
+			substr( $order['store_name'], 0, 9),
+			$order['order_id']
+		);
+	}
 }

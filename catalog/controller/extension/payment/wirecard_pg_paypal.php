@@ -28,7 +28,11 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
+
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
+
+use Wirecard\PaymentSdk\Transaction\PayPalTransaction;
+use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
 
 /**
  * Class ControllerExtensionPaymentWirecardPGPayPal
@@ -37,8 +41,12 @@ require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaymentGateway {
 
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
 	protected $type = 'paypal';
 
 	/**
@@ -50,8 +58,47 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 		return parent::index();
 	}
 
+	/**
+	 * Create paypal transaction
+	 *
+	 * @since 1.0.0
+	 */
 	public function confirm() {
+
+		$this->transaction = new PayPalTransaction();
+
 		parent::confirm();
+	}
+
+	/**
+	 * Create payment specific config
+	 *
+	 * @return \Wirecard\PaymentSdk\Config\Config
+	 * @since 1.0.0
+	 */
+	protected function getConfig()
+	{
+		$merchant_account_id = $this->config->get($this->prefix . $this->type . '_merchant_account_id');
+		$merchant_secret = $this->config->get($this->prefix . $this->type . '_merchant_secret');
+
+		$config = parent::getConfig();
+		$paymentConfig = new PaymentMethodConfig(PayPalTransaction::NAME, $merchant_account_id, $merchant_secret);
+		$config->add($paymentConfig);
+
+		return $config;
+	}
+
+	/**
+	 * Payment specific model getter
+	 *
+	 * @return Model
+	 * @since 1.0.0
+	 */
+	protected function getModel()
+	{
+		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
+
+		return $this->model_extension_payment_wirecard_pg_paypal;
 	}
 }
 

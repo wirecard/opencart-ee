@@ -36,6 +36,7 @@ $_['text_extension'] = 'Extensions';
 $_['text_enabled'] = 'Enabled';
 $_['text_disabled'] = 'Disabled';
 $_['text_credentials'] = 'Credentials';
+$_['text_advanced'] = 'Advanced Options';
 $_['test_credentials'] = 'Test Credentials';
 $_['config_status'] = 'Status';
 $_['config_merchant_account_id'] = 'Merchant Account ID';
@@ -51,6 +52,8 @@ $_['config_http_password_desc'] = 'HTTP Password as provided in your Wirecard co
 $_['text_advanced'] = 'Advanced Options';
 $_['config_shopping_basket'] = 'Shopping Basket';
 $_['config_shopping_basket_desc'] = 'For the purpose of confirmation, payment supports shopping basket display during checkout. To enable this feature, activate Shopping Basket.';
+$_['config_descriptor'] = 'Descriptor';
+$_['config_descriptor_desc'] = 'Send text which is displayed on the bank statement issued to your consumer by the financial service provider.';
 
 $_['text_success'] = 'Your modifications are saved!';
 $_['success_credentials'] = 'Merchant configuration was successfully tested.';

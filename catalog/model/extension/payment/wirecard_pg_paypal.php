@@ -37,8 +37,12 @@ require_once(dirname( __FILE__ ) . '/wirecard_pg/gateway.php');
  *
  * @since 1.0.0
  */
-class ModelExtensionPaymentWirecardPGPayPal extends \ModelExtensionPaymentGateway {
+class ModelExtensionPaymentWirecardPGPayPal extends ModelExtensionPaymentGateway {
 
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
 	protected $type = 'paypal';
 
 	/**

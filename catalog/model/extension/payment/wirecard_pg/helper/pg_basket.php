@@ -146,6 +146,7 @@ class PGBasket {
 	 * @param float $amount
 	 * @param array $currency
 	 * @param int $taxClassId
+	 * @return float
 	 * @since 1.0.0
 	 */
 	private function convertWithTax($amount, $currency, $taxClassId) {

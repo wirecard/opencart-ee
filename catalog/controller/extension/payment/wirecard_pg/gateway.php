@@ -31,6 +31,9 @@
 
 include_once(DIR_SYSTEM . 'library/autoload.php');
 require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/additional_information_helper.php';
+
+use Wirecard\PaymentSdk\Config\Config;
+
 /**
  * Class ControllerExtensionPaymentGateway
  *
@@ -58,6 +61,30 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	protected $type;
 
+	/**
+	 * @var Config
+	 * @since 1.0.0
+	 */
+	protected $paymentConfig;
+
+	/**
+	 * @var Model
+	 * @since 1.0.0
+	 */
+	protected $model;
+
+	/**
+	 * @var \Wirecard\PaymentSdk\Transaction\Transaction
+	 * @since 1.0.0
+	 */
+	protected $transaction;
+
+	/**
+	 * Basic index method
+	 *
+	 * @return mixed
+	 * @since 1.0.0
+	 */
 	public function index()
 	{
 		$prefix = $this->prefix . $this->type;
@@ -67,12 +94,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->load->language('extension/payment/wirecard_pg');
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
 
-		$data['active'] = $this->config->get($this->prefix . $this->type . '_status');
+		$data['active'] = $this->getConfigVal('status');
 		$data['button_confirm'] = $this->language->get('button_confirm');
 
 		return $this->load->view('extension/payment/wirecard_pg', $data);
 	}
 
+	/**
+	 * Default confirm order method
+	 *
+	 * @since 1.0.0
+	 */
 	public function confirm()
 	{
 		$json = array();
@@ -81,17 +113,100 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->load->language('extension/payment/wirecard_pg');
 			$this->load->model('checkout/order');
 			$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+			$this->load->model('checkout/order');
 			$currency = [
 				'currency_code' => $order['currency_code'],
 				'currency_value' => $order['currency_value']
 			];
 
-			$json['redirect'] = $this->url->link('checkout/success');
+			$amount = new \Wirecard\PaymentSdk\Entity\Amount( $order['total'], $order['currency_code']);
+			$this->paymentConfig = $this->getConfig();
+			$this->transaction->setRedirect($this->getRedirects());
+			$this->transaction->setAmount($amount);
+
 			$additionalHelper = new AdditionalInformationHelper($this->registry);
-			var_dump($additionalHelper->addBasket(new \Wirecard\PaymentSdk\Transaction\PayPalTransaction(), $this->cart->getProducts(), $this->session->data['shipping_method'], $currency));
+			$this->transaction = $additionalHelper->setIdentificationData($this->transaction, $order);
+			if ($this->getConfigVal('descriptor')) {
+				$this->transaction->setDescriptor($additionalHelper->createDescriptor($order));
+			}
+			if ($this->getConfigVal('shopping_basket')) {
+				$this->transaction = $additionalHelper->addBasket(
+					$this->transaction,
+					$this->cart->getProducts(),
+					$this->session->data['shipping_method'],
+					$currency
+				);
+			}
+
+			$model = $this->getModel();
+			$result = $model->sendRequest($this->paymentConfig, $this->transaction);
+
+			if ($result instanceof \Wirecard\PaymentSdk\Response\Response) {
+				//set response data temporarly -> should be redirect
+				$json['response'] = json_encode($result->getData());
+			} else {
+				$json['redirect'] = $result;
+			}
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	/**
+	 * Create payment specific config
+	 *
+	 * @return Config
+	 * @since 1.0.0
+	 */
+	protected function getConfig()
+	{
+		$baseUrl = $this->getConfigVal('base_url');
+		$httpUser = $this->getConfigVal('http_user');
+		$httpPassword = $this->getConfigVal('http_password');
+
+		$config = new Config($baseUrl, $httpUser, $httpPassword);
+		$config->setShopInfo('OpenCart', VERSION);
+		$config->setPluginInfo('Wirecard_PaymentGateway', $this->pluginVersion);
+
+		return $config;
+	}
+
+	/**
+	 * Create payment specific redirects
+	 *
+	 * @return \Wirecard\PaymentSdk\Entity\Redirect
+	 * @since 1.0.0
+	 */
+	protected function getRedirects()
+	{
+		$redirectUrls = new \Wirecard\PaymentSdk\Entity\Redirect(
+			$this->url->link('extension/payment/' . $this->prefix . $this->type . '/checkout', null, 'SSL'),
+			$this->url->link('extension/payment/' . $this->prefix . $this->type . '/failure', null, 'SSL'),
+			$this->url->link('extension/payment/' . $this->prefix . $this->type . '/success', null, 'SSL')
+		);
+
+		return $redirectUrls;
+	}
+
+	/**
+	 * Payment specific model getter
+	 *
+	 * @return Model
+	 * @since 1.0.0
+	 */
+	protected function getModel()
+	{
+		$this->load->model('extension/payment/wirecard_pg/gateway');
+
+		return $this->model_extension_payment_wirecard_pg_gateway;
+	}
+
+	/**
+	 * @param string $field
+	 * @return bool|string
+	 */
+	protected function getConfigVal($field) {
+		return $this->config->get($this->prefix . $this->type . '_' . $field);
 	}
 }
