@@ -29,7 +29,7 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-include_once(DIR_SYSTEM . '../vendor/autoload.php');
+include_once(DIR_SYSTEM . 'library/autoload.php');
 
 /**
  * Class ControllerExtensionPaymentGateway
@@ -124,6 +124,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data['config_http_password_desc'] = $this->language->get('config_http_password_desc');
 		$data['text_credentials'] = $this->language->get('text_credentials');
 		$data['test_credentials'] = $this->language->get('test_credentials');
+		$data['config_descriptor'] = $this->language->get('config_descriptor');
+		$data['config_descriptor_desc'] = $this->language->get('config_descriptor_desc');
+		$data['text_advanced'] = $this->language->get('text_advanced');
 
 		return $data;
 	}
@@ -200,6 +203,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		} else {
 			$data['http_password'] = strlen($this->config->get($prefix . 'http_password')) ? $this->config->get($prefix . 'http_password') : $this->default['http_password'];
 		}
+
+        if (isset($this->request->post[$prefix . 'descriptor'])) {
+            $data['descriptor'] = $this->request->post[$prefix . 'descriptor'];
+        } else {
+            $data['descriptor'] = strlen($this->config->get($prefix . 'descriptor')) ? $this->config->get($prefix . 'descriptor') : $this->default['descriptor'];
+        }
 
 		return $data;
 	}
