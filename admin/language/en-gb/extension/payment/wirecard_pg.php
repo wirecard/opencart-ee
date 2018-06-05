@@ -36,6 +36,7 @@ $_['text_extension'] = 'Extensions';
 $_['text_enabled'] = 'Enabled';
 $_['text_disabled'] = 'Disabled';
 $_['text_credentials'] = 'Credentials';
+$_['test_credentials'] = 'Test Credentials';
 $_['config_status'] = 'Status';
 $_['config_merchant_account_id'] = 'Merchant Account ID';
 $_['config_merchant_account_id_desc'] = 'Unique identifier assigned to your merchant account.';
@@ -52,3 +53,5 @@ $_['config_shopping_basket'] = 'Shopping Basket';
 $_['config_shopping_basket_desc'] = 'For the purpose of confirmation, payment supports shopping basket display during checkout. To enable this feature, activate Shopping Basket.';
 
 $_['text_success'] = 'Your modifications are saved!';
+$_['success_credentials'] = 'Merchant configuration was successfully tested.';
+$_['error_credentials'] = 'Test failed, please check your credentials.';

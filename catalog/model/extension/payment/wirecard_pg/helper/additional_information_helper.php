@@ -28,21 +28,29 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
-use Wirecard\PaymentSdk\Entity\Basket;
+require_once(dirname(__FILE__) . '/pg_basket.php');
+
+use Wirecard\PaymentSdk\Transaction\Transaction;
 
 /**
  * Class AdditionalHelper
  *
  * @since 1.0.0
  */
-class AdditionalInformationHelper {
-	/**
-	 * @param array $items
-	 * @return \Wirecard\PaymentSdk\Entity\Basket
-	 */
-	public function createShoppingBasket($items) {
-		$basket = new Basket();
-		$basket->add();
+class AdditionalInformationHelper extends Model {
 
+	/**
+	 * @param Transaction $transaction
+	 * @param array $items
+	 * @param array $shipping
+	 * @param array $currency
+	 * @return Transaction
+	 * @since 1.0.0
+	 */
+	public function addBasket($transaction, $items, $shipping, $currency) {
+		$basketFactory = new PGBasket($this);
+		$transaction->setBasket($basketFactory->getBasket($transaction, $items, $shipping, $currency));
+
+		return $transaction;
 	}
 }

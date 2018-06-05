@@ -29,6 +29,8 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
+include_once(DIR_SYSTEM . 'library/autoload.php');
+require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/additional_information_helper.php';
 /**
  * Class ControllerExtensionPaymentGateway
  *
@@ -36,7 +38,7 @@
  *
  * @since 1.0.0
  */
-abstract class ControllerExtensionPaymentGateway extends Controller{
+abstract class ControllerExtensionPaymentGateway extends Controller {
 
 	/**
 	 * @var string
@@ -77,9 +79,16 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 
 		if ($this->session->data['payment_method']['code'] == 'wirecard_pg_' . $this->type) {
 			$this->load->language('extension/payment/wirecard_pg');
-			$this->load->model('checkuot/order');
+			$this->load->model('checkout/order');
+			$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+			$currency = [
+				'currency_code' => $order['currency_code'],
+				'currency_value' => $order['currency_value']
+			];
 
 			$json['redirect'] = $this->url->link('checkout/success');
+			$additionalHelper = new AdditionalInformationHelper($this->registry);
+			var_dump($additionalHelper->addBasket(new \Wirecard\PaymentSdk\Transaction\PayPalTransaction(), $this->cart->getProducts(), $this->session->data['shipping_method'], $currency));
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
