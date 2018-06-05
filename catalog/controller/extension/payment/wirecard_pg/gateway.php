@@ -93,6 +93,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		return $this->load->view('extension/payment/wirecard_pg', $data);
 	}
 
+    /**
+     * Default confirm order method
+     *
+     * @since 1.0.0
+     */
 	public function confirm()
 	{
 		$json = array();
@@ -107,11 +112,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
             $this->transaction->setRedirect($this->getRedirects());
             $this->transaction->setAmount($amount);
 
+            $this->setIdentificationData($order);
+
             $model = $this->getModel();
             $result = $model->sendRequest($this->paymentConfig, $this->transaction);
 
-            //Result should be handled here
-			$json['redirect'] = $this->url->link($result);
+            if ($result instanceof \Wirecard\PaymentSdk\Response\Response) {
+                //set response data temporarly -> should be redirect
+                $json['response'] = json_encode($result->getData());
+            } else {
+                $json['redirect'] = $result;
+            }
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
@@ -137,12 +148,18 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
         return $config;
     }
 
+    /**
+     * Create payment specific redirects
+     *
+     * @return \Wirecard\PaymentSdk\Entity\Redirect
+     * @since 1.0.0
+     */
     protected function getRedirects()
     {
         $redirectUrls = new \Wirecard\PaymentSdk\Entity\Redirect(
-            $this->url->link('extension/payment/' . $this->prefix . $this->type . '/success', null, 'SSL'),
             $this->url->link('extension/payment/' . $this->prefix . $this->type . '/checkout', null, 'SSL'),
-            $this->url->link('extension/payment/' . $this->prefix . $this->type . '/failure', null, 'SSL')
+            $this->url->link('extension/payment/' . $this->prefix . $this->type . '/failure', null, 'SSL'),
+            $this->url->link('extension/payment/' . $this->prefix . $this->type . '/success', null, 'SSL')
         );
 
         return $redirectUrls;
@@ -159,5 +176,52 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
         $this->load->model('extension/payment/wirecard_pg/gateway');
 
         return $this->model_extension_payment_wirecard_pg_gateway;
+    }
+
+    /**
+     * Create identification data
+     *
+     * @param ModelCheckoutOrder $order
+     * @since 1.0.0
+     */
+    protected function setIdentificationData($order)
+    {
+        $customFields = new \Wirecard\PaymentSdk\Entity\CustomFieldCollection();
+        $customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('orderId', $order['order_id']));
+        $this->transaction->setCustomFields($customFields);
+        $this->transaction->setLocale(substr($order['language_code'], 0 ,2));
+
+        if($this->config->get($this->prefix . $this->type . '_descriptor')) {
+            $this->transaction->setDescriptor($this->createDescriptor($order));
+        }
+
+        //Send only for additional data
+        $this->transaction->setOrderDetail(sprintf(
+            '%s %s %s',
+            $order['email'],
+            $order['firstname'],
+            $order['lastname']
+        ));
+        //$this->transaction->setOrderNumber($order['order_id']);
+        if ($order['ip']) {
+            $this->transaction->setIpAddress($order['ip']);
+        } else {
+            $this->transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
+        }
+    }
+
+    /**
+     * Create descriptor including shopname and ordernumber
+     *
+     * @param ModelCheckoutOrder $order
+     * @return string
+     * @since 1.0.0
+     */
+    protected function createDescriptor($order) {
+        return sprintf(
+            '%s %s',
+            substr( $order['store_name'], 0, 9),
+            $order['order_id']
+        );
     }
 }
