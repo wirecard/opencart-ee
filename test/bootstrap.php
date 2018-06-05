@@ -37,4 +37,4 @@ require_once __DIR__ . '/stubs/Controller.php';
 require_once __DIR__ . '/stubs/Model.php';
 
 //Defines
-define('DIR_SYSTEM', __DIR__ . '/system');
+define('DIR_SYSTEM', __DIR__ . '/system/');
