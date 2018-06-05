@@ -32,6 +32,7 @@
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
 use Wirecard\PaymentSdk\Transaction\PayPalTransaction;
+use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
 
 /**
  * Class ControllerExtensionPaymentWirecardPGPayPal
@@ -72,7 +73,7 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
         $merchant_secret = $this->config->get($this->prefix . $this->type . '_merchant_secret');
 
         $config = parent::getConfig();
-        $paymentConfig = new \Wirecard\PaymentSdk\Config\PaymentMethodConfig(PayPalTransaction::NAME, $merchant_account_id, $merchant_secret);
+        $paymentConfig = new PaymentMethodConfig(PayPalTransaction::NAME, $merchant_account_id, $merchant_secret);
         $config->add($paymentConfig);
 
         return $config;
