@@ -204,11 +204,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 			$data['http_password'] = strlen($this->config->get($prefix . 'http_password')) ? $this->config->get($prefix . 'http_password') : $this->default['http_password'];
 		}
 
-        if (isset($this->request->post[$prefix . 'descriptor'])) {
-            $data['descriptor'] = $this->request->post[$prefix . 'descriptor'];
-        } else {
-            $data['descriptor'] = strlen($this->config->get($prefix . 'descriptor')) ? $this->config->get($prefix . 'descriptor') : $this->default['descriptor'];
-        }
+		if (isset($this->request->post[$prefix . 'descriptor'])) {
+			$data['descriptor'] = $this->request->post[$prefix . 'descriptor'];
+		} else {
+			$data['descriptor'] = strlen($this->config->get($prefix . 'descriptor')) ? $this->config->get($prefix . 'descriptor') : $this->default['descriptor'];
+		}
 
 		return $data;
 	}

@@ -43,6 +43,10 @@ use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
  */
 class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaymentGateway {
 
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
 	protected $type = 'paypal';
 
 	/**
@@ -54,42 +58,47 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 		return parent::index();
 	}
 
+	/**
+	 * Create paypal transaction
+	 *
+	 * @since 1.0.0
+	 */
 	public function confirm() {
 
-	    $this->transaction = new PayPalTransaction();
+		$this->transaction = new PayPalTransaction();
 
 		parent::confirm();
 	}
 
-    /**
-     * Create payment specific config
-     *
-     * @return \Wirecard\PaymentSdk\Config\Config
-     * @since 1.0.0
-     */
+	/**
+	 * Create payment specific config
+	 *
+	 * @return \Wirecard\PaymentSdk\Config\Config
+	 * @since 1.0.0
+	 */
 	protected function getConfig()
-    {
-        $merchant_account_id = $this->config->get($this->prefix . $this->type . '_merchant_account_id');
-        $merchant_secret = $this->config->get($this->prefix . $this->type . '_merchant_secret');
+	{
+		$merchant_account_id = $this->config->get($this->prefix . $this->type . '_merchant_account_id');
+		$merchant_secret = $this->config->get($this->prefix . $this->type . '_merchant_secret');
 
-        $config = parent::getConfig();
-        $paymentConfig = new PaymentMethodConfig(PayPalTransaction::NAME, $merchant_account_id, $merchant_secret);
-        $config->add($paymentConfig);
+		$config = parent::getConfig();
+		$paymentConfig = new PaymentMethodConfig(PayPalTransaction::NAME, $merchant_account_id, $merchant_secret);
+		$config->add($paymentConfig);
 
-        return $config;
-    }
+		return $config;
+	}
 
-    /**
-     * Payment specific model getter
-     *
-     * @return Model
-     * @since 1.0.0
-     */
-    protected function getModel()
-    {
-        $this->load->model('extension/payment/wirecard_pg_' . $this->type);
+	/**
+	 * Payment specific model getter
+	 *
+	 * @return Model
+	 * @since 1.0.0
+	 */
+	protected function getModel()
+	{
+		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
 
-        return $this->model_extension_payment_wirecard_pg_paypal;
-    }
+		return $this->model_extension_payment_wirecard_pg_paypal;
+	}
 }
 
