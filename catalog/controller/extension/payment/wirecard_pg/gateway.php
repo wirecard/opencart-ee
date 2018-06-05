@@ -29,6 +29,8 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
+use Wirecard\PaymentSdk\Config\Config;
+
 /**
  * Class ControllerExtensionPaymentGateway
  *
@@ -56,6 +58,18 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	 */
 	protected $type;
 
+    /**
+     * @var Config
+     * @since 1.0.0
+     */
+	protected $config;
+
+    /**
+     * @var \Wirecard\PaymentSdk\Transaction\Transaction
+     * @since 1.0.0
+     */
+	protected $transaction;
+
 	public function index()
 	{
 		$prefix = $this->prefix . $this->type;
@@ -77,12 +91,52 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 
 		if ($this->session->data['payment_method']['code'] == 'wirecard_pg_' . $this->type) {
 			$this->load->language('extension/payment/wirecard_pg');
-			$this->load->model('checkuot/order');
+			$this->load->model('checkout/order');
+            $order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
+			$amount = new \Wirecard\PaymentSdk\Entity\Amount( $order['total'], $order['currency_code']);
+			$this->config = $this->getConfig();
+            $this->transaction->setRedirect($this->getRedirects());
+            $this->transaction->setAmount($amount);
+
+            $this->load->model('extension/payment/wirecard_pg');
+            //$result = $this->model_extension_payment_wirecard_pg->sendRequest($this->config, $this->transaction);
+
+            //Result should be handled here
 			$json['redirect'] = $this->url->link('checkout/success');
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
+
+    /**
+     * Create payment specific config
+     *
+     * @return Config
+     * @since 1.0.0
+     */
+	protected function getConfig()
+    {
+        $baseUrl = $this->config->get($this->prefix . $this->type . '_base_url');
+        $httpUser = $this->config->get($this->prefix . $this->type . '_http_user');
+        $httpPassword = $this->config->get($this->prefix . $this->type . '_http_password');
+
+        $config = new Config($baseUrl, $httpUser, $httpPassword);
+        $config->setShopInfo('OpenCart', VERSION);
+        $config->setPluginInfo('Wirecard_PaymentGateway', $this->pluginVersion);
+
+        return $config;
+    }
+
+    protected function getRedirects()
+    {
+        $redirectUrls = new \Wirecard\PaymentSdk\Entity\Redirect(
+            $this->url->link('extension/payment/' . $this->prefix . $this->type . '/success', null, 'SSL'),
+            $this->url->link('extension/payment/' . $this->prefix . $this->type . '/checkout', null, 'SSL'),
+            $this->url->link('extension/payment/' . $this->prefix . $this->type . '/failure', null, 'SSL')
+        );
+
+        return $redirectUrls;
+    }
 }

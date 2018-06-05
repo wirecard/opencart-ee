@@ -28,7 +28,10 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
+
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
+
+use Wirecard\PaymentSdk\Transaction\PayPalTransaction;
 
 /**
  * Class ControllerExtensionPaymentWirecardPGPayPal
@@ -37,7 +40,7 @@ require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaymentGateway {
 
 	protected $type = 'paypal';
 
@@ -51,6 +54,9 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	}
 
 	public function confirm() {
+
+	    $this->transaction = new PayPalTransaction();
+
 		parent::confirm();
 	}
 }
