@@ -59,5 +59,36 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 
 		parent::confirm();
 	}
+
+    /**
+     * Create payment specific config
+     *
+     * @return \Wirecard\PaymentSdk\Config\Config
+     * @since 1.0.0
+     */
+	protected function getConfig()
+    {
+        $merchant_account_id = $this->config->get($this->prefix . $this->type . '_merchant_account_id');
+        $merchant_secret = $this->config->get($this->prefix . $this->type . '_merchant_secret');
+
+        $config = parent::getConfig();
+        $paymentConfig = new \Wirecard\PaymentSdk\Config\PaymentMethodConfig(PayPalTransaction::NAME, $merchant_account_id, $merchant_secret);
+        $config->add($paymentConfig);
+
+        return $config;
+    }
+
+    /**
+     * Payment specific model getter
+     *
+     * @return Model
+     * @since 1.0.0
+     */
+    protected function getModel()
+    {
+        $this->load->model('extension/payment/wirecard_pg_' . $this->type);
+
+        return $this->model_extension_payment_wirecard_pg_paypal;
+    }
 }
 

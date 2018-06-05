@@ -62,4 +62,33 @@ abstract class ModelExtensionPaymentGateway extends Model {
 
 		return $method_data;
 	}
+
+    /**
+     * Process transaction request
+     *
+     * @param $config
+     * @param $transaction
+     * @return \Wirecard\PaymentSdk\Response\Response
+     * @throws Exception
+     * @since 1.0.0
+     */
+	public function sendRequest($config, $transaction) {
+	    $transactionService = new \Wirecard\PaymentSdk\TransactionService($config);
+
+	    try {
+	        /* @var \Wirecard\PaymentSdk\Response\Response $response */
+	        $response = $transactionService->process($transaction, 'reserve');
+        } catch (Exception $exception) {
+            throw($exception);
+        }
+
+        $redirect = $this->checkout();
+        if ($response instanceof \Wirecard\PaymentSdk\Response\InteractionResponse) {
+	        $redirect = $response->getRedirectUrl();
+        } elseif ($response instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
+	        $this->session->data['error'] = 'Please add errorhandling here';
+	        $redirect = $this->checkout();
+        }
+        return $redirect;
+    }
 }

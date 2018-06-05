@@ -29,6 +29,8 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
+include_once(DIR_SYSTEM . 'library/autoload.php');
+
 use Wirecard\PaymentSdk\Config\Config;
 
 /**
@@ -62,7 +64,13 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
      * @var Config
      * @since 1.0.0
      */
-	protected $config;
+	protected $paymentConfig;
+
+    /**
+     * @var Model
+     * @since 1.0.0
+     */
+	protected $model;
 
     /**
      * @var \Wirecard\PaymentSdk\Transaction\Transaction
@@ -95,15 +103,15 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
             $order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
 			$amount = new \Wirecard\PaymentSdk\Entity\Amount( $order['total'], $order['currency_code']);
-			$this->config = $this->getConfig();
+			$this->paymentConfig = $this->getConfig();
             $this->transaction->setRedirect($this->getRedirects());
             $this->transaction->setAmount($amount);
 
-            $this->load->model('extension/payment/wirecard_pg');
-            //$result = $this->model_extension_payment_wirecard_pg->sendRequest($this->config, $this->transaction);
+            $model = $this->getModel();
+            $result = $model->sendRequest($this->paymentConfig, $this->transaction);
 
             //Result should be handled here
-			$json['redirect'] = $this->url->link('checkout/success');
+			$json['redirect'] = $this->url->link($result);
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
@@ -138,5 +146,18 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
         );
 
         return $redirectUrls;
+    }
+
+    /**
+     * Payment specific model getter
+     *
+     * @return Model
+     * @since 1.0.0
+     */
+    protected function getModel()
+    {
+        $this->load->model('extension/payment/wirecard_pg/gateway');
+
+        return $this->model_extension_payment_wirecard_pg_gateway;
     }
 }
