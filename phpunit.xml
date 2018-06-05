@@ -14,7 +14,7 @@
             <directory suffix=".php">*</directory>
             <exclude>
                 <directory>admin/controller</directory>
-                <directory>vendor</directory>
+                <directory>system</directory>
                 <directory>test</directory>
             </exclude>
         </whitelist>
