@@ -50,6 +50,7 @@ class PGBasket {
 	const TAXCLASSID = 'tax_class_id';
 
 	private $model;
+
 	public function __construct($model) {
 		$this->model = $model;
 	}

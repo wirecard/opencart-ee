@@ -29,11 +29,15 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-require_once __DIR__ . '/../system/library/autoload.php';
+require_once HELPERDIR . 'additional_information_helper.php';
 
+class additionalInformationHelperUTest extends \PHPUnit_Framework_TestCase
+{
+	public function setUp() {
 
-//load opencart stubs
-require_once __DIR__ . '/stubs/Controller.php';
-require_once __DIR__ . '/stubs/Model.php';
+	}
 
-const HELPERDIR = __DIR__ . '/../catalog/model/extension/payment/wirecard_pg/helper/';
+	public function addBasketTest() {
+		$this->assertEquals(3, 3);
+	}
+}
