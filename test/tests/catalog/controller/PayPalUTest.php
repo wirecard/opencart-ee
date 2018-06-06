@@ -44,7 +44,6 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
     private $modelOrder;
     private $url;
     private $modelPaypal;
-    private $model_extension_payment_wirecard_pg_paypal;
 
     const SHOP = 'OpenCart';
     const PLUGIN = 'Wirecard_PaymentGateway';
