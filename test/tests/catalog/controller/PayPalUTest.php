@@ -43,6 +43,7 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
     private $response;
     private $modelOrder;
     private $url;
+    private $modelPaypal;
     private $model_extension_payment_wirecard_pg_paypal;
 
     const SHOP = 'OpenCart';
@@ -88,12 +89,16 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->model_extension_payment_wirecard_pg_paypal = new ModelExtensionPaymentWirecardPGPayPal($this->registry);
+        $this->modelPaypal = $this->getMockBuilder(ModelExtensionPaymentWirecardPGPayPal::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['sendRequest'])
+            ->getMock();
+
         $this->loader = $this->getMockBuilder(Loader::class)
             ->disableOriginalConstructor()
             ->setMethods(['model', 'language'])
             ->getMock();
-        $this->controller = new ControllerExtensionPaymentWirecardPGPayPal($this->registry, $this->config, $this->loader, $this->session, $this->response, $this->modelOrder, $this->url);
+        $this->controller = new ControllerExtensionPaymentWirecardPGPayPal($this->registry, $this->config, $this->loader, $this->session, $this->response, $this->modelOrder, $this->url, $this->modelPaypal);
     }
 
     public function testGetConfig()
@@ -104,7 +109,7 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
         $this->config->expects($this->at(3))->method('get')->willReturn('user');
         $this->config->expects($this->at(4))->method('get')->willReturn('password');
 
-        $this->controller = new ControllerExtensionPaymentWirecardPGPayPal($this->registry, $this->config, $this->loader, $this->session, $this->response, $this->modelOrder, $this->url);
+        $this->controller = new ControllerExtensionPaymentWirecardPGPayPal($this->registry, $this->config, $this->loader, $this->session, $this->response, $this->modelOrder, $this->url, $this->modelPaypal);
 
         $expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
         $expected->add(new \Wirecard\PaymentSdk\Config\PaymentMethodConfig(
@@ -123,9 +128,8 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
     public function testGetModel()
     {
         $actual = $this->controller->getModel();
-        $expected = new ModelExtensionPaymentWirecardPGPayPal($this->registry);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf(get_class($this->modelPaypal), $actual);
     }
 
     public function testSuccessConfirm()

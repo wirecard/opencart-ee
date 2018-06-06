@@ -14,7 +14,7 @@ abstract class Controller
     public $model_extension_payment_wirecard_pg_paypal;
     public $model_checkout_order;
 
-    public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url)
+    public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPaypal)
     {
         $this->registry = $registry;
         $this->config = $config;
@@ -23,7 +23,7 @@ abstract class Controller
         $this->response = $response;
         $this->model_checkout_order = $orderModel;
         $this->url = $url;
-        $this->model_extension_payment_wirecard_pg_paypal = new ModelExtensionPaymentWirecardPGPayPal($registry);
+        $this->model_extension_payment_wirecard_pg_paypal = $modelPaypal;
     }
 
     public function get($key)
