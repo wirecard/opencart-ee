@@ -207,20 +207,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		if($this->config->get($this->prefix . $this->type . '_descriptor')) {
 			$this->transaction->setDescriptor($this->createDescriptor($order));
 		}
-
-		//Send only for additional data
-		$this->transaction->setOrderDetail(sprintf(
-			'%s %s %s',
-			$order['email'],
-			$order['firstname'],
-			$order['lastname']
-		));
-		//$this->transaction->setOrderNumber($order['order_id']);
-		if ($order['ip']) {
-			$this->transaction->setIpAddress($order['ip']);
-		} else {
-			$this->transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
-		}
 	}
 
     /**
@@ -232,6 +218,19 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	protected function setAdditionalInformation($order)
     {
         if($this->config->get($this->prefix . $this->type . '_additional_info')) {
+            $this->transaction->setOrderDetail(sprintf(
+                '%s %s %s',
+                $order['email'],
+                $order['firstname'],
+                $order['lastname']
+            ));
+            //$this->transaction->setOrderNumber($order['order_id']);
+            if ($order['ip']) {
+                $this->transaction->setIpAddress($order['ip']);
+            } else {
+                $this->transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
+            }
+
             //Consumer-ID
             //Device Fingerprint
             //OrderNumber
@@ -268,16 +267,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	    $accountHolder = new AccountHolder();
 	    if (self::SHIPPING == $type) {
 	        $accountHolder->setAddress(new Address());
-	        $accountHolder->setFirstName();
-	        $accountHolder->setLastName();
+	        $accountHolder->setFirstName($order['shipping_firstname']);
+	        $accountHolder->setLastName($order['shipping_lastname']);
         } else {
 	        $accountHolder->setAddress(new Address());
-	        $accountHolder->setFirstName();
-	        $accountHolder->setLastName();
-	        $accountHolder->setEmail();
-	        $accountHolder->setPhone();
-	        $accountHolder->setDateOfBirth();
-	        $accountHolder->setGender();
+	        $accountHolder->setFirstName($order['payment_firstname']);
+	        $accountHolder->setLastName($order['payment_lastname']);
+	        $accountHolder->setEmail($order['email']);
+	        $accountHolder->setPhone($order['telephone']);
+	        // following data is not available
+	        //$accountHolder->setDateOfBirth();
+	        //$accountHolder->setGender();
         }
     }
 }
