@@ -30,12 +30,21 @@
  */
 
 require_once __DIR__ . '/../system/library/autoload.php';
+require_once __DIR__ . '/../system/library/opencart/opencart/upload/system/engine/proxy.php';
 
 
 //load opencart stubs
+require_once __DIR__ . '/stubs/Config.php';
 require_once __DIR__ . '/stubs/Controller.php';
 require_once __DIR__ . '/stubs/Model.php';
+require_once __DIR__ . '/stubs/Loader.php';
+require_once __DIR__ . '/stubs/Registry.php';
+require_once __DIR__ . '/stubs/Session.php';
+require_once __DIR__ . '/stubs/Url.php';
+require_once __DIR__ . '/stubs/Language.php';
 
 //Defines
 define('DIR_SYSTEM', __DIR__ . '/../system/');
 define('HELPER_DIR', __DIR__ . '/../catalog/model/extension/payment/wirecard_pg/helper/');
+define('DIR_APPLICATION', __DIR__ . '/../catalog/');
+define('VERSION', '3.0.2.0');
