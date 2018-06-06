@@ -266,11 +266,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	protected function createAccountHolder($order, $type = self::BILLING) {
 	    $accountHolder = new AccountHolder();
 	    if (self::SHIPPING == $type) {
-	        $accountHolder->setAddress(new Address());
+	        $accountHolder->setAddress($this->createAddressData($order, $type));
 	        $accountHolder->setFirstName($order['shipping_firstname']);
 	        $accountHolder->setLastName($order['shipping_lastname']);
         } else {
-	        $accountHolder->setAddress(new Address());
+	        $accountHolder->setAddress($this->createAddressData($order, $type));
 	        $accountHolder->setFirstName($order['payment_firstname']);
 	        $accountHolder->setLastName($order['payment_lastname']);
 	        $accountHolder->setEmail($order['email']);
@@ -279,5 +279,28 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	        //$accountHolder->setDateOfBirth();
 	        //$accountHolder->setGender();
         }
+    }
+
+    /**
+     * Create Address data based on order
+     *
+     * @param array $order
+     * @param string $type
+     * @return Address
+     * @since 1.0.0
+     */
+    protected function createAddressData($order, $type) {
+	    if (self::SHIPPING == $type) {
+	        $address = new Address( $order['shipping_country'], $order['shipping_city'], $order['shipping_address_1']);
+	        $address->setPostalCode($order['shipping_postcode']);
+        } else {
+	        $address = new Address($order['payment_country'], $order['payment_city'], $order['payment_address_1']);
+	        $address->setPostalCode($order['payment_postcode']);
+	        if (strlen($order['payment_address_2'])) {
+	            $address->setStreet2($order['payment_address_2']);
+            }
+        }
+
+        return $address;
     }
 }
