@@ -42,6 +42,9 @@ require_once __DIR__ . '/stubs/Registry.php';
 require_once __DIR__ . '/stubs/Session.php';
 require_once __DIR__ . '/stubs/Url.php';
 require_once __DIR__ . '/stubs/Language.php';
+require_once __DIR__ . '/stubs/Cart.php';
+require_once __DIR__ . '/stubs/Tax.php';
+require_once __DIR__ . '/stubs/Currency.php';
 
 //Defines
 define('DIR_SYSTEM', __DIR__ . '/../system/');

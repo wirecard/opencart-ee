@@ -12,10 +12,11 @@ abstract class Controller
     protected $response;
     protected $url;
     protected $language;
+    protected $cart;
     public $model_extension_payment_wirecard_pg_paypal;
     public $model_checkout_order;
 
-    public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPaypal, $language)
+    public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPaypal, $language, $cart)
     {
         $this->registry = $registry;
         $this->config = $config;
@@ -26,6 +27,7 @@ abstract class Controller
         $this->url = $url;
         $this->model_extension_payment_wirecard_pg_paypal = $modelPaypal;
         $this->language = $language;
+        $this->cart = $cart;
     }
 
     public function get($key)

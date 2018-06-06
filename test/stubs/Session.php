@@ -8,7 +8,11 @@ class Session {
 	protected $session_id;
 	public $data = array(
 	    'payment_method' => array('code' => 'wirecard_pg_paypal'),
-        'order_id' => '1'
+        'order_id' => '1',
+		'shipping_method' => [
+			"cost" => 10,
+			"tax_class_id" => 2
+		]
     );
 
 	/**
