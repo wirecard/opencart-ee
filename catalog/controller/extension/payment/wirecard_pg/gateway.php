@@ -141,7 +141,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	 * @return Config
 	 * @since 1.0.0
 	 */
-	protected function getConfig()
+	public function getConfig()
 	{
 		$baseUrl = $this->config->get($this->prefix . $this->type . '_base_url');
 		$httpUser = $this->config->get($this->prefix . $this->type . '_http_user');

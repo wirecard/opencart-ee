@@ -30,11 +30,14 @@
  */
 
 require_once __DIR__ . '/../system/library/autoload.php';
+require_once __DIR__ . '/../system/library/opencart/opencart/upload/system/engine/registry.php';
 
 
 //load opencart stubs
+require_once __DIR__ . '/stubs/Config.php';
 require_once __DIR__ . '/stubs/Controller.php';
 require_once __DIR__ . '/stubs/Model.php';
 
 //Defines
 define('DIR_SYSTEM', __DIR__ . '/../system/');
+define('VERSION', '3.0.2.0');

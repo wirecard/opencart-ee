@@ -6,18 +6,20 @@
 abstract class Controller
 {
     protected $registry;
+    protected $config;
 
-    public function __construct($registry)
+    public function __construct($registry, $config)
     {
         $this->registry = $registry;
+        $this->config = $config;
     }
 
-    public function __get($key)
+    public function get($key)
     {
         return $this->registry->get($key);
     }
 
-    public function __set($key, $value)
+    public function set($key, $value)
     {
         $this->registry->set($key, $value);
     }
