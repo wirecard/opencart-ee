@@ -237,6 +237,13 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
                 $this->transaction->setConsumerId($order['customer_id']);
             }
             //Device Fingerprint
+            if ($this->config->get($this->prefix . $this->type . '_session_string')) {
+                $device = new \Wirecard\PaymentSdk\Entity\Device();
+                $merchant_account = $this->config->get($this->prefix . $this->type . '_merchant_account_id');
+                $session = $this->config->get($this->prefix . $this->type . '_session_string');
+                $device->setFingerprint($merchant_account . '_' . $session);
+                $this->transaction->setDevice($device);
+            }
             //$this->transaction->setOrderNumber($order['order_id']);
             $this->transaction->setDescriptor($this->createDescriptor($order));
             $this->transaction->setAccountHolder($this->createAccountHolder($order, self::BILLING));
