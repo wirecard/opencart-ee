@@ -127,6 +127,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data['config_descriptor'] = $this->language->get('config_descriptor');
 		$data['config_descriptor_desc'] = $this->language->get('config_descriptor_desc');
 		$data['text_advanced'] = $this->language->get('text_advanced');
+		$data['config_additional_info'] = $this->language->get('config_additional_info');
+		$data['config_additional_info_desc'] = $this->language->get('config_additional_info_desc');
 
 		return $data;
 	}

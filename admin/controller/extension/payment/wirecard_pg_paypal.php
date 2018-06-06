@@ -58,7 +58,8 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 		'base_url' => 'https://api-test.wirecard.com',
 		'http_password' => 'qD2wzQ_hrc!8',
 		'http_user' => '70000-APITEST-AP',
-		'descriptor' => '1'
+		'descriptor' => '1',
+        'additional_information' => '0',
 	);
 
 	/**
