@@ -51,6 +51,8 @@ $_['config_http_password'] = 'HTTP Password';
 $_['config_http_password_desc'] = 'HTTP Password as provided in your Wirecard contract.';
 $_['config_descriptor'] = 'Descriptor';
 $_['config_descriptor_desc'] = 'Send text which is displayed on the bank statement issued to your consumer by the financial service provider.';
+$_['config_additional_info'] = 'Send additional information';
+$_['config_additional_info_desc'] = 'Additional data will be sent for the purpose of fraud protection. This additional data includes billing/shipping address, shopping basket and descriptor.';
 
 $_['text_success'] = 'Your modifications are saved!';
 $_['success_credentials'] = 'Merchant configuration was successfully tested.';

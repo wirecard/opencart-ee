@@ -212,6 +212,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 			$data['descriptor'] = strlen($this->config->get($prefix . 'descriptor')) ? $this->config->get($prefix . 'descriptor') : $this->default['descriptor'];
 		}
 
+		if (isset($this->request->post[$prefix . 'additional_info'])) {
+		    $data['additional_info'] = $this->request->post[$prefix . 'additional_info'];
+        } else {
+		    $data['additional_info'] = strlen($this->config->get($prefix . 'additional_info')) ? $this->config->get($prefix . 'additional_info') : $this->default['additional_info'];
+        }
+
 		return $data;
 	}
 

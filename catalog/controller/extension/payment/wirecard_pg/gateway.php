@@ -32,6 +32,8 @@
 include_once(DIR_SYSTEM . 'library/autoload.php');
 
 use Wirecard\PaymentSdk\Config\Config;
+use Wirecard\PaymentSdk\Entity\AccountHolder;
+use Wirecard\PaymentSdk\Entity\Address;
 
 /**
  * Class ControllerExtensionPaymentGateway
@@ -41,6 +43,10 @@ use Wirecard\PaymentSdk\Config\Config;
  * @since 1.0.0
  */
 abstract class ControllerExtensionPaymentGateway extends Controller{
+
+    const BILLING = 'billing';
+
+    const SHIPPING = 'shipping';
 
 	/**
 	 * @var string
@@ -119,6 +125,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 			$this->transaction->setAmount($amount);
 
 			$this->setIdentificationData($order);
+			$this->setAdditionalInformation($order);
 
 			$model = $this->getModel();
 			$result = $model->sendRequest($this->paymentConfig, $this->transaction);
@@ -187,7 +194,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	/**
 	 * Create identification data
 	 *
-	 * @param ModelCheckoutOrder $order
+	 * @param array $order
 	 * @since 1.0.0
 	 */
 	protected function setIdentificationData($order)
@@ -216,10 +223,29 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		}
 	}
 
+    /**
+     * Create additional information data
+     *
+     * @param array $order
+     * @since 1.0.0
+     */
+	protected function setAdditionalInformation($order)
+    {
+        if($this->config->get($this->prefix . $this->type . '_additional_info')) {
+            //Consumer-ID
+            //Device Fingerprint
+            //OrderNumber
+            //IpAddress
+            $this->transaction->setDescriptor($this->createDescriptor($order));
+            $this->transaction->setAccountHolder($this->createAccountHolder($order, self::BILLING));
+            $this->transaction->setShipping($this->createAccountHolder($order, self::SHIPPING));
+        }
+    }
+
 	/**
 	 * Create descriptor including shopname and ordernumber
 	 *
-	 * @param ModelCheckoutOrder $order
+	 * @param array $order
 	 * @return string
 	 * @since 1.0.0
 	 */
@@ -230,4 +256,28 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 			$order['order_id']
 		);
 	}
+
+    /**
+     * Create AccountHolder with specific address data
+     *
+     * @param array $order
+     * @param string $type
+     * @since 1.0.0
+     */
+	protected function createAccountHolder($order, $type = self::BILLING) {
+	    $accountHolder = new AccountHolder();
+	    if (self::SHIPPING == $type) {
+	        $accountHolder->setAddress(new Address());
+	        $accountHolder->setFirstName();
+	        $accountHolder->setLastName();
+        } else {
+	        $accountHolder->setAddress(new Address());
+	        $accountHolder->setFirstName();
+	        $accountHolder->setLastName();
+	        $accountHolder->setEmail();
+	        $accountHolder->setPhone();
+	        $accountHolder->setDateOfBirth();
+	        $accountHolder->setGender();
+        }
+    }
 }
