@@ -60,6 +60,7 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 		'http_user' => '70000-APITEST-AP',
 		'descriptor' => '1',
         'additional_info' => '0',
+        'session_string' => '1random-session-string',
 	);
 
 	/**

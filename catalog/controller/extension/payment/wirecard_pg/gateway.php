@@ -101,6 +101,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 
 		$data['active'] = $this->config->get($this->prefix . $this->type . '_status');
 		$data['button_confirm'] = $this->language->get('button_confirm');
+        $data['additional_info'] = $this->config->get($prefix . 'additional_info');
+        if (strlen($this->config->get($prefix . 'session_string'))) {
+            $data['session_id'] = $this->config->get($prefix . 'merchant_account_id') . '_' . $this->config->get($prefix . 'session_string');
+        }
 
 		return $this->load->view('extension/payment/wirecard_pg', $data);
 	}
