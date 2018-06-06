@@ -51,8 +51,11 @@ class PGBasket {
 
 	private $model;
 
+	private $sum;
+
 	public function __construct($model) {
 		$this->model = $model;
+		$this->sum = 0;
 	}
 
 	/**
@@ -60,10 +63,11 @@ class PGBasket {
 	 * @param array $items
 	 * @param array $shipping
 	 * @param array $currency
+	 * @param float $total
 	 * @return Basket
 	 * @since 1.0.0
 	 */
-	public function getBasket($transaction, $items, $shipping, $currency) {
+	public function getBasket($transaction, $items, $shipping, $currency, $total) {
 		$basket = new Basket();
 		$basket->setVersion($transaction);
 
@@ -76,6 +80,14 @@ class PGBasket {
 		}
 
 		$this->setShippingItem($basket, $shipping, $currency);
+
+		if ($this->sum - $total > 0) {
+			$this->setCouponItem(
+				$basket,
+				$this->sum - $total,
+				$currency
+			);
+		}
 
 		return $basket;
 	}
@@ -96,6 +108,7 @@ class PGBasket {
 		$taxAmount = $grossAmount - $this->convert($item[self::PRICE], $currency);
 		$taxRate = $this->convert($taxAmount / $grossAmount * 100, $currency);
 
+		$this->sum += $grossAmount * $item[self::QUANTITY];
 		$amount = new Amount($grossAmount, $currency[self::CURRENCYCODE]);
 		$basketItem = new Item($item[self::NAME], $amount, $item[self::QUANTITY]);
 		$basketItem->setDescription($item[self::NAME]);
@@ -123,10 +136,20 @@ class PGBasket {
 		$taxAmount = $this->model->tax->getTax($shipping[self::COST], $shipping[self::TAXCLASSID]);
 		$taxRate = $this->convert($taxAmount / $grossAmount * 100, $currency);
 
+		$this->sum += $grossAmount;
 		$item = new Item('Shipping', new Amount($grossAmount, $currency[self::CURRENCYCODE]), 1);
 		$item->setDescription('Shipping');
 		$item->setArticleNumber('Shipping');
 		$item->setTaxRate($taxRate);
+		$basket->add($item);
+
+		return $basket;
+	}
+
+	private function setCouponItem($basket, $amount, $currency) {
+		$item = new Item('Coupon', new Amount($amount * -1, $currency[self::CURRENCYCODE]), 1);
+		$item->setDescription('Coupon');
+		$item->setArticleNumber('Coupon');
 		$basket->add($item);
 
 		return $basket;

@@ -129,12 +129,14 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			if ($this->getConfigVal('descriptor')) {
 				$this->transaction->setDescriptor($additionalHelper->createDescriptor($order));
 			}
+
 			if ($this->getConfigVal('shopping_basket')) {
 				$this->transaction = $additionalHelper->addBasket(
 					$this->transaction,
 					$this->cart->getProducts(),
 					$this->session->data['shipping_method'],
-					$currency
+					$currency,
+					$order['total']
 				);
 			}
 

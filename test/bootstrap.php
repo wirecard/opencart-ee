@@ -38,5 +38,4 @@ require_once __DIR__ . '/stubs/Model.php';
 
 //Defines
 define('DIR_SYSTEM', __DIR__ . '/../system/');
-
-const HELPERDIR = __DIR__ . '/../catalog/model/extension/payment/wirecard_pg/helper/';
+define('HELPER_DIR', __DIR__ . '/../catalog/model/extension/payment/wirecard_pg/helper/');

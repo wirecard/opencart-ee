@@ -29,15 +29,41 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-require_once HELPERDIR . 'additional_information_helper.php';
+require_once HELPER_DIR . 'additional_information_helper.php';
 
 class additionalInformationHelperUTest extends \PHPUnit_Framework_TestCase
 {
-	public function setUp() {
+	private $additionalInformationHelper;
 
+	private $transaction;
+
+	private $items;
+
+	private $shipping;
+
+	private $currency;
+
+	public function setUp() {
+		$model = new stdClass();
+
+		$this->additionalInformationHelper = new AdditionalInformationHelper($model);
+		$this->transaction = new \Wirecard\PaymentSdk\Transaction\PayPalTransaction();
+		$this->items = [
+			["price" => 10.465, "name" => "Produkt1", "quantity" => 2, "product_id" => 2, "tax_class_id" => 2],
+			["price" => 20.241, "name" => "Produkt2", "quantity" => 3, "product_id" => 1, "tax_class_id" => 1],
+			["price" => 3.241, "name" => "Produkt3", "quantity" => 5, "product_id" => 3, "tax_class_id" => 1]
+		];
+		$this->shipping = [
+			"cost" => 10,
+			"tax_class_id" => 2
+		];
+		$this->currency = [
+			"currency_code" => 20,
+			"currency_value" => 1
+		];
 	}
 
-	public function addBasketTest() {
-		$this->assertEquals(3, 3);
+	public function testAddBasket() {
+		$this->assertEquals(3, $this->additionalInformationHelper->addBasket($this->transaction, $this->items, $this->shipping, $this->currency));
 	}
 }

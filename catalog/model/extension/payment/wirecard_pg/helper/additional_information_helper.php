@@ -33,7 +33,7 @@ require_once(dirname(__FILE__) . '/pg_basket.php');
 use Wirecard\PaymentSdk\Transaction\Transaction;
 
 /**
- * Class AdditionalHelper
+ * Class AdditionalInformationHelper
  *
  * @since 1.0.0
  */
@@ -44,12 +44,13 @@ class AdditionalInformationHelper extends Model {
 	 * @param array $items
 	 * @param array $shipping
 	 * @param array $currency
+	 * @param float $total
 	 * @return Transaction
 	 * @since 1.0.0
 	 */
-	public function addBasket($transaction, $items, $shipping, $currency) {
+	public function addBasket($transaction, $items, $shipping, $currency, $total) {
 		$basketFactory = new PGBasket($this);
-		$transaction->setBasket($basketFactory->getBasket($transaction, $items, $shipping, $currency));
+		$transaction->setBasket($basketFactory->getBasket($transaction, $items, $shipping, $currency, $total));
 
 		return $transaction;
 	}
