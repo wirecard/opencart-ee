@@ -48,6 +48,14 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 */
 	protected $type;
 
+	/**
+	 * Default payment method getter, method should only be returned if activated
+	 *
+	 * @param $address
+	 * @param $total
+	 * @return array
+	 * @since 1.0.0
+	 */
 	public function getMethod($address, $total) {
 		$prefix = $this->prefix . $this->type;
 
@@ -61,5 +69,41 @@ abstract class ModelExtensionPaymentGateway extends Model {
 		);
 
 		return $method_data;
+	}
+
+	/**
+	 * Process transaction request
+	 *
+	 * @param $config
+	 * @param $transaction
+	 * @return \Wirecard\PaymentSdk\Response\Response
+	 * @throws Exception
+	 * @since 1.0.0
+	 */
+	public function sendRequest($config, $transaction) {
+		$transactionService = new \Wirecard\PaymentSdk\TransactionService($config);
+
+		try {
+			/* @var \Wirecard\PaymentSdk\Response\Response $response */
+			$response = $transactionService->process($transaction, 'reserve');
+		} catch (Exception $exception) {
+			throw($exception);
+		}
+
+		$redirect = $this->url->link('checkout/checkout', '', true);
+		if ($response instanceof \Wirecard\PaymentSdk\Response\InteractionResponse) {
+			//$redirect = $response->getRedirectUrl();
+			//Temporarly print responsedata
+			$redirect = $response;
+		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
+			$errors = '';
+			foreach ($response->getStatusCollection()->getIterator() as $item) {
+				/** @var \Wirecard\PaymentSdk\Entity\Status $item */
+				$errors .= $item->getDescription() . "<br>\n";
+			}
+			$this->session->data['error'] = $errors;
+			$redirect = $this->url->link('checkout/checkout', '', true);
+		}
+		return $redirect;
 	}
 }

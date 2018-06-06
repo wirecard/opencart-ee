@@ -15,6 +15,9 @@
                 $('#button-confirm').button('reset');
             },
             success: function(json) {
+                if (json['response']) {
+                    console.log(json['response']);
+                }
                 if (json['redirect']) {
                     location = json['redirect'];
                 }
