@@ -41,6 +41,7 @@ require_once __DIR__ . '/stubs/Loader.php';
 require_once __DIR__ . '/stubs/Registry.php';
 require_once __DIR__ . '/stubs/Session.php';
 require_once __DIR__ . '/stubs/Url.php';
+require_once __DIR__ . '/stubs/Language.php';
 
 //Defines
 define('DIR_SYSTEM', __DIR__ . '/../system/');
