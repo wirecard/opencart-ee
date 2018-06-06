@@ -177,7 +177,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	 * @return Model
 	 * @since 1.0.0
 	 */
-	protected function getModel()
+	public function getModel()
 	{
 		$this->load->model('extension/payment/wirecard_pg/gateway');
 

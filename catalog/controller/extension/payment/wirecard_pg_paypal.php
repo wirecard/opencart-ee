@@ -94,7 +94,7 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 	 * @return Model
 	 * @since 1.0.0
 	 */
-	protected function getModel()
+	public function getModel()
 	{
 		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
 
