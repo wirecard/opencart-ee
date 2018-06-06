@@ -224,17 +224,16 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
                 $order['firstname'],
                 $order['lastname']
             ));
-            //$this->transaction->setOrderNumber($order['order_id']);
             if ($order['ip']) {
                 $this->transaction->setIpAddress($order['ip']);
             } else {
                 $this->transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
             }
-
-            //Consumer-ID
+            if (strlen($order['customer_id'])) {
+                $this->transaction->setConsumerId($order['customer_id']);
+            }
             //Device Fingerprint
-            //OrderNumber
-            //IpAddress
+            //$this->transaction->setOrderNumber($order['order_id']);
             $this->transaction->setDescriptor($this->createDescriptor($order));
             $this->transaction->setAccountHolder($this->createAccountHolder($order, self::BILLING));
             $this->transaction->setShipping($this->createAccountHolder($order, self::SHIPPING));
@@ -279,6 +278,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	        //$accountHolder->setDateOfBirth();
 	        //$accountHolder->setGender();
         }
+
+        return $accountHolder;
     }
 
     /**
@@ -291,10 +292,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
      */
     protected function createAddressData($order, $type) {
 	    if (self::SHIPPING == $type) {
-	        $address = new Address( $order['shipping_country'], $order['shipping_city'], $order['shipping_address_1']);
+	        $address = new Address( $order['shipping_iso_code_2'], $order['shipping_city'], $order['shipping_address_1']);
 	        $address->setPostalCode($order['shipping_postcode']);
         } else {
-	        $address = new Address($order['payment_country'], $order['payment_city'], $order['payment_address_1']);
+	        $address = new Address($order['payment_iso_code_2'], $order['payment_city'], $order['payment_address_1']);
 	        $address->setPostalCode($order['payment_postcode']);
 	        if (strlen($order['payment_address_2'])) {
 	            $address->setStreet2($order['payment_address_2']);
