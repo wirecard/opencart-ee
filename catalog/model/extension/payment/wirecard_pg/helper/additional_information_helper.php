@@ -29,6 +29,7 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 require_once(dirname(__FILE__) . '/pg_basket.php');
+require_once(dirname(__FILE__) . '/pg_account_holder.php');
 
 use Wirecard\PaymentSdk\Transaction\Transaction;
 
@@ -38,6 +39,23 @@ use Wirecard\PaymentSdk\Transaction\Transaction;
  * @since 1.0.0
  */
 class AdditionalInformationHelper extends Model {
+
+    /**
+     * @var string
+     * @since 1.0.0
+     */
+    private $prefix;
+
+    /**
+     * AdditionalInformationHelper constructor.
+     * @param $registry
+     * @param $prefix
+     * @since 1.0.0
+     */
+    public function __construct($registry, $prefix) {
+        $this->registry = $registry;
+        $this->prefix = $prefix;
+    }
 
 	/**
 	 * @param Transaction $transaction
@@ -59,7 +77,7 @@ class AdditionalInformationHelper extends Model {
 	 * Create identification data
 	 *
 	 * @param Transaction $transaction
-	 * @param ModelCheckoutOrder $order
+	 * @param array $order
 	 * @return Transaction
 	 * @since 1.0.0
 	 */
@@ -70,26 +88,55 @@ class AdditionalInformationHelper extends Model {
 		$transaction->setCustomFields($customFields);
 		$transaction->setLocale(substr($order['language_code'], 0, 2));
 
-		//Send only for additional data
-		$transaction->setOrderDetail(sprintf(
-			'%s %s %s',
-			$order['email'],
-			$order['firstname'],
-			$order['lastname']
-		));
-		//$transaction->setOrderNumber($order['order_id']);
-		if ($order['ip']) {
-			$transaction->setIpAddress($order['ip']);
-		} else {
-			$transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
-		}
 		return $transaction;
 	}
+
+    /**
+     * Create additional information data
+     *
+     * @param Transaction $transaction
+     * @param array $order
+     * @return Transaction
+     * @since 1.0.0
+     */
+    public function setAdditionalInformation($transaction, $order)
+    {
+            $transaction->setOrderDetail(sprintf(
+                '%s %s %s',
+                $order['email'],
+                $order['firstname'],
+                $order['lastname']
+            ));
+            if ($order['ip']) {
+                $transaction->setIpAddress($order['ip']);
+            } else {
+                $transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
+            }
+            if (strlen($order['customer_id'])) {
+                $transaction->setConsumerId($order['customer_id']);
+            }
+
+            if ($this->config->get($this->prefix . '_session_string')) {
+                $device = new \Wirecard\PaymentSdk\Entity\Device();
+                $merchant_account = $this->config->get($this->prefix . '_merchant_account_id');
+                $session = $this->config->get($this->prefix . '_session_string');
+                $device->setFingerprint($merchant_account . '_' . $session);
+                $transaction->setDevice($device);
+            }
+            //$transaction->setOrderNumber($order['order_id']);
+            $transaction->setDescriptor($this->createDescriptor($order));
+
+            $accountHolder = new PGAccountHolder();
+            $transaction->setAccountHolder($accountHolder->createAccountHolder($order, $accountHolder::BILLING));
+            $transaction->setShipping($accountHolder->createAccountHolder($order, $accountHolder::SHIPPING));
+
+            return $transaction;
+    }
 
 	/**
 	 * Create descriptor including shopname and ordernumber
 	 *
-	 * @param ModelCheckoutOrder $order
+	 * @param array $order
 	 * @return string
 	 * @since 1.0.0
 	 */

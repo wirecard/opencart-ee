@@ -45,10 +45,6 @@ use Wirecard\PaymentSdk\Entity\Address;
  */
 abstract class ControllerExtensionPaymentGateway extends Controller {
 
-	const BILLING = 'billing';
-
-	const SHIPPING = 'shipping';
-
 	/**
 	 * @var string
 	 * @since 1.0.0
@@ -93,8 +89,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	public function index()
 	{
-		$prefix = $this->prefix . $this->type;
-
 		$this->load->model('checkout/order');
 
 		$this->load->language('extension/payment/wirecard_pg');
@@ -134,7 +128,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->transaction->setRedirect($this->getRedirects());
 			$this->transaction->setAmount($amount);
 
-			$additionalHelper = new AdditionalInformationHelper($this->registry);
+			$additionalHelper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type);
 			$this->transaction = $additionalHelper->setIdentificationData($this->transaction, $order);
 			if ($this->getConfigVal('descriptor')) {
 				$this->transaction->setDescriptor($additionalHelper->createDescriptor($order));
@@ -149,7 +143,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 					$order['total']
 				);
 			}
-			$this->setAdditionalInformation($order);
+
+			if ($this->getConfigVal('additional_info')) {
+			    $this->transaction = $additionalHelper->setAdditionalInformation($this->transaction, $order);
+            }
 
 			$model = $this->getModel();
 			$result = $model->sendRequest($this->paymentConfig, $this->transaction);
@@ -222,108 +219,5 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	protected function getConfigVal($field)
 	{
 		return $this->config->get($this->prefix . $this->type . '_' . $field);
-	}
-
-	/**
-	 * Create additional information data
-	 *
-	 * @param array $order
-	 * @since 1.0.0
-	 */
-	protected function setAdditionalInformation($order)
-	{
-		if($this->getConfigVal('additional_info')) {
-			$this->transaction->setOrderDetail(sprintf(
-				'%s %s %s',
-				$order['email'],
-				$order['firstname'],
-				$order['lastname']
-			));
-			if ($order['ip']) {
-				$this->transaction->setIpAddress($order['ip']);
-			} else {
-				$this->transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
-			}
-			if (strlen($order['customer_id'])) {
-				$this->transaction->setConsumerId($order['customer_id']);
-			}
-			//Device Fingerprint
-			if ($this->config->get($this->prefix . $this->type . '_session_string')) {
-				$device = new \Wirecard\PaymentSdk\Entity\Device();
-				$merchant_account = $this->getConfigVal('merchant_account_id');
-				$session = $this->getConfigVal('session_string');
-				$device->setFingerprint($merchant_account . '_' . $session);
-				$this->transaction->setDevice($device);
-			}
-			//$this->transaction->setOrderNumber($order['order_id']);
-			$this->transaction->setDescriptor($this->createDescriptor($order));
-			$this->transaction->setAccountHolder($this->createAccountHolder($order, self::BILLING));
-			$this->transaction->setShipping($this->createAccountHolder($order, self::SHIPPING));
-		}
-	}
-
-	/**
-	 * Create descriptor including shopname and ordernumber
-	 *
-	 * @param array $order
-	 * @return string
-	 * @since 1.0.0
-	 */
-	protected function createDescriptor($order) {
-		return sprintf(
-			'%s %s',
-			substr( $order['store_name'], 0, 9),
-			$order['order_id']
-		);
-	}
-
-	/**
-	 * Create AccountHolder with specific address data
-	 *
-	 * @param array $order
-	 * @param string $type
-	 * @since 1.0.0
-	 */
-	protected function createAccountHolder($order, $type = self::BILLING) {
-		$accountHolder = new AccountHolder();
-		if (self::SHIPPING == $type) {
-			$accountHolder->setAddress($this->createAddressData($order, $type));
-			$accountHolder->setFirstName($order['shipping_firstname']);
-			$accountHolder->setLastName($order['shipping_lastname']);
-		} else {
-			$accountHolder->setAddress($this->createAddressData($order, $type));
-			$accountHolder->setFirstName($order['payment_firstname']);
-			$accountHolder->setLastName($order['payment_lastname']);
-			$accountHolder->setEmail($order['email']);
-			$accountHolder->setPhone($order['telephone']);
-			// following data is not available
-			//$accountHolder->setDateOfBirth();
-			//$accountHolder->setGender();
-		}
-
-		return $accountHolder;
-	}
-
-	/**
-	 * Create Address data based on order
-	 *
-	 * @param array $order
-	 * @param string $type
-	 * @return Address
-	 * @since 1.0.0
-	 */
-	protected function createAddressData($order, $type) {
-		if (self::SHIPPING == $type) {
-			$address = new Address( $order['shipping_iso_code_2'], $order['shipping_city'], $order['shipping_address_1']);
-			$address->setPostalCode($order['shipping_postcode']);
-		} else {
-			$address = new Address($order['payment_iso_code_2'], $order['payment_city'], $order['payment_address_1']);
-			$address->setPostalCode($order['payment_postcode']);
-			if (strlen($order['payment_address_2'])) {
-				$address->setStreet2($order['payment_address_2']);
-			}
-		}
-
-		return $address;
 	}
 }
