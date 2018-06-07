@@ -33,6 +33,8 @@ include_once(DIR_SYSTEM . 'library/autoload.php');
 require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/additional_information_helper.php';
 
 use Wirecard\PaymentSdk\Config\Config;
+use Wirecard\PaymentSdk\Entity\AccountHolder;
+use Wirecard\PaymentSdk\Entity\Address;
 
 /**
  * Class ControllerExtensionPaymentGateway
@@ -87,8 +89,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	public function index()
 	{
-		$prefix = $this->prefix . $this->type;
-
 		$this->load->model('checkout/order');
 
 		$this->load->language('extension/payment/wirecard_pg');
@@ -96,6 +96,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		$data['active'] = $this->getConfigVal('status');
 		$data['button_confirm'] = $this->language->get('button_confirm');
+		$data['additional_info'] = $this->getConfigVal('additional_info');
+		if (strlen($this->getConfigVal('session_string'))) {
+			$data['session_id'] = $this->getConfigVal('merchant_account_id') . '_' . $this->getConfigVal('session_string');
+		}
 
 		return $this->load->view('extension/payment/wirecard_pg', $data);
 	}
@@ -124,7 +128,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->transaction->setRedirect($this->getRedirects());
 			$this->transaction->setAmount($amount);
 
-			$additionalHelper = new AdditionalInformationHelper($this->registry);
+			$additionalHelper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
 			$this->transaction = $additionalHelper->setIdentificationData($this->transaction, $order);
 			if ($this->getConfigVal('descriptor')) {
 				$this->transaction->setDescriptor($additionalHelper->createDescriptor($order));
@@ -138,6 +142,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 					$currency,
 					$order['total']
 				);
+			}
+
+			if ($this->getConfigVal('additional_info')) {
+				$this->transaction = $additionalHelper->setAdditionalInformation($this->transaction, $order);
 			}
 
 			$model = $this->getModel();
@@ -208,7 +216,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @param string $field
 	 * @return bool|string
 	 */
-	protected function getConfigVal($field) {
+	protected function getConfigVal($field)
+	{
 		return $this->config->get($this->prefix . $this->type . '_' . $field);
 	}
 }

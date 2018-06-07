@@ -49,11 +49,14 @@ $_['config_http_user'] = 'HTTP User';
 $_['config_http_user_desc'] = 'HTTP User as provided in your Wirecard contract.';
 $_['config_http_password'] = 'HTTP Password';
 $_['config_http_password_desc'] = 'HTTP Password as provided in your Wirecard contract.';
-$_['text_advanced'] = 'Advanced Options';
 $_['config_shopping_basket'] = 'Shopping Basket';
 $_['config_shopping_basket_desc'] = 'For the purpose of confirmation, payment supports shopping basket display during checkout. To enable this feature, activate Shopping Basket.';
 $_['config_descriptor'] = 'Descriptor';
 $_['config_descriptor_desc'] = 'Send text which is displayed on the bank statement issued to your consumer by the financial service provider.';
+$_['config_additional_info'] = 'Send additional information';
+$_['config_additional_info_desc'] = 'Additional data will be sent for the purpose of fraud protection. This additional data includes billing/shipping address, shopping basket and descriptor.';
+$_['config_session_string'] = 'Fingerprint session string';
+$_['config_session_string_desc'] = 'For sending device fingerprint a session string is mandatory to calculate the session_id. <a href="https://document-center.wirecard.com/pages/viewpage.action?pageId=3702802">More information.</a>';
 
 $_['text_success'] = 'Your modifications are saved!';
 $_['success_credentials'] = 'Merchant configuration was successfully tested.';

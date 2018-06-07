@@ -204,6 +204,49 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-additional-info">{{ config_additional_info }}</label>
+                        <div class="col-sm-10">
+                            <select name="{{ prefix ~ 'additional_info' }}" id="input-additional-info" class="form-control">
+
+                                {% if additional_info %}
+
+                                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                                    <option value="0">{{ text_disabled }}</option>
+
+                                {% else %}
+
+                                    <option value="1">{{ text_enabled }}</option>
+                                    <option value="0" selected="selected">{{ text_disabled }}</option>
+
+                                {% endif %}
+
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-10 description">
+                                <i>{{ config_additional_info_desc }}</i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-session-string">{{ config_session_string }}</label>
+                        <div class="col-sm-10">
+                            <input
+                                    name="{{ prefix ~ 'session_string' }}"
+                                    id="input-session-string"
+                                    class="form-control"
+                                    type="text"
+                                    value="{{ session_string }}">
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-10 description">
+                                <i>{{ config_session_string_desc }}</i>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
