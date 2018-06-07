@@ -49,7 +49,6 @@ $_['config_http_user'] = 'HTTP User';
 $_['config_http_user_desc'] = 'HTTP User as provided in your Wirecard contract.';
 $_['config_http_password'] = 'HTTP Password';
 $_['config_http_password_desc'] = 'HTTP Password as provided in your Wirecard contract.';
-$_['text_advanced'] = 'Advanced Options';
 $_['config_shopping_basket'] = 'Shopping Basket';
 $_['config_shopping_basket_desc'] = 'For the purpose of confirmation, payment supports shopping basket display during checkout. To enable this feature, activate Shopping Basket.';
 $_['config_descriptor'] = 'Descriptor';
