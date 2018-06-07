@@ -83,7 +83,22 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
             'lastname' => 'Doe',
             'ip' => '1',
             'store_name' => 'Demoshop',
-	        'currency_value' => 1
+	        'currency_value' => 1,
+            'customer_id' => 1,
+            'payment_iso_code_2' => 'AT',
+            'payment_city' => 'BillingCity',
+            'payment_address_1' => 'BillingStreet1',
+            'payment_address_2' => 'BillingStreet2',
+            'payment_postcode' => '0000',
+            'payment_firstname' => 'Jon',
+            'payment_lastname' => 'Doe',
+            'telephone' => '000356788990',
+            'shipping_iso_code_2' => 'AT',
+            'shipping_city' => 'ShippingCity',
+            'shipping_address_1' => 'ShippingStreet',
+            'shipping_postcode' => '0000',
+            'shipping_firstname' => 'Tina',
+            'shipping_lastname' => 'Doe',
         );
 
         $this->modelOrder->method('getOrder')->willReturn($orderDetails);
@@ -247,5 +262,31 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
 	    $expected = json_encode($json);
 
 	    $this->assertEquals($expected, $this->response->getOutput());
+    }
+
+    public function testAdditionalInformation() {
+        //Set additional_info true
+        $this->config->expects($this->at(7))->method('get')->willReturn(1);
+        $this->config->expects($this->at(8))->method('get')->willReturn('random-session');
+        $this->controller = new ControllerExtensionPaymentWirecardPGPayPal(
+            $this->registry,
+            $this->config,
+            $this->loader,
+            $this->session,
+            $this->response,
+            $this->modelOrder,
+            $this->url,
+            $this->modelPaypal,
+            $this->language,
+            $this->cart
+        );
+
+        $this->controller->confirm();
+        $json['response'] = [];
+        $this->response->method('getOutput')->willReturn(json_encode($json));
+
+        $expected = json_encode($json);
+
+        $this->assertEquals($expected, $this->response->getOutput());
     }
 }

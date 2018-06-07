@@ -47,14 +47,21 @@ class AdditionalInformationHelper extends Model {
     private $prefix;
 
     /**
+     * @var Config
+     * @since 1.0.0
+     */
+    private $config;
+
+    /**
      * AdditionalInformationHelper constructor.
      * @param $registry
      * @param $prefix
      * @since 1.0.0
      */
-    public function __construct($registry, $prefix) {
+    public function __construct($registry, $prefix, $config) {
         parent::__construct($registry);
         $this->prefix = $prefix;
+        $this->config = $config;
     }
 
 	/**

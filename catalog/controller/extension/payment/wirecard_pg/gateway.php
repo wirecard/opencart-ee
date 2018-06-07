@@ -128,7 +128,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->transaction->setRedirect($this->getRedirects());
 			$this->transaction->setAmount($amount);
 
-			$additionalHelper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type);
+			$additionalHelper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
 			$this->transaction = $additionalHelper->setIdentificationData($this->transaction, $order);
 			if ($this->getConfigVal('descriptor')) {
 				$this->transaction->setDescriptor($additionalHelper->createDescriptor($order));
