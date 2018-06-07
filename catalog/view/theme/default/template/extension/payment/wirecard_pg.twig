@@ -1,3 +1,12 @@
+{% if additional_info and session_id %}
+        <script type="text/javascript"
+                src="https://h.wirecard.com/fp/tags.js?org_id=6xxznhva&session_id={{ session_id }}">
+        </script>
+        <noscript>
+            <iframe style="width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;"
+                    src="https://h.wirecard.com/tags?org_id=6xxznhva&session_id={{ session_id }}"></iframe>
+        </noscript>
+{% endif %}
 <div class="buttons">
     <div class="pull-right">
         <input type="button" value="{{ button_confirm }}" id="button-confirm" data-loading-text="{{ text_loading }}" class="btn btn-primary" />

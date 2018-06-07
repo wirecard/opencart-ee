@@ -30,8 +30,11 @@
  */
 
 include_once(DIR_SYSTEM . 'library/autoload.php');
+require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/additional_information_helper.php';
 
 use Wirecard\PaymentSdk\Config\Config;
+use Wirecard\PaymentSdk\Entity\AccountHolder;
+use Wirecard\PaymentSdk\Entity\Address;
 
 /**
  * Class ControllerExtensionPaymentGateway
@@ -40,7 +43,7 @@ use Wirecard\PaymentSdk\Config\Config;
  *
  * @since 1.0.0
  */
-abstract class ControllerExtensionPaymentGateway extends Controller{
+abstract class ControllerExtensionPaymentGateway extends Controller {
 
 	/**
 	 * @var string
@@ -86,15 +89,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	 */
 	public function index()
 	{
-		$prefix = $this->prefix . $this->type;
-
 		$this->load->model('checkout/order');
 
 		$this->load->language('extension/payment/wirecard_pg');
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
 
-		$data['active'] = $this->config->get($this->prefix . $this->type . '_status');
+		$data['active'] = $this->getConfigVal('status');
 		$data['button_confirm'] = $this->language->get('button_confirm');
+		$data['additional_info'] = $this->getConfigVal('additional_info');
+		if (strlen($this->getConfigVal('session_string'))) {
+			$data['session_id'] = $this->getConfigVal('merchant_account_id') . '_' . $this->getConfigVal('session_string');
+		}
 
 		return $this->load->view('extension/payment/wirecard_pg', $data);
 	}
@@ -112,13 +117,36 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 			$this->load->language('extension/payment/wirecard_pg');
 			$this->load->model('checkout/order');
 			$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+			$this->load->model('checkout/order');
+			$currency = [
+				'currency_code' => $order['currency_code'],
+				'currency_value' => $order['currency_value']
+			];
 
 			$amount = new \Wirecard\PaymentSdk\Entity\Amount( $order['total'], $order['currency_code']);
 			$this->paymentConfig = $this->getConfig();
 			$this->transaction->setRedirect($this->getRedirects());
 			$this->transaction->setAmount($amount);
 
-			$this->setIdentificationData($order);
+			$additionalHelper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
+			$this->transaction = $additionalHelper->setIdentificationData($this->transaction, $order);
+			if ($this->getConfigVal('descriptor')) {
+				$this->transaction->setDescriptor($additionalHelper->createDescriptor($order));
+			}
+
+			if ($this->getConfigVal('shopping_basket')) {
+				$this->transaction = $additionalHelper->addBasket(
+					$this->transaction,
+					$this->cart->getProducts(),
+					$this->session->data['shipping_method'],
+					$currency,
+					$order['total']
+				);
+			}
+
+			if ($this->getConfigVal('additional_info')) {
+				$this->transaction = $additionalHelper->setAdditionalInformation($this->transaction, $order);
+			}
 
 			$model = $this->getModel();
 			$result = $model->sendRequest($this->paymentConfig, $this->transaction);
@@ -143,9 +171,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	 */
 	public function getConfig()
 	{
-		$baseUrl = $this->config->get($this->prefix . $this->type . '_base_url');
-		$httpUser = $this->config->get($this->prefix . $this->type . '_http_user');
-		$httpPassword = $this->config->get($this->prefix . $this->type . '_http_password');
+		$baseUrl = $this->getConfigVal('base_url');
+		$httpUser = $this->getConfigVal('http_user');
+		$httpPassword = $this->getConfigVal('http_password');
 
 		$config = new Config($baseUrl, $httpUser, $httpPassword);
 		$config->setShopInfo('OpenCart', VERSION);
@@ -185,49 +213,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	}
 
 	/**
-	 * Create identification data
-	 *
-	 * @param ModelCheckoutOrder $order
-	 * @since 1.0.0
+	 * @param string $field
+	 * @return bool|string
 	 */
-	protected function setIdentificationData($order)
+	protected function getConfigVal($field)
 	{
-		$customFields = new \Wirecard\PaymentSdk\Entity\CustomFieldCollection();
-		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('orderId', $order['order_id']));
-		$this->transaction->setCustomFields($customFields);
-		$this->transaction->setLocale(substr($order['language_code'], 0, 2));
-
-		if($this->config->get($this->prefix . $this->type . '_descriptor')) {
-			$this->transaction->setDescriptor($this->createDescriptor($order));
-		}
-
-		//Send only for additional data
-		$this->transaction->setOrderDetail(sprintf(
-			'%s %s %s',
-			$order['email'],
-			$order['firstname'],
-			$order['lastname']
-		));
-		//$this->transaction->setOrderNumber($order['order_id']);
-		if ($order['ip']) {
-			$this->transaction->setIpAddress($order['ip']);
-		} else {
-			$this->transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
-		}
-	}
-
-	/**
-	 * Create descriptor including shopname and ordernumber
-	 *
-	 * @param ModelCheckoutOrder $order
-	 * @return string
-	 * @since 1.0.0
-	 */
-	protected function createDescriptor($order) {
-		return sprintf(
-			'%s %s',
-			substr( $order['store_name'], 0, 9),
-			$order['order_id']
-		);
+		return $this->config->get($this->prefix . $this->type . '_' . $field);
 	}
 }

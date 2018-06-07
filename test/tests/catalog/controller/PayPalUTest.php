@@ -45,6 +45,7 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
     private $url;
     private $modelPaypal;
     private $language;
+    private $cart;
 
     const SHOP = 'OpenCart';
     const PLUGIN = 'Wirecard_PaymentGateway';
@@ -67,6 +68,11 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['getOrder'])
             ->getMock();
 
+        $this->cart = $this->getMockBuilder(Cart::class)
+	        ->disableOriginalConstructor()
+	        ->setMethods(['getProducts'])
+	        ->getMock();
+
         $orderDetails = array(
             'order_id'                => '1',
             'total'                   => '20',
@@ -77,7 +83,24 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
             'lastname' => 'Doe',
             'ip' => '1',
             'store_name' => 'Demoshop',
+	        'currency_value' => 1,
+            'customer_id' => 1,
+            'payment_iso_code_2' => 'AT',
+            'payment_city' => 'BillingCity',
+            'payment_address_1' => 'BillingStreet1',
+            'payment_address_2' => 'BillingStreet2',
+            'payment_postcode' => '0000',
+            'payment_firstname' => 'Jon',
+            'payment_lastname' => 'Doe',
+            'telephone' => '000356788990',
+            'shipping_iso_code_2' => 'AT',
+            'shipping_city' => 'ShippingCity',
+            'shipping_address_1' => 'ShippingStreet',
+            'shipping_postcode' => '0000',
+            'shipping_firstname' => 'Tina',
+            'shipping_lastname' => 'Doe',
         );
+
         $this->modelOrder->method('getOrder')->willReturn($orderDetails);
 
         $this->url = $this->getMockBuilder(Url::class)->disableOriginalConstructor()->getMock();
@@ -94,6 +117,13 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
 
         $this->language = $this->getMockBuilder(Language::class)->disableOriginalConstructor()->getMock();
 
+	    $items = [
+		    ["price" => 10.465, "name" => "Produkt1", "quantity" => 2, "product_id" => 2, "tax_class_id" => 2],
+		    ["price" => 20.241, "name" => "Produkt2", "quantity" => 3, "product_id" => 1, "tax_class_id" => 1],
+		    ["price" => 3.241, "name" => "Produkt3", "quantity" => 5, "product_id" => 3, "tax_class_id" => 1]
+	    ];
+	    $this->cart->method('getProducts')->willReturn($items);
+
         $this->controller = new ControllerExtensionPaymentWirecardPGPayPal(
             $this->registry,
             $this->config,
@@ -103,7 +133,8 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
             $this->modelOrder,
             $this->url,
             $this->modelPaypal,
-            $this->language
+            $this->language,
+	        $this->cart
         );
     }
 
@@ -124,7 +155,8 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
             $this->modelOrder,
             $this->url,
             $this->modelPaypal,
-            $this->language
+            $this->language,
+            $this->cart
         );
 
         $expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
@@ -172,7 +204,8 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
             $this->modelOrder,
             $this->url,
             $this->modelPaypal,
-            $this->language
+            $this->language,
+            $this->cart
         );
 
         $this->controller->confirm();
@@ -197,11 +230,63 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
             $this->modelOrder,
             $this->url,
             $this->modelPaypal,
-            $this->language
+            $this->language,
+            $this->cart
         );
 
         $actual = $this->controller->index();
 
         $this->assertNotNull($actual);
+    }
+
+    public function testShoppingBasket() {
+	    //Set shopping_basket true
+	    $this->config->expects($this->at(6))->method('get')->willReturn(1);
+	    $this->controller = new ControllerExtensionPaymentWirecardPGPayPal(
+		    $this->registry,
+		    $this->config,
+		    $this->loader,
+		    $this->session,
+		    $this->response,
+		    $this->modelOrder,
+		    $this->url,
+		    $this->modelPaypal,
+		    $this->language,
+		    $this->cart
+	    );
+
+	    $this->controller->confirm();
+	    $json['response'] = [];
+	    $this->response->method('getOutput')->willReturn(json_encode($json));
+
+	    $expected = json_encode($json);
+
+	    $this->assertEquals($expected, $this->response->getOutput());
+    }
+
+    public function testAdditionalInformation() {
+        //Set additional_info true
+        $this->config->expects($this->at(7))->method('get')->willReturn(1);
+        $this->config->expects($this->at(8))->method('get')->willReturn('random-session');
+        $this->controller = new ControllerExtensionPaymentWirecardPGPayPal(
+            $this->registry,
+            $this->config,
+            $this->loader,
+            $this->session,
+            $this->response,
+            $this->modelOrder,
+            $this->url,
+            $this->modelPaypal,
+            $this->language,
+            $this->cart
+        );
+
+        $this->controller->confirm();
+        $json['response'] = [];
+        $this->response->method('getOutput')->willReturn(json_encode($json));
+
+        $expected = json_encode($json);
+
+        $this->assertEquals($expected, $this->response->getOutput());
     }
 }
