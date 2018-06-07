@@ -40,29 +40,29 @@ use Wirecard\PaymentSdk\Transaction\Transaction;
  */
 class AdditionalInformationHelper extends Model {
 
-    /**
-     * @var string
-     * @since 1.0.0
-     */
-    private $prefix;
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $prefix;
 
-    /**
-     * @var Config
-     * @since 1.0.0
-     */
-    private $config;
+	/**
+	 * @var Config
+	 * @since 1.0.0
+	 */
+	private $config;
 
-    /**
-     * AdditionalInformationHelper constructor.
-     * @param $registry
-     * @param $prefix
-     * @since 1.0.0
-     */
-    public function __construct($registry, $prefix, $config) {
-        parent::__construct($registry);
-        $this->prefix = $prefix;
-        $this->config = $config;
-    }
+	/**
+	 * AdditionalInformationHelper constructor.
+	 * @param $registry
+	 * @param $prefix
+	 * @since 1.0.0
+	 */
+	public function __construct($registry, $prefix, $config) {
+		parent::__construct($registry);
+		$this->prefix = $prefix;
+		$this->config = $config;
+	}
 
 	/**
 	 * @param Transaction $transaction
@@ -98,47 +98,47 @@ class AdditionalInformationHelper extends Model {
 		return $transaction;
 	}
 
-    /**
-     * Create additional information data
-     *
-     * @param Transaction $transaction
-     * @param array $order
-     * @return Transaction
-     * @since 1.0.0
-     */
-    public function setAdditionalInformation($transaction, $order)
-    {
-            $transaction->setOrderDetail(sprintf(
-                '%s %s %s',
-                $order['email'],
-                $order['firstname'],
-                $order['lastname']
-            ));
-            if ($order['ip']) {
-                $transaction->setIpAddress($order['ip']);
-            } else {
-                $transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
-            }
-            if (strlen($order['customer_id'])) {
-                $transaction->setConsumerId($order['customer_id']);
-            }
+	/**
+	 * Create additional information data
+	 *
+	 * @param Transaction $transaction
+	 * @param array $order
+	 * @return Transaction
+	 * @since 1.0.0
+	 */
+	public function setAdditionalInformation($transaction, $order)
+	{
+			$transaction->setOrderDetail(sprintf(
+				'%s %s %s',
+				$order['email'],
+				$order['firstname'],
+				$order['lastname']
+			));
+			if ($order['ip']) {
+				$transaction->setIpAddress($order['ip']);
+			} else {
+				$transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
+			}
+			if (strlen($order['customer_id'])) {
+				$transaction->setConsumerId($order['customer_id']);
+			}
 
-            if ($this->config->get($this->prefix . '_session_string')) {
-                $device = new \Wirecard\PaymentSdk\Entity\Device();
-                $merchant_account = $this->config->get($this->prefix . '_merchant_account_id');
-                $session = $this->config->get($this->prefix . '_session_string');
-                $device->setFingerprint($merchant_account . '_' . $session);
-                $transaction->setDevice($device);
-            }
-            //$transaction->setOrderNumber($order['order_id']);
-            $transaction->setDescriptor($this->createDescriptor($order));
+			if ($this->config->get($this->prefix . '_session_string')) {
+				$device = new \Wirecard\PaymentSdk\Entity\Device();
+				$merchant_account = $this->config->get($this->prefix . '_merchant_account_id');
+				$session = $this->config->get($this->prefix . '_session_string');
+				$device->setFingerprint($merchant_account . '_' . $session);
+				$transaction->setDevice($device);
+			}
+			//$transaction->setOrderNumber($order['order_id']);
+			$transaction->setDescriptor($this->createDescriptor($order));
 
-            $accountHolder = new PGAccountHolder();
-            $transaction->setAccountHolder($accountHolder->createAccountHolder($order, $accountHolder::BILLING));
-            $transaction->setShipping($accountHolder->createAccountHolder($order, $accountHolder::SHIPPING));
+			$accountHolder = new PGAccountHolder();
+			$transaction->setAccountHolder($accountHolder->createAccountHolder($order, $accountHolder::BILLING));
+			$transaction->setShipping($accountHolder->createAccountHolder($order, $accountHolder::SHIPPING));
 
-            return $transaction;
-    }
+			return $transaction;
+	}
 
 	/**
 	 * Create descriptor including shopname and ordernumber

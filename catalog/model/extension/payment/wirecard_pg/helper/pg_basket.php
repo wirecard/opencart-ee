@@ -49,31 +49,31 @@ class PGBasket {
 	const ID = 'product_id';
 	const TAXCLASSID = 'tax_class_id';
 
-    /**
-     * @var Model
-     * @since 1.0.0
-     */
+	/**
+	 * @var Model
+	 * @since 1.0.0
+	 */
 	private $model;
 
-    /**
-     * @var int
-     * @since 1.0.0
-     */
+	/**
+	 * @var int
+	 * @since 1.0.0
+	 */
 	private $sum;
 
-    /**
-     * PGBasket constructor.
-     * @param $model
-     * @since 1.0.0
-     */
+	/**
+	 * PGBasket constructor.
+	 * @param $model
+	 * @since 1.0.0
+	 */
 	public function __construct($model) {
 		$this->model = $model;
 		$this->sum = 0;
 	}
 
 	/**
-     * Create basket including shipping and discounts/coupons
-     *
+	 * Create basket including shipping and discounts/coupons
+	 *
 	 * @param Transaction $transaction
 	 * @param array $items
 	 * @param array $shipping
@@ -108,8 +108,8 @@ class PGBasket {
 	}
 
 	/**
-     * Create basket item
-     *
+	 * Create basket item
+	 *
 	 * @param Basket $basket
 	 * @param array $item
 	 * @param array $currency
@@ -138,8 +138,8 @@ class PGBasket {
 	}
 
 	/**
-     * Create shipping basket item
-     *
+	 * Create shipping basket item
+	 *
 	 * @param Basket $basket
 	 * @param array $shipping
 	 * @param array $currency
@@ -165,15 +165,15 @@ class PGBasket {
 		return $basket;
 	}
 
-    /**
-     * Set coupon/discount item
-     *
-     * @param $basket
-     * @param $amount
-     * @param $currency
-     * @return Basket
-     * @since 1.0.0
-     */
+	/**
+	 * Set coupon/discount item
+	 *
+	 * @param $basket
+	 * @param $amount
+	 * @param $currency
+	 * @return Basket
+	 * @since 1.0.0
+	 */
 	private function setCouponItem($basket, $amount, $currency) {
 		$item = new Item('Coupon', new Amount($amount * -1, $currency[self::CURRENCYCODE]), 1);
 		$item->setDescription('Coupon');
@@ -184,8 +184,8 @@ class PGBasket {
 	}
 
 	/**
-     * Convert amount with currency format
-     *
+	 * Convert amount with currency format
+	 *
 	 * @param float $amount
 	 * @param array $currency
 	 * @return float
@@ -196,8 +196,8 @@ class PGBasket {
 	}
 
 	/**
-     * Convert amount with currency format including tax
-     *
+	 * Convert amount with currency format including tax
+	 *
 	 * @param float $amount
 	 * @param array $currency
 	 * @param int $taxClassId

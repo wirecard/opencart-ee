@@ -39,57 +39,57 @@ use Wirecard\PaymentSdk\Entity\Address;
  */
 class PGAccountHolder {
 
-    const BILLING = 'billing';
-    const SHIPPING = 'shipping';
+	const BILLING = 'billing';
+	const SHIPPING = 'shipping';
 
-    /**
-     * Create AccountHolder with specific address data
-     *
-     * @param array $order
-     * @param string $type
-     * @return AccountHolder
-     * @since 1.0.0
-     */
-    public function createAccountHolder($order, $type = self::BILLING) {
-        $accountHolder = new AccountHolder();
-        if (self::SHIPPING == $type) {
-            $accountHolder->setAddress($this->createAddressData($order, $type));
-            $accountHolder->setFirstName($order['shipping_firstname']);
-            $accountHolder->setLastName($order['shipping_lastname']);
-        } else {
-            $accountHolder->setAddress($this->createAddressData($order, $type));
-            $accountHolder->setFirstName($order['payment_firstname']);
-            $accountHolder->setLastName($order['payment_lastname']);
-            $accountHolder->setEmail($order['email']);
-            $accountHolder->setPhone($order['telephone']);
-            // following data is not available
-            //$accountHolder->setDateOfBirth();
-            //$accountHolder->setGender();
-        }
+	/**
+	 * Create AccountHolder with specific address data
+	 *
+	 * @param array $order
+	 * @param string $type
+	 * @return AccountHolder
+	 * @since 1.0.0
+	 */
+	public function createAccountHolder($order, $type = self::BILLING) {
+		$accountHolder = new AccountHolder();
+		if (self::SHIPPING == $type) {
+			$accountHolder->setAddress($this->createAddressData($order, $type));
+			$accountHolder->setFirstName($order['shipping_firstname']);
+			$accountHolder->setLastName($order['shipping_lastname']);
+		} else {
+			$accountHolder->setAddress($this->createAddressData($order, $type));
+			$accountHolder->setFirstName($order['payment_firstname']);
+			$accountHolder->setLastName($order['payment_lastname']);
+			$accountHolder->setEmail($order['email']);
+			$accountHolder->setPhone($order['telephone']);
+			// following data is not available
+			//$accountHolder->setDateOfBirth();
+			//$accountHolder->setGender();
+		}
 
-        return $accountHolder;
-    }
+		return $accountHolder;
+	}
 
-    /**
-     * Create Address data based on order
-     *
-     * @param array $order
-     * @param string $type
-     * @return Address
-     * @since 1.0.0
-     */
-    public function createAddressData($order, $type) {
-        if (self::SHIPPING == $type) {
-            $address = new Address( $order['shipping_iso_code_2'], $order['shipping_city'], $order['shipping_address_1']);
-            $address->setPostalCode($order['shipping_postcode']);
-        } else {
-            $address = new Address($order['payment_iso_code_2'], $order['payment_city'], $order['payment_address_1']);
-            $address->setPostalCode($order['payment_postcode']);
-            if (strlen($order['payment_address_2'])) {
-                $address->setStreet2($order['payment_address_2']);
-            }
-        }
+	/**
+	 * Create Address data based on order
+	 *
+	 * @param array $order
+	 * @param string $type
+	 * @return Address
+	 * @since 1.0.0
+	 */
+	public function createAddressData($order, $type) {
+		if (self::SHIPPING == $type) {
+			$address = new Address( $order['shipping_iso_code_2'], $order['shipping_city'], $order['shipping_address_1']);
+			$address->setPostalCode($order['shipping_postcode']);
+		} else {
+			$address = new Address($order['payment_iso_code_2'], $order['payment_city'], $order['payment_address_1']);
+			$address->setPostalCode($order['payment_postcode']);
+			if (strlen($order['payment_address_2'])) {
+				$address->setStreet2($order['payment_address_2']);
+			}
+		}
 
-        return $address;
-    }
+		return $address;
+	}
 }

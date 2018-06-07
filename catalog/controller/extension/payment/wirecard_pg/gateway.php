@@ -145,8 +145,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			}
 
 			if ($this->getConfigVal('additional_info')) {
-			    $this->transaction = $additionalHelper->setAdditionalInformation($this->transaction, $order);
-            }
+				$this->transaction = $additionalHelper->setAdditionalInformation($this->transaction, $order);
+			}
 
 			$model = $this->getModel();
 			$result = $model->sendRequest($this->paymentConfig, $this->transaction);
