@@ -51,6 +51,23 @@
                         </div>
                     </div>
                     <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="input-merchant-account-id">{{ config_title }}</label>
+                        <div class="col-sm-10">
+                            <input
+                                    name="{{ prefix ~ 'title' }}"
+                                    id="input-merchant-account-id"
+                                    class="form-control"
+                                    type="text"
+                                    value="{{ title }}">
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-10 description">
+                                <i>{{ config_title_desc }}</i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group required">
                         <label class="col-sm-2 control-label" for="input-merchant-account-id">{{ config_merchant_account_id }}</label>
                         <div class="col-sm-10">
                             <input

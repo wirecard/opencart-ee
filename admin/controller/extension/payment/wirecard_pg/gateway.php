@@ -111,6 +111,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data['text_enabled'] = $this->language->get('text_enabled');
 		$data['text_disabled'] = $this->language->get('text_disabled');
 		$data['config_status'] = $this->language->get('config_status');
+		$data['config_title'] = $this->language->get('config_title');
+		$data['config_title_desc'] = $this->language->get('config_title_desc');
 		$data['config_status_desc'] = $this->language->get('config_status_desc');
 		$data['config_merchant_account_id'] = $this->language->get('config_merchant_account_id');
 		$data['config_merchant_account_id_desc'] = $this->language->get('config_merchant_account_id_desc');
@@ -167,6 +169,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	protected function getRequestData() {
 		$data = array();
 		$prefix = $this->prefix . $this->type . '_';
+
+		if (isset($this->request->post['title'])) {
+			$data['title'] = $this->request->post[$prefix . 'title'];
+		} else {
+			$data['title'] = strlen($this->config->get($prefix . 'title')) ? $this->config->get($prefix . 'title') : $this->default['title'];
+		}
 
 		if (isset($this->request->post['status'])) {
 			$data['status'] = $this->request->post[$prefix . 'status'];

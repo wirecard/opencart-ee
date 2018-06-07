@@ -52,7 +52,8 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	 * @var array
 	 * @since 1.0.0
 	 */
-	protected $default = array(
+	protected $default = array (
+		'title' => 'Wirecard PayPal',
 		'merchant_account_id' => '2a0e9351-24ed-4110-9a1b-fd0fee6bec26',
 		'merchant_secret' => 'dbc5a498-9a66-43b9-bf1d-a618dd399684',
 		'base_url' => 'https://api-test.wirecard.com',
