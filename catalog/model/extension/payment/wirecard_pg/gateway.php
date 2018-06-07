@@ -78,16 +78,17 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 *
 	 * @param $config
 	 * @param $transaction
+	 * @param string $paymnetAction
 	 * @return \Wirecard\PaymentSdk\Response\Response
 	 * @throws Exception
 	 * @since 1.0.0
 	 */
-	public function sendRequest($config, $transaction) {
+	public function sendRequest($config, $transaction, $paymnetAction) {
 		$transactionService = new \Wirecard\PaymentSdk\TransactionService($config);
 
 		try {
 			/* @var \Wirecard\PaymentSdk\Response\Response $response */
-			$response = $transactionService->process($transaction, 'reserve');
+			$response = $transactionService->process($transaction, $paymnetAction);
 		} catch (Exception $exception) {
 			throw($exception);
 		}

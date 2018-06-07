@@ -149,7 +149,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			}
 
 			$model = $this->getModel();
-			$result = $model->sendRequest($this->paymentConfig, $this->transaction);
+			$result = $model->sendRequest($this->paymentConfig, $this->transaction, $this->getConfigVal('payment_action'));
 
 			if ($result instanceof \Wirecard\PaymentSdk\Response\Response) {
 				//set response data temporarly -> should be redirect
