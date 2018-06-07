@@ -53,7 +53,7 @@ class AdditionalInformationHelper extends Model {
      * @since 1.0.0
      */
     public function __construct($registry, $prefix) {
-        $this->registry = $registry;
+        parent::__construct($registry);
         $this->prefix = $prefix;
     }
 
