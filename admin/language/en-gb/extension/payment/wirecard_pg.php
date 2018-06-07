@@ -59,6 +59,10 @@ $_['config_additional_info'] = 'Send additional information';
 $_['config_additional_info_desc'] = 'Additional data will be sent for the purpose of fraud protection. This additional data includes billing/shipping address, shopping basket and descriptor.';
 $_['config_session_string'] = 'Fingerprint session string';
 $_['config_session_string_desc'] = 'For sending device fingerprint a session string is mandatory to calculate the session_id. <a href="https://document-center.wirecard.com/pages/viewpage.action?pageId=3702802">More information.</a>';
+$_['config_payment_action'] = 'Payment Action';
+$_['text_payment_action_pay'] = 'Purchase';
+$_['text_payment_action_reserve'] = 'Authorization';
+$_['config_payment_action_desc'] = 'Select between "Capture" to capture / invoice your order automatically or "Authorization" to manually capture / invoice.';
 
 $_['text_success'] = 'Your modifications are saved!';
 $_['success_credentials'] = 'Merchant configuration was successfully tested.';
