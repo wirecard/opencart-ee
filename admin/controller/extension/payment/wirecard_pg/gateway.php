@@ -122,6 +122,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data['config_http_user_desc'] = $this->language->get('config_http_user_desc');
 		$data['config_http_password'] = $this->language->get('config_http_password');
 		$data['config_http_password_desc'] = $this->language->get('config_http_password_desc');
+		$data['text_advanced'] = $this->language->get('text_advanced');
+		$data['config_shopping_basket'] = $this->language->get('config_shopping_basket');
+		$data['config_shopping_basket_desc'] = $this->language->get('config_shopping_basket_desc');
 		$data['text_credentials'] = $this->language->get('text_credentials');
 		$data['test_credentials'] = $this->language->get('test_credentials');
 		$data['config_descriptor'] = $this->language->get('config_descriptor');
@@ -208,6 +211,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 			$data['descriptor'] = $this->request->post[$prefix . 'descriptor'];
 		} else {
 			$data['descriptor'] = strlen($this->config->get($prefix . 'descriptor')) ? $this->config->get($prefix . 'descriptor') : $this->default['descriptor'];
+		}
+
+		if (isset($this->request->post[$prefix . 'shopping_basket'])) {
+			$data['shopping_basket'] = $this->request->post[$prefix . 'shopping_basket'];
+		} else {
+			$data['shopping_basket'] = strlen($this->config->get($prefix . 'shopping_basket')) ? $this->config->get($prefix . 'shopping_basket') : $this->default['shopping_basket'];
 		}
 
 		return $data;

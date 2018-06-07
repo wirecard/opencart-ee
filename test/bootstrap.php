@@ -42,8 +42,12 @@ require_once __DIR__ . '/stubs/Registry.php';
 require_once __DIR__ . '/stubs/Session.php';
 require_once __DIR__ . '/stubs/Url.php';
 require_once __DIR__ . '/stubs/Language.php';
+require_once __DIR__ . '/stubs/Cart.php';
+require_once __DIR__ . '/stubs/Tax.php';
+require_once __DIR__ . '/stubs/Currency.php';
 
 //Defines
 define('DIR_SYSTEM', __DIR__ . '/../system/');
+define('HELPER_DIR', __DIR__ . '/../catalog/model/extension/payment/wirecard_pg/helper/');
 define('DIR_APPLICATION', __DIR__ . '/../catalog/');
 define('VERSION', '3.0.2.0');
