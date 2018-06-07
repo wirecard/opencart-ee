@@ -93,13 +93,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		$this->load->language('extension/payment/wirecard_pg');
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
+		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
 		$data['active'] = $this->getConfigVal('status');
 		$data['button_confirm'] = $this->language->get('button_confirm');
 		$data['additional_info'] = $this->getConfigVal('additional_info');
-		if (strlen($this->getConfigVal('session_string'))) {
-			$data['session_id'] = $this->getConfigVal('merchant_account_id') . '_' . $this->getConfigVal('session_string');
-		}
+		$data['session_id'] = $this->getConfigVal('merchant_account_id') . '_' . $this->createSessionString($order);
 
 		return $this->load->view('extension/payment/wirecard_pg', $data);
 	}
@@ -147,6 +146,14 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			if ($this->getConfigVal('additional_info')) {
 				$this->transaction = $additionalHelper->setAdditionalInformation($this->transaction, $order);
 			}
+
+            if (isset($_SESSION['eeDeviceSession'])) {
+                $device = new \Wirecard\PaymentSdk\Entity\Device();
+                $merchant_account = $this->getConfig('merchant_account_id');
+                $device->setFingerprint($merchant_account . '_' . $_SESSION['eeDeviceSession']);
+                $this->transaction->setDevice($device);
+                unset($_SESSION['eeDeviceSession']);
+            }
 
 			$model = $this->getModel();
 			$result = $model->sendRequest($this->paymentConfig, $this->transaction);
@@ -220,4 +227,23 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	{
 		return $this->config->get($this->prefix . $this->type . '_' . $field);
 	}
+
+    /**
+     * Create Device Session RandomString
+     *
+     * @param array $order
+     * @return string
+     * @since 1.0.0
+     */
+	protected function createSessionString($order)
+    {
+        $consumer_id = $order['customer_id'];
+        if ( isset($_SESSION['eeDeviceSession'])) {
+            return $_SESSION['eeDeviceSession'];
+        } else {
+            $timestamp = microtime();
+            $_SESSION['eeDeviceSession'] = md5($consumer_id . "_" . $timestamp);
+            return $_SESSION['eeDeviceSession'];
+        }
+    }
 }

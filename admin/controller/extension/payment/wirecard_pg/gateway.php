@@ -131,8 +131,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data['config_descriptor_desc'] = $this->language->get('config_descriptor_desc');
 		$data['config_additional_info'] = $this->language->get('config_additional_info');
 		$data['config_additional_info_desc'] = $this->language->get('config_additional_info_desc');
-		$data['config_session_string'] = $this->language->get('config_session_string');
-		$data['config_session_string_desc'] = $this->language->get('config_session_string_desc');
 
 		return $data;
 	}
@@ -226,12 +224,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 			$data['additional_info'] = $this->request->post[$prefix . 'additional_info'];
 		} else {
 			$data['additional_info'] = strlen($this->config->get($prefix . 'additional_info')) ? $this->config->get($prefix . 'additional_info') : $this->default['additional_info'];
-		}
-
-		if (isset($this->request->post[$prefix . 'session_string'])) {
-			$data['session_string'] = $this->request->post[$prefix . 'session_string'];
-		} else {
-			$data['session_string'] = strlen($this->config->get($prefix . 'session_string')) ? $this->config->get($prefix . 'session_string') : $this->default['session_string'];
 		}
 
 		return $data;
