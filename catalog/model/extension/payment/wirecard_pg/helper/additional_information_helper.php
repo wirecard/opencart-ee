@@ -122,14 +122,6 @@ class AdditionalInformationHelper extends Model {
 			if (strlen($order['customer_id'])) {
 				$transaction->setConsumerId($order['customer_id']);
 			}
-
-			if ($this->config->get($this->prefix . '_session_string')) {
-				$device = new \Wirecard\PaymentSdk\Entity\Device();
-				$merchant_account = $this->config->get($this->prefix . '_merchant_account_id');
-				$session = $this->config->get($this->prefix . '_session_string');
-				$device->setFingerprint($merchant_account . '_' . $session);
-				$transaction->setDevice($device);
-			}
 			//$transaction->setOrderNumber($order['order_id']);
 			$transaction->setDescriptor($this->createDescriptor($order));
 
