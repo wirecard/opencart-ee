@@ -40,7 +40,7 @@ $_['text_advanced'] = 'Advanced Options';
 $_['test_credentials'] = 'Test Credentials';
 $_['config_status'] = 'Status';
 $_['config_title'] = 'Title';
-$_['config_title_desc'] = 'This controls the title which the consumer sees during checkout.';
+$_['config_title_desc'] = 'Payment method name as displayed for the consumer during checkout.';
 $_['config_merchant_account_id'] = 'Merchant Account ID';
 $_['config_merchant_account_id_desc'] = 'Unique identifier assigned to your merchant account.';
 $_['config_merchant_secret'] = 'Secret Key';
@@ -60,7 +60,7 @@ $_['config_additional_info_desc'] = 'Additional data will be sent for the purpos
 $_['config_payment_action'] = 'Payment Action';
 $_['text_payment_action_pay'] = 'Purchase';
 $_['text_payment_action_reserve'] = 'Authorization';
-$_['config_payment_action_desc'] = 'Select between "Capture" to capture / invoice your order automatically or "Authorization" to manually capture / invoice.';
+$_['config_payment_action_desc'] = 'Select between "Purchase" to capture/invoice your order automatically or "Authorization" to capture/invoice manually.';
 
 $_['text_success'] = 'Your modifications are saved!';
 $_['success_credentials'] = 'Merchant configuration was successfully tested.';
