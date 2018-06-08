@@ -63,7 +63,6 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 		'shopping_basket' => '1',
 		'descriptor' => '1',
 		'additional_info' => '0',
-		'session_string' => '1random-session-string',
 	);
 
 	/**
