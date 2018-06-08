@@ -149,13 +149,18 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			}
 
 			$model = $this->getModel();
-			$result = $model->sendRequest($this->paymentConfig, $this->transaction, $this->getConfigVal('payment_action'));
 
-			if ($result instanceof \Wirecard\PaymentSdk\Response\Response) {
-				//set response data temporarly -> should be redirect
-				$json['response'] = json_encode($result->getData());
+			if (!$this->cart->hasStock()) {
+				$json['redirect'] = $this->url->link('checkout/checkout');
 			} else {
-				$json['redirect'] = $result;
+				$result = $model->sendRequest($this->paymentConfig, $this->transaction, $this->getConfigVal('payment_action'));
+
+				if ($result instanceof \Wirecard\PaymentSdk\Response\Response) {
+					//set response data temporarly -> should be redirect
+					$json['response'] = json_encode($result->getData());
+				} else {
+					$json['redirect'] = $result;
+				}
 			}
 		}
 

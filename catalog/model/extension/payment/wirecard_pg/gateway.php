@@ -95,9 +95,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 
 		$redirect = $this->url->link('checkout/checkout', '', true);
 		if ($response instanceof \Wirecard\PaymentSdk\Response\InteractionResponse) {
-			//$redirect = $response->getRedirectUrl();
-			//Temporarly print responsedata
-			$redirect = $response;
+			$redirect = $response->getRedirectUrl();
 		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			$errors = '';
 			foreach ($response->getStatusCollection()->getIterator() as $item) {
@@ -107,6 +105,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 			$this->session->data['error'] = $errors;
 			$redirect = $this->url->link('checkout/checkout', '', true);
 		}
+
 		return $redirect;
 	}
 }
