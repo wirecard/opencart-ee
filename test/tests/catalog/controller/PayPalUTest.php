@@ -267,7 +267,6 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
     public function testAdditionalInformation() {
         //Set additional_info true
         $this->config->expects($this->at(7))->method('get')->willReturn(1);
-        $this->config->expects($this->at(8))->method('get')->willReturn('random-session');
         $this->controller = new ControllerExtensionPaymentWirecardPGPayPal(
             $this->registry,
             $this->config,

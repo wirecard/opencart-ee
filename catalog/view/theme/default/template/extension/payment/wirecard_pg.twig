@@ -7,16 +7,23 @@
                     src="https://h.wirecard.com/tags?org_id=6xxznhva&session_id={{ session_id }}"></iframe>
         </noscript>
 {% endif %}
+<form id="wirecard-pg-form" action="{{ action }}" method="post" class="form form-horizontal">
 <div class="buttons">
     <div class="pull-right">
+        {% if session_id %}
+        <input type="hidden" value="{{ session_id }}" id="input-fingerprint-session" name="fingerprint-session"/>
+        {%  endif %}
         <input type="button" value="{{ button_confirm }}" id="button-confirm" data-loading-text="{{ text_loading }}" class="btn btn-primary" />
     </div>
 </div>
+</form>
 <script type="text/javascript"><!--
     $('#button-confirm').on('click', function() {
         $.ajax({
-            url: 'index.php?route=extension/payment/wirecard_pg_paypal/confirm',
+            url: 'index.php?route=extension/payment/wirecard_pg_{{ type }}/confirm',
+            type: 'post',
             dataType: 'json',
+            data: $('#input-fingerprint-session'),
             beforeSend: function() {
                 $('#button-confirm').button('loading');
             },

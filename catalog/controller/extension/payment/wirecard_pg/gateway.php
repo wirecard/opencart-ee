@@ -98,7 +98,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$data['active'] = $this->getConfigVal('status');
 		$data['button_confirm'] = $this->language->get('button_confirm');
 		$data['additional_info'] = $this->getConfigVal('additional_info');
-		$data['session_id'] = $this->getConfigVal('merchant_account_id') . '_' . $this->createSessionString($order);
+		$data['action'] = $this->url->link('extension/payment/wirecard_pg_' . $this->type . '/confirm', '', true);
+		$sessionId = $this->getConfigVal('merchant_account_id') . '_' . $this->createSessionString($order);
+		$data['session_id'] = substr($sessionId, 0, 127);
+		$data['type'] = $this->type;
 
 		return $this->load->view('extension/payment/wirecard_pg', $data);
 	}
@@ -147,13 +150,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 				$this->transaction = $additionalHelper->setAdditionalInformation($this->transaction, $order);
 			}
 
-            if (isset($_SESSION['eeDeviceSession'])) {
-                $device = new \Wirecard\PaymentSdk\Entity\Device();
-                $merchant_account = $this->getConfig('merchant_account_id');
-                $device->setFingerprint($merchant_account . '_' . $_SESSION['eeDeviceSession']);
-                $this->transaction->setDevice($device);
-                unset($_SESSION['eeDeviceSession']);
-            }
+			if (isset($this->request->post['fingerprint-session'])) {
+				$device = new \Wirecard\PaymentSdk\Entity\Device();
+				$device->setFingerprint($this->request->post['fingerprint-session']);
+				$this->transaction->setDevice($device);
+			}
 
 			$model = $this->getModel();
 			$result = $model->sendRequest($this->paymentConfig, $this->transaction);
@@ -228,22 +229,19 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		return $this->config->get($this->prefix . $this->type . '_' . $field);
 	}
 
-    /**
-     * Create Device Session RandomString
-     *
-     * @param array $order
-     * @return string
-     * @since 1.0.0
-     */
+	/**
+	 * Create Device Session RandomString
+	 *
+	 * @param array $order
+	 * @return string
+	 * @since 1.0.0
+	 */
 	protected function createSessionString($order)
-    {
-        $consumer_id = $order['customer_id'];
-        if ( isset($_SESSION['eeDeviceSession'])) {
-            return $_SESSION['eeDeviceSession'];
-        } else {
-            $timestamp = microtime();
-            $_SESSION['eeDeviceSession'] = md5($consumer_id . "_" . $timestamp);
-            return $_SESSION['eeDeviceSession'];
-        }
-    }
+	{
+		$consumer_id = $order['customer_id'];
+		$timestamp = microtime();
+		$session = md5($consumer_id . "_" . $timestamp);
+
+		return $session;
+	}
 }
