@@ -31,6 +31,7 @@
 
 // Page Title
 $_['heading_title'] = 'Wirecard PayPal';
+$_['text_wirecard_pg_paypal'] = '<img src="view/image/payment/wirecard_pg/paypal.png" width="100"/>';
 
 // Payment specific configuration
 $_['text_edit'] = 'Edit PayPal';

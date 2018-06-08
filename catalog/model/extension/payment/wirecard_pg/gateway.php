@@ -60,10 +60,12 @@ abstract class ModelExtensionPaymentGateway extends Model {
 		$prefix = $this->prefix . $this->type;
 
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
+		$logo = '<img src="./image/wirecard_pg/'. $this->type .'.png" width="100"/>';
+		$title = $logo . ' ' . $this->config->get($prefix . '_title');
 
 		$method_data = array(
 			'code'       => 'wirecard_pg_' . $this->type,
-			'title'      => $this->language->get('text_title'),
+			'title'      => $title,
 			'terms'      => '',
 			'sort_order' => 1
 		);
@@ -76,25 +78,24 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 *
 	 * @param $config
 	 * @param $transaction
+	 * @param string $paymetAction
 	 * @return \Wirecard\PaymentSdk\Response\Response
 	 * @throws Exception
 	 * @since 1.0.0
 	 */
-	public function sendRequest($config, $transaction) {
+	public function sendRequest($config, $transaction, $paymetAction) {
 		$transactionService = new \Wirecard\PaymentSdk\TransactionService($config);
 
 		try {
 			/* @var \Wirecard\PaymentSdk\Response\Response $response */
-			$response = $transactionService->process($transaction, 'reserve');
+			$response = $transactionService->process($transaction, $paymetAction);
 		} catch (Exception $exception) {
 			throw($exception);
 		}
 
 		$redirect = $this->url->link('checkout/checkout', '', true);
 		if ($response instanceof \Wirecard\PaymentSdk\Response\InteractionResponse) {
-			//$redirect = $response->getRedirectUrl();
-			//Temporarly print responsedata
-			$redirect = $response;
+			$redirect = $response->getRedirectUrl();
 		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			$errors = '';
 			foreach ($response->getStatusCollection()->getIterator() as $item) {
@@ -104,6 +105,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 			$this->session->data['error'] = $errors;
 			$redirect = $this->url->link('checkout/checkout', '', true);
 		}
+
 		return $redirect;
 	}
 }

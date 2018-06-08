@@ -111,6 +111,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data['text_enabled'] = $this->language->get('text_enabled');
 		$data['text_disabled'] = $this->language->get('text_disabled');
 		$data['config_status'] = $this->language->get('config_status');
+		$data['config_title'] = $this->language->get('config_title');
+		$data['config_title_desc'] = $this->language->get('config_title_desc');
 		$data['config_status_desc'] = $this->language->get('config_status_desc');
 		$data['config_merchant_account_id'] = $this->language->get('config_merchant_account_id');
 		$data['config_merchant_account_id_desc'] = $this->language->get('config_merchant_account_id_desc');
@@ -131,6 +133,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data['config_descriptor_desc'] = $this->language->get('config_descriptor_desc');
 		$data['config_additional_info'] = $this->language->get('config_additional_info');
 		$data['config_additional_info_desc'] = $this->language->get('config_additional_info_desc');
+		$data['config_payment_action'] = $this->language->get('config_payment_action');
+		$data['text_payment_action_pay'] = $this->language->get('text_payment_action_pay');
+		$data['text_payment_action_reserve'] = $this->language->get('text_payment_action_reserve');
+		$data['config_payment_action_desc'] = $this->language->get('config_payment_action_desc');
+		$data['config_session_string_desc'] = $this->language->get('config_session_string_desc');
 
 		return $data;
 	}
@@ -172,6 +179,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data = array();
 		$prefix = $this->prefix . $this->type . '_';
 
+		if (isset($this->request->post['title'])) {
+			$data['title'] = $this->request->post[$prefix . 'title'];
+		} else {
+			$data['title'] = strlen($this->config->get($prefix . 'title')) ? $this->config->get($prefix . 'title') : $this->default['title'];
+		}
+
 		if (isset($this->request->post['status'])) {
 			$data['status'] = $this->request->post[$prefix . 'status'];
 		} else {
@@ -206,6 +219,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 			$data['http_password'] = $this->request->post[$prefix . 'http_password'];
 		} else {
 			$data['http_password'] = strlen($this->config->get($prefix . 'http_password')) ? $this->config->get($prefix . 'http_password') : $this->default['http_password'];
+		}
+
+		if (isset($this->request->post[$prefix . 'payment_action'])) {
+			$data['payment_action'] = $this->request->post[$prefix . 'payment_action'];
+		} else {
+			$data['payment_action'] = strlen($this->config->get($prefix . 'payment_action')) ? $this->config->get($prefix . 'payment_action') : $this->default['payment_action'];
 		}
 
 		if (isset($this->request->post[$prefix . 'descriptor'])) {

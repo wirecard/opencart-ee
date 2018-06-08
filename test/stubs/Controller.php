@@ -13,6 +13,7 @@ abstract class Controller
     protected $url;
     protected $language;
     protected $cart;
+    protected $request;
     public $model_extension_payment_wirecard_pg_paypal;
     public $model_checkout_order;
 
@@ -28,6 +29,9 @@ abstract class Controller
         $this->model_extension_payment_wirecard_pg_paypal = $modelPaypal;
         $this->language = $language;
         $this->cart = $cart;
+
+	    $this->request = new stdClass();
+	    $this->request->post = ['fingerprint-session' => '123'];
     }
 
     public function get($key)
