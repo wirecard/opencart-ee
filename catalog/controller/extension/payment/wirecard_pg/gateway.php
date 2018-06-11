@@ -157,14 +157,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			}
 
 			$model = $this->getModel();
-			$result = $model->sendRequest($this->paymentConfig, $this->transaction);
 
-			if ($result instanceof \Wirecard\PaymentSdk\Response\Response) {
-				//set response data temporarly -> should be redirect
-				$json['response'] = json_encode($result->getData());
-			} else {
-				$json['redirect'] = $result;
-			}
+			/** @var Url $result */
+			$result = $model->sendRequest($this->paymentConfig, $this->transaction);
+			$json['redirect'] = $result;
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
@@ -199,9 +195,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	protected function getRedirects()
 	{
 		$redirectUrls = new \Wirecard\PaymentSdk\Entity\Redirect(
-			$this->url->link('extension/payment/' . $this->prefix . $this->type . '/checkout', null, 'SSL'),
-			$this->url->link('extension/payment/' . $this->prefix . $this->type . '/failure', null, 'SSL'),
-			$this->url->link('extension/payment/' . $this->prefix . $this->type . '/success', null, 'SSL')
+			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'),
+			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'),
+			$this->url->link('extension/payment/wirecard_pg_'. $this->type . '/response', '', 'SSL')
 		);
 
 		return $redirectUrls;
@@ -244,4 +240,18 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		return $session;
 	}
+
+	public function response() {
+	    $config = $this->getConfig();
+	    try {
+	        $transactionService = new \Wirecard\PaymentSdk\TransactionService($config);
+	        $result = $transactionService->handleResponse($_REQUEST);
+        } catch (Exception $exception) {
+	        throw $exception;
+        }
+        if($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
+	        print_r($result->getData());
+        }
+        $data['redirect'] = $this->url->link('checkout/success');
+    }
 }
