@@ -30,7 +30,8 @@
  */
 
 include_once(DIR_SYSTEM . 'library/autoload.php');
-require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/additional_information_helper.php';
+require_once __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/additional_information_helper.php';
+require_once __DIR__ . '/../../../../model/extension/payment/wirecard_pg/handler/notification_handler.php';
 
 use Wirecard\PaymentSdk\Config\Config;
 use Wirecard\PaymentSdk\Entity\AccountHolder;
@@ -196,6 +197,37 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		return $config;
 	}
 
+	public function notify()
+	{
+		if (!isset($_REQUEST['payment-method'])) {
+			return;
+		}
+
+		$paymentMethod = $_REQUEST['payment-method'];
+		$orderID = $_REQUEST['order-id'];
+		$payload = file_get_contents('php://input');
+
+		$notificationHandler = new NotificationHandler();
+		$response = $notificationHandler->handleNotification( $this->getConfig(), $payload);
+
+		if ($response) {
+			$this->updateOrderState($orderID, $response);
+		}
+	}
+
+	/**
+	 * Payment specific model getter
+	 *
+	 * @return Model
+	 * @since 1.0.0
+	 */
+	public function getModel()
+	{
+		$this->load->model('extension/payment/wirecard_pg/gateway');
+
+		return $this->model_extension_payment_wirecard_pg_gateway;
+	}
+
 	/**
 	 * Create payment specific redirects
 	 *
@@ -227,19 +259,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	}
 
 	/**
-	 * Payment specific model getter
-	 *
-	 * @return Model
-	 * @since 1.0.0
-	 */
-	public function getModel()
-	{
-		$this->load->model('extension/payment/wirecard_pg/gateway');
-
-		return $this->model_extension_payment_wirecard_pg_gateway;
-	}
-
-	/**
 	 * @param string $field
 	 * @return bool|string
 	 */
@@ -262,5 +281,18 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$session = md5($consumer_id . "_" . $timestamp);
 
 		return $session;
+	}
+
+	protected function updateOrderState($orderId, $response)
+	{
+		$this->load->model('checkout/order');
+		$order = $this->model_checkout_order->getOrder($orderId);
+
+		$this->model_checkout_order->addOrderHistory(
+			$orderId,
+			'processing',
+			$response->getRawData(),
+			true
+		);
 	}
 }
