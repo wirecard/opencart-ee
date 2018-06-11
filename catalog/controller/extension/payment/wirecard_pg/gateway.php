@@ -128,6 +128,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$amount = new \Wirecard\PaymentSdk\Entity\Amount( $order['total'], $order['currency_code']);
 			$this->paymentConfig = $this->getConfig();
 			$this->transaction->setRedirect($this->getRedirects());
+			$this->transaction->setNotificationUrl($this->getNotificationUrl());
 			$this->transaction->setAmount($amount);
 
 			$additionalHelper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
@@ -210,6 +211,19 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		);
 
 		return $redirectUrls;
+	}
+
+	/**
+	 * Create notification url
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	protected function getNotificationUrl()
+	{
+		return $this->url->link(
+			'extension/payment/wirecard_pg_' . $this->type . '/notify', '', 'SSL'
+		);
 	}
 
 	/**
