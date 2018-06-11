@@ -34,8 +34,6 @@ require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/addit
 require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/pg_order_manager.php';
 
 use Wirecard\PaymentSdk\Config\Config;
-use Wirecard\PaymentSdk\Entity\AccountHolder;
-use Wirecard\PaymentSdk\Entity\Address;
 
 /**
  * Class ControllerExtensionPaymentGateway
@@ -206,7 +204,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$transactionService = new \Wirecard\PaymentSdk\TransactionService($this->getConfig());
 			$result = $transactionService->handleResponse($_REQUEST);
 		} catch (Exception $exception) {
-			throw $exception;
+			$this->session->data['error'] = 'An error occurred during checkout process';
+			$this->response->redirect($this->url->link('checkout/checkout'));
 		}
 		if($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
 			$orderManager->createResponseOrder($result);
