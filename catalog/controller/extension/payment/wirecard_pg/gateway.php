@@ -158,9 +158,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 			$model = $this->getModel();
 
-			/** @var Url $result */
-			$result = $model->sendRequest($this->paymentConfig, $this->transaction);
-			$json['redirect'] = $result;
+			if (!$this->cart->hasStock()) {
+				$json['redirect'] = $this->url->link('checkout/checkout');
+			} else {
+				$result = $model->sendRequest($this->paymentConfig, $this->transaction, $this->getConfigVal('payment_action'));
+				$json['redirect'] = $result;
+			}
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
