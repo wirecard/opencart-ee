@@ -30,6 +30,7 @@
  */
 
 include_once(DIR_SYSTEM . 'library/autoload.php');
+include_once(DIR_APPLICATION . 'helper/logger.php');
 
 /**
  * Class ControllerExtensionPaymentGateway
@@ -97,6 +98,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data = array_merge($data, $this->getConfigText());
 
 		$data = array_merge($data, $this->getRequestData());
+
+        $logger = new WirecardLogger;
+        $logger->info("This is a message");
 
 		$this->response->setOutput($this->load->view('extension/payment/wirecard_pg', $data));
 	}
