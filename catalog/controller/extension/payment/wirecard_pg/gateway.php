@@ -31,6 +31,7 @@
 
 include_once(DIR_SYSTEM . 'library/autoload.php');
 require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/additional_information_helper.php';
+require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/pg_order_manager.php';
 
 use Wirecard\PaymentSdk\Config\Config;
 use Wirecard\PaymentSdk\Entity\AccountHolder;
@@ -245,16 +246,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	}
 
 	public function response() {
-	    $config = $this->getConfig();
+	    $orderManager = new PGOrderManager();
 	    try {
-	        $transactionService = new \Wirecard\PaymentSdk\TransactionService($config);
+	        $transactionService = new \Wirecard\PaymentSdk\TransactionService($this->getConfig());
 	        $result = $transactionService->handleResponse($_REQUEST);
         } catch (Exception $exception) {
 	        throw $exception;
         }
         if($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
-	        print_r($result->getData());
+	        $orderManager->createOrder($result, $this);
         }
-        $data['redirect'] = $this->url->link('checkout/success');
+
+        $this->response->redirect($this->url->link('checkout/success'));
     }
 }
