@@ -163,6 +163,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 				$json['redirect'] = $this->url->link('checkout/checkout');
 			} else {
 				$result = $model->sendRequest($this->paymentConfig, $this->transaction, $this->getConfigVal('payment_action'));
+				if (!isset($this->session->data['error'])) {
+					//Save pending order
+					$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
+				}
 				$json['redirect'] = $result;
 			}
 		}
@@ -191,6 +195,42 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	}
 
 	/**
+	 * Handle response
+	 *
+	 * @throws Exception
+	 * @since 1.0.0
+	 */
+	public function response() {
+		$orderManager = new PGOrderManager($this->registry);
+		try {
+			$transactionService = new \Wirecard\PaymentSdk\TransactionService($this->getConfig());
+			$result = $transactionService->handleResponse($_REQUEST);
+		} catch (Exception $exception) {
+			throw $exception;
+		}
+		if($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
+			$orderManager->createResponseOrder($result);
+			$this->response->redirect($this->url->link('checkout/success'));
+		} else {
+			$this->session->data['error'] = 'An error occurred during checkout process';
+			$this->response->redirect($this->url->link('checkout/checkout'));
+		}
+	}
+
+	/**
+	 * Payment specific model getter
+	 *
+	 * @return Model
+	 * @since 1.0.0
+	 */
+	public function getModel()
+	{
+		$this->load->model('extension/payment/wirecard_pg/gateway');
+
+		return $this->model_extension_payment_wirecard_pg_gateway;
+	}
+
+	/**
 	 * Create payment specific redirects
 	 *
 	 * @return \Wirecard\PaymentSdk\Entity\Redirect
@@ -205,19 +245,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		);
 
 		return $redirectUrls;
-	}
-
-	/**
-	 * Payment specific model getter
-	 *
-	 * @return Model
-	 * @since 1.0.0
-	 */
-	public function getModel()
-	{
-		$this->load->model('extension/payment/wirecard_pg/gateway');
-
-		return $this->model_extension_payment_wirecard_pg_gateway;
 	}
 
 	/**
@@ -244,19 +271,4 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		return $session;
 	}
-
-	public function response() {
-	    $orderManager = new PGOrderManager();
-	    try {
-	        $transactionService = new \Wirecard\PaymentSdk\TransactionService($this->getConfig());
-	        $result = $transactionService->handleResponse($_REQUEST);
-        } catch (Exception $exception) {
-	        throw $exception;
-        }
-        if($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
-	        $orderManager->createOrder($result, $this);
-        }
-
-        $this->response->redirect($this->url->link('checkout/success'));
-    }
 }

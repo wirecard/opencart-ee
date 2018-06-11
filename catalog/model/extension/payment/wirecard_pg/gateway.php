@@ -96,8 +96,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 		$redirect = $this->url->link('checkout/checkout', '', true);
 		if ($response instanceof \Wirecard\PaymentSdk\Response\InteractionResponse) {
 			$redirect = $response->getRedirectUrl();
-		}
-		if ($response instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
+		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			$errors = '';
 			foreach ($response->getStatusCollection()->getIterator() as $item) {
 				/** @var \Wirecard\PaymentSdk\Entity\Status $item */
@@ -105,6 +104,8 @@ abstract class ModelExtensionPaymentGateway extends Model {
 			}
 			$this->session->data['error'] = $errors;
 			$redirect = $this->url->link('checkout/checkout', '', true);
+		} else {
+			$this->session->data['error'] = 'An error occurred during checkout process';
 		}
 
 		return $redirect;

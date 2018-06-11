@@ -34,29 +34,48 @@
  *
  * @since 1.0.0
  */
-class PGOrderManager {
+class PGOrderManager extends Model {
 
-    /**
-     * Create new order with specific orderstate
-     *
-     * @param \Wirecard\PaymentSdk\Response\Response $response
-     * @param ControllerExtensionPaymentGateway $paymentController
-     * @since 1.0.0
-     */
-    public function createOrder($response, $paymentController) {
-        $orderId = $response->getCustomFields()->get('paysdk_orderId');
-        $this->load->model('checkout/order');
-        $order = $this->model_checkout_order->getOrder($orderId);
+	/**
+	 * Create new order with specific orderstate
+	 *
+	 * @param \Wirecard\PaymentSdk\Response\Response $response
+	 * @since 1.0.0
+	 */
+	public function createResponseOrder($response) {
+		$this->load->model('checkout/order');
+		$orderId = $response->getCustomFields()->get('orderId');
+		$order = $this->model_checkout_order->getOrder($orderId);
 
-        $backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig());
-        if (!$order['order_status_id']) {
-            $this->model_checkout_order->addOrderHistory(
-                $orderId,
-                $backendService->getOrderState($response->getTransactionType()),
-                $response->getRawData(),
-                true
-            );
-            //transaction should be saved here
-        }
-    }
+		//Update pending order with responsedata
+		if ($order['order_status'] == 1) {
+			$this->model_checkout_order->addOrderHistory($orderId, 1, json_encode($response->getData()), false);
+			//transaction should be saved here
+		}
+	}
+
+	/**
+	 * Create new order with specific orderstate
+	 *
+	 * @param \Wirecard\PaymentSdk\Response\Response $response
+	 * @param ControllerExtensionPaymentGateway $paymentController
+	 * @since 1.0.0
+	 */
+	public function createNotifyOrder($response, $paymentController) {
+		//Example for right usage of order states and transaction types
+		$orderId = $response->getCustomFields()->get('orderId');
+		$this->load->model('checkout/order');
+		$this->load->language('extension/payment/wirecard_pg');
+		$order = $this->model_checkout_order->getOrder($orderId);
+
+		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig());
+		if (!$order['order_status_id']) {
+			$this->model_checkout_order->addOrderHistory(
+				$orderId,
+				$this->config->get('payment_wirecard_pg_' . $backendService->getOrderState($response->getTransactionType())),
+				$response->getRawData(),
+				true
+			);
+		}
+	}
 }
