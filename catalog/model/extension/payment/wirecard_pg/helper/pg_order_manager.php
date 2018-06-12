@@ -67,15 +67,19 @@ class PGOrderManager extends Model {
 		$this->load->model('checkout/order');
 		$this->load->language('extension/payment/wirecard_pg');
 		$order = $this->model_checkout_order->getOrder($orderId);
+		$this->log->write(print_r($order, true));
 
 		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig());
-		if (!$order['order_status_id']) {
-			$this->model_checkout_order->addOrderHistory(
-				$orderId,
-				$this->config->get('payment_wirecard_pg_' . $backendService->getOrderState($response->getTransactionType())),
-				$response->getRawData(),
-				true
-			);
+		if ($order['order_status_id']) {
+			$this->log->write('Order state: ' . $backendService->getOrderState($response->getTransactionType()));
+			if ($order['order_status_id'] == 1) {
+				$this->model_checkout_order->addOrderHistory(
+					$orderId,
+					2/*$this->config->get('payment_wirecard_pg_' . $backendService->getOrderState($response->getTransactionType()))*/,
+					print_r($response->getRawData(), true),
+					true
+				);
+			}
 		}
 	}
 }

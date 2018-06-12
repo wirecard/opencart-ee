@@ -196,19 +196,23 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 	public function notify()
 	{
-		if (!isset($_REQUEST['payment-method'])) {
+		//$log = new Log('LOG_NAME.log');
+		$this->log->write('im in notify');
+		/*if (!isset($_REQUEST['payment-method'])) {
 			return;
-		}
-
-		$paymentMethod = $_REQUEST['payment-method'];
-		$orderID = $_REQUEST['order-id'];
+		}*/
 		$payload = file_get_contents('php://input');
 
 		$notificationHandler = new NotificationHandler();
 		$response = $notificationHandler->handleNotification( $this->getConfig(), $payload);
 
+		$this->log->write($response);
+
 		if ($response) {
-			$this->updateOrderState($orderID, $response);
+			$orderManager = new PGOrderManager($this->registry);
+			$orderManager->createNotifyOrder($response, $this);
+		} else {
+			//write log wit error ?
 		}
 	}
 
