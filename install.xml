@@ -3,4 +3,22 @@
     <version>1.0.0</version>
     <author>Wirecard</author>
     <code>WirecardPG</code>
+    <file path="admin/controller/common/column_left.php">
+        <operation>
+            <search><![CDATA[
+                $design = array();
+                ]]></search>
+            <add position="before"><![CDATA[
+                $data['menus'][] = array(
+					'id'       => 'menu-wirecard',
+					'icon'	   => 'fa-puzzle-piece',
+					'name'	   => 'Wirecard Payment Gateway',
+					'href'     => $this->url->link('wirecard_pg/panel', 'user_token=' . $this->session->data['user_token'], 'SSL'),
+					'children' => array()
+				);
+				$this->load->model('user/user_group');
+				$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'wirecard_pg/panel');
+                ]]></add>
+        </operation>
+    </file>
 </modification>
