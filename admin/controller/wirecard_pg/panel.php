@@ -27,4 +27,15 @@ class ControllerWirecardPGPanel extends Controller {
 
         $this->response->setOutput($this->load->view('wirecard_pg/panel', $data));
     }
+
+    /**
+     * Load transactions per page
+     *
+     * @param int $page
+     * @since 1.0.0
+     */
+    public function loadTransactionData($page) {
+        $this->load->model('extension/payment/wirecard_pg');
+        //$table = $this->model_extension_payment_wirecard_pg->getTransactions($page);
+    }
 }

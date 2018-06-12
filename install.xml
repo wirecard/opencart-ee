@@ -11,8 +11,8 @@
             <add position="before"><![CDATA[
                 $data['menus'][] = array(
 					'id'       => 'menu-wirecard',
-					'icon'	   => 'fa-puzzle-piece',
-					'name'	   => 'Wirecard Payment Gateway',
+					'icon'	   => 'fa-money',
+					'name'	   => 'Wirecard Transactions',
 					'href'     => $this->url->link('wirecard_pg/panel', 'user_token=' . $this->session->data['user_token'], 'SSL'),
 					'children' => array()
 				);

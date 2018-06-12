@@ -34,6 +34,7 @@ $_['text_extension'] = 'Extensions';
 
 // Admin Panel
 $_['heading_title'] = 'Wirecard Payment Processing Gateway';
+$_['text_list'] = 'Transactions';
 
 // Configuration
 $_['text_enabled'] = 'Enabled';
