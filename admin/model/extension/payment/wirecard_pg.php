@@ -34,28 +34,28 @@
  *
  * @since 1.0.0
  */
-class ModelExtensionPaymentGateway extends Model {
+class ModelExtensionPaymentWirecardPG extends Model {
 
-    /**
-     * Create transaction table in install process
-     *
-     * @since 1.0.0
-     */
-    public function install() {
-        $this->db->query(
-            "CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "wirecard_ee_transactions` (
+	/**
+	 * Create transaction table in install process
+	 *
+	 * @since 1.0.0
+	 */
+	public function install() {
+		$this->db->query("
+          CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "wirecard_ee_transactions` (
             `tx_id` INT(11) NOT NULL AUTO_INCREMENT,
-            `order_id` INT(11) NOT NULL DEFAULT '0',
+            `order_id` INT(11) NOT NULL,
             `transaction_id` VARCHAR(50) NOT NULL,
             `parent_transaction_id` VARCHAR(50) DEFAULT NULL,
             `transaction_type` VARCHAR(20) NOT NULL,
             `payment_method` VARCHAR(20) NOT NULL,
             `transaction_state` VARCHAR(20) NOT NULL,
-            `amount` DECIMAL(10, 2) NOT NULL '0.00',
-            `currency` CHAR(3) NOT NULL DEFAULT 'EUR',
+            `amount` DECIMAL(10, 2) NOT NULL,
+            `currency` VARCHAR(3) NOT NULL,
 			`date_added` DATETIME NOT NULL,
 			`date_modified` DATETIME NOT NULL,
-            PRIMARY_KEY (`tx_id`)
+            PRIMARY KEY (`tx_id`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-    }
+	}
 }
