@@ -104,6 +104,8 @@ abstract class ModelExtensionPaymentGateway extends Model {
 			}
 			$this->session->data['error'] = $errors;
 			$redirect = $this->url->link('checkout/checkout', '', true);
+		} else {
+			$this->session->data['error'] = 'An error occurred during checkout process';
 		}
 
 		return $redirect;
