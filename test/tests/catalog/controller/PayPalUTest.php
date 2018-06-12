@@ -65,7 +65,7 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
 
         $this->modelOrder = $this->getMockBuilder(ModelCheckoutOrder::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getOrder'])
+            ->setMethods(['getOrder', 'addOrderHistory'])
             ->getMock();
 
         $this->cart = $this->getMockBuilder(Cart::class)
