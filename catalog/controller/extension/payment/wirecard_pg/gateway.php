@@ -209,6 +209,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		}
 		if($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
 			$orderManager->createResponseOrder($result);
+			$this->getModel()->createTransaction($result, 'awaiting', $this->type);
 			$this->response->redirect($this->url->link('checkout/success'));
 		} else {
 			$this->session->data['error'] = 'An error occurred during checkout process';
