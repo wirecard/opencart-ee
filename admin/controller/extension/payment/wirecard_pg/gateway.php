@@ -30,7 +30,7 @@
  */
 
 include_once(DIR_SYSTEM . 'library/autoload.php');
-include_once(DIR_APPLICATION . 'helper/logger.php');
+include_once(__DIR__ . '/../../../../../catalog/model/extension/payment/wirecard_pg/helper/pg_logger.php');
 
 /**
  * Class ControllerExtensionPaymentGateway
@@ -39,7 +39,13 @@ include_once(DIR_APPLICATION . 'helper/logger.php');
  *
  * @since 1.0.0
  */
-abstract class ControllerExtensionPaymentGateway extends Controller{
+abstract class ControllerExtensionPaymentGateway extends Controller {
+
+    /**
+     * @var PGLogger
+     * @since 1.0.0
+     */
+    protected $logger;
 
 	/**
 	 * @var string
@@ -59,7 +65,19 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	 */
 	protected $default = array();
 
-	/**
+    /**
+     *  Constructor to register custom logger.
+     *
+     * @param $registry
+     */
+	public function __construct($registry)
+    {
+        parent::__construct($registry);
+
+        $this->logger = new PGLogger();
+    }
+
+    /**
 	 * Load common headers and template file including config values
 	 *
 	 * @since 1.0.0
@@ -98,9 +116,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data = array_merge($data, $this->getConfigText());
 
 		$data = array_merge($data, $this->getRequestData());
-
-        $logger = new WirecardLogger;
-        $logger->info("This is a message");
 
 		$this->response->setOutput($this->load->view('extension/payment/wirecard_pg', $data));
 	}
@@ -281,7 +296,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$httpPass = $this->request->post['http_pass'];
 
 		$testConfig = new \Wirecard\PaymentSdk\Config\Config($baseUrl, $httpUser, $httpPass);
-		$transactionService = new \Wirecard\PaymentSdk\TransactionService($testConfig);
+		$transactionService = new \Wirecard\PaymentSdk\TransactionService($testConfig, $this->logger);
 		try {
 			$result = $transactionService->checkCredentials();
 			if($result) {

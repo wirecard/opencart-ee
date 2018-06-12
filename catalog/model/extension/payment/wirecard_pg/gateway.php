@@ -29,12 +29,21 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
+include_once(__DIR__ . '/helper/pg_logger.php');
+
 /**
  * Class ModelExtensionPaymentGateway
  *
  * @since 1.0.0
  */
 abstract class ModelExtensionPaymentGateway extends Model {
+
+
+    /**
+     * @var PGLogger
+     * @since 1.0.0
+     */
+    protected $logger;
 
 	/**
 	 * @var string
@@ -47,6 +56,13 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 * @since 1.0.0
 	 */
 	protected $type;
+
+	public function __construct($registry)
+    {
+        parent::__construct($registry);
+
+        $this->logger = new PGLogger();
+    }
 
 	/**
 	 * Default payment method getter, method should only be returned if activated
@@ -84,7 +100,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 * @since 1.0.0
 	 */
 	public function sendRequest($config, $transaction, $paymetAction) {
-		$transactionService = new \Wirecard\PaymentSdk\TransactionService($config);
+		$transactionService = new \Wirecard\PaymentSdk\TransactionService($config, $this->logger);
 
 		try {
 			/* @var \Wirecard\PaymentSdk\Response\Response $response */

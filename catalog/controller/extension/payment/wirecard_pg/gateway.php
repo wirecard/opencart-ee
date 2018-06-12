@@ -32,6 +32,7 @@
 include_once(DIR_SYSTEM . 'library/autoload.php');
 require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/additional_information_helper.php';
 require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/pg_order_manager.php';
+require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/pg_logger.php';
 
 use Wirecard\PaymentSdk\Config\Config;
 
@@ -80,7 +81,24 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	protected $transaction;
 
-	/**
+    /**
+     * @var PGLogger
+     */
+    protected $logger;
+
+    /**
+     * ControllerExtensionPaymentGateway constructor.
+     *
+     * @param $registry
+     */
+    public function __construct($registry)
+    {
+        parent::__construct($registry);
+
+        $this->logger = new PGLogger();
+    }
+
+    /**
 	 * Basic index method
 	 *
 	 * @return mixed
@@ -201,7 +219,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	public function response() {
 		$orderManager = new PGOrderManager($this->registry);
 		try {
-			$transactionService = new \Wirecard\PaymentSdk\TransactionService($this->getConfig());
+			$transactionService = new \Wirecard\PaymentSdk\TransactionService($this->getConfig(), $this->logger);
 			$result = $transactionService->handleResponse($_REQUEST);
 		} catch (Exception $exception) {
 			$this->session->data['error'] = 'An error occurred during checkout process';
