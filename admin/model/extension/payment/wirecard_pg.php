@@ -58,4 +58,31 @@ class ModelExtensionPaymentWirecardPG extends Model {
             PRIMARY KEY (`tx_id`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 	}
+
+	/**
+	 * Create transaction entry
+	 *
+	 * @param array $order
+	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
+	 * @param string $transactionState
+	 * @param string $paymentMethod
+	 * @since 1.0.0
+	 */
+	public function createTransaction($order, $response, $transactionState, $paymentMethod) {
+		$amount = $response->getData()['requested-amount'];
+		$currency = $response->getData()['requested_amount_currency'];
+
+		$this->db->query("
+            INSERT INTO `" . DB_PREFIX . "wirecard_ee_transactions` SET 
+            `order_id` = '" . (int)$order['order_id'] . "', 
+            `transaction_id` = '" . $this->db->escape($response->getTransactionId()) . "', 
+            `parent_transaction_id` = '" . $this->db->escape($response->getParentTransactionId()) . "', 
+            `transaction_type` = '" . $this->db->escape($response->getTransactionType()) . "',
+            `payment_method` = '" . $this->db->escape($paymentMethod) . "', 
+            `transaction_state` = '" . $this->db->escape($transactionState) . "',
+            `amount` = '" . (float)$amount . "',
+            `currency` = '" . $this->db->escape($currency) . "',
+            `date_added` = NOW()
+            ");
+	}
 }
