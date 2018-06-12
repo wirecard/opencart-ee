@@ -41,11 +41,11 @@ include_once(__DIR__ . '/../../../../../catalog/model/extension/payment/wirecard
  */
 abstract class ControllerExtensionPaymentGateway extends Controller {
 
-    /**
-     * @var PGLogger
-     * @since 1.0.0
-     */
-    protected $logger;
+	/**
+	 * @var PGLogger
+	 * @since 1.0.0
+	 */
+	protected $logger;
 
 	/**
 	 * @var string
@@ -65,19 +65,19 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	protected $default = array();
 
-    /**
-     *  Constructor to register custom logger.
-     *
-     * @param $registry
-     */
+	/**
+	 *  Constructor to register custom logger.
+	 *
+	 * @param $registry
+	 */
 	public function __construct($registry)
-    {
-        parent::__construct($registry);
+	{
+		parent::__construct($registry);
 
-        $this->logger = new PGLogger();
-    }
+		$this->logger = new PGLogger();
+	}
 
-    /**
+	/**
 	 * Load common headers and template file including config values
 	 *
 	 * @since 1.0.0

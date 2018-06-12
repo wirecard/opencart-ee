@@ -39,11 +39,11 @@ include_once(__DIR__ . '/helper/pg_logger.php');
 abstract class ModelExtensionPaymentGateway extends Model {
 
 
-    /**
-     * @var PGLogger
-     * @since 1.0.0
-     */
-    protected $logger;
+	/**
+	 * @var PGLogger
+	 * @since 1.0.0
+	 */
+	protected $logger;
 
 	/**
 	 * @var string
@@ -58,11 +58,11 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	protected $type;
 
 	public function __construct($registry)
-    {
-        parent::__construct($registry);
+	{
+		parent::__construct($registry);
 
-        $this->logger = new PGLogger();
-    }
+		$this->logger = new PGLogger();
+	}
 
 	/**
 	 * Default payment method getter, method should only be returned if activated
@@ -106,7 +106,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 			/* @var \Wirecard\PaymentSdk\Response\Response $response */
 			$response = $transactionService->process($transaction, $paymetAction);
 		} catch (Exception $exception) {
-		    $this->logger->error($exception->getMessage());
+			$this->logger->error($exception->getMessage());
 			throw($exception);
 		}
 

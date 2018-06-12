@@ -82,24 +82,24 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	protected $transaction;
 
-    /**
-     * @var PGLogger
-     */
-    protected $logger;
+	/**
+	 * @var PGLogger
+	 */
+	protected $logger;
 
-    /**
-     * ControllerExtensionPaymentGateway constructor.
-     *
-     * @param $registry
-     */
-    public function __construct($registry)
-    {
-        parent::__construct($registry);
+	/**
+	 * ControllerExtensionPaymentGateway constructor.
+	 *
+	 * @param $registry
+	 */
+	public function __construct($registry)
+	{
+		parent::__construct($registry);
 
-        $this->logger = new PGLogger();
-    }
+		$this->logger = new PGLogger();
+	}
 
-    /**
+	/**
 	 * Basic index method
 	 *
 	 * @return mixed
@@ -221,42 +221,42 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$orderManager = new PGOrderManager($this->registry);
 
 		try {
-            $transactionService = new \Wirecard\PaymentSdk\TransactionService($this->getConfig(), $this->logger);
-            $result = $transactionService->handleResponse($_REQUEST);
+			$transactionService = new \Wirecard\PaymentSdk\TransactionService($this->getConfig(), $this->logger);
+			$result = $transactionService->handleResponse($_REQUEST);
 
-            if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
-                $orderManager->createResponseOrder($result);
-                $this->response->redirect($this->url->link('checkout/success'));
-            } elseif ($result instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
-                $errors = '';
+			if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
+				$orderManager->createResponseOrder($result);
+				$this->response->redirect($this->url->link('checkout/success'));
+			} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
+				$errors = '';
 
-                foreach ($result->getStatusCollection()->getIterator() as $item) {
-                    $errors .= $item->getDescription() . "<br>\n";
-                    $this->logger->error($item->getDescription());
-                }
+				foreach ($result->getStatusCollection()->getIterator() as $item) {
+					$errors .= $item->getDescription() . "<br>\n";
+					$this->logger->error($item->getDescription());
+				}
 
-                $this->session->data['error'] = $errors;
-                $this->response->redirect($this->url->link('checkout/checkout'));
-            } else {
-                $this->session->data['error'] = 'An error occurred during checkout process ';
-                $this->response->redirect($this->url->link('checkout/checkout'));
-            }
-        } catch (\InvalidArgumentException $exception) {
-            $this->logger->error(__METHOD__ . ':' . 'Invalid argument set: ' . $exception->getMessage());
-            $this->session->data['error'] = $exception->getMessage();
-            $this->response->redirect($this->url->link('checkout/checkout'));
-        } catch (MalformedResponseException $exception ) {
-		    $wasCancelled = $_REQUEST['cancelled'] == 1;
+				$this->session->data['error'] = $errors;
+				$this->response->redirect($this->url->link('checkout/checkout'));
+			} else {
+				$this->session->data['error'] = 'An error occurred during checkout process ';
+				$this->response->redirect($this->url->link('checkout/checkout'));
+			}
+		} catch (\InvalidArgumentException $exception) {
+			$this->logger->error(__METHOD__ . ':' . 'Invalid argument set: ' . $exception->getMessage());
+			$this->session->data['error'] = $exception->getMessage();
+			$this->response->redirect($this->url->link('checkout/checkout'));
+		} catch (MalformedResponseException $exception ) {
+			$wasCancelled = $_REQUEST['cancelled'] == 1;
 
-		    if ($wasCancelled) {
-		        $this->session->data['error'] = "Order was cancelled";
-                $this->response->redirect($this->url->link('checkout/checkout'));
-            }
+			if ($wasCancelled) {
+				$this->session->data['error'] = "Order was cancelled";
+				$this->response->redirect($this->url->link('checkout/checkout'));
+			}
 
-            $this->logger->error( __METHOD__ . ':' . 'Response is malformed: ' . $exception->getMessage());
-            $this->session->data['error'] = $exception->getMessage();
+			$this->logger->error( __METHOD__ . ':' . 'Response is malformed: ' . $exception->getMessage());
+			$this->session->data['error'] = $exception->getMessage();
 
-            $this->response->redirect($this->url->link('checkout/checkout'));
+			$this->response->redirect($this->url->link('checkout/checkout'));
 		}
 	}
 
