@@ -32,10 +32,9 @@
 include_once(DIR_SYSTEM . 'library/autoload.php');
 require_once __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/additional_information_helper.php';
 require_once __DIR__ . '/../../../../model/extension/payment/wirecard_pg/handler/notification_handler.php';
+require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/pg_order_manager.php';
 
 use Wirecard\PaymentSdk\Config\Config;
-use Wirecard\PaymentSdk\Entity\AccountHolder;
-use Wirecard\PaymentSdk\Entity\Address;
 
 /**
  * Class ControllerExtensionPaymentGateway
@@ -164,13 +163,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 				$json['redirect'] = $this->url->link('checkout/checkout');
 			} else {
 				$result = $model->sendRequest($this->paymentConfig, $this->transaction, $this->getConfigVal('payment_action'));
-
-				if ($result instanceof \Wirecard\PaymentSdk\Response\Response) {
-					//set response data temporarly -> should be redirect
-					$json['response'] = json_encode($result->getData());
-				} else {
-					$json['redirect'] = $result;
+				if (!isset($this->session->data['error'])) {
+					//Save pending order
+					$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
 				}
+				$json['redirect'] = $result;
 			}
 		}
 
@@ -229,20 +226,27 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	}
 
 	/**
-	 * Create payment specific redirects
+	 * Handle response
 	 *
-	 * @return \Wirecard\PaymentSdk\Entity\Redirect
+	 * @throws Exception
 	 * @since 1.0.0
 	 */
-	protected function getRedirects()
-	{
-		$redirectUrls = new \Wirecard\PaymentSdk\Entity\Redirect(
-			$this->url->link('extension/payment/' . $this->prefix . $this->type . '/checkout', null, 'SSL'),
-			$this->url->link('extension/payment/' . $this->prefix . $this->type . '/failure', null, 'SSL'),
-			$this->url->link('extension/payment/' . $this->prefix . $this->type . '/success', null, 'SSL')
-		);
-
-		return $redirectUrls;
+	public function response() {
+		$orderManager = new PGOrderManager($this->registry);
+		try {
+			$transactionService = new \Wirecard\PaymentSdk\TransactionService($this->getConfig());
+			$result = $transactionService->handleResponse($_REQUEST);
+		} catch (Exception $exception) {
+			$this->session->data['error'] = 'An error occurred during checkout process';
+			$this->response->redirect($this->url->link('checkout/checkout'));
+		}
+		if($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
+			$orderManager->createResponseOrder($result);
+			$this->response->redirect($this->url->link('checkout/success'));
+		} else {
+			$this->session->data['error'] = 'An error occurred during checkout process';
+			$this->response->redirect($this->url->link('checkout/checkout'));
+		}
 	}
 
 	/**
@@ -256,6 +260,23 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		return $this->url->link(
 			'extension/payment/wirecard_pg_' . $this->type . '/notify', '', 'SSL'
 		);
+	}
+
+	/**
+	 * Create payment specific redirects
+	 *
+	 * @return \Wirecard\PaymentSdk\Entity\Redirect
+	 * @since 1.0.0
+	 */
+	protected function getRedirects()
+	{
+		$redirectUrls = new \Wirecard\PaymentSdk\Entity\Redirect(
+			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'),
+			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'),
+			$this->url->link('extension/payment/wirecard_pg_'. $this->type . '/response', '', 'SSL')
+		);
+
+		return $redirectUrls;
 	}
 
 	/**
