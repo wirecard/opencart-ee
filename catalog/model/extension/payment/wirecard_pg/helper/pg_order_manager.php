@@ -73,19 +73,12 @@ class PGOrderManager extends Model {
 			if ($order['order_status_id'] == 1) {
 				$this->model_checkout_order->addOrderHistory(
 					$orderId,
-					$this->getOrderState($backendService->getOrderState($response->getTransactionType())),
+					//update the order state
+					2/*$this->getOrderState($backendService->getOrderState($response->getTransactionType()))*/,
 					'<pre>' . htmlentities($response->getRawData()) . '</pre>',
 					true
 				);
 			}
-		}
-	}
-
-	private function getOrderState($state) {
-		if ($state == 'processing') {
-			return 2;
-		} else {
-			return 12;
 		}
 	}
 }
