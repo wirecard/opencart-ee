@@ -108,8 +108,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	public function index()
 	{
 		$this->load->model('checkout/order');
-
-		$this->load->language('extension/payment/wirecard_pg');
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
@@ -218,6 +216,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	public function response() {
+        $this->load->language('extension/payment/wirecard_pg');
+
 		$orderManager = new PGOrderManager($this->registry);
 
 		try {
@@ -238,19 +238,24 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 				$this->session->data['error'] = $errors;
 				$this->response->redirect($this->url->link('checkout/checkout'));
 			} else {
-				$this->session->data['error'] = 'An error occurred during checkout process ';
+				$this->session->data['error'] = $this->language->get('order_error');
 				$this->response->redirect($this->url->link('checkout/checkout'));
 			}
 		} catch (\InvalidArgumentException $exception) {
 			$this->logger->error(__METHOD__ . ':' . 'Invalid argument set: ' . $exception->getMessage());
 			$this->session->data['error'] = $exception->getMessage();
 			$this->response->redirect($this->url->link('checkout/checkout'));
+
+			return;
 		} catch (MalformedResponseException $exception ) {
 			$wasCancelled = $_REQUEST['cancelled'] == 1;
 
 			if ($wasCancelled) {
-				$this->session->data['error'] = "Order was cancelled";
+				$this->session->data['error'] = $this->language->get('order_cancelled');
+				$this->logger->warning('Order was cancelled');
 				$this->response->redirect($this->url->link('checkout/checkout'));
+
+				return;
 			}
 
 			$this->logger->error( __METHOD__ . ':' . 'Response is malformed: ' . $exception->getMessage());

@@ -74,7 +74,6 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 */
 	public function getMethod($address, $total) {
 		$prefix = $this->prefix . $this->type;
-
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
 		$logo = '<img src="./image/wirecard_pg/'. $this->type .'.png" width="100"/>';
 		$title = $logo . ' ' . $this->config->get($prefix . '_title');
@@ -100,6 +99,8 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 * @since 1.0.0
 	 */
 	public function sendRequest($config, $transaction, $paymetAction) {
+        $this->load->language('extension/payment/wirecard_pg');
+
 		$transactionService = new \Wirecard\PaymentSdk\TransactionService($config, $this->logger);
 
 		try {
@@ -125,7 +126,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 			$this->session->data['error'] = $errors;
 			$redirect = $this->url->link('checkout/checkout', '', true);
 		} else {
-			$this->session->data['error'] = 'An error occurred during checkout process ';
+			$this->session->data['error'] = $this->language->get('order_error');
 		}
 
 		return $redirect;
