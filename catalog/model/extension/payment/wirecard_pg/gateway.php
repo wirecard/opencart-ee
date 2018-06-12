@@ -99,7 +99,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 * @since 1.0.0
 	 */
 	public function sendRequest($config, $transaction, $paymetAction) {
-        $this->load->language('extension/payment/wirecard_pg');
+		$this->load->language('extension/payment/wirecard_pg');
 
 		$transactionService = new \Wirecard\PaymentSdk\TransactionService($config, $this->logger);
 

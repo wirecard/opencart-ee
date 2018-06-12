@@ -216,7 +216,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	public function response() {
-        $this->load->language('extension/payment/wirecard_pg');
+		$this->load->language('extension/payment/wirecard_pg');
 
 		$orderManager = new PGOrderManager($this->registry);
 
