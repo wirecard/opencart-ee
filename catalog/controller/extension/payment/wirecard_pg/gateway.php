@@ -295,19 +295,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->response->redirect($this->url->link('checkout/checkout'));
 		}
 	}
-  
-  /**
-	 * Payment specific model getter
-	 *
-	 * @return Model
-	 * @since 1.0.0
-	 */
-	public function getModel() {
-		$this->load->model('extension/payment/wirecard_pg/gateway');
 
-		return $this->model_extension_payment_wirecard_pg_gateway;
-  }
-  
   /**
 	 * Create notification url
 	 *
@@ -317,6 +305,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	protected function getNotificationUrl() {
 		return $this->url->link(
 			'extension/payment/wirecard_pg_' . $this->type . '/notify', '', 'SSL'
+        );
 	}
 
 	/**
