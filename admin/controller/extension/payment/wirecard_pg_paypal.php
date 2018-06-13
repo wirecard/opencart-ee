@@ -73,4 +73,38 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	public function index() {
 		parent::index();
 	}
+
+	/**
+	 * Get text for config fields
+	 *
+	 * @return mixed
+	 * @since 1.0.0
+	 */
+	protected function getConfigText() {
+		$data = parent::getConfigText();
+
+		$data['config_shopping_basket'] = $this->language->get('config_shopping_basket');
+		$data['config_shopping_basket_desc'] = $this->language->get('config_shopping_basket_desc');
+
+		return $data;
+	}
+
+	/**
+	 * Set data fields or load config
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	protected function getRequestData() {
+		$data = parent::getRequestData();
+		$prefix = $this->prefix . $this->type . '_';
+
+		if (isset($this->request->post[$prefix . 'shopping_basket'])) {
+			$data['shopping_basket'] = $this->request->post[$prefix . 'shopping_basket'];
+		} else {
+			$data['shopping_basket'] = strlen($this->config->get($prefix . 'shopping_basket')) ? $this->config->get($prefix . 'shopping_basket') : $this->default['shopping_basket'];
+		}
+
+		return $data;
+	}
 }
