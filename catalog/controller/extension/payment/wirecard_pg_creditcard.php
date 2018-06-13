@@ -102,7 +102,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		}
 
 		if ($this->getShopConfigVal('three_d_min_limit') !== '') {
-			$paymentConfig->addSslMaxLimit(
+			$paymentConfig->addThreeDMinLimit(
 				new Amount(
 					$this->getShopConfigVal('three_d_min_limit') * $currency['currency_value'],
 					$currency['currency_code']
