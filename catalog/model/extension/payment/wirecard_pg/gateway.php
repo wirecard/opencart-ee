@@ -139,4 +139,20 @@ abstract class ModelExtensionPaymentGateway extends Model {
             `date_added` = NOW()
             ");
 	}
+
+    /**
+     * Update transaction with specific transactionstate
+     *
+     * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
+     * @param $transactionState
+     * @since 1.0.0
+     */
+	public function updateTransactionState($response, $transactionState) {
+        $this->db->query("
+            UPDATE `" . DB_PREFIX . "wirecard_ee_transactions` SET `transaction_state` = '" .
+            $this->db->escape($transactionState) . "', `response` = '" .
+            $this->db->escape(json_encode($response->getData())) . "', `date_modified` = NOW() WHERE `transaction_id` = '" .
+            $this->db->escape($response->getTransactionId()) . "'
+        ");
+    }
 }
