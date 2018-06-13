@@ -282,8 +282,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	}
 
 	/**
+     * Get configuration value per fieldname
+     *
 	 * @param string $field
 	 * @return bool|string
+     * @since 1.0.0
 	 */
 	protected function getConfigVal($field)
 	{
