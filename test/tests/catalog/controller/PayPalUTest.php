@@ -28,9 +28,8 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
-
-require_once DIR_APPLICATION . 'controller/extension/payment/wirecard_pg_paypal.php';
-require_once DIR_APPLICATION . 'model/extension/payment/wirecard_pg_paypal.php';
+require_once __DIR__ . '/../../../../upload/catalog/controller/extension/payment/wirecard_pg_paypal.php';
+require_once __DIR__ . '/../../../../upload/catalog/model/extension/payment/wirecard_pg_paypal.php';
 
 class PayPalUTest extends \PHPUnit_Framework_TestCase
 {
