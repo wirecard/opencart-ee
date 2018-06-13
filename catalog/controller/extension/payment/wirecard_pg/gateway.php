@@ -92,9 +92,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 *
 	 * @param $registry
 	 */
-	public function __construct($registry)
-	{
-		parent::__construct($registry);
+	public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPaypal, $language, $cart) {
+		parent::__construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPaypal, $language, $cart);
 
 		$this->logger = new PGLogger();
 	}
@@ -105,8 +104,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return mixed
 	 * @since 1.0.0
 	 */
-	public function index()
-	{
+	public function index() {
 		$this->load->model('checkout/order');
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
@@ -127,8 +125,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 *
 	 * @since 1.0.0
 	 */
-	public function confirm()
-	{
+	public function confirm() {
 		$json = array();
 
 		if ($this->session->data['payment_method']['code'] == 'wirecard_pg_' . $this->type) {
@@ -196,8 +193,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return Config
 	 * @since 1.0.0
 	 */
-	public function getConfig()
-	{
+	public function getConfig() {
 		$baseUrl = $this->getConfigVal('base_url');
 		$httpUser = $this->getConfigVal('http_user');
 		$httpPassword = $this->getConfigVal('http_password');
@@ -271,8 +267,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return Model
 	 * @since 1.0.0
 	 */
-	public function getModel()
-	{
+	public function getModel() {
 		$this->load->model('extension/payment/wirecard_pg/gateway');
 
 		return $this->model_extension_payment_wirecard_pg_gateway;
@@ -284,8 +279,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return \Wirecard\PaymentSdk\Entity\Redirect
 	 * @since 1.0.0
 	 */
-	protected function getRedirects()
-	{
+	protected function getRedirects() {
 		$redirectUrls = new \Wirecard\PaymentSdk\Entity\Redirect(
 			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'),
 			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response&cancelled=1', '', 'SSL'),
@@ -299,8 +293,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @param string $field
 	 * @return bool|string
 	 */
-	protected function getConfigVal($field)
-	{
+	protected function getConfigVal($field) {
 		return $this->config->get($this->prefix . $this->type . '_' . $field);
 	}
 
@@ -311,8 +304,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return string
 	 * @since 1.0.0
 	 */
-	protected function createSessionString($order)
-	{
+	protected function createSessionString($order) {
 		$consumer_id = $order['customer_id'];
 		$timestamp = microtime();
 		$session = md5($consumer_id . "_" . $timestamp);
