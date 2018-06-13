@@ -64,19 +64,20 @@ class ModelExtensionPaymentWirecardPG extends Model {
 	/**
 	 * Create transaction entry
 	 *
-	 * @param array $order
 	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
+     * @param array $order
 	 * @param string $transactionState
 	 * @param string $paymentMethod
 	 * @since 1.0.0
 	 */
-	public function createTransaction($order, $response, $transactionState, $paymentMethod) {
-		$amount = $response->getData()['requested-amount'];
-		$currency = $response->getData()['requested_amount_currency'];
+    public function createTransaction($response, $order, $transactionState, $paymentMethod) {
+        $amount = $response->getData()['requested-amount'];
+        $orderId = $response->getCustomFields()->get('orderId');
+        $currency = $order['currency_code'];
 
-		$this->db->query("
+        $this->db->query("
             INSERT INTO `" . DB_PREFIX . "wirecard_ee_transactions` SET 
-            `order_id` = '" . (int)$order['order_id'] . "', 
+            `order_id` = '" . (int)$orderId . "', 
             `transaction_id` = '" . $this->db->escape($response->getTransactionId()) . "', 
             `parent_transaction_id` = '" . $this->db->escape($response->getParentTransactionId()) . "', 
             `transaction_type` = '" . $this->db->escape($response->getTransactionType()) . "',
@@ -84,9 +85,10 @@ class ModelExtensionPaymentWirecardPG extends Model {
             `transaction_state` = '" . $this->db->escape($transactionState) . "',
             `amount` = '" . (float)$amount . "',
             `currency` = '" . $this->db->escape($currency) . "',
+            `response` = '" . $this->db->escape(json_encode($response->getData())) . "',
             `date_added` = NOW()
             ");
-	}
+    }
 
 	/**
 	 * Get transaction list

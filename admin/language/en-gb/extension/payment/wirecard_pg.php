@@ -36,6 +36,10 @@ $_['text_extension'] = 'Extensions';
 $_['heading_title'] = 'Wirecard Payment Processing Gateway';
 $_['text_list'] = 'Transactions';
 
+// Transaction Details
+$_['text_transaction'] = 'Transaction';
+$_['heading_transaction_details'] = 'Transactiondetails';
+
 // Configuration
 $_['text_enabled'] = 'Enabled';
 $_['text_disabled'] = 'Disabled';
