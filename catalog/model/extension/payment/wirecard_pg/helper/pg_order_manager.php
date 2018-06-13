@@ -36,21 +36,28 @@
  */
 class PGOrderManager extends Model {
 
+	const PENDING = 1;
+
 	/**
 	 * Create new order with specific orderstate
 	 *
 	 * @param \Wirecard\PaymentSdk\Response\Response $response
+	 * @param ControllerExtensionPaymentGateway $paymentController
 	 * @since 1.0.0
 	 */
-	public function createResponseOrder($response) {
+	public function createResponseOrder($response, $paymentController) {
 		$this->load->model('checkout/order');
 		$orderId = $response->getCustomFields()->get('orderId');
 		$order = $this->model_checkout_order->getOrder($orderId);
 
-		//Update pending order with responsedata
-		if ($order['order_status'] == 1) {
-			$this->model_checkout_order->addOrderHistory($orderId, 1, json_encode($response->getData()), false);
-			//transaction should be saved here
+		if (self::PENDING == $order['order_status']) {
+			$this->model_checkout_order->addOrderHistory(
+				$orderId,
+				self::PENDING,
+				'<pre>' . htmlentities($response->getRawData()) . '</pre>',
+				false
+			);
+			$paymentController->getModel()->createTransaction($response, $order, 'awaiting', $paymentController->getType());
 		}
 	}
 

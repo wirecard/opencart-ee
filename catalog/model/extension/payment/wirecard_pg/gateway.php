@@ -115,14 +115,15 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 * Create transaction entry
 	 *
 	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
+	 * @param array $order
 	 * @param string $transactionState
 	 * @param string $paymentMethod
 	 * @since 1.0.0
 	 */
-	public function createTransaction($response, $transactionState, $paymentMethod) {
+	public function createTransaction($response, $order, $transactionState, $paymentMethod) {
 		$amount = $response->getData()['requested-amount'];
-		$currency = $response->getData()['requested-amount-currency'];
 		$orderId = $response->getCustomFields()->get('orderId');
+		$currency = $order['currency_code'];
 
 		$this->db->query("
             INSERT INTO `" . DB_PREFIX . "wirecard_ee_transactions` SET 
@@ -134,6 +135,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
             `transaction_state` = '" . $this->db->escape($transactionState) . "',
             `amount` = '" . (float)$amount . "',
             `currency` = '" . $this->db->escape($currency) . "',
+            `response` = '" . $this->db->escape(json_encode($response->getData())) . "',
             `date_added` = NOW()
             ");
 	}

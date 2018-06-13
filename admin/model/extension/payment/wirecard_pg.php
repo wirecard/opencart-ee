@@ -46,13 +46,15 @@ class ModelExtensionPaymentWirecardPG extends Model {
           CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "wirecard_ee_transactions` (
             `tx_id` INT(11) NOT NULL AUTO_INCREMENT,
             `order_id` INT(11) NOT NULL,
-            `transaction_id` VARCHAR(50) NOT NULL,
-            `parent_transaction_id` VARCHAR(50) DEFAULT NULL,
-            `transaction_type` VARCHAR(20) NOT NULL,
-            `payment_method` VARCHAR(20) NOT NULL,
-            `transaction_state` VARCHAR(20) NOT NULL,
+            `transaction_id` VARCHAR(128) NOT NULL,
+            `parent_transaction_id` VARCHAR(128) DEFAULT NULL,
+            `transaction_type` VARCHAR(32) NOT NULL,
+            `payment_method` VARCHAR(32) NOT NULL,
+            `transaction_state` VARCHAR(32) NOT NULL,
             `amount` DECIMAL(10, 2) NOT NULL,
             `currency` VARCHAR(3) NOT NULL,
+            `response` TEXT default NULL,
+            `transaction_link` VARCHAR(255) default NULL,
 			`date_added` DATETIME NOT NULL,
 			`date_modified` DATETIME NOT NULL,
             PRIMARY KEY (`tx_id`)
@@ -86,17 +88,17 @@ class ModelExtensionPaymentWirecardPG extends Model {
             ");
 	}
 
-    /**
-     * Get transaction list
-     *
-     * @return array
-     * @since 1.0.0
-     */
+	/**
+	 * Get transaction list
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
 	public function getTransactionList() {
-        $transactions = $this->db->query("
+		$transactions = $this->db->query("
             SELECT * FROM `" . DB_PREFIX . "wirecard_ee_transactions` ORDER BY tx_id
             ")->rows;
 
-        return $transactions;
-    }
+		return $transactions;
+	}
 }

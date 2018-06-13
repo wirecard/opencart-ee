@@ -208,8 +208,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->response->redirect($this->url->link('checkout/checkout'));
 		}
 		if($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
-			$orderManager->createResponseOrder($result);
-			$this->getModel()->createTransaction($result, 'awaiting', $this->type);
+			$orderManager->createResponseOrder($result, $this);
 			$this->response->redirect($this->url->link('checkout/success'));
 		} else {
 			$this->session->data['error'] = 'An error occurred during checkout process';
@@ -270,5 +269,16 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$session = md5($consumer_id . "_" . $timestamp);
 
 		return $session;
+	}
+
+	/**
+	 * Get payment type
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function getType()
+	{
+		return $this->type;
 	}
 }
