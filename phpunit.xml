@@ -11,11 +11,15 @@
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">*</directory>
+            <directory suffix=".php">upload</directory>
             <exclude>
-                <directory>admin/controller</directory>
-                <directory>system</directory>
+                <directory>upload/admin/controller</directory>
+                <directory>upload/system</directory>
+                <directory>upload/admin/language</directory>
+                <directory>upload/catalog/language</directory>
                 <directory>test</directory>
+                <file>upload/catalog/model/extension/payment/wirecard_pg/helper/pg_order_manager.php</file>
+                <file>upload/catalog/model/extension/payment/wirecard_pg/handler/notification_handler.php</file>
             </exclude>
         </whitelist>
     </filter>

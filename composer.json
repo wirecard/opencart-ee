@@ -23,6 +23,6 @@
     "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
   },
   "config": {
-    "vendor-dir": "system/library"
+    "vendor-dir": "upload/system/library"
   }
 }

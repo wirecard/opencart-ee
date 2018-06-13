@@ -2,9 +2,9 @@
 <ruleset name="OpenCart">
     <description>The Code Sniffer rule set for OpenCart</description>
 
-    <file>admin</file>
-    <file>catalog</file>
-    <exclude-pattern>./vendor/*</exclude-pattern>
+    <file>upload/admin</file>
+    <file>upload/catalog</file>
+    <exclude-pattern>./upload/system/*</exclude-pattern>
 
     <rule ref="Squiz.ControlStructures.InlineIfDeclaration" />
 

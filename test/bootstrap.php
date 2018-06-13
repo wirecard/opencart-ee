@@ -29,8 +29,8 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-require_once __DIR__ . '/../system/library/autoload.php';
-require_once __DIR__ . '/../system/library/opencart/opencart/upload/system/engine/proxy.php';
+require_once __DIR__ . '/../upload/system/library/autoload.php';
+require_once __DIR__ . '/../upload/system/library/opencart/opencart/upload/system/engine/proxy.php';
 
 
 //load opencart stubs
@@ -47,7 +47,7 @@ require_once __DIR__ . '/stubs/Tax.php';
 require_once __DIR__ . '/stubs/Currency.php';
 
 //Defines
-define('DIR_SYSTEM', __DIR__ . '/../system/');
-define('HELPER_DIR', __DIR__ . '/../catalog/model/extension/payment/wirecard_pg/helper/');
-define('DIR_APPLICATION', __DIR__ . '/../catalog/');
+define('DIR_SYSTEM', __DIR__ . '/../upload/system/');
+define('HELPER_DIR', __DIR__ . '/../upload/catalog/model/extension/payment/wirecard_pg/helper/');
+define('DIR_APPLICATION', __DIR__ . '/../upload/catalog/');
 define('VERSION', '3.0.2.0');
