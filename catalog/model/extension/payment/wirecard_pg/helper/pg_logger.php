@@ -52,7 +52,7 @@ class PGLogger implements LoggerInterface
 	/**
 	 * Logger constructor.
 	 *
-     * @param Config $confige
+	 * @param Config $confige
 	 * @since 1.0.0
 	 */
 	public function __construct($config) {

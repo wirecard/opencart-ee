@@ -50,17 +50,17 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 */
 	protected $type;
 
-    /**
-     * Get a logger instance
-     *
-     * @return PGLogger
-     * @since 1.0.0
-     */
-    protected function getLogger() {
-        return new PGLogger($this->config);
-    }
+	/**
+	 * Get a logger instance
+	 *
+	 * @return PGLogger
+	 * @since 1.0.0
+	 */
+	protected function getLogger() {
+		return new PGLogger($this->config);
+	}
 
-    /**
+	/**
 	 * Default payment method getter, method should only be returned if activated
 	 *
 	 * @param $address
