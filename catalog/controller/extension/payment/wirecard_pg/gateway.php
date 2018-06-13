@@ -30,7 +30,8 @@
  */
 
 include_once(DIR_SYSTEM . 'library/autoload.php');
-require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/additional_information_helper.php';
+require_once __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/additional_information_helper.php';
+require_once __DIR__ . '/../../../../model/extension/payment/wirecard_pg/handler/notification_handler.php';
 require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/pg_order_manager.php';
 require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/pg_logger.php';
 
@@ -141,6 +142,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$amount = new \Wirecard\PaymentSdk\Entity\Amount( $order['total'], $order['currency_code']);
 			$this->paymentConfig = $this->getConfig();
 			$this->transaction->setRedirect($this->getRedirects());
+			$this->transaction->setNotificationUrl($this->getNotificationUrl());
 			$this->transaction->setAmount($amount);
 
 			$additionalHelper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
@@ -206,6 +208,39 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	}
 
 	/**
+	 *  Handle notification
+	 *
+	 * @since 1.0.0
+	 */
+	public function notify()
+	{
+		$payload = file_get_contents('php://input');
+
+		$notificationHandler = new NotificationHandler();
+		$response = $notificationHandler->handleNotification( $this->getConfig(), $payload);
+
+		if ($response) {
+			$orderManager = new PGOrderManager($this->registry);
+			$orderManager->createNotifyOrder($response, $this);
+		} else {
+			//write log wit error ?
+		}
+	}
+
+	/**
+	 * Payment specific model getter
+	 *
+	 * @return Model
+	 * @since 1.0.0
+	 */
+	public function getModel()
+	{
+		$this->load->model('extension/payment/wirecard_pg/gateway');
+
+		return $this->model_extension_payment_wirecard_pg_gateway;
+	}
+
+	/**
 	 * Handle response
 	 *
 	 * @throws Exception
@@ -260,8 +295,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->response->redirect($this->url->link('checkout/checkout'));
 		}
 	}
-
-	/**
+  
+  /**
 	 * Payment specific model getter
 	 *
 	 * @return Model
@@ -271,6 +306,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->load->model('extension/payment/wirecard_pg/gateway');
 
 		return $this->model_extension_payment_wirecard_pg_gateway;
+  }
+  
+  /**
+	 * Create notification url
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	protected function getNotificationUrl() {
+		return $this->url->link(
+			'extension/payment/wirecard_pg_' . $this->type . '/notify', '', 'SSL'
 	}
 
 	/**
