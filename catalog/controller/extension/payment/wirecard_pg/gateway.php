@@ -305,7 +305,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	protected function getNotificationUrl() {
 		return $this->url->link(
 			'extension/payment/wirecard_pg_' . $this->type . '/notify', '', 'SSL'
-        );
+		);
 	}
 
 	/**
