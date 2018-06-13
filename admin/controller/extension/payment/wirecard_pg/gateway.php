@@ -98,6 +98,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 
 		$data = array_merge($data, $this->getRequestData());
 
+		$data = array_merge($data, $this->loadConfigBlocks($data));
 		$this->response->setOutput($this->load->view('extension/payment/wirecard_pg', $data));
 	}
 
@@ -283,5 +284,22 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	/**
+	 * Load template blocks for the config
+	 *
+	 * @param array $data
+	 * @return array
+	 * @since 1.0.0
+	 */
+	protected function loadConfigBlocks($data)
+	{
+		$data['payment_header'] = $this->load->view('extension/payment/wirecard_pg/header', $data);
+		$data['basic_config'] = $this->load->view('extension/payment/wirecard_pg/basic_config', $data);
+		$data['credentials_config'] = $this->load->view('extension/payment/wirecard_pg/credentials_config', $data);
+		$data['advanced_config'] = $this->load->view('extension/payment/wirecard_pg/advanced_config', $data);
+
+		return $data;
 	}
 }

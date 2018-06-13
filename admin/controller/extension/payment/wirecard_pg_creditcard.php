@@ -90,6 +90,9 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 		$data['config_three_d_merchant_account_id_desc'] = $this->language->get('config_three_d_merchant_account_id_desc');
 		$data['config_three_d_merchant_secret'] = $this->language->get('config_three_d_merchant_secret');
 		$data['config_three_d_merchant_secret_desc'] = $this->language->get('config_three_d_merchant_secret_desc');
+		$data['config_ssl_max_limit'] = $this->language->get('config_ssl_max_limit');
+		$data['config_three_d_min_limit'] = $this->language->get('config_three_d_min_limit');
+		$data['config_limit_desc'] = $this->language->get('config_limit_desc');
 
 		return $data;
 	}
@@ -127,6 +130,14 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 		} else {
 			$data['three_d_min_limit'] = strlen($this->config->get($prefix . 'three_d_min_limit')) ? $this->config->get($prefix . 'three_d_min_limit') : $this->default['three_d_min_limit'];
 		}
+
+		return $data;
+	}
+
+	protected function loadConfigBlocks($data) {
+		$data = parent::loadConfigBlocks($data);
+
+		$data['three_d_config'] = $this->load->view('extension/payment/wirecard_pg/three_d_config', $data);
 
 		return $data;
 	}
