@@ -94,11 +94,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
-		$data['active'] = $this->getConfigVal('status');
+		$data['active'] = $this->getShopConfigVal('status');
 		$data['button_confirm'] = $this->language->get('button_confirm');
-		$data['additional_info'] = $this->getConfigVal('additional_info');
+		$data['additional_info'] = $this->getShopConfigVal('additional_info');
 		$data['action'] = $this->url->link('extension/payment/wirecard_pg_' . $this->type . '/confirm', '', true);
-		$sessionId = $this->getConfigVal('merchant_account_id') . '_' . $this->createSessionString($order);
+		$sessionId = $this->getShopConfigVal('merchant_account_id') . '_' . $this->createSessionString($order);
 		$data['session_id'] = substr($sessionId, 0, 127);
 		$data['type'] = $this->type;
 
@@ -125,17 +125,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			];
 
 			$amount = new \Wirecard\PaymentSdk\Entity\Amount( $order['total'], $order['currency_code']);
-			$this->paymentConfig = $this->getConfig();
+			$this->paymentConfig = $this->getConfig($currency);
 			$this->transaction->setRedirect($this->getRedirects());
 			$this->transaction->setAmount($amount);
 
 			$additionalHelper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
 			$this->transaction = $additionalHelper->setIdentificationData($this->transaction, $order);
-			if ($this->getConfigVal('descriptor')) {
+			if ($this->getShopConfigVal('descriptor')) {
 				$this->transaction->setDescriptor($additionalHelper->createDescriptor($order));
 			}
 
-			if ($this->getConfigVal('shopping_basket')) {
+			if ($this->getShopConfigVal('shopping_basket')) {
 				$this->transaction = $additionalHelper->addBasket(
 					$this->transaction,
 					$this->cart->getProducts(),
@@ -145,7 +145,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 				);
 			}
 
-			if ($this->getConfigVal('additional_info')) {
+			if ($this->getShopConfigVal('additional_info')) {
 				$this->transaction = $additionalHelper->setAdditionalInformation($this->transaction, $order);
 			}
 
@@ -160,7 +160,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			if (!$this->cart->hasStock()) {
 				$json['redirect'] = $this->url->link('checkout/checkout');
 			} else {
-				$result = $model->sendRequest($this->paymentConfig, $this->transaction, $this->getConfigVal('payment_action'));
+				$result = $model->sendRequest($this->paymentConfig, $this->transaction, $this->getShopConfigVal('payment_action'));
 				if (!isset($this->session->data['error'])) {
 					//Save pending order
 					$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
@@ -176,14 +176,15 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	/**
 	 * Create payment specific config
 	 *
+	 * @param array $currency
 	 * @return Config
 	 * @since 1.0.0
 	 */
-	public function getConfig()
+	public function getConfig($currency)
 	{
-		$baseUrl = $this->getConfigVal('base_url');
-		$httpUser = $this->getConfigVal('http_user');
-		$httpPassword = $this->getConfigVal('http_password');
+		$baseUrl = $this->getShopConfigVal('base_url');
+		$httpUser = $this->getShopConfigVal('http_user');
+		$httpPassword = $this->getShopConfigVal('http_password');
 
 		$config = new Config($baseUrl, $httpUser, $httpPassword);
 		$config->setShopInfo('OpenCart', VERSION);
@@ -250,7 +251,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @param string $field
 	 * @return bool|string
 	 */
-	protected function getConfigVal($field)
+	protected function getShopConfigVal($field)
 	{
 		return $this->config->get($this->prefix . $this->type . '_' . $field);
 	}

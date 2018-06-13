@@ -31,23 +31,24 @@
 
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
-use Wirecard\PaymentSdk\Transaction\PayPalTransaction;
-use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
+use Wirecard\PaymentSdk\Transaction\CreditCardTransaction;
+use Wirecard\PaymentSdk\Entity\Amount;
+use Wirecard\PaymentSdk\Config\CreditCardConfig;
 
 /**
- * Class ControllerExtensionPaymentWirecardPGPayPal
+ * Class ControllerExtensionPaymentWirecardPGCreditCard
  *
- * PayPal Transaction controller
+ * CreditCard Transaction controller
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'paypal';
+	protected $type = 'creditcard';
 
 	/**
 	 * Basic index method
@@ -59,13 +60,12 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 	}
 
 	/**
-	 * Create paypal transaction
+	 * Create CreditCard transaction
 	 *
 	 * @since 1.0.0
 	 */
 	public function confirm() {
-
-		$this->transaction = new PayPalTransaction();
+		$this->transaction = new CreditCardTransaction();
 
 		parent::confirm();
 	}
@@ -83,7 +83,35 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 		$merchant_secret = $this->getShopConfigVal('merchant_secret');
 
 		$config = parent::getConfig($currency);
-		$paymentConfig = new PaymentMethodConfig(PayPalTransaction::NAME, $merchant_account_id, $merchant_secret);
+		$paymentConfig = new CreditCardConfig($merchant_account_id, $merchant_secret);
+
+		if ($this->getShopConfigVal('three_d_merchant_account_id') !== '') {
+			$paymentConfig->setThreeDCredentials(
+				$this->getShopConfigVal('three_d_merchant_account_id'),
+				$this->getShopConfigVal('three_d_secret')
+			);
+		}
+
+		if ($this->getShopConfigVal('ssl_max_limit') !== '') {
+			$paymentConfig->addSslMaxLimit(
+				new Amount(
+					$this->getShopConfigVal('ssl_max_limit') * $currency['currency_value'],
+					$currency['currency_code']
+				)
+			);
+		}
+
+		if ($this->getShopConfigVal('three_d_min_limit') !== '') {
+			$paymentConfig->addSslMaxLimit(
+				new Amount(
+					$this->getShopConfigVal('three_d_min_limit') * $currency['currency_value'],
+					$currency['currency_code']
+				)
+			);
+		}
+
+		var_dump($paymentConfig);die();
+
 		$config->add($paymentConfig);
 
 		return $config;
@@ -99,7 +127,7 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 	{
 		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
 
-		return $this->model_extension_payment_wirecard_pg_paypal;
+		return $this->model_extension_payment_wirecard_pg_creditcard;
 	}
 }
 
