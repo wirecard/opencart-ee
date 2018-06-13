@@ -3,8 +3,6 @@ class ControllerWirecardPGPanel extends Controller {
 
     const ROUTE = 'extension/payment/wirecard_pg';
 
-	private $error = array();
-
 	public function index() {
 		$this->load->language(self::ROUTE);
 
@@ -20,7 +18,7 @@ class ControllerWirecardPGPanel extends Controller {
 	}
 
 	/**
-	 * Load transactions per page
+	 * Load transactionlist data
 	 *
 	 * @since 1.0.0
 	 */
@@ -64,11 +62,12 @@ class ControllerWirecardPGPanel extends Controller {
         $data = array_merge($data, $this->getCommons());
 
         $data['text_transaction'] = $this->language->get('text_transaction');
+        $data['text_response_data'] = $this->language->get('text_response_data');
 
 	    if (isset($this->request->get['id'])) {
-	        //Get transaction details
+	        $data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
         } else {
-	        $data['error'] = 'No transaction found with this id.';
+	        $data['error'] = $this->language->get('error_no_transaction');
         }
 
         $this->response->setOutput($this->load->view('wirecard_pg/details', $data));
@@ -108,6 +107,28 @@ class ControllerWirecardPGPanel extends Controller {
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
+
+        return $data;
+    }
+
+    /**
+     * Get transaction detail data via id
+     *
+     * @param $id
+     * @return bool|array
+     * @since 1.0.0
+     */
+    private function getTransactionDetails($id) {
+        $this->load->model(self::ROUTE);
+        $transaction = $this->model_extension_payment_wirecard_pg->getTransaction($id);
+        $data = false;
+
+        if ($transaction) {
+            $data = array(
+                'transaction_id' => $transaction['transaction_id'],
+                'response' => json_decode($transaction['response'], true)
+            );
+        }
 
         return $data;
     }

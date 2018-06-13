@@ -103,4 +103,23 @@ class ModelExtensionPaymentWirecardPG extends Model {
 
 		return $transactions;
 	}
+
+    /**
+     * Get transaction via tx_id
+     *
+     * @param int $txId
+     * @return bool|array
+     * @since 1.0.0
+     */
+    public function getTransaction($txId) {
+        $query = $this->db->query("
+	        SELECT * FROM `" . DB_PREFIX . "wirecard_ee_transactions` WHERE `tx_id` = '" . (int)$txId . "'
+	    ");
+
+        if ($query->num_rows) {
+            return $query->row;
+        }
+
+        return false;
+    }
 }
