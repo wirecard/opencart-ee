@@ -25,17 +25,35 @@ class ControllerWirecardPGPanel extends Controller {
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 
+		$data['transactions'] = $this->loadTransactionData();
+
 		$this->response->setOutput($this->load->view('wirecard_pg/panel', $data));
 	}
 
 	/**
 	 * Load transactions per page
 	 *
-	 * @param int $page
 	 * @since 1.0.0
 	 */
-	public function loadTransactionData($page) {
+	public function loadTransactionData() {
 		$this->load->model('extension/payment/wirecard_pg');
-		//$table = $this->model_extension_payment_wirecard_pg->getTransactions($page);
+		$table = $this->model_extension_payment_wirecard_pg->getTransactionList();
+
+        $transactions = array();
+		foreach ($table as $transaction) {
+            $transactions[] = array(
+                'tx_id' => $transaction['tx_id'],
+                'order_id' => $transaction['order_id'],
+                'transaction_id' => $transaction['transaction_id'],
+                'parent_transaction_id' => $transaction['parent_transaction_id'],
+                'action' => $transaction['transaction_type'],
+                'payment_method' => $transaction['payment_method'],
+                'transaction_state' => $transaction['transaction_state'],
+                'amount' => $transaction['amount'],
+                'currency' => $transaction['currency']
+            );
+        }
+
+		return $transactions;
 	}
 }

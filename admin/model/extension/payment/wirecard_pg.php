@@ -85,4 +85,18 @@ class ModelExtensionPaymentWirecardPG extends Model {
             `date_added` = NOW()
             ");
 	}
+
+    /**
+     * Get transaction list
+     *
+     * @return array
+     * @since 1.0.0
+     */
+	public function getTransactionList() {
+        $transactions = $this->db->query("
+            SELECT * FROM `" . DB_PREFIX . "wirecard_ee_transactions` ORDER BY tx_id
+            ")->rows;
+
+        return $transactions;
+    }
 }

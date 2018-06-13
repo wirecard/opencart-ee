@@ -33,7 +33,28 @@
                             </tr>
                         </thead>
                         <tbody>
-
+                        {% for transaction in transactions %}
+                            <tr>
+                                <td>{{ transaction.tx_id }}</td>
+                                <td>{{ transaction.order_id }}</td>
+                                <td>{{ transaction.transaction_id }}</td>
+                                <td>{{ transaction.parent_transaction_id }}</td>
+                                <td>{{ transaction.action }}</td>
+                                <td>{{ transaction.payment_method }}</td>
+                                <td>{{ transaction.transaction_state }}</td>
+                                <td>{{ transaction.amount }}</td>
+                                <td>{{ transaction.currency }}</td>
+                                <td class="text-right">
+                                    <div style="min-width: 45px;">
+                                        <div class="btn-group">
+                                            <a href="" data-toggle="tooltip" class="btn btn-primary" data-original-title="View">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
