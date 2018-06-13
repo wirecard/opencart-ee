@@ -62,14 +62,15 @@ class PGOrderManager extends Model {
 	 * @since 1.0.0
 	 */
 	public function createNotifyOrder($response, $paymentController) {
-		//Example for right usage of order states and transaction types
 		$orderId = $response->getCustomFields()->get('orderId');
 		$this->load->model('checkout/order');
 		$this->load->language('extension/payment/wirecard_pg');
 		$order = $this->model_checkout_order->getOrder($orderId);
 
+		//not in use yet but with order state US
 		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig());
 		if ($order['order_status_id']) {
+			//Update an pending order state
 			if ($order['order_status_id'] == 1) {
 				$this->model_checkout_order->addOrderHistory(
 					$orderId,
@@ -79,6 +80,7 @@ class PGOrderManager extends Model {
 					true
 				);
 			}
+			//Cancel to implement
 		}
 	}
 }

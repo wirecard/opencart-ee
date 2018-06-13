@@ -31,6 +31,11 @@
 
 class NotificationHandler {
 
+	/**
+	 * @param Config $config
+	 * @param string $payload
+	 * @return bool|\Wirecard\PaymentSdk\Response\FailureResponse|\Wirecard\PaymentSdk\Response\InteractionResponse|\Wirecard\PaymentSdk\Response\Response|\Wirecard\PaymentSdk\Response\SuccessResponse
+	 */
 	public function handleNotification($config, $payload) {
 		try {
 			$transactionService = new \Wirecard\PaymentSdk\TransactionService($config);

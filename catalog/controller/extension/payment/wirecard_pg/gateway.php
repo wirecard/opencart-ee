@@ -194,6 +194,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		return $config;
 	}
 
+	/**
+	 *  Handle notification
+	 *
+	 * @since 1.0.0
+	 */
 	public function notify()
 	{
 		$payload = file_get_contents('php://input');
@@ -299,18 +304,5 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$session = md5($consumer_id . "_" . $timestamp);
 
 		return $session;
-	}
-
-	protected function updateOrderState($orderId, $response)
-	{
-		$this->load->model('checkout/order');
-		$order = $this->model_checkout_order->getOrder($orderId);
-
-		$this->model_checkout_order->addOrderHistory(
-			$orderId,
-			'processing',
-			$response->getRawData(),
-			true
-		);
 	}
 }
