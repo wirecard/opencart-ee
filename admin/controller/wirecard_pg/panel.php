@@ -1,7 +1,7 @@
 <?php
 class ControllerWirecardPGPanel extends Controller {
 
-    const ROUTE = 'extension/payment/wirecard_pg';
+	const ROUTE = 'extension/payment/wirecard_pg';
 
 	public function index() {
 		$this->load->language(self::ROUTE);
@@ -10,7 +10,7 @@ class ControllerWirecardPGPanel extends Controller {
 
 		$data['breadcrumbs'] = $this->getBreadcrumbs();
 
-        $data = array_merge($data, $this->getCommons());
+		$data = array_merge($data, $this->getCommons());
 
 		$data['transactions'] = $this->loadTransactionData();
 
@@ -38,99 +38,99 @@ class ControllerWirecardPGPanel extends Controller {
 				'transaction_state' => $transaction['transaction_state'],
 				'amount' => $transaction['amount'],
 				'currency' => $transaction['currency'],
-                'href' => $this->url->link('wirecard_pg/panel/transaction', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['tx_id'], true)
+				'href' => $this->url->link('wirecard_pg/panel/transaction', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['tx_id'], true)
 			);
 		}
 
 		return $transactions;
 	}
 
-    /**
-     * Display transaction details
-     *
-     * @since 1.0.0
-     */
+	/**
+	 * Display transaction details
+	 *
+	 * @since 1.0.0
+	 */
 	public function transaction() {
-        $this->load->language(self::ROUTE);
+		$this->load->language(self::ROUTE);
 
-        $data['title'] = $this->language->get('heading_transaction_details');
+		$data['title'] = $this->language->get('heading_transaction_details');
 
-        $this->document->setTitle($data['title']);
+		$this->document->setTitle($data['title']);
 
-        $data['breadcrumbs'] = $this->getBreadcrumbs();
+		$data['breadcrumbs'] = $this->getBreadcrumbs();
 
-        $data = array_merge($data, $this->getCommons());
+		$data = array_merge($data, $this->getCommons());
 
-        $data['text_transaction'] = $this->language->get('text_transaction');
-        $data['text_response_data'] = $this->language->get('text_response_data');
+		$data['text_transaction'] = $this->language->get('text_transaction');
+		$data['text_response_data'] = $this->language->get('text_response_data');
 
-	    if (isset($this->request->get['id'])) {
-	        $data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
-        } else {
-	        $data['error'] = $this->language->get('error_no_transaction');
-        }
+		if (isset($this->request->get['id'])) {
+			$data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
+		} else {
+			$data['error'] = $this->language->get('error_no_transaction');
+		}
 
-        $this->response->setOutput($this->load->view('wirecard_pg/details', $data));
-    }
+		$this->response->setOutput($this->load->view('wirecard_pg/details', $data));
+	}
 
-    /**
-     * Get breadcrumb data
-     *
-     * @return array
-     * @since 1.0.0
-     */
-    private function getBreadcrumbs() {
-        $breadcrumbs = array();
+	/**
+	 * Get breadcrumb data
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	private function getBreadcrumbs() {
+		$breadcrumbs = array();
 
-        $breadcrumbs[] = array(
-            'text' => $this->language->get('text_home'),
-            'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
-        );
+		$breadcrumbs[] = array(
+			'text' => $this->language->get('text_home'),
+			'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
+		);
 
-        $breadcrumbs[] = array(
-            'text' => $this->language->get('heading_title'),
-            'href' => $this->url->link('wirecard_pg/panel', 'user_token=' . $this->session->data['user_token'], true)
-        );
+		$breadcrumbs[] = array(
+			'text' => $this->language->get('heading_title'),
+			'href' => $this->url->link('wirecard_pg/panel', 'user_token=' . $this->session->data['user_token'], true)
+		);
 
-        return $breadcrumbs;
-    }
+		return $breadcrumbs;
+	}
 
-    /**
-     * Get common header, sidebar and footer
-     *
-     * @return array
-     * @since 1.0.0
-     */
-    private function getCommons() {
-        $data['user_token'] = $this->session->data['user_token'];
+	/**
+	 * Get common header, sidebar and footer
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	private function getCommons() {
+		$data['user_token'] = $this->session->data['user_token'];
 
-        $data['header'] = $this->load->controller('common/header');
-        $data['column_left'] = $this->load->controller('common/column_left');
-        $data['footer'] = $this->load->controller('common/footer');
+		$data['header'] = $this->load->controller('common/header');
+		$data['column_left'] = $this->load->controller('common/column_left');
+		$data['footer'] = $this->load->controller('common/footer');
 
-        return $data;
-    }
+		return $data;
+	}
 
-    /**
-     * Get transaction detail data via id
-     *
-     * @param $id
-     * @return bool|array
-     * @since 1.0.0
-     */
-    private function getTransactionDetails($id) {
-        $this->load->model(self::ROUTE);
-        $transaction = $this->model_extension_payment_wirecard_pg->getTransaction($id);
-        $data = false;
+	/**
+	 * Get transaction detail data via id
+	 *
+	 * @param $id
+	 * @return bool|array
+	 * @since 1.0.0
+	 */
+	private function getTransactionDetails($id) {
+		$this->load->model(self::ROUTE);
+		$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($id);
+		$data = false;
 
-        if ($transaction) {
-            $data = array(
-                'transaction_id' => $transaction['transaction_id'],
-                'response' => json_decode($transaction['response'], true)
-            );
-        }
+		if ($transaction) {
+			$data = array(
+				'transaction_id' => $transaction['transaction_id'],
+				'response' => json_decode($transaction['response'], true)
+			);
+		}
 
-        return $data;
-    }
+		return $data;
+	}
 
 }

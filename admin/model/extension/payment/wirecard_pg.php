@@ -65,17 +65,17 @@ class ModelExtensionPaymentWirecardPG extends Model {
 	 * Create transaction entry
 	 *
 	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
-     * @param array $order
+	 * @param array $order
 	 * @param string $transactionState
 	 * @param string $paymentMethod
 	 * @since 1.0.0
 	 */
-    public function createTransaction($response, $order, $transactionState, $paymentMethod) {
-        $amount = $response->getData()['requested-amount'];
-        $orderId = $response->getCustomFields()->get('orderId');
-        $currency = $order['currency_code'];
+	public function createTransaction($response, $order, $transactionState, $paymentMethod) {
+		$amount = $response->getData()['requested-amount'];
+		$orderId = $response->getCustomFields()->get('orderId');
+		$currency = $order['currency_code'];
 
-        $this->db->query("
+		$this->db->query("
             INSERT INTO `" . DB_PREFIX . "wirecard_ee_transactions` SET 
             `order_id` = '" . (int)$orderId . "', 
             `transaction_id` = '" . $this->db->escape($response->getTransactionId()) . "', 
@@ -88,7 +88,7 @@ class ModelExtensionPaymentWirecardPG extends Model {
             `response` = '" . $this->db->escape(json_encode($response->getData())) . "',
             `date_added` = NOW()
             ");
-    }
+	}
 
 	/**
 	 * Get transaction list
@@ -104,22 +104,22 @@ class ModelExtensionPaymentWirecardPG extends Model {
 		return $transactions;
 	}
 
-    /**
-     * Get transaction via tx_id
-     *
-     * @param int $txId
-     * @return bool|array
-     * @since 1.0.0
-     */
-    public function getTransaction($txId) {
-        $query = $this->db->query("
+	/**
+	 * Get transaction via tx_id
+	 *
+	 * @param int $txId
+	 * @return bool|array
+	 * @since 1.0.0
+	 */
+	public function getTransaction($txId) {
+		$query = $this->db->query("
 	        SELECT * FROM `" . DB_PREFIX . "wirecard_ee_transactions` WHERE `tx_id` = '" . (int)$txId . "'
 	    ");
 
-        if ($query->num_rows) {
-            return $query->row;
-        }
+		if ($query->num_rows) {
+			return $query->row;
+		}
 
-        return false;
-    }
+		return false;
+	}
 }

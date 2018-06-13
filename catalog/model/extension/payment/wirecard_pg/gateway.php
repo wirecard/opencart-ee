@@ -157,13 +157,13 @@ abstract class ModelExtensionPaymentGateway extends Model {
         ");
 	}
 
-    /**
-     * Get transaction via transaction id
-     *
-     * @param $transactionId
-     * @return bool|array
-     * @since 1.0.0
-     */
+	/**
+	 * Get transaction via transaction id
+	 *
+	 * @param $transactionId
+	 * @return bool|array
+	 * @since 1.0.0
+	 */
 	public function getTransaction($transactionId) {
 		$query = $this->db->query("
 	        SELECT * FROM `" . DB_PREFIX . "wirecard_ee_transactions` WHERE `transaction_id` = '" . $this->db->escape($transactionId) . "'

@@ -45,6 +45,9 @@ use Wirecard\PaymentSdk\Config\Config;
  */
 abstract class ControllerExtensionPaymentGateway extends Controller {
 
+	const ROUTE = 'extension/payment/wirecard_pg_';
+	const PATH = 'extension/payment/wirecard_pg';
+
 	/**
 	 * @var string
 	 * @since 1.0.0
@@ -91,19 +94,19 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	{
 		$this->load->model('checkout/order');
 
-		$this->load->language('extension/payment/wirecard_pg');
-		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
+		$this->load->language(self::PATH);
+		$this->load->language(self::ROUTE . $this->type);
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
 		$data['active'] = $this->getConfigVal('status');
 		$data['button_confirm'] = $this->language->get('button_confirm');
 		$data['additional_info'] = $this->getConfigVal('additional_info');
-		$data['action'] = $this->url->link('extension/payment/wirecard_pg_' . $this->type . '/confirm', '', true);
+		$data['action'] = $this->url->link(self::ROUTE . $this->type . '/confirm', '', true);
 		$sessionId = $this->getConfigVal('merchant_account_id') . '_' . $this->createSessionString($order);
 		$data['session_id'] = substr($sessionId, 0, 127);
 		$data['type'] = $this->type;
 
-		return $this->load->view('extension/payment/wirecard_pg', $data);
+		return $this->load->view(self::PATH, $data);
 	}
 
 	/**
@@ -116,7 +119,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$json = array();
 
 		if ($this->session->data['payment_method']['code'] == 'wirecard_pg_' . $this->type) {
-			$this->load->language('extension/payment/wirecard_pg');
+			$this->load->language(self::PATH);
 			$this->load->model('checkout/order');
 			$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 			$this->load->model('checkout/order');
@@ -260,7 +263,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	protected function getNotificationUrl()
 	{
 		return $this->url->link(
-			'extension/payment/wirecard_pg_' . $this->type . '/notify', '', 'SSL'
+			self::ROUTE . $this->type . '/notify', '', 'SSL'
 		);
 	}
 
@@ -273,9 +276,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	protected function getRedirects()
 	{
 		$redirectUrls = new \Wirecard\PaymentSdk\Entity\Redirect(
-			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'),
-			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'),
-			$this->url->link('extension/payment/wirecard_pg_'. $this->type . '/response', '', 'SSL')
+			$this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL'),
+			$this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL'),
+			$this->url->link(self::ROUTE. $this->type . '/response', '', 'SSL')
 		);
 
 		return $redirectUrls;
