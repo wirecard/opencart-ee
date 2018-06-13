@@ -49,6 +49,8 @@ class PGOrderManager extends Model {
 		$this->load->model('checkout/order');
 		$orderId = $response->getCustomFields()->get('orderId');
 		$order = $this->model_checkout_order->getOrder($orderId);
+		/** @var ModelExtensionPaymentGateway $transactionModel */
+		$transactionModel = $paymentController->getModel();
 
 		if (self::PENDING == $order['order_status']) {
 			$this->model_checkout_order->addOrderHistory(
@@ -57,7 +59,7 @@ class PGOrderManager extends Model {
 				'<pre>' . htmlentities($response->getRawData()) . '</pre>',
 				false
 			);
-			$paymentController->getModel()->createTransaction($response, $order, 'awaiting', $paymentController->getType());
+			$transactionModel->createTransaction($response, $order, 'awaiting', $paymentController->getType());
 		}
 	}
 
@@ -73,10 +75,11 @@ class PGOrderManager extends Model {
 		$this->load->model('checkout/order');
 		$this->load->language('extension/payment/wirecard_pg');
 		$order = $this->model_checkout_order->getOrder($orderId);
+		/** @var ModelExtensionPaymentGateway $transactionModel */
+		$transactionModel = $paymentController->getModel();
 
 		//not in use yet but with order state US
 		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig());
-		if ($order['order_status_id']) {
 			//Update an pending order state
 			if (self::PENDING == $order['order_status_id']) {
 				$this->model_checkout_order->addOrderHistory(
@@ -86,8 +89,12 @@ class PGOrderManager extends Model {
 					'<pre>' . htmlentities($response->getRawData()) . '</pre>',
 					true
 				);
+				if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse && $transactionModel->getTransaction($response->getTransactionId())) {
+					$transactionModel->updateTransactionState($response, 'success');
+				} else {
+					$transactionModel->createTransaction($response, $order, 'success', $paymentController->getType());
+				}
 			}
 			//Cancel to implement
-		}
 	}
 }

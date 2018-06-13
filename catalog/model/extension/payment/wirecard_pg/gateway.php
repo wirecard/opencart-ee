@@ -140,19 +140,39 @@ abstract class ModelExtensionPaymentGateway extends Model {
             ");
 	}
 
+	/**
+	 * Update transaction with specific transactionstate
+	 *
+	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
+	 * @param $transactionState
+	 * @since 1.0.0
+	 */
+	public function updateTransactionState($response, $transactionState) {
+		$this->db->query("
+        UPDATE `" . DB_PREFIX . "wirecard_ee_transactions` SET 
+            `transaction_state` = '" . $this->db->escape($transactionState) . "', 
+            `response` = '" . $this->db->escape(json_encode($response->getData())) . "', 
+            `date_modified` = NOW() WHERE 
+            `transaction_id` = '" . $this->db->escape($response->getTransactionId()) . "'
+        ");
+	}
+
     /**
-     * Update transaction with specific transactionstate
+     * Get transaction via transaction id
      *
-     * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
-     * @param $transactionState
+     * @param $transactionId
+     * @return bool|array
      * @since 1.0.0
      */
-	public function updateTransactionState($response, $transactionState) {
-        $this->db->query("
-            UPDATE `" . DB_PREFIX . "wirecard_ee_transactions` SET `transaction_state` = '" .
-            $this->db->escape($transactionState) . "', `response` = '" .
-            $this->db->escape(json_encode($response->getData())) . "', `date_modified` = NOW() WHERE `transaction_id` = '" .
-            $this->db->escape($response->getTransactionId()) . "'
-        ");
-    }
+	public function getTransaction($transactionId) {
+		$query = $this->db->query("
+	        SELECT * FROM `" . DB_PREFIX . "wirecard_ee_transactions` WHERE `transaction_id` = '" . $this->db->escape($transactionId) . "'
+	    ");
+
+		if ($query->num_rows) {
+			return $query->row;
+		}
+
+		return false;
+	}
 }
