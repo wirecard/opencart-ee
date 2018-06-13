@@ -53,6 +53,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 	 * @since 1.0.0
 	 */
 	protected $default = array (
+		'status' => 0,
 		'title' => 'Wirecard Credit Card',
 		'merchant_account_id' => '53f2895a-e4de-4e82-a813-0d87a10e55e6',
 		'merchant_secret' => 'dbc5a498-9a66-43b9-bf1d-a618dd399684',
@@ -104,34 +105,14 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 	 * @since 1.0.0
 	 */
 	protected function getRequestData() {
-		$data = parent::getRequestData();
-		$prefix = $this->prefix . $this->type . '_';
+		$this->configFields = array_merge($this->configFields, array(
+			'three_d_merchant_account_id',
+			'three_d_merchant_secret',
+			'ssl_max_limit',
+			'three_d_min_limit')
+		);
 
-		if (isset($this->request->post[$prefix . 'three_d_merchant_account_id'])) {
-			$data['three_d_merchant_account_id'] = $this->request->post[$prefix . 'three_d_merchant_account_id'];
-		} else {
-			$data['three_d_merchant_account_id'] = strlen($this->config->get($prefix . 'three_d_merchant_account_id')) ? $this->config->get($prefix . 'three_d_merchant_account_id') : $this->default['three_d_merchant_account_id'];
-		}
-
-		if (isset($this->request->post[$prefix . 'three_d_merchant_secret'])) {
-			$data['three_d_merchant_secret'] = $this->request->post[$prefix . 'three_d_merchant_secret'];
-		} else {
-			$data['three_d_merchant_secret'] = strlen($this->config->get($prefix . 'three_d_merchant_secret')) ? $this->config->get($prefix . 'three_d_merchant_secret') : $this->default['three_d_merchant_secret'];
-		}
-
-		if (isset($this->request->post[$prefix . 'ssl_max_limit'])) {
-			$data['ssl_max_limit'] = $this->request->post[$prefix . 'ssl_max_limit'];
-		} else {
-			$data['ssl_max_limit'] = strlen($this->config->get($prefix . 'ssl_max_limit')) ? $this->config->get($prefix . 'ssl_max_limit') : $this->default['ssl_max_limit'];
-		}
-
-		if (isset($this->request->post[$prefix . 'three_d_min_limit'])) {
-			$data['three_d_min_limit'] = $this->request->post[$prefix . 'three_d_min_limit'];
-		} else {
-			$data['three_d_min_limit'] = strlen($this->config->get($prefix . 'three_d_min_limit')) ? $this->config->get($prefix . 'three_d_min_limit') : $this->default['three_d_min_limit'];
-		}
-
-		return $data;
+		return parent::getRequestData();
 	}
 
 	protected function loadConfigBlocks($data) {

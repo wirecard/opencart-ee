@@ -59,6 +59,23 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	protected $default = array();
 
 	/**
+	 * @var array
+	 * @since 1.0.0
+	 */
+	protected $configFields = array(
+		'title',
+		'status',
+		'merchant_account_id',
+		'merchant_secret',
+		'base_url',
+		'http_user',
+		'http_password',
+		'payment_action',
+		'descriptor',
+		'additional_info'
+	);
+
+	/**
 	 * Load common headers and template file including config values
 	 *
 	 * @since 1.0.0
@@ -99,6 +116,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$data = array_merge($data, $this->getRequestData());
 
 		$data = array_merge($data, $this->loadConfigBlocks($data));
+
 		$this->response->setOutput($this->load->view('extension/payment/wirecard_pg', $data));
 	}
 
@@ -176,66 +194,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	 */
 	protected function getRequestData() {
 		$data = array();
-		$prefix = $this->prefix . $this->type . '_';
 
-		if (isset($this->request->post['title'])) {
-			$data['title'] = $this->request->post[$prefix . 'title'];
-		} else {
-			$data['title'] = strlen($this->config->get($prefix . 'title')) ? $this->config->get($prefix . 'title') : $this->default['title'];
-		}
-
-		if (isset($this->request->post['status'])) {
-			$data['status'] = $this->request->post[$prefix . 'status'];
-		} else {
-			$data['status'] = $this->config->get($prefix . 'status');
-		}
-
-		if (isset($this->request->post[$prefix . 'merchant_account_id'])) {
-			$data['merchant_account_id'] = $this->request->post[$prefix . 'merchant_account_id'];
-		} else {
-			$data['merchant_account_id'] = strlen($this->config->get($prefix . 'merchant_account_id')) ? $this->config->get($prefix . 'merchant_account_id') : $this->default['merchant_account_id'];
-		}
-
-		if (isset($this->request->post[$prefix . 'merchant_secret'])) {
-			$data['merchant_secret'] = $this->request->post[$prefix . 'merchant_secret'];
-		} else {
-			$data['merchant_secret'] = strlen($this->config->get($prefix . 'merchant_secret')) ? $this->config->get($prefix . 'merchant_secret') : $this->default['merchant_secret'];
-		}
-
-		if (isset($this->request->post[$prefix . 'base_url'])) {
-			$data['base_url'] = $this->request->post[$prefix . 'base_url'];
-		} else {
-			$data['base_url'] = strlen($this->config->get($prefix . 'base_url')) ? $this->config->get($prefix . 'base_url') : $this->default['base_url'];
-		}
-
-		if (isset($this->request->post[$prefix . 'http_user'])) {
-			$data['http_user'] = $this->request->post[$prefix . 'http_user'];
-		} else {
-			$data['http_user'] = strlen($this->config->get($prefix . 'http_user')) ? $this->config->get($prefix . 'http_user') : $this->default['http_user'];
-		}
-
-		if (isset($this->request->post[$prefix . 'http_password'])) {
-			$data['http_password'] = $this->request->post[$prefix . 'http_password'];
-		} else {
-			$data['http_password'] = strlen($this->config->get($prefix . 'http_password')) ? $this->config->get($prefix . 'http_password') : $this->default['http_password'];
-		}
-
-		if (isset($this->request->post[$prefix . 'payment_action'])) {
-			$data['payment_action'] = $this->request->post[$prefix . 'payment_action'];
-		} else {
-			$data['payment_action'] = strlen($this->config->get($prefix . 'payment_action')) ? $this->config->get($prefix . 'payment_action') : $this->default['payment_action'];
-		}
-
-		if (isset($this->request->post[$prefix . 'descriptor'])) {
-			$data['descriptor'] = $this->request->post[$prefix . 'descriptor'];
-		} else {
-			$data['descriptor'] = strlen($this->config->get($prefix . 'descriptor')) ? $this->config->get($prefix . 'descriptor') : $this->default['descriptor'];
-		}
-
-		if (isset($this->request->post[$prefix . 'additional_info'])) {
-			$data['additional_info'] = $this->request->post[$prefix . 'additional_info'];
-		} else {
-			$data['additional_info'] = strlen($this->config->get($prefix . 'additional_info')) ? $this->config->get($prefix . 'additional_info') : $this->default['additional_info'];
+		foreach ($this->configFields as $configField) {
+			$data[$configField] = $this->getConfigVal($configField);
 		}
 
 		return $data;
@@ -293,13 +254,29 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	 * @return array
 	 * @since 1.0.0
 	 */
-	protected function loadConfigBlocks($data)
-	{
+	protected function loadConfigBlocks($data) {
 		$data['payment_header'] = $this->load->view('extension/payment/wirecard_pg/header', $data);
 		$data['basic_config'] = $this->load->view('extension/payment/wirecard_pg/basic_config', $data);
 		$data['credentials_config'] = $this->load->view('extension/payment/wirecard_pg/credentials_config', $data);
 		$data['advanced_config'] = $this->load->view('extension/payment/wirecard_pg/advanced_config', $data);
 
 		return $data;
+	}
+
+	/**
+	 * Check for post or read the value from the config or "default"
+	 *
+	 * @param string $key
+	 * @return array
+	 * @since 1.0.0
+	 */
+	private function getConfigVal($key) {
+		$prefix = $this->prefix . $this->type . '_';
+
+		if (isset($this->request->post[$key])) {
+			return $this->request->post[$prefix . $key];
+		} else {
+			return strlen($this->config->get($prefix . $key)) ? $this->config->get($prefix . $key) : $this->default[$key];
+		}
 	}
 }

@@ -53,6 +53,7 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	 * @since 1.0.0
 	 */
 	protected $default = array (
+		'status' => 0,
 		'title' => 'Wirecard PayPal',
 		'merchant_account_id' => '2a0e9351-24ed-4110-9a1b-fd0fee6bec26',
 		'merchant_secret' => 'dbc5a498-9a66-43b9-bf1d-a618dd399684',
@@ -96,15 +97,8 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	 * @since 1.0.0
 	 */
 	protected function getRequestData() {
-		$data = parent::getRequestData();
-		$prefix = $this->prefix . $this->type . '_';
+		$this->configFields = array_merge($this->configFields, array('shopping_basket'));
 
-		if (isset($this->request->post[$prefix . 'shopping_basket'])) {
-			$data['shopping_basket'] = $this->request->post[$prefix . 'shopping_basket'];
-		} else {
-			$data['shopping_basket'] = strlen($this->config->get($prefix . 'shopping_basket')) ? $this->config->get($prefix . 'shopping_basket') : $this->default['shopping_basket'];
-		}
-
-		return $data;
+		return parent::getRequestData();
 	}
 }
