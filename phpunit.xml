@@ -11,7 +11,7 @@
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">upload</directory>
+            <directory suffix=".php">*</directory>
             <exclude>
                 <directory>upload/admin/controller</directory>
                 <directory>upload/system</directory>
