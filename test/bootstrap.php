@@ -50,4 +50,5 @@ require_once __DIR__ . '/stubs/Currency.php';
 define('DIR_SYSTEM', __DIR__ . '/../upload/system/');
 define('HELPER_DIR', __DIR__ . '/../upload/catalog/model/extension/payment/wirecard_pg/helper/');
 define('DIR_APPLICATION', __DIR__ . '/../upload/catalog/');
+define('DIR_ADMIN', __DIR__ . '/../upload/admin/');
 define('VERSION', '3.0.2.0');
