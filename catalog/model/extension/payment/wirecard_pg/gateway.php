@@ -38,13 +38,6 @@ include_once(__DIR__ . '/helper/pg_logger.php');
  */
 abstract class ModelExtensionPaymentGateway extends Model {
 
-
-	/**
-	 * @var PGLogger
-	 * @since 1.0.0
-	 */
-	protected $logger;
-
 	/**
 	 * @var string
 	 * @since 1.0.0
@@ -57,14 +50,17 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 */
 	protected $type;
 
-	public function __construct($registry)
-	{
-		parent::__construct($registry);
+    /**
+     * Get a logger instance
+     *
+     * @return PGLogger
+     * @since 1.0.0
+     */
+    protected function getLogger() {
+        return new PGLogger($this->config);
+    }
 
-		$this->logger = new PGLogger();
-	}
-
-	/**
+    /**
 	 * Default payment method getter, method should only be returned if activated
 	 *
 	 * @param $address
@@ -101,13 +97,14 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	public function sendRequest($config, $transaction, $paymetAction) {
 		$this->load->language('extension/payment/wirecard_pg');
 
-		$transactionService = new \Wirecard\PaymentSdk\TransactionService($config, $this->logger);
+		$logger = $this->getLogger();
+		$transactionService = new \Wirecard\PaymentSdk\TransactionService($config, $logger);
 
 		try {
 			/* @var \Wirecard\PaymentSdk\Response\Response $response */
 			$response = $transactionService->process($transaction, $paymetAction);
 		} catch (Exception $exception) {
-			$this->logger->error($exception->getMessage());
+			$logger->error($exception->getMessage());
 			throw($exception);
 		}
 
@@ -120,7 +117,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 
 			foreach ($response->getStatusCollection()->getIterator() as $item) {
 				$errors .= $item->getDescription() . "<br>\n";
-				$this->logger->error($item->getDescription());
+				$logger->error($item->getDescription());
 			}
 
 			$this->session->data['error'] = $errors;

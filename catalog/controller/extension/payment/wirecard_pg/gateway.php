@@ -31,7 +31,7 @@
 
 include_once(DIR_SYSTEM . 'library/autoload.php');
 require_once __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/additional_information_helper.php';
-require_once __DIR__ . '/../../../../model/extension/payment/wirecard_pg/handler/notification_handler.php';
+//require_once __DIR__ . '/../../../../model/extension/payment/wirecard_pg/handler/notification_handler.php';
 require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/pg_order_manager.php';
 require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/pg_logger.php';
 
@@ -83,23 +83,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	protected $transaction;
 
-	/**
-	 * @var PGLogger
-	 */
-	protected $logger;
+    /**
+     * Get a logger instance
+     *
+     * @return PGLogger
+     * @since 1.0.0
+     */
+    protected function getLogger() {
+        return new PGLogger($this->config);
+    }
 
-	/**
-	 * ControllerExtensionPaymentGateway constructor.
-	 *
-	 * @param $registry
-	 */
-	public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPaypal, $language, $cart) {
-		parent::__construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPaypal, $language, $cart);
-
-		$this->logger = new PGLogger();
-	}
-
-	/**
+    /**
 	 * Basic index method
 	 *
 	 * @return mixed
@@ -249,10 +243,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	public function response() {
 		$this->load->language('extension/payment/wirecard_pg');
 
+		$logger = $this->getLogger();
 		$orderManager = new PGOrderManager($this->registry);
 
 		try {
-			$transactionService = new \Wirecard\PaymentSdk\TransactionService($this->getConfig(), $this->logger);
+			$transactionService = new \Wirecard\PaymentSdk\TransactionService($this->getConfig(), $logger);
 			$result = $transactionService->handleResponse($_REQUEST);
 
 			if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
@@ -263,7 +258,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 				foreach ($result->getStatusCollection()->getIterator() as $item) {
 					$errors .= $item->getDescription() . "<br>\n";
-					$this->logger->error($item->getDescription());
+					$logger->error($item->getDescription());
 				}
 
 				$this->session->data['error'] = $errors;
@@ -273,7 +268,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 				$this->response->redirect($this->url->link('checkout/checkout'));
 			}
 		} catch (\InvalidArgumentException $exception) {
-			$this->logger->error(__METHOD__ . ':' . 'Invalid argument set: ' . $exception->getMessage());
+			$logger->error(__METHOD__ . ':' . 'Invalid argument set: ' . $exception->getMessage());
 			$this->session->data['error'] = $exception->getMessage();
 			$this->response->redirect($this->url->link('checkout/checkout'));
 
@@ -283,13 +278,13 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 			if ($wasCancelled) {
 				$this->session->data['error'] = $this->language->get('order_cancelled');
-				$this->logger->warning('Order was cancelled');
+				$logger->warning('Order was cancelled');
 				$this->response->redirect($this->url->link('checkout/checkout'));
 
 				return;
 			}
 
-			$this->logger->error( __METHOD__ . ':' . 'Response is malformed: ' . $exception->getMessage());
+			$logger->error( __METHOD__ . ':' . 'Response is malformed: ' . $exception->getMessage());
 			$this->session->data['error'] = $exception->getMessage();
 
 			$this->response->redirect($this->url->link('checkout/checkout'));

@@ -52,10 +52,11 @@ class PGLogger implements LoggerInterface
 	/**
 	 * Logger constructor.
 	 *
+     * @param Config $confige
 	 * @since 1.0.0
 	 */
-	public function __construct() {
-		$this->logger = new Log('error.log');
+	public function __construct($config) {
+		$this->logger = new Log($config->get('config_error_filename'));
 	}
 
 	/**
