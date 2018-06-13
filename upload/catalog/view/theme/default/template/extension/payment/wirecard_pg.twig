@@ -1,0 +1,48 @@
+{% if additional_info and session_id %}
+        <script type="text/javascript"
+                src="https://h.wirecard.com/fp/tags.js?org_id=6xxznhva&session_id={{ session_id }}">
+        </script>
+        <noscript>
+            <iframe style="width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;"
+                    src="https://h.wirecard.com/tags?org_id=6xxznhva&session_id={{ session_id }}"></iframe>
+        </noscript>
+{% endif %}
+<form id="wirecard-pg-form" action="{{ action }}" method="post" class="form form-horizontal">
+<div class="buttons">
+    <div class="pull-right">
+        {% if session_id %}
+        <input type="hidden" value="{{ session_id }}" id="input-fingerprint-session" name="fingerprint-session"/>
+        {%  endif %}
+        <input type="button" value="{{ button_confirm }}" id="button-confirm" data-loading-text="{{ text_loading }}" class="btn btn-primary" />
+    </div>
+</div>
+</form>
+<script type="text/javascript"><!--
+    $('#button-confirm').on('click', function() {
+        $.ajax({
+            url: 'index.php?route=extension/payment/wirecard_pg_{{ type }}/confirm',
+            type: 'post',
+            dataType: 'json',
+            data: $('#input-fingerprint-session'),
+            beforeSend: function() {
+                $('#button-confirm').button('loading');
+            },
+            complete: function() {
+                $('#button-confirm').button('reset');
+            },
+            success: function(json) {
+                if (json['response']) {
+                    console.log(json['response']);
+                }
+                if (json['redirect']) {
+                    location = json['redirect'];
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+        });
+
+    });
+    //--></script>
