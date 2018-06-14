@@ -46,6 +46,9 @@ require_once __DIR__ . '/stubs/Tax.php';
 require_once __DIR__ . '/stubs/Currency.php';
 require_once __DIR__ . '/stubs/Log.php';
 
+// Helpers
+require_once __DIR__ . '/helper/ResponseProvider.php';
+
 //Defines
 define('DIR_SYSTEM', __DIR__ . '/../system/');
 define('HELPER_DIR', __DIR__ . '/../catalog/model/extension/payment/wirecard_pg/helper/');
