@@ -49,6 +49,16 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	protected $type;
 
 	/**
+	 * Get a logger instance
+	 *
+	 * @return PGLogger
+	 * @since 1.0.0
+	 */
+	protected function getLogger() {
+		return new PGLogger($this->config);
+	}
+
+	/**
 	 * Default payment method getter, method should only be returned if activated
 	 *
 	 * @param $address
@@ -58,7 +68,6 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 */
 	public function getMethod($address, $total) {
 		$prefix = $this->prefix . $this->type;
-
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
 		$logo = '<img src="./image/wirecard_pg/'. $this->type .'.png" width="100"/>';
 		$title = $logo . ' ' . $this->config->get($prefix . '_title');
@@ -84,28 +93,35 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 * @since 1.0.0
 	 */
 	public function sendRequest($config, $transaction, $paymetAction) {
-		$transactionService = new \Wirecard\PaymentSdk\TransactionService($config);
+		$this->load->language('extension/payment/wirecard_pg');
+
+		$logger = $this->getLogger();
+		$transactionService = new \Wirecard\PaymentSdk\TransactionService($config, $logger);
 
 		try {
 			/* @var \Wirecard\PaymentSdk\Response\Response $response */
 			$response = $transactionService->process($transaction, $paymetAction);
 		} catch (Exception $exception) {
+			$logger->error($exception->getMessage());
 			throw($exception);
 		}
 
 		$redirect = $this->url->link('checkout/checkout', '', true);
+
 		if ($response instanceof \Wirecard\PaymentSdk\Response\InteractionResponse) {
 			$redirect = $response->getRedirectUrl();
 		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			$errors = '';
+
 			foreach ($response->getStatusCollection()->getIterator() as $item) {
-				/** @var \Wirecard\PaymentSdk\Entity\Status $item */
 				$errors .= $item->getDescription() . "<br>\n";
+				$logger->error($item->getDescription());
 			}
+
 			$this->session->data['error'] = $errors;
 			$redirect = $this->url->link('checkout/checkout', '', true);
 		} else {
-			$this->session->data['error'] = 'An error occurred during checkout process';
+			$this->session->data['error'] = $this->language->get('order_error');
 		}
 
 		return $redirect;

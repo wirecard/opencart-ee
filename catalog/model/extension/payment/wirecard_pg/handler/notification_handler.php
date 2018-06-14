@@ -29,5 +29,31 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-$_['order_cancelled'] = 'Order was cancelled.';
-$_['order_error'] = 'An error occurred during checkout process.';
+class NotificationHandler {
+
+	/**
+	 * @param Config $config
+	 * @param string $payload
+	 * @return bool|\Wirecard\PaymentSdk\Response\FailureResponse|\Wirecard\PaymentSdk\Response\InteractionResponse|\Wirecard\PaymentSdk\Response\Response|\Wirecard\PaymentSdk\Response\SuccessResponse
+	 */
+	public function handleNotification($config, $payload) {
+		try {
+			$transactionService = new \Wirecard\PaymentSdk\TransactionService($config);
+			$response = $transactionService->handleNotification($payload);
+		} catch (\InvalidArgumentException $exception) {
+
+		} catch (\Wirecard\PaymentSdk\Exception\MalformedResponseException $exception) {
+
+		}
+
+		//logg the response
+		if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
+			return $response;
+		} else {
+			foreach ($response->getStatusCollection() as $status) {
+				//logg error
+			}
+			return false;
+		}
+	}
+}

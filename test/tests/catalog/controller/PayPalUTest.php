@@ -29,9 +29,15 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
+use Mockery as m;
+
 require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_paypal.php';
 require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_paypal.php';
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class PayPalUTest extends \PHPUnit_Framework_TestCase
 {
     protected $config;
@@ -60,7 +66,7 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
 
         $this->response = $this->getMockBuilder(Response::class)
             ->disableOriginalConstructor()
-            ->setMethods(['addHeader', 'setOutput', 'getOutput'])
+            ->setMethods(['addHeader', 'setOutput', 'getOutput', 'redirect'])
             ->getMock();
 
         $this->modelOrder = $this->getMockBuilder(ModelCheckoutOrder::class)
@@ -122,6 +128,7 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
 		    ["price" => 20.241, "name" => "Produkt2", "quantity" => 3, "product_id" => 1, "tax_class_id" => 1],
 		    ["price" => 3.241, "name" => "Produkt3", "quantity" => 5, "product_id" => 3, "tax_class_id" => 1]
 	    ];
+
 	    $this->cart->method('getProducts')->willReturn($items);
 
         $this->controller = new ControllerExtensionPaymentWirecardPGPayPal(
@@ -219,6 +226,51 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
         $expected = json_encode($json);
 
         $this->assertEquals($expected, $this->response->getOutput());
+    }
+
+    public function testSuccessResponse()
+    {
+        $orderManager = m::mock('overload:PGOrderManager');
+        $orderManager->shouldReceive('createResponseOrder');
+
+        $_REQUEST = array(
+            "route" => "extension/payment/wirecard_pg_paypal/response",
+            "psp_name" => "elastic-payments",
+            "custom_css_url" => "",
+            "eppresponse" => ResponseProvider::getPaypalSuccessResponse(),
+            "locale" => "en",
+        );
+
+        $response = $this->controller->response();
+
+        $this->assertTrue($response);
+    }
+
+    public function testFailureResponse()
+    {
+        $_REQUEST = array(
+            "route" => "extension/payment/wirecard_pg_paypal/response",
+            "psp_name" => "elastic-payments",
+            "custom_css_url" => "",
+            "eppresponse" => ResponseProvider::getPaypalFailureResponse(),
+            "locale" => "en",
+        );
+
+        $response = $this->controller->response();
+
+        $this->assertFalse($response);
+    }
+
+    public function testMalformedResponse()
+    {
+        $_REQUEST = array(
+            "payment-method" => "paypal"
+        );
+
+        $this->controller->response();
+
+        $this->assertArrayHasKey('error', $this->session->data);
+        $this->assertEquals('Missing response in payload.', $this->session->data['error']);
     }
 
     public function testIndexActive()
