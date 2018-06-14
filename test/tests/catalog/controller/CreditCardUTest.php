@@ -216,10 +216,10 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $actual);
 	}
 
-	/*public function testGetModel()
+	public function testGetModel()
 	{
 		$actual = $this->controller->getModel();
 
 		$this->assertInstanceOf(get_class($this->modelCreditCard), $actual);
-	}*/
+	}
 }
