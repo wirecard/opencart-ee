@@ -28,8 +28,6 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
-require_once(dirname(__FILE__) . '/pg_basket.php');
-require_once(dirname(__FILE__) . '/pg_account_holder.php');
 
 use Wirecard\PaymentSdk\Transaction\Transaction;
 
@@ -122,7 +120,7 @@ class AdditionalInformationHelper extends Model {
 			if (strlen($order['customer_id'])) {
 				$transaction->setConsumerId($order['customer_id']);
 			}
-			// $transaction->setOrderNumber($order['order_id']);
+			$transaction->setOrderNumber($order['order_id']);
 			$transaction->setDescriptor($this->createDescriptor($order));
 
 			$accountHolder = new PGAccountHolder();

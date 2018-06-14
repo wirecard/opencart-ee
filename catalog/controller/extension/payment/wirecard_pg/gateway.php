@@ -30,10 +30,6 @@
  */
 
 include_once(DIR_SYSTEM . 'library/autoload.php');
-require_once __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/additional_information_helper.php';
-//require_once __DIR__ . '/../../../../model/extension/payment/wirecard_pg/handler/notification_handler.php';
-require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/pg_order_manager.php';
-require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/pg_logger.php';
 
 use Wirecard\PaymentSdk\Config\Config;
 use Wirecard\PaymentSdk\Exception\MalformedResponseException;
@@ -253,19 +249,25 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
 				$orderManager->createResponseOrder($result);
 				$this->response->redirect($this->url->link('checkout/success'));
+
+				return true;
 			} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 				$errors = '';
 
-				foreach ($result->getStatusCollection()->getIterator() as $item) {
+                foreach ($result->getStatusCollection()->getIterator() as $item) {
 					$errors .= $item->getDescription() . "<br>\n";
 					$logger->error($item->getDescription());
 				}
 
 				$this->session->data['error'] = $errors;
 				$this->response->redirect($this->url->link('checkout/checkout'));
+
+				return false;
 			} else {
 				$this->session->data['error'] = $this->language->get('order_error');
 				$this->response->redirect($this->url->link('checkout/checkout'));
+
+				return false;
 			}
 		} catch (\InvalidArgumentException $exception) {
 			$logger->error(__METHOD__ . ':' . 'Invalid argument set: ' . $exception->getMessage());
@@ -274,7 +276,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 			return;
 		} catch (MalformedResponseException $exception ) {
-			$wasCancelled = $_REQUEST['cancelled'] == 1;
+			$wasCancelled = isset($_REQUEST['cancelled']);
 
 			if ($wasCancelled) {
 				$this->session->data['error'] = $this->language->get('order_cancelled');

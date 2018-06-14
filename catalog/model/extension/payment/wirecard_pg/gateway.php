@@ -29,8 +29,6 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-include_once(__DIR__ . '/helper/pg_logger.php');
-
 /**
  * Class ModelExtensionPaymentGateway
  *
