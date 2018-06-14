@@ -207,13 +207,13 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$payload = file_get_contents('php://input');
 
 		$notificationHandler = new NotificationHandler();
-		$response = $notificationHandler->handleNotification( $this->getConfig(), $payload);
+		$response = $notificationHandler->handleNotification($this->getConfig(), $this->getLogger(), $payload);
 
+		// All errors are already caught and handled in handleNotification.
+        // So there's no need to check for an else here.
 		if ($response) {
 			$orderManager = new PGOrderManager($this->registry);
 			$orderManager->createNotifyOrder($response, $this);
-		} else {
-			//write log wit error ?
 		}
 	}
 
