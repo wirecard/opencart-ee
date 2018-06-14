@@ -254,7 +254,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 				$errors = '';
 
-                foreach ($result->getStatusCollection()->getIterator() as $item) {
+				foreach ($result->getStatusCollection()->getIterator() as $item) {
 					$errors .= $item->getDescription() . "<br>\n";
 					$logger->error($item->getDescription());
 				}
