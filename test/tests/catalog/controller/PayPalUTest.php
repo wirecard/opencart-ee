@@ -168,7 +168,11 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
         $expected->setShopInfo(self::SHOP, VERSION);
         $expected->setPluginInfo(self::PLUGIN, $this->pluginVersion);
 
-        $actual = $this->controller->getConfig();
+	    $currency = [
+		    'currency_code' => 'EUR',
+		    'currency_value' => 1
+	    ];
+        $actual = $this->controller->getConfig($currency);
 
         $this->assertEquals($expected, $actual);
     }
