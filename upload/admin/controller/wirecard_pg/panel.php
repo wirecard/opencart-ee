@@ -1,8 +1,52 @@
 <?php
+/**
+ * Shop System Plugins - Terms of Use
+ *
+ * The plugins offered are provided free of charge by Wirecard AG and are explicitly not part
+ * of the Wirecard AG range of products and services.
+ *
+ * They have been tested and approved for full functionality in the standard configuration
+ * (status on delivery) of the corresponding shop system. They are under General Public
+ * License version 3 (GPLv3) and can be used, developed and passed on to third parties under
+ * the same terms.
+ *
+ * However, Wirecard AG does not provide any guarantee or accept any liability for any errors
+ * occurring when used in an enhanced, customized shop system configuration.
+ *
+ * Operation in an enhanced, customized configuration is at your own risk and requires a
+ * comprehensive test phase by the user of the plugin.
+ *
+ * Customers use the plugins at their own risk. Wirecard AG does not guarantee their full
+ * functionality neither does Wirecard AG assume liability for any disadvantages related to
+ * the use of the plugins. Additionally, Wirecard AG does not guarantee the full functionality
+ * for customized shop systems or installed plugins of other vendors of plugins within the same
+ * shop system.
+ *
+ * Customers are responsible for testing the plugin's functionality before starting productive
+ * operation.
+ *
+ * By installing the plugin into the shop system the customer agrees to these terms of use.
+ * Please do not use the plugin if you do not agree to these terms of use!
+ */
+
+
+/**
+ * Class ControllerWirecardPGPanel
+ *
+ * Basic payment extension controller
+ *
+ * @since 1.0.0
+ */
 class ControllerWirecardPGPanel extends Controller {
 
 	const ROUTE = 'extension/payment/wirecard_pg';
+	const PANEL = 'wirecard_pg/panel';
 
+    /**
+     * Basic index method
+     *
+     * @since 1.0.0
+     */
 	public function index() {
 		$this->load->language(self::ROUTE);
 
@@ -14,7 +58,7 @@ class ControllerWirecardPGPanel extends Controller {
 
 		$data['transactions'] = $this->loadTransactionData();
 
-		$this->response->setOutput($this->load->view('wirecard_pg/panel', $data));
+		$this->response->setOutput($this->load->view(self::PANEL, $data));
 	}
 
 	/**
@@ -38,7 +82,7 @@ class ControllerWirecardPGPanel extends Controller {
 				'transaction_state' => $transaction['transaction_state'],
 				'amount' => $transaction['amount'],
 				'currency' => $transaction['currency'],
-				'href' => $this->url->link('wirecard_pg/panel/transaction', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['tx_id'], true)
+				'href' => $this->url->link(self::PANEL . '/transaction', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['tx_id'], true)
 			);
 		}
 
@@ -89,7 +133,7 @@ class ControllerWirecardPGPanel extends Controller {
 
 		$breadcrumbs[] = array(
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('wirecard_pg/panel', 'user_token=' . $this->session->data['user_token'], true)
+			'href' => $this->url->link(self::PANEL, 'user_token=' . $this->session->data['user_token'], true)
 		);
 
 		return $breadcrumbs;
@@ -121,16 +165,47 @@ class ControllerWirecardPGPanel extends Controller {
 	private function getTransactionDetails($id) {
 		$this->load->model(self::ROUTE);
 		$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($id);
+		$operations = $this->getBackendOperations($transaction);
 		$data = false;
 
 		if ($transaction) {
 			$data = array(
 				'transaction_id' => $transaction['transaction_id'],
-				'response' => json_decode($transaction['response'], true)
+				'response' => json_decode($transaction['response'], true),
+                'operations' => $operations
 			);
 		}
 
 		return $data;
 	}
 
+    /**
+     * Retrieve backend operations for specific transaction
+     *
+     * @param array $childTransaction
+     * @return array|bool
+     * @since 1.0.0
+     */
+	private function getBackendOperations($childTransaction) {
+        $files = glob(
+            DIR_APPLICATION . 'controller/extension/payment/ControllerExtensionPaymentWirecardPG*.php',
+            GLOB_BRACE
+        );
+
+        /** @var ControllerExtensionPaymentGateway $controller */
+        foreach ($files as $controller) {
+            if ($childTransaction['payment_method'] == $controller->getType()) {
+                /** @var \Wirecard\PaymentSdk\Transaction\Transaction $transaction */
+                $transaction = $controller->getTransactionInstance();
+                $transaction->setParentTransactionId($childTransaction['transaction_id']);
+
+                $backendService = new \Wirecard\PaymentSdk\BackendService($controller->getConfig());
+                $operations = $backendService->retrieveBackendOperations($transaction, true);
+
+                return $operations;
+            }
+        }
+
+        return false;
+    }
 }

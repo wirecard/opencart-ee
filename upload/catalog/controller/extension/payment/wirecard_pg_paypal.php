@@ -100,5 +100,16 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 
 		return $this->model_extension_payment_wirecard_pg_paypal;
 	}
+
+    /**
+     * Get new instance of payment specific transaction
+     *
+     * @return PayPalTransaction
+     * @since 1.0.0
+     */
+    public function getTransactionInstance()
+    {
+        return new PayPalTransaction();
+    }
 }
 

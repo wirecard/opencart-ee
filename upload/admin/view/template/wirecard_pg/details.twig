@@ -22,6 +22,16 @@
                 {{ error }}
                 {% endif %}
                 {% if transaction %}
+                    {% if transaction.operations %}
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{ text_backend_operations }}</h3>
+                    </div>
+                    <div class="panel-group">
+                        {% for key, operation in transaction.operations %}
+                            <a href="{{ key }}">{{ operation }}</a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 <div class="panel-heading">
                     <h3 class="panel-title">{{ text_response_data }}</h3>
                 </div>
