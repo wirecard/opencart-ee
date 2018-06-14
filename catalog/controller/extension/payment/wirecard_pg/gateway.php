@@ -188,7 +188,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return Config
 	 * @since 1.0.0
 	 */
-	public function getConfig($currency) {
+	public function getConfig($currency = null) {
 		$baseUrl = $this->getShopConfigVal('base_url');
 		$httpUser = $this->getShopConfigVal('http_user');
 		$httpPassword = $this->getShopConfigVal('http_password');
