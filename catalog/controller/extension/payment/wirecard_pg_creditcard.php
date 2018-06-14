@@ -110,8 +110,6 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 			);
 		}
 
-		var_dump($paymentConfig);die();
-
 		$config->add($paymentConfig);
 
 		return $config;
