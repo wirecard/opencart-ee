@@ -14,7 +14,7 @@ class ControllerWirecardPGPanel extends Controller {
 
 		$data['transactions'] = $this->loadTransactionData();
 
-		$this->response->setOutput($this->load->view('wirecard_pg/panel', $data));
+		$this->response->setOutput($this->load->view('extension/wirecard_pg/panel', $data));
 	}
 
 	/**
@@ -38,7 +38,7 @@ class ControllerWirecardPGPanel extends Controller {
 				'transaction_state' => $transaction['transaction_state'],
 				'amount' => $transaction['amount'],
 				'currency' => $transaction['currency'],
-				'href' => $this->url->link('wirecard_pg/panel/transaction', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['tx_id'], true)
+				'href' => $this->url->link('extension/wirecard_pg/panel/transaction', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['tx_id'], true)
 			);
 		}
 
@@ -70,7 +70,7 @@ class ControllerWirecardPGPanel extends Controller {
 			$data['error'] = $this->language->get('error_no_transaction');
 		}
 
-		$this->response->setOutput($this->load->view('wirecard_pg/details', $data));
+		$this->response->setOutput($this->load->view('extension/wirecard_pg/details', $data));
 	}
 
 	/**
@@ -89,7 +89,7 @@ class ControllerWirecardPGPanel extends Controller {
 
 		$breadcrumbs[] = array(
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('wirecard_pg/panel', 'user_token=' . $this->session->data['user_token'], true)
+			'href' => $this->url->link('extension/wirecard_pg/panel', 'user_token=' . $this->session->data['user_token'], true)
 		);
 
 		return $breadcrumbs;

@@ -13,11 +13,11 @@
 					'id'       => 'menu-wirecard',
 					'icon'	   => 'fa-money',
 					'name'	   => 'Wirecard Transactions',
-					'href'     => $this->url->link('wirecard_pg/panel', 'user_token=' . $this->session->data['user_token'], 'SSL'),
+					'href'     => $this->url->link('extension/wirecard_pg/panel', 'user_token=' . $this->session->data['user_token'], 'SSL'),
 					'children' => array()
 				);
 				$this->load->model('user/user_group');
-				$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'wirecard_pg/panel');
+				$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'extension/wirecard_pg/panel');
                 ]]></add>
         </operation>
     </file>
