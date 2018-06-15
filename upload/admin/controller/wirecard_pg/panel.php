@@ -58,8 +58,22 @@ class ControllerWirecardPGPanel extends Controller {
 
 		$data['transactions'] = $this->loadTransactionData();
 
-		$this->response->setOutput($this->load->view(self::PANEL, $data));
+		$this->response->setOutput($this->load->view('extension/wirecard_pg/panel', $data));
 	}
+
+    /**
+     * Install process
+     *
+     * @since 1.0.0
+     */
+    public function install() {
+        $this->load->model('user/user_group');
+
+        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'wirecard_pg/panel');
+        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'wirecard_pg/panel');
+
+        $this->model_extension_payment_wirecard_pg->install();
+    }
 
 	/**
 	 * Load transactionlist data
@@ -114,7 +128,7 @@ class ControllerWirecardPGPanel extends Controller {
 			$data['error'] = $this->language->get('error_no_transaction');
 		}
 
-		$this->response->setOutput($this->load->view('wirecard_pg/details', $data));
+		$this->response->setOutput($this->load->view('extension/wirecard_pg/details', $data));
 	}
 
 	/**

@@ -30,6 +30,7 @@
  */
 
 include_once(DIR_SYSTEM . 'library/autoload.php');
+include_once(__DIR__ . '/../../../../../catalog/model/extension/payment/wirecard_pg/helper/pg_logger.php');
 
 /**
  * Class ControllerExtensionPaymentGateway
@@ -38,7 +39,7 @@ include_once(DIR_SYSTEM . 'library/autoload.php');
  *
  * @since 1.0.0
  */
-abstract class ControllerExtensionPaymentGateway extends Controller{
+abstract class ControllerExtensionPaymentGateway extends Controller {
 
 	/**
 	 * @var string
@@ -57,6 +58,16 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	 * @since 1.0.0
 	 */
 	protected $default = array();
+
+	/**
+	 * Get a logger instance
+	 *
+	 * @return PGLogger
+	 * @since 1.0.0
+	 */
+	protected function getLogger() {
+		return new PGLogger($this->config);
+	}
 
 	/**
 	 * Load common headers and template file including config values
@@ -107,8 +118,14 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	 * @since 1.0.0
 	 */
 	public function install() {
-
 		$this->load->model('extension/payment/wirecard_pg');
+        $this->load->model('setting/setting');
+        $this->load->model('setting/extension');
+        $this->load->model('user/user_group');
+
+        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'wirecard_pg/panel');
+        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'wirecard_pg/panel');
+
 		$this->model_extension_payment_wirecard_pg->install();
 	}
 
@@ -281,6 +298,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 	public function testConfig() {
 		$this->load->language('extension/payment/wirecard_pg');
 
+		$logger = $this->getLogger();
 		$json = array();
 
 		$baseUrl = $this->request->post['base_url'];
@@ -288,7 +306,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
 		$httpPass = $this->request->post['http_pass'];
 
 		$testConfig = new \Wirecard\PaymentSdk\Config\Config($baseUrl, $httpUser, $httpPass);
-		$transactionService = new \Wirecard\PaymentSdk\TransactionService($testConfig);
+		$transactionService = new \Wirecard\PaymentSdk\TransactionService($testConfig, $logger);
 		try {
 			$result = $transactionService->checkCredentials();
 			if($result) {

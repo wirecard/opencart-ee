@@ -32,7 +32,6 @@
 require_once __DIR__ . '/../upload/system/library/autoload.php';
 require_once __DIR__ . '/../upload/system/library/opencart/opencart/upload/system/engine/proxy.php';
 
-
 //load opencart stubs
 require_once __DIR__ . '/stubs/Config.php';
 require_once __DIR__ . '/stubs/Controller.php';
@@ -45,6 +44,10 @@ require_once __DIR__ . '/stubs/Language.php';
 require_once __DIR__ . '/stubs/Cart.php';
 require_once __DIR__ . '/stubs/Tax.php';
 require_once __DIR__ . '/stubs/Currency.php';
+require_once __DIR__ . '/stubs/Log.php';
+
+// Helpers
+require_once __DIR__ . '/helper/ResponseProvider.php';
 
 //Defines
 define('DIR_SYSTEM', __DIR__ . '/../upload/system/');
