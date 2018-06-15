@@ -135,6 +135,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 
 	public function getCreditCardUiRequestData() {
 		$this->transaction = new CreditCardTransaction();
+		$this->transaction->setConfig($this->getConfig()->get(CreditCardTransaction::NAME));
 		$this->prepareTransaction();
 
 		$transactionService = new TransactionService($this->getConfig(), $this->getLogger());

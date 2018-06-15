@@ -321,13 +321,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	protected function getRedirects() {
-		$redirectUrls = new \Wirecard\PaymentSdk\Entity\Redirect(
+		return new \Wirecard\PaymentSdk\Entity\Redirect(
 			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'),
 			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response&cancelled=1', '', 'SSL'),
 			$this->url->link('extension/payment/wirecard_pg_'. $this->type . '/response', '', 'SSL')
 		);
-
-		return $redirectUrls;
 	}
 
 	/**
