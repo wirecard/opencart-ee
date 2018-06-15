@@ -32,6 +32,7 @@
 include_once(DIR_SYSTEM . 'library/autoload.php');
 
 use Wirecard\PaymentSdk\Config\Config;
+use Wirecard\PaymentSdk\Exception\MalformedResponseException;
 
 /**
  * Class ControllerExtensionPaymentGateway
