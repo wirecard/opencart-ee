@@ -62,6 +62,9 @@
     <!-- Detect BOMs to avoid curruptions -->
     <rule ref="Generic.Files.ByteOrderMark"/>
 
+    <!-- Use K&R style braces -->
+    <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie" />
+
     <rule ref="Generic.WhiteSpace.DisallowSpaceIndent">
         <exclude-pattern>*.tpl</exclude-pattern>
         <exclude-pattern>*.css</exclude-pattern>
@@ -98,4 +101,5 @@
 
     <!-- exclude the actual tests directory from being tested! -->
     <exclude-pattern>*/tests/*</exclude-pattern>
+    <exclude-pattern>./upload/system/*</exclude-pattern>
 </ruleset>

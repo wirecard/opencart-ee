@@ -61,19 +61,19 @@ class ControllerWirecardPGPanel extends Controller {
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/panel', $data));
 	}
 
-    /**
-     * Install process
-     *
-     * @since 1.0.0
-     */
-    public function install() {
-        $this->load->model('user/user_group');
+	/**
+	 * Install process
+	 *
+	 * @since 1.0.0
+	 */
+	public function install() {
+		$this->load->model('user/user_group');
 
-        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'wirecard_pg/panel');
-        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'wirecard_pg/panel');
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'wirecard_pg/panel');
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'wirecard_pg/panel');
 
-        $this->model_extension_payment_wirecard_pg->install();
-    }
+		$this->model_extension_payment_wirecard_pg->install();
+	}
 
 	/**
 	 * Load transactionlist data

@@ -207,8 +207,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 *
 	 * @since 1.0.0
 	 */
-	public function notify()
-	{
+	public function notify() {
 		$payload = file_get_contents('php://input');
 
 		$notificationHandler = new NotificationHandler();
@@ -228,8 +227,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return Model
 	 * @since 1.0.0
 	 */
-	public function getModel()
-	{
+	public function getModel() {
 		$this->load->model('extension/payment/wirecard_pg/gateway');
 
 		return $this->model_extension_payment_wirecard_pg_gateway;
@@ -358,8 +356,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return string
 	 * @since 1.0.0
 	 */
-	public function getType()
-	{
+	public function getType() {
 		return $this->type;
 	}
 
