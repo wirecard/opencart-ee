@@ -112,8 +112,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller{
         $this->load->model('setting/extension');
         $this->load->model('user/user_group');
 
-        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'extension/wirecard_pg/panel');
-        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'extension/wirecard_pg/panel');
+        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'wirecard_pg/panel');
+        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'wirecard_pg/panel');
 
 		$this->model_extension_payment_wirecard_pg->install();
 	}

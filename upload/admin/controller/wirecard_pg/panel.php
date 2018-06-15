@@ -17,6 +17,20 @@ class ControllerWirecardPGPanel extends Controller {
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/panel', $data));
 	}
 
+    /**
+     * Install process
+     *
+     * @since 1.0.0
+     */
+    public function install() {
+        $this->load->model('user/user_group');
+
+        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'wirecard_pg/panel');
+        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'wirecard_pg/panel');
+
+        $this->model_extension_payment_wirecard_pg->install();
+    }
+
 	/**
 	 * Load transactionlist data
 	 *
@@ -38,7 +52,7 @@ class ControllerWirecardPGPanel extends Controller {
 				'transaction_state' => $transaction['transaction_state'],
 				'amount' => $transaction['amount'],
 				'currency' => $transaction['currency'],
-				'href' => $this->url->link('extension/wirecard_pg/panel/transaction', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['tx_id'], true)
+				'href' => $this->url->link('wirecard_pg/panel/transaction', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['tx_id'], true)
 			);
 		}
 
@@ -89,7 +103,7 @@ class ControllerWirecardPGPanel extends Controller {
 
 		$breadcrumbs[] = array(
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('extension/wirecard_pg/panel', 'user_token=' . $this->session->data['user_token'], true)
+			'href' => $this->url->link('wirecard_pg/panel', 'user_token=' . $this->session->data['user_token'], true)
 		);
 
 		return $breadcrumbs;
