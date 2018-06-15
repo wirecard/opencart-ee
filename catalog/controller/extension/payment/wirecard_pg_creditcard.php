@@ -34,6 +34,7 @@ require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 use Wirecard\PaymentSdk\Transaction\CreditCardTransaction;
 use Wirecard\PaymentSdk\Entity\Amount;
 use Wirecard\PaymentSdk\Config\CreditCardConfig;
+use Wirecard\PaymentSdk\TransactionService;
 
 /**
  * Class ControllerExtensionPaymentWirecardPGCreditCard
@@ -55,8 +56,12 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 *
 	 * @since 1.0.0
 	 */
-	public function index() {
-		return parent::index();
+	public function index($data = null) {
+
+		$data['base_url'] = $this->getShopConfigVal('base_url');
+		//load template for the ui to load
+		$data['credit_card'] = $this->load->view('extension/payment/wirecard_credit_card_ui', $data);
+		return parent::index($data);
 	}
 
 	/**
@@ -65,7 +70,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 * @since 1.0.0
 	 */
 	public function confirm() {
-		$this->transaction = new CreditCardTransaction();
+		//$this->transaction = new CreditCardTransaction();
 
 		parent::confirm();
 	}
@@ -126,6 +131,19 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
 
 		return $this->model_extension_payment_wirecard_pg_creditcard;
+	}
+
+	public function getCreditCardUiRequestData() {
+		$this->transaction = new CreditCardTransaction();
+		$this->prepareTransaction();
+
+		$transactionService = new TransactionService($this->getConfig(), $this->getLogger());
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($transactionService->getCreditCardUiWithData(
+			$this->transaction,
+			$this->getShopConfigVal('payment_action'),
+			'en'
+		)));
 	}
 }
 

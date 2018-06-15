@@ -7,6 +7,9 @@
                     src="https://h.wirecard.com/tags?org_id=6xxznhva&session_id={{ session_id }}"></iframe>
         </noscript>
 {% endif %}
+{% if credit_card %}
+    {{ credit_card }}
+{% endif %}
 <form id="wirecard-pg-form" action="{{ action }}" method="post" class="form form-horizontal">
 <div class="buttons">
     <div class="pull-right">

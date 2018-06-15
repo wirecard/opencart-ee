@@ -54,7 +54,7 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 	 *
 	 * @since 1.0.0
 	 */
-	public function index() {
+	public function index($data = null) {
 		return parent::index();
 	}
 

@@ -109,12 +109,12 @@ class AdditionalInformationHelper extends Model {
 	 */
 	public function setAdditionalInformation($transaction, $order)
 	{
-			$transaction->setOrderDetail(sprintf(
+			/*$transaction->setOrderDetail(sprintf(
 				'%s %s %s',
 				$order['email'],
 				$order['firstname'],
 				$order['lastname']
-			));
+			));*/
 			if ($order['ip']) {
 				$transaction->setIpAddress($order['ip']);
 			} else {

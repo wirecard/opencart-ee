@@ -95,7 +95,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return mixed
 	 * @since 1.0.0
 	 */
-	public function index() {
+	public function index($data = null) {
 		$this->load->model('checkout/order');
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
@@ -120,47 +120,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$json = array();
 
 		if ($this->session->data['payment_method']['code'] == 'wirecard_pg_' . $this->type) {
-			$this->load->language('extension/payment/wirecard_pg');
-			$this->load->model('checkout/order');
-			$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-			$this->load->model('checkout/order');
-			$currency = [
-				'currency_code' => $order['currency_code'],
-				'currency_value' => $order['currency_value']
-			];
-
-			$amount = new \Wirecard\PaymentSdk\Entity\Amount( $order['total'], $order['currency_code']);
-			$this->paymentConfig = $this->getConfig($currency);
-			$this->transaction->setRedirect($this->getRedirects());
-			$this->transaction->setNotificationUrl($this->getNotificationUrl());
-			$this->transaction->setAmount($amount);
-
-			$additionalHelper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
-			$this->transaction = $additionalHelper->setIdentificationData($this->transaction, $order);
-			if ($this->getShopConfigVal('descriptor')) {
-				$this->transaction->setDescriptor($additionalHelper->createDescriptor($order));
-			}
-
-			if ($this->getShopConfigVal('shopping_basket')) {
-				$this->transaction = $additionalHelper->addBasket(
-					$this->transaction,
-					$this->cart->getProducts(),
-					$this->session->data['shipping_method'],
-					$currency,
-					$order['total']
-				);
-			}
-
-			if ($this->getShopConfigVal('additional_info')) {
-				$this->transaction = $additionalHelper->setAdditionalInformation($this->transaction, $order);
-			}
-
-			if (isset($this->request->post['fingerprint-session'])) {
-				$device = new \Wirecard\PaymentSdk\Entity\Device();
-				$device->setFingerprint($this->request->post['fingerprint-session']);
-				$this->transaction->setDevice($device);
-			}
-
+			$this->prepareTransaction();
 			$model = $this->getModel();
 
 			if (!$this->cart->hasStock()) {
@@ -177,6 +137,54 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	/**
+	 * Fill transaction with data
+	 *
+	 * @since 1.0.0
+	 */
+	public function prepareTransaction() {
+		$this->load->language('extension/payment/wirecard_pg');
+		$this->load->model('checkout/order');
+		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+		$this->load->model('checkout/order');
+		$currency = [
+			'currency_code' => $order['currency_code'],
+			'currency_value' => $order['currency_value']
+		];
+
+		$amount = new \Wirecard\PaymentSdk\Entity\Amount( $order['total'], $order['currency_code']);
+		$this->paymentConfig = $this->getConfig($currency);
+		$this->transaction->setRedirect($this->getRedirects());
+		$this->transaction->setNotificationUrl($this->getNotificationUrl());
+		$this->transaction->setAmount($amount);
+
+		$additionalHelper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
+		$this->transaction = $additionalHelper->setIdentificationData($this->transaction, $order);
+		if ($this->getShopConfigVal('descriptor')) {
+			$this->transaction->setDescriptor($additionalHelper->createDescriptor($order));
+		}
+
+		if ($this->getShopConfigVal('shopping_basket')) {
+			$this->transaction = $additionalHelper->addBasket(
+				$this->transaction,
+				$this->cart->getProducts(),
+				$this->session->data['shipping_method'],
+				$currency,
+				$order['total']
+			);
+		}
+
+		if ($this->getShopConfigVal('additional_info')) {
+			$this->transaction = $additionalHelper->setAdditionalInformation($this->transaction, $order);
+		}
+
+		if (isset($this->request->post['fingerprint-session'])) {
+			$device = new \Wirecard\PaymentSdk\Entity\Device();
+			$device->setFingerprint($this->request->post['fingerprint-session']);
+			$this->transaction->setDevice($device);
+		}
 	}
 
 	/**
