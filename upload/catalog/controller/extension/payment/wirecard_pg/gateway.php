@@ -85,13 +85,22 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	protected $transaction;
 
 	/**
+	 * Get a logger instance
+	 *
+	 * @return PGLogger
+	 * @since 1.0.0
+	 */
+	protected function getLogger() {
+		return new PGLogger($this->config);
+	}
+
+	/**
 	 * Basic index method
 	 *
 	 * @return mixed
 	 * @since 1.0.0
 	 */
-	public function index()
-	{
+	public function index() {
 		$this->load->model('checkout/order');
 
 		$this->load->language(self::PATH);
@@ -114,8 +123,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 *
 	 * @since 1.0.0
 	 */
-	public function confirm()
-	{
+	public function confirm() {
 		$json = array();
 
 		if ($this->session->data['payment_method']['code'] == 'wirecard_pg_' . $this->type) {
@@ -184,8 +192,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return Config
 	 * @since 1.0.0
 	 */
-	public function getConfig()
-	{
+	public function getConfig() {
 		$baseUrl = $this->getConfigVal('base_url');
 		$httpUser = $this->getConfigVal('http_user');
 		$httpPassword = $this->getConfigVal('http_password');
@@ -207,13 +214,13 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$payload = file_get_contents('php://input');
 
 		$notificationHandler = new NotificationHandler();
-		$response = $notificationHandler->handleNotification( $this->getConfig(), $payload);
+		$response = $notificationHandler->handleNotification($this->getConfig(), $this->getLogger(), $payload);
 
+		// All errors are already caught and handled in handleNotification.
+		// So there's no need to check for an else here.
 		if ($response) {
 			$orderManager = new PGOrderManager($this->registry);
 			$orderManager->createNotifyOrder($response, $this);
-		} else {
-			//write log wit error ?
 		}
 	}
 
@@ -237,19 +244,58 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	public function response() {
+		$this->load->language('extension/payment/wirecard_pg');
+
+		$logger = $this->getLogger();
 		$orderManager = new PGOrderManager($this->registry);
+
 		try {
-			$transactionService = new \Wirecard\PaymentSdk\TransactionService($this->getConfig());
+			$transactionService = new \Wirecard\PaymentSdk\TransactionService($this->getConfig(), $logger);
 			$result = $transactionService->handleResponse($_REQUEST);
-		} catch (Exception $exception) {
-			$this->session->data['error'] = 'An error occurred during checkout process';
+
+			if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
+				$orderManager->createResponseOrder($result);
+				$this->response->redirect($this->url->link('checkout/success'));
+
+				return true;
+			} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
+				$errors = '';
+
+				foreach ($result->getStatusCollection()->getIterator() as $item) {
+					$errors .= $item->getDescription() . "<br>\n";
+					$logger->error($item->getDescription());
+				}
+
+				$this->session->data['error'] = $errors;
+				$this->response->redirect($this->url->link('checkout/checkout'));
+
+				return false;
+			} else {
+				$this->session->data['error'] = $this->language->get('order_error');
+				$this->response->redirect($this->url->link('checkout/checkout'));
+
+				return false;
+			}
+		} catch (\InvalidArgumentException $exception) {
+			$logger->error(__METHOD__ . ':' . 'Invalid argument set: ' . $exception->getMessage());
+			$this->session->data['error'] = $exception->getMessage();
 			$this->response->redirect($this->url->link('checkout/checkout'));
-		}
-		if($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
-			$orderManager->createResponseOrder($result, $this);
-			$this->response->redirect($this->url->link('checkout/success'));
-		} else {
-			$this->session->data['error'] = 'An error occurred during checkout process';
+
+			return;
+		} catch (MalformedResponseException $exception ) {
+			$wasCancelled = isset($_REQUEST['cancelled']);
+
+			if ($wasCancelled) {
+				$this->session->data['error'] = $this->language->get('order_cancelled');
+				$logger->warning('Order was cancelled');
+				$this->response->redirect($this->url->link('checkout/checkout'));
+
+				return;
+			}
+
+			$logger->error( __METHOD__ . ':' . 'Response is malformed: ' . $exception->getMessage());
+			$this->session->data['error'] = $exception->getMessage();
+
 			$this->response->redirect($this->url->link('checkout/checkout'));
 		}
 	}
@@ -260,8 +306,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return string
 	 * @since 1.0.0
 	 */
-	protected function getNotificationUrl()
-	{
+	protected function getNotificationUrl() {
 		return $this->url->link(
 			self::ROUTE . $this->type . '/notify', '', 'SSL'
 		);
@@ -273,11 +318,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return \Wirecard\PaymentSdk\Entity\Redirect
 	 * @since 1.0.0
 	 */
-	protected function getRedirects()
-	{
+	protected function getRedirects() {
 		$redirectUrls = new \Wirecard\PaymentSdk\Entity\Redirect(
 			$this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL'),
-			$this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL'),
+			$this->url->link(self::ROUTE . $this->type . '/response&cancelled=1', '', 'SSL'),
 			$this->url->link(self::ROUTE. $this->type . '/response', '', 'SSL')
 		);
 
@@ -291,8 +335,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return bool|string
 	 * @since 1.0.0
 	 */
-	protected function getConfigVal($field)
-	{
+	protected function getConfigVal($field) {
 		return $this->config->get($this->prefix . $this->type . '_' . $field);
 	}
 
@@ -303,8 +346,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return string
 	 * @since 1.0.0
 	 */
-	protected function createSessionString($order)
-	{
+	protected function createSessionString($order) {
 		$consumer_id = $order['customer_id'];
 		$timestamp = microtime();
 		$session = md5($consumer_id . "_" . $timestamp);
