@@ -77,8 +77,7 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 	 * @return \Wirecard\PaymentSdk\Config\Config
 	 * @since 1.0.0
 	 */
-	public function getConfig($currency = null)
-	{
+	public function getConfig($currency = null) {
 		$merchant_account_id = $this->getShopConfigVal('merchant_account_id');
 		$merchant_secret = $this->getShopConfigVal('merchant_secret');
 
@@ -95,8 +94,7 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 	 * @return Model
 	 * @since 1.0.0
 	 */
-	public function getModel()
-	{
+	public function getModel() {
 		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
 
 		return $this->model_extension_payment_wirecard_pg_paypal;
