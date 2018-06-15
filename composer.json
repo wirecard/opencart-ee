@@ -26,8 +26,8 @@
   },
   "autoload": {
       "classmap": [
-        "catalog/model/extension/payment/wirecard_pg/helper/",
-        "catalog/model/extension/payment/wirecard_pg/handler/"
+        "upload/catalog/model/extension/payment/wirecard_pg/helper/",
+        "upload/catalog/model/extension/payment/wirecard_pg/handler/"
       ]
   },
   "config": {
