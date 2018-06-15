@@ -62,6 +62,9 @@
     <!-- Detect BOMs to avoid curruptions -->
     <rule ref="Generic.Files.ByteOrderMark"/>
 
+    <!-- Use K&R style braces -->
+    <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie" />
+
     <rule ref="Generic.WhiteSpace.DisallowSpaceIndent">
         <exclude-pattern>*.tpl</exclude-pattern>
         <exclude-pattern>*.css</exclude-pattern>
