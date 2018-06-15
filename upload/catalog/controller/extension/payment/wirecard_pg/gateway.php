@@ -30,11 +30,9 @@
  */
 
 include_once(DIR_SYSTEM . 'library/autoload.php');
-require_once __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/additional_information_helper.php';
-require_once __DIR__ . '/../../../../model/extension/payment/wirecard_pg/handler/notification_handler.php';
-require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/pg_order_manager.php';
 
 use Wirecard\PaymentSdk\Config\Config;
+use Wirecard\PaymentSdk\Exception\MalformedResponseException;
 
 /**
  * Class ControllerExtensionPaymentGateway
