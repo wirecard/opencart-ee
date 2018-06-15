@@ -31,6 +31,11 @@
 
 include_once(DIR_SYSTEM . 'library/autoload.php');
 
+require_once __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/additional_information_helper.php';
+require_once __DIR__ . '/../../../../model/extension/payment/wirecard_pg/handler/notification_handler.php';
+require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/pg_order_manager.php';
+require __DIR__ . '/../../../../model/extension/payment/wirecard_pg/helper/pg_logger.php';
+
 use Wirecard\PaymentSdk\Config\Config;
 use Wirecard\PaymentSdk\Exception\MalformedResponseException;
 
@@ -250,7 +255,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$result = $transactionService->handleResponse($_REQUEST);
 
 			if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
-				$orderManager->createResponseOrder($result);
+				$orderManager->createResponseOrder($result, $this);
 				$this->response->redirect($this->url->link('checkout/success'));
 
 				return true;
