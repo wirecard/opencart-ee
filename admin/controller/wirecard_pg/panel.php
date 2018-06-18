@@ -42,11 +42,11 @@ class ControllerWirecardPGPanel extends Controller {
 	const ROUTE = 'extension/payment/wirecard_pg';
 	const PANEL = 'wirecard_pg/panel';
 
-    /**
-     * Basic index method
-     *
-     * @since 1.0.0
-     */
+	/**
+	 * Basic index method
+	 *
+	 * @since 1.0.0
+	 */
 	public function index() {
 		$this->load->language(self::ROUTE);
 
@@ -121,6 +121,7 @@ class ControllerWirecardPGPanel extends Controller {
 
 		$data['text_transaction'] = $this->language->get('text_transaction');
 		$data['text_response_data'] = $this->language->get('text_response_data');
+		$data['text_backend_operations'] = $this->language->get('text_backend_operations');
 
 		if (isset($this->request->get['id'])) {
 			$data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
@@ -186,40 +187,48 @@ class ControllerWirecardPGPanel extends Controller {
 			$data = array(
 				'transaction_id' => $transaction['transaction_id'],
 				'response' => json_decode($transaction['response'], true),
-                'operations' => $operations
+				'operations' => $operations
 			);
 		}
 
 		return $data;
 	}
 
-    /**
-     * Retrieve backend operations for specific transaction
-     *
-     * @param array $childTransaction
-     * @return array|bool
-     * @since 1.0.0
-     */
+	/**
+	 * Retrieve backend operations for specific transaction
+	 *
+	 * @param array $childTransaction
+	 * @return array|bool
+	 * @since 1.0.0
+	 */
 	private function getBackendOperations($childTransaction) {
-        $files = glob(
-            DIR_APPLICATION . 'controller/extension/payment/ControllerExtensionPaymentWirecardPG*.php',
-            GLOB_BRACE
-        );
+		$files = glob(
+			DIR_CATALOG . 'controller/extension/payment/wirecard_pg_*.php',
+			GLOB_BRACE
+		);
 
-        /** @var ControllerExtensionPaymentGateway $controller */
-        foreach ($files as $controller) {
-            if ($childTransaction['payment_method'] == $controller->getType()) {
-                /** @var \Wirecard\PaymentSdk\Transaction\Transaction $transaction */
-                $transaction = $controller->getTransactionInstance();
-                $transaction->setParentTransactionId($childTransaction['transaction_id']);
+		/** @var ControllerExtensionPaymentGateway $controller */
+		foreach ($files as $file) {
+			if (is_file($file) && strpos($file, $childTransaction['payment_method'])) {
+				//load catalog controller
+				require_once($file);
+				$controller = new ControllerExtensionPaymentWirecardPGPayPal($this->registry);
+					/** @var \Wirecard\PaymentSdk\Transaction\Transaction $transaction */
+					$transaction = $controller->getTransactionInstance();
+					$transaction->setParentTransactionId($childTransaction['transaction_id']);
 
-                $backendService = new \Wirecard\PaymentSdk\BackendService($controller->getConfig());
-                $operations = $backendService->retrieveBackendOperations($transaction, true);
+					$backendService = new \Wirecard\PaymentSdk\BackendService($controller->getConfig());
+					$backOperations = $backendService->retrieveBackendOperations($transaction, true);
 
-                return $operations;
-            }
-        }
+					$operations = array();
+					foreach ($backOperations as $operation) {
+						$operations = array_merge($operations, $operation);
+					}
 
-        return false;
-    }
+					return $operations;
+			}
+		}
+
+		return false;
+	}
 }

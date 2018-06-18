@@ -365,14 +365,13 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		return $this->type;
 	}
 
-    /**
-     * Get new instance of payment specific transaction
-     *
-     * @return null
-     * @since 1.0.0
-     */
-	public function getTransactionInstance()
-    {
-        return null;
-    }
+	/**
+	 * Get new instance of payment specific transaction
+	 *
+	 * @return null
+	 * @since 1.0.0
+	 */
+	public function getTransactionInstance() {
+		return null;
+	}
 }

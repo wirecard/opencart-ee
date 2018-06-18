@@ -27,8 +27,9 @@
                         <h3 class="panel-title">{{ text_backend_operations }}</h3>
                     </div>
                     <div class="panel-group">
+                        <br>
                         {% for key, operation in transaction.operations %}
-                            <a href="{{ key }}">{{ operation }}</a>
+                            <a class="btn btn-primary" href="{{ key }}">{{ operation }}</a>
                         {% endfor %}
                     </div>
                     {% endif %}
