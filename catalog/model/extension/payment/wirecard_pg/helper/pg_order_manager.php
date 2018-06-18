@@ -37,6 +37,7 @@
 class PGOrderManager extends Model {
 
 	const PENDING = 1;
+	const PROCESSING = 2;
 
 	/**
 	 * Create new order with specific orderstate
@@ -80,21 +81,46 @@ class PGOrderManager extends Model {
 
 		//not in use yet but with order state US
 		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig());
-			//Update an pending order state
-			if (self::PENDING == $order['order_status_id']) {
-				$this->model_checkout_order->addOrderHistory(
-					$orderId,
-					//update the order state
-					2/*$this->getOrderState($backendService->getOrderState($response->getTransactionType()))*/,
-					'<pre>' . htmlentities($response->getRawData()) . '</pre>',
-					true
-				);
-				if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse && $transactionModel->getTransaction($response->getTransactionId())) {
-					$transactionModel->updateTransactionState($response, 'success');
-				} else {
-					$transactionModel->createTransaction($response, $order, 'success', $paymentController->getType());
-				}
+		//Update an pending order state
+		if (self::PENDING == $order['order_status_id']) {
+			$this->model_checkout_order->addOrderHistory(
+				$orderId,
+				//update the order state
+				2/*$this->getOrderState($backendService->getOrderState($response->getTransactionType()))*/,
+				'<pre>' . htmlentities($response->getRawData()) . '</pre>',
+				true
+			);
+			if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse && $transactionModel->getTransaction($response->getTransactionId())) {
+				$transactionModel->updateTransactionState($response, 'success');
+			} else {
+				$transactionModel->createTransaction($response, $order, 'success', $paymentController->getType());
 			}
-			//Cancel to implement
+		}
+		//Cancel to implement
+		if (self::PROCESSING == $order['order_status_id']) {
+			if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
+				$this->updateNotifyOrder($response, $transactionModel);
+			}
+		}
+	}
+
+	/**
+	 * Update order state and transaction table
+	 *
+	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
+	 * @param ModelExtensionPaymentGateway $transactionModel
+	 * @since 1.0.0
+	 */
+	public function updateNotifyOrder($response, $transactionModel) {
+		//just for cancel operation for the moment
+		if (\Wirecard\PaymentSdk\Transaction\Transaction::TYPE_VOID_AUTHORIZATION == $response->getTransactionType()) {
+			$this->model_checkout_order->addOrderHistory(
+				$response->getCustomFields()->get('orderId'),
+				7,
+				'<pre>' . htmlentities($response->getRawData()) . '</pre>',
+				false
+			);
+			$transactionModel->updateTransactionState($response, 'success');
+		}
 	}
 }

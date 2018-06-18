@@ -101,42 +101,6 @@ class ControllerWirecardPGTransaction extends Controller {
 	}
 
 	/**
-	 * Retrieve backend operations for specific transaction
-	 *
-	 * @param array $parentTransaction
-	 * @return array|bool
-	 * @since 1.0.0
-	 */
-	private function getBackendOperations($parentTransaction) {
-		$controller = $this->getPaymentController($parentTransaction['payment_method']);
-
-		/** @var \Wirecard\PaymentSdk\Transaction\Transaction $transaction */
-		$transaction = $controller->getTransactionInstance();
-		$transaction->setParentTransactionId($parentTransaction['transaction_id']);
-
-		$backendService = new \Wirecard\PaymentSdk\BackendService($controller->getConfig());
-		$backOperations = $backendService->retrieveBackendOperations($transaction, true);
-
-		if ($backOperations) {
-			$operations = array();
-			foreach ($backOperations as $item => $value) {
-				$key = key($value);
-				$op = array(
-					'action' => $this->url->link(self::TRANSACTION . '/' . $key,
-						'user_token=' . $this->session->data['user_token'] . '&id=' . $parentTransaction['transaction_id'],
-						true),
-					'text' => $value[$key]
-				);
-				array_push($operations, $op);
-			}
-
-			return $operations;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Handle cancel transactions
 	 *
 	 * @since 1.0.0
@@ -153,14 +117,19 @@ class ControllerWirecardPGTransaction extends Controller {
 
 		$data = array_merge($data, $panel->getCommons());
 
-		$transactionHandler = new ControllerWirecardPGTransactionHandler();
+		$transactionHandler = new ControllerWirecardPGTransactionHandler($this->registry);
 
 		if (isset($this->request->get['id'])) {
 			$this->load->model(self::ROUTE);
 			$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($this->request->get['id']);
+
 			$controller = $this->getPaymentController($transaction['payment_method']);
-			$return = $transactionHandler->createCancelTransaction($controller, $transaction, $this->config);
-			echo $return;
+			$transactionId = $transactionHandler->createCancelTransaction($controller, $transaction, $this->config);
+			if (!$transactionId) {
+				$data['error'] = 'failure';
+			} else {
+				$data['transaction'] = $this->getTransactionDetails($transactionId);
+			}
 		} else {
 			$data['error'] = $this->language->get('error_no_transaction');
 		}
@@ -196,5 +165,41 @@ class ControllerWirecardPGTransaction extends Controller {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Retrieve backend operations for specific transaction
+	 *
+	 * @param array $parentTransaction
+	 * @return array|bool
+	 * @since 1.0.0
+	 */
+	private function getBackendOperations($parentTransaction) {
+		$controller = $this->getPaymentController($parentTransaction['payment_method']);
+
+		/** @var \Wirecard\PaymentSdk\Transaction\Transaction $transaction */
+		$transaction = $controller->getTransactionInstance();
+		$transaction->setParentTransactionId($parentTransaction['transaction_id']);
+
+		$backendService = new \Wirecard\PaymentSdk\BackendService($controller->getConfig());
+		$backOperations = $backendService->retrieveBackendOperations($transaction, true);
+
+		if ($backOperations) {
+			$operations = array();
+			foreach ($backOperations as $item => $value) {
+				$key = key($value);
+				$op = array(
+					'action' => $this->url->link(self::TRANSACTION . '/' . $key,
+						'user_token=' . $this->session->data['user_token'] . '&id=' . $parentTransaction['transaction_id'],
+						true),
+					'text' => $value[$key]
+				);
+				array_push($operations, $op);
+			}
+
+			return $operations;
+		}
+
+		return false;
 	}
 }

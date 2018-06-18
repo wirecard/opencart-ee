@@ -173,7 +173,8 @@ abstract class ModelExtensionPaymentGateway extends Model {
             `transaction_state` = '" . $this->db->escape($transactionState) . "', 
             `response` = '" . $this->db->escape(json_encode($response->getData())) . "', 
             `date_modified` = NOW() WHERE 
-            `transaction_id` = '" . $this->db->escape($response->getTransactionId()) . "'
+            `transaction_id` = '" . $this->db->escape($response->getTransactionId()) . "',
+            `transaction_type` = '" . $this->db->escape($response->getTransactionType()) . "'
         ");
 	}
 

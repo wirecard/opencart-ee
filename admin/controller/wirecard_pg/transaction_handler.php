@@ -29,6 +29,8 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
+include_once(DIR_SYSTEM . 'library/autoload.php');
+
 require_once __DIR__ . '/transaction.php';
 
 /**
@@ -38,7 +40,7 @@ require_once __DIR__ . '/transaction.php';
  *
  * @since 1.0.0
  */
-class ControllerWirecardPGTransactionHandler {
+class ControllerWirecardPGTransactionHandler extends Controller {
 
 	/**
 	 * Send cancel request
@@ -62,12 +64,17 @@ class ControllerWirecardPGTransactionHandler {
 		}
 
 		if ( $response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse ) {
-			return 'success with pending';
-		}
-		if ( $response instanceof FailureResponse ) {
-			return 'failure';
+			$this->load->model('checkout/order');
+			$orderId = $response->getCustomFields()->get('orderId');
+			$order = $this->model_checkout_order->getOrder($orderId);
+
+			/** @var ModelExtensionPaymentGateway $transactionModel */
+			$transactionModel = $paymentController->getModel();
+			$transactionModel->createTransaction($response, $order, 'awaiting', $paymentController->getType());
+
+			return $response->getTransactionId();
 		}
 
-		return 'something else';
+		return false;
 	}
 }
