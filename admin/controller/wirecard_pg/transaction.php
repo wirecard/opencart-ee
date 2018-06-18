@@ -30,11 +30,12 @@
  */
 
 require_once __DIR__ . '/panel.php';
+require_once __DIR__ . '/transaction_handler.php';
 
 /**
  * Class ControllerWirecardPGTransaction
  *
- * Basic payment extension controller
+ * Transaction controller
  *
  * @since 1.0.0
  */
@@ -45,7 +46,7 @@ class ControllerWirecardPGTransaction extends Controller {
 	const TRANSACTION = 'wirecard_pg/transaction';
 
 	/**
-	 * Basic index method
+	 * Display transaction details
 	 *
 	 * @since 1.0.0
 	 */
@@ -85,10 +86,10 @@ class ControllerWirecardPGTransaction extends Controller {
 	public function getTransactionDetails($id) {
 		$this->load->model(self::ROUTE);
 		$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($id);
-		$operations = $this->getBackendOperations($transaction);
 		$data = false;
 
 		if ($transaction) {
+			$operations = $this->getBackendOperations($transaction);
 			$data = array(
 				'transaction_id' => $transaction['transaction_id'],
 				'response' => json_decode($transaction['response'], true),
@@ -107,40 +108,29 @@ class ControllerWirecardPGTransaction extends Controller {
 	 * @since 1.0.0
 	 */
 	private function getBackendOperations($parentTransaction) {
-		$files = glob(
-			DIR_CATALOG . 'controller/extension/payment/wirecard_pg_*.php',
-			GLOB_BRACE
-		);
+		$controller = $this->getPaymentController($parentTransaction['payment_method']);
 
-		/** @var ControllerExtensionPaymentGateway $controller */
-		foreach ($files as $file) {
-			if (is_file($file) && strpos($file, $parentTransaction['payment_method'])) {
-				//load catalog controller
-				require_once($file);
-				$controller = new ControllerExtensionPaymentWirecardPGPayPal($this->registry);
-				/** @var \Wirecard\PaymentSdk\Transaction\Transaction $transaction */
-				$transaction = $controller->getTransactionInstance();
-				$transaction->setParentTransactionId($parentTransaction['transaction_id']);
+		/** @var \Wirecard\PaymentSdk\Transaction\Transaction $transaction */
+		$transaction = $controller->getTransactionInstance();
+		$transaction->setParentTransactionId($parentTransaction['transaction_id']);
 
-				$backendService = new \Wirecard\PaymentSdk\BackendService($controller->getConfig());
-				$backOperations = $backendService->retrieveBackendOperations($transaction, true);
+		$backendService = new \Wirecard\PaymentSdk\BackendService($controller->getConfig());
+		$backOperations = $backendService->retrieveBackendOperations($transaction, true);
 
-				if ($backOperations) {
-					$operations = array();
-					foreach ($backOperations as $item => $value) {
-						$key = key($value);
-						$op = array(
-							'action' => $this->url->link(self::TRANSACTION . '/' . $key,
-								'user_token=' . $this->session->data['user_token'] . '&id=' . $parentTransaction['transaction_id'],
-								true),
-							'text' => $value[$key]
-						);
-						array_push($operations, $op);
-					}
-
-					return $operations;
-				}
+		if ($backOperations) {
+			$operations = array();
+			foreach ($backOperations as $item => $value) {
+				$key = key($value);
+				$op = array(
+					'action' => $this->url->link(self::TRANSACTION . '/' . $key,
+						'user_token=' . $this->session->data['user_token'] . '&id=' . $parentTransaction['transaction_id'],
+						true),
+					'text' => $value[$key]
+				);
+				array_push($operations, $op);
 			}
+
+			return $operations;
 		}
 
 		return false;
@@ -163,12 +153,47 @@ class ControllerWirecardPGTransaction extends Controller {
 
 		$data = array_merge($data, $panel->getCommons());
 
+		$transactionHandler = new ControllerWirecardPGTransactionHandler();
+
 		if (isset($this->request->get['id'])) {
-			$data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
+			$this->load->model(self::ROUTE);
+			$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($this->request->get['id']);
+			$controller = $this->getPaymentController($transaction['payment_method']);
+			$transactionHandler->createCancelTransaction($controller, $transaction);
 		} else {
 			$data['error'] = $this->language->get('error_no_transaction');
 		}
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/details', $data));
+	}
+
+	/**
+	 * Get frontend payment controller
+	 *
+	 * @param string $methodName
+	 * @return ControllerExtensionPaymentGateway|null
+	 * @since 1.0.0
+	 */
+	public function getPaymentController($methodName) {
+		$files = glob(
+			DIR_CATALOG . 'controller/extension/payment/wirecard_pg_*.php',
+			GLOB_BRACE
+		);
+
+		foreach ($files as $file) {
+			if (is_file($file) && strpos($file, $methodName)) {
+				//load catalog controller
+				require_once($file);
+				$classes = get_declared_classes();
+				$class = end($classes);
+				/** @var ControllerExtensionPaymentGateway $controller */
+				$controller = new $class($this->registry);
+
+				return $controller;
+
+			}
+		}
+
+		return null;
 	}
 }
