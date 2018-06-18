@@ -159,7 +159,8 @@ class ControllerWirecardPGTransaction extends Controller {
 			$this->load->model(self::ROUTE);
 			$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($this->request->get['id']);
 			$controller = $this->getPaymentController($transaction['payment_method']);
-			$transactionHandler->createCancelTransaction($controller, $transaction);
+			$return = $transactionHandler->createCancelTransaction($controller, $transaction, $this->config);
+			echo $return;
 		} else {
 			$data['error'] = $this->language->get('error_no_transaction');
 		}

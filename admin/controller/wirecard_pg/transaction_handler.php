@@ -40,11 +40,34 @@ require_once __DIR__ . '/transaction.php';
  */
 class ControllerWirecardPGTransactionHandler {
 
-	const ROUTE = 'extension/payment/wirecard_pg';
-	const PANEL = 'wirecard_pg/panel';
-	const TRANSACTION = 'wirecard_pg/transaction';
+	/**
+	 * Send cancel request
+	 *
+	 * @param ControllerExtensionPaymentGateway $paymentController
+	 * @param array $parentTransaction
+	 * @param Config $config
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function createCancelTransaction($paymentController, $parentTransaction, $config) {
+		$logger = new PGLogger($config);
+		$transactionService = new \Wirecard\PaymentSdk\TransactionService($paymentController->getConfig(), $logger);
+		$transaction = $paymentController->createCancelTransaction($parentTransaction);
 
-	public function createCancelTransaction($paymentController, $parentTransaction) {
-		print_r($parentTransaction);
+		try {
+			/* @var \Wirecard\PaymentSdk\Response\Response $response */
+			$response = $transactionService->process($transaction, \Wirecard\PaymentSdk\Transaction\Operation::CANCEL);
+		} catch ( \Exception $exception ) {
+			$logger->error( __METHOD__ . ':' . $exception->getMessage() );
+		}
+
+		if ( $response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse ) {
+			return 'success with pending';
+		}
+		if ( $response instanceof FailureResponse ) {
+			return 'failure';
+		}
+
+		return 'something else';
 	}
 }
