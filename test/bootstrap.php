@@ -29,8 +29,8 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-require_once __DIR__ . '/../upload/system/library/autoload.php';
-require_once __DIR__ . '/../upload/system/library/opencart/opencart/upload/system/engine/proxy.php';
+require_once __DIR__ . '/../system/library/autoload.php';
+require_once __DIR__ . '/../system/library/opencart/opencart/upload/system/engine/proxy.php';
 
 //load opencart stubs
 require_once __DIR__ . '/stubs/Config.php';
@@ -50,8 +50,8 @@ require_once __DIR__ . '/stubs/Log.php';
 require_once __DIR__ . '/helper/ResponseProvider.php';
 
 //Defines
-define('DIR_SYSTEM', __DIR__ . '/../upload/system/');
-define('HELPER_DIR', __DIR__ . '/../upload/catalog/model/extension/payment/wirecard_pg/helper/');
-define('DIR_APPLICATION', __DIR__ . '/../upload/catalog/');
-define('DIR_ADMIN', __DIR__ . '/../upload/admin/');
+define('DIR_SYSTEM', __DIR__ . '/../system/');
+define('HELPER_DIR', __DIR__ . '/../catalog/model/extension/payment/wirecard_pg/helper/');
+define('DIR_APPLICATION', __DIR__ . '/../catalog/');
+define('DIR_ADMIN', __DIR__ . '/../admin/');
 define('VERSION', '3.0.2.0');

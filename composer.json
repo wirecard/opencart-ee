@@ -26,11 +26,11 @@
   },
   "autoload": {
       "classmap": [
-        "upload/catalog/model/extension/payment/wirecard_pg/helper/",
-        "upload/catalog/model/extension/payment/wirecard_pg/handler/"
+        "catalog/model/extension/payment/wirecard_pg/helper/",
+        "catalog/model/extension/payment/wirecard_pg/handler/"
       ]
   },
   "config": {
-    "vendor-dir": "upload/system/library"
+    "vendor-dir": "system/library"
   }
 }
