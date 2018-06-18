@@ -70,9 +70,10 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 * @since 1.0.0
 	 */
 	public function confirm() {
-		//$this->transaction = new CreditCardTransaction();
+		$transactionService = new TransactionService($this->getConfig(), $this->getLogger());
+		$response = $transactionService->processJsResponse($_POST, $this->getRedirects());
 
-		parent::confirm();
+		return $this->processResponse($response, $this->getLogger());
 	}
 
 	/**
@@ -93,7 +94,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		if ($this->getShopConfigVal('three_d_merchant_account_id') !== '') {
 			$paymentConfig->setThreeDCredentials(
 				$this->getShopConfigVal('three_d_merchant_account_id'),
-				$this->getShopConfigVal('three_d_secret')
+				$this->getShopConfigVal('three_d_merchant_secret')
 			);
 		}
 
@@ -114,7 +115,6 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 				)
 			);
 		}
-
 		$config->add($paymentConfig);
 
 		return $config;
@@ -135,16 +135,26 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 
 	public function getCreditCardUiRequestData() {
 		$this->transaction = new CreditCardTransaction();
-		$this->transaction->setConfig($this->getConfig()->get(CreditCardTransaction::NAME));
 		$this->prepareTransaction();
+		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
 
-		$transactionService = new TransactionService($this->getConfig(), $this->getLogger());
+		$this->transaction->setConfig($this->paymentConfig->get(CreditCardTransaction::NAME));
+
+		$transactionService = new TransactionService($this->paymentConfig, $this->getLogger());
 		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($transactionService->getCreditCardUiWithData(
+		$this->response->setOutput(($transactionService->getCreditCardUiWithData(
 			$this->transaction,
-			$this->getShopConfigVal('payment_action'),
+			$this->getPaymentAction($this->getShopConfigVal('payment_action')),
 			'en'
 		)));
+	}
+
+	public function getPaymentAction($action) {
+		if ($action == 'pay') {
+			return 'purchase';
+		} else {
+			return 'authorization';
+		}
 	}
 }
 

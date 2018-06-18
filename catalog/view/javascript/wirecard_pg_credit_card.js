@@ -28,28 +28,51 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-$(document).ready(function () {
-	console.log('tralala');
-	WirecardPaymentPage.seamlessRenderForm({
-		requestData: getCreditCardRequestData() ,
-		wrappingDivId: "creditcard-form-div",
-		onSuccess: logCallback,
-		onError: logCallback
-	});
+$(document).ready(function() {
+	getCreditCardRequestData();
 });
 
+$('#button-confirm').on('click', function() {
+	WirecardPaymentPage.seamlessSubmitForm({
+		onSuccess: setParentTransactionId,
+		onError: logError
+	})
+});
+
+function setParentTransactionId(response) {
+	var form = $('#wirecard-pg-form');
+	for(var key in response){
+		if(response.hasOwnProperty(key)) {
+			form.append("<input type='hidden' name='" + key + "' value='" + response[key] + "'>");
+		}
+	}
+	form.append("<input id='jsresponse' type='hidden' name='jsresponse' value='true'>");
+	form.submit();
+}
+
 function logCallback(response) {
-	console.log(response);
+	$('#creditcard-form-div').height(500);
+}
+
+function logError(error) {
+	console.log(error);
 }
 
 function getCreditCardRequestData() {
 	$.ajax({
 		url: 'index.php?route=extension/payment/wirecard_pg_creditcard/getCreditCardUiRequestData',
-		type: 'get',
+		type: 'post',
 		dataType: 'json',
 		success: function(data) {
-			console.log(data);
-			return data;
+			if (data != null) {
+				console.log('init');
+				WirecardPaymentPage.seamlessRenderForm({
+					requestData: data,
+					wrappingDivId: "creditcard-form-div",
+					onSuccess: logCallback,
+					onError: logError
+				});
+			}
 		},
 		error: function(xhr, ajaxOptions, thrownError) {
 			console.log('errrrrrorrorr');

@@ -20,6 +20,7 @@
     </div>
 </div>
 </form>
+{% if credit_card is null %}
 <script type="text/javascript"><!--
     $('#button-confirm').on('click', function() {
         $.ajax({
@@ -49,3 +50,4 @@
 
     });
     //--></script>
+{% endif %}

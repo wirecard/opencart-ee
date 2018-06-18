@@ -249,35 +249,13 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->load->language('extension/payment/wirecard_pg');
 
 		$logger = $this->getLogger();
-		$orderManager = new PGOrderManager($this->registry);
 
 		try {
 			$transactionService = new \Wirecard\PaymentSdk\TransactionService($this->getConfig(), $logger);
 			$result = $transactionService->handleResponse($_REQUEST);
 
-			if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
-				$orderManager->createResponseOrder($result);
-				$this->response->redirect($this->url->link('checkout/success'));
+			return $this->processResponse($result, $logger);
 
-				return true;
-			} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
-				$errors = '';
-
-				foreach ($result->getStatusCollection()->getIterator() as $item) {
-					$errors .= $item->getDescription() . "<br>\n";
-					$logger->error($item->getDescription());
-				}
-
-				$this->session->data['error'] = $errors;
-				$this->response->redirect($this->url->link('checkout/checkout'));
-
-				return false;
-			} else {
-				$this->session->data['error'] = $this->language->get('order_error');
-				$this->response->redirect($this->url->link('checkout/checkout'));
-
-				return false;
-			}
 		} catch (\InvalidArgumentException $exception) {
 			$logger->error(__METHOD__ . ':' . 'Invalid argument set: ' . $exception->getMessage());
 			$this->session->data['error'] = $exception->getMessage();
@@ -350,5 +328,40 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$session = md5($consumer_id . "_" . $timestamp);
 
 		return $session;
+	}
+
+	public function processResponse($result, $logger) {
+		$orderManager = new PGOrderManager($this->registry);
+
+		if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
+			$orderManager->createResponseOrder($result);
+			$this->response->redirect($this->url->link('checkout/success'));
+
+			return true;
+		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FormInteractionResponse) {
+			$data['url'] = $result->getUrl();
+			$data['method'] = $result->getMethod();
+			$data['form_fields'] = $result->getFormFields();
+
+			/*@TODO build template with this data and redirect to it*/
+
+		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
+			$errors = '';
+
+			foreach ($result->getStatusCollection()->getIterator() as $item) {
+				$errors .= $item->getDescription() . "<br>\n";
+				$logger->error($item->getDescription());
+			}
+
+			$this->session->data['error'] = $errors;
+			$this->response->redirect($this->url->link('checkout/checkout'));
+
+			return false;
+		} else {
+			$this->session->data['error'] = $this->language->get('order_error');
+			$this->response->redirect($this->url->link('checkout/checkout'));
+
+			return false;
+		}
 	}
 }
