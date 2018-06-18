@@ -28,8 +28,8 @@
                     </div>
                     <div class="panel-group">
                         <br>
-                        {% for key, operation in transaction.operations %}
-                            <a class="btn btn-primary" href="{{ key }}">{{ operation }}</a>
+                        {% for key,operation in transaction.operations %}
+                            <a class="btn btn-primary" href="{{ operation.action }}">{{ operation.text }}</a>
                         {% endfor %}
                     </div>
                     {% endif %}
