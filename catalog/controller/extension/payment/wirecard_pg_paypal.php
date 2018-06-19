@@ -54,7 +54,7 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 	 *
 	 * @since 1.0.0
 	 */
-	public function index() {
+	public function index($data = null) {
 		return parent::index();
 	}
 
@@ -73,14 +73,15 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 	/**
 	 * Create payment specific config
 	 *
+	 * @param array $currency
 	 * @return \Wirecard\PaymentSdk\Config\Config
 	 * @since 1.0.0
 	 */
-	public function getConfig() {
-		$merchant_account_id = $this->config->get($this->prefix . $this->type . '_merchant_account_id');
-		$merchant_secret = $this->config->get($this->prefix . $this->type . '_merchant_secret');
+	public function getConfig($currency = null) {
+		$merchant_account_id = $this->getShopConfigVal('merchant_account_id');
+		$merchant_secret = $this->getShopConfigVal('merchant_secret');
 
-		$config = parent::getConfig();
+		$config = parent::getConfig($currency);
 		$paymentConfig = new PaymentMethodConfig(PayPalTransaction::NAME, $merchant_account_id, $merchant_secret);
 		$config->add($paymentConfig);
 

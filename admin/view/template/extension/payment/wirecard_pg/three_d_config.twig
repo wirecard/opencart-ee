@@ -1,0 +1,69 @@
+<div class="form-group required">
+    <label class="col-sm-2 control-label" for="input-three-d-merchant-account-id">{{ config_three_d_merchant_account_id }}</label>
+    <div class="col-sm-10">
+        <input
+                name="{{ prefix ~ 'three_d_merchant_account_id' }}"
+                id="input-three-d-merchant-account-id"
+                class="form-control"
+                type="text"
+                value="{{ three_d_merchant_account_id }}">
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_three_d_merchant_account_id_desc }}</i>
+        </div>
+    </div>
+</div>
+<div class="form-group required">
+    <label class="col-sm-2 control-label" for="input-merchant-secret">{{ config_three_d_merchant_secret }}</label>
+    <div class="col-sm-10">
+        <input
+                name="{{ prefix ~ 'three_d_merchant_secret' }}"
+                id="input-three-d-merchant-secret"
+                class="form-control"
+                type="text"
+                value="{{ three_d_merchant_secret }}">
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_three_d_merchant_secret_desc }}</i>
+        </div>
+    </div>
+</div>
+<div class="form-group required">
+    <label class="col-sm-2 control-label" for="input-ssl_max_limit">{{ config_ssl_max_limit }}</label>
+    <div class="col-sm-10">
+        <input
+                name="{{ prefix ~ 'ssl_max_limit' }}"
+                id="input-ssl_max_limit"
+                class="form-control"
+                type="text"
+                value="{{ ssl_max_limit }}">
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_limit_desc }}</i>
+        </div>
+    </div>
+</div>
+<div class="form-group required">
+    <label class="col-sm-2 control-label" for="input-three_d_min_limit">{{ config_three_d_min_limit }}</label>
+    <div class="col-sm-10">
+        <input
+                name="{{ prefix ~ 'three_d_min_limit' }}"
+                id="input-three_d_min_limit"
+                class="form-control"
+                type="text"
+                value="{{ three_d_min_limit }}">
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_limit_desc }}</i>
+        </div>
+    </div>
+</div>
+<hr>

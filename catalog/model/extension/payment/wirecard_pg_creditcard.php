@@ -28,11 +28,29 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
+require_once(dirname( __FILE__ ) . '/wirecard_pg/gateway.php');
 
-// Page Title
-$_['heading_title'] = 'Wirecard PayPal';
-$_['text_wirecard_pg_paypal'] = '<img src="./view/image/wirecard_pg/paypal.png" width="100"/>';
+/**
+ * Class ModelExtensionPaymentWirecardPGCreditCard
+ *
+ * CreditCard Transaction model
+ *
+ * @since 1.0.0
+ */
+class ModelExtensionPaymentWirecardPGCreditCard extends ModelExtensionPaymentGateway {
 
-// Payment specific configuration
-$_['text_edit'] = 'Edit PayPal';
-$_['config_status_desc'] = 'Activate payment method PayPal to make it available for your consumers.';
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $type = 'creditcard';
+
+	/**
+	 * Basic getMethod method
+	 *
+	 * @since 1.0.0
+	 */
+	public function getMethod($address, $total) {
+		return parent::getMethod($address, $total);
+	}
+}

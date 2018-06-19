@@ -175,7 +175,11 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
         $expected->setShopInfo(self::SHOP, VERSION);
         $expected->setPluginInfo(self::PLUGIN, $this->pluginVersion);
 
-        $actual = $this->controller->getConfig();
+	    $currency = [
+		    'currency_code' => 'EUR',
+		    'currency_value' => 1
+	    ];
+        $actual = $this->controller->getConfig($currency);
 
         $this->assertEquals($expected, $actual);
     }
@@ -339,5 +343,25 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
         $expected = json_encode($json);
 
         $this->assertEquals($expected, $this->response->getOutput());
+    }
+
+    public function testGetType() {
+        $this->controller = new ControllerExtensionPaymentWirecardPGPayPal(
+            $this->registry,
+            $this->config,
+            $this->loader,
+            $this->session,
+            $this->response,
+            $this->modelOrder,
+            $this->url,
+            $this->modelPaypal,
+            $this->language,
+            $this->cart
+        );
+
+        $actual = $this->controller->getType();
+        $expected = 'paypal';
+
+        $this->assertEquals($expected, $actual);
     }
 }
