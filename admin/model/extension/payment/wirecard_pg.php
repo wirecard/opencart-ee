@@ -107,7 +107,7 @@ class ModelExtensionPaymentWirecardPG extends Model {
 	/**
 	 * Get transaction via transaction id
 	 *
-	 * @param int $transactionId
+	 * @param string $transactionId
 	 * @return bool|array
 	 * @since 1.0.0
 	 */

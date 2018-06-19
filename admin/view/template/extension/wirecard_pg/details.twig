@@ -11,6 +11,11 @@
         </div>
     </div>
     <div class="container-fluid">
+        {% if error_warning %}
+            <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">
@@ -18,9 +23,6 @@
                 </h3>
             </div>
             <div class="panel-body">
-                {% if error %}
-                {{ error }}
-                {% endif %}
                 {% if transaction %}
                     {% if transaction.operations %}
                     <div class="panel-heading">

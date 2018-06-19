@@ -31,16 +31,14 @@
 
 include_once(DIR_SYSTEM . 'library/autoload.php');
 
-require_once __DIR__ . '/transaction.php';
-
 /**
- * Class ControllerWirecardPGTransactionHandler
+ * Class ControllerExtensionPaymentWirecardPGTransactionHandler
  *
  * Transactionhandler controller
  *
  * @since 1.0.0
  */
-class ControllerWirecardPGTransactionHandler extends Controller {
+class ControllerExtensionPaymentWirecardPGTransactionHandler extends Controller {
 
 	/**
 	 * Send cancel request

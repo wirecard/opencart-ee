@@ -29,21 +29,21 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-require_once __DIR__ . '/panel.php';
-require_once __DIR__ . '/transaction_handler.php';
+require_once __DIR__ . '/wirecard_pg.php';
+require_once __DIR__ . '/../payment/wirecard_pg/transaction_handler.php';
 
 /**
- * Class ControllerWirecardPGTransaction
+ * Class ControllerExtensionPaymentWirecardPGTransaction
  *
  * Transaction controller
  *
  * @since 1.0.0
  */
-class ControllerWirecardPGTransaction extends Controller {
+class ControllerExtensionModuleWirecardPGTransaction extends Controller {
 
 	const ROUTE = 'extension/payment/wirecard_pg';
-	const PANEL = 'wirecard_pg/panel';
-	const TRANSACTION = 'wirecard_pg/transaction';
+	const PANEL = 'extension/module/wirecard_pg';
+	const TRANSACTION = 'extension/module/wirecard_pg_transaction';
 
 	/**
 	 * Display transaction details
@@ -52,7 +52,7 @@ class ControllerWirecardPGTransaction extends Controller {
 	 */
 	public function index() {
 		$this->load->language(self::ROUTE);
-		$panel = new ControllerWirecardPGPanel($this->registry);
+		$panel = new ControllerExtensionModuleWirecardPG($this->registry);
 
 		$data['title'] = $this->language->get('heading_transaction_details');
 
@@ -70,7 +70,7 @@ class ControllerWirecardPGTransaction extends Controller {
 		if (isset($this->request->get['id'])) {
 			$data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
 		} else {
-			$data['error'] = $this->language->get('error_no_transaction');
+			$data['error_warning'] = $this->language->get('error_no_transaction');
 		}
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/details', $data));
@@ -79,7 +79,7 @@ class ControllerWirecardPGTransaction extends Controller {
 	/**
 	 * Get transaction detail data via id
 	 *
-	 * @param $id
+	 * @param string $id
 	 * @return bool|array
 	 * @since 1.0.0
 	 */
@@ -107,7 +107,7 @@ class ControllerWirecardPGTransaction extends Controller {
 	 */
 	public function cancel() {
 		$this->load->language(self::ROUTE);
-		$panel = new ControllerWirecardPGPanel($this->registry);
+		$panel = new ControllerExtensionModuleWirecardPG($this->registry);
 
 		$data['title'] = $this->language->get('heading_transaction_details');
 
@@ -117,7 +117,7 @@ class ControllerWirecardPGTransaction extends Controller {
 
 		$data = array_merge($data, $panel->getCommons());
 
-		$transactionHandler = new ControllerWirecardPGTransactionHandler($this->registry);
+		$transactionHandler = new ControllerExtensionPaymentWirecardPGTransactionHandler($this->registry);
 
 		if (isset($this->request->get['id'])) {
 			$this->load->model(self::ROUTE);
@@ -128,10 +128,10 @@ class ControllerWirecardPGTransaction extends Controller {
 			if ($transactionId) {
 				$this->response->redirect($this->url->link(self::TRANSACTION, 'user_token=' . $this->session->data['user_token'] . '&id=' . $transactionId, true));
 			} else {
-				$data['error'] = $this->session->data['admin_error'];
+				$data['error_warning'] = $this->session->data['admin_error'];
 			}
 		} else {
-			$data['error'] = $this->language->get('error_no_transaction');
+			$data['error_warning'] = $this->language->get('error_no_transaction');
 		}
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/details', $data));
