@@ -118,10 +118,11 @@ class AdditionalInformationHelper extends Model {
 			} else {
 				$transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
 			}
+
 			if (strlen($order['customer_id'])) {
 				$transaction->setConsumerId($order['customer_id']);
 			}
-			//$transaction->setOrderNumber($order['order_id']);
+			$transaction->setOrderNumber($order['order_id']);
 			$transaction->setDescriptor($this->createDescriptor($order));
 
 			$accountHolder = new PGAccountHolder();

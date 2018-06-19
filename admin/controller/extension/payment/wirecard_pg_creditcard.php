@@ -32,38 +32,41 @@
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ControllerExtensionPaymentWirecardPGPayPal
+ * Class ControllerExtensionPaymentWirecardPGCreditCard
  *
- * PayPal payment transaction controller
+ * CreditCard payment transaction controller
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'paypal';
+	protected $type = 'creditcard';
 
 	/**
-	 * PayPal default configuration settings
+	 * Credit Card default configuration settings
 	 *
 	 * @var array
 	 * @since 1.0.0
 	 */
 	protected $default = array (
 		'status' => 0,
-		'title' => 'Wirecard PayPal',
-		'merchant_account_id' => '2a0e9351-24ed-4110-9a1b-fd0fee6bec26',
+		'title' => 'Wirecard Credit Card',
+		'merchant_account_id' => '53f2895a-e4de-4e82-a813-0d87a10e55e6',
 		'merchant_secret' => 'dbc5a498-9a66-43b9-bf1d-a618dd399684',
+		'three_d_merchant_account_id' => '508b8896-b37d-4614-845c-26bf8bf2c948',
+		'three_d_merchant_secret' => 'dbc5a498-9a66-43b9-bf1d-a618dd399684',
+		'ssl_max_limit' => 300,
+		'three_d_min_limit' => 100,
 		'base_url' => 'https://api-test.wirecard.com',
 		'http_password' => 'qD2wzQ_hrc!8',
 		'http_user' => '70000-APITEST-AP',
 		'payment_action' => 'pay',
-		'shopping_basket' => '1',
-		'descriptor' => '1',
-		'additional_info' => '0',
+		'descriptor' => '0',
+		'additional_info' => '1',
 	);
 
 	/**
@@ -84,8 +87,13 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	protected function getConfigText() {
 		$data = parent::getConfigText();
 
-		$data['config_shopping_basket'] = $this->language->get('config_shopping_basket');
-		$data['config_shopping_basket_desc'] = $this->language->get('config_shopping_basket_desc');
+		$data['config_three_d_merchant_account_id'] = $this->language->get('config_three_d_merchant_account_id');
+		$data['config_three_d_merchant_account_id_desc'] = $this->language->get('config_three_d_merchant_account_id_desc');
+		$data['config_three_d_merchant_secret'] = $this->language->get('config_three_d_merchant_secret');
+		$data['config_three_d_merchant_secret_desc'] = $this->language->get('config_three_d_merchant_secret_desc');
+		$data['config_ssl_max_limit'] = $this->language->get('config_ssl_max_limit');
+		$data['config_three_d_min_limit'] = $this->language->get('config_three_d_min_limit');
+		$data['config_limit_desc'] = $this->language->get('config_limit_desc');
 
 		return $data;
 	}
@@ -97,8 +105,21 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	 * @since 1.0.0
 	 */
 	protected function getRequestData() {
-		$this->configFields = array_merge($this->configFields, array('shopping_basket'));
+		$this->configFields = array_merge($this->configFields, array(
+			'three_d_merchant_account_id',
+			'three_d_merchant_secret',
+			'ssl_max_limit',
+			'three_d_min_limit')
+		);
 
 		return parent::getRequestData();
+	}
+
+	protected function loadConfigBlocks($data) {
+		$data = parent::loadConfigBlocks($data);
+
+		$data['three_d_config'] = $this->load->view('extension/payment/wirecard_pg/three_d_config', $data);
+
+		return $data;
 	}
 }

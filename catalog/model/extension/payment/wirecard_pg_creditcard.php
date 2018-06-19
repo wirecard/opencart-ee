@@ -28,77 +28,29 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
-
-require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
+require_once(dirname( __FILE__ ) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ControllerExtensionPaymentWirecardPGPayPal
+ * Class ModelExtensionPaymentWirecardPGCreditCard
  *
- * PayPal payment transaction controller
+ * CreditCard Transaction model
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPaymentGateway {
+class ModelExtensionPaymentWirecardPGCreditCard extends ModelExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'paypal';
+	protected $type = 'creditcard';
 
 	/**
-	 * PayPal default configuration settings
-	 *
-	 * @var array
-	 * @since 1.0.0
-	 */
-	protected $default = array (
-		'status' => 0,
-		'title' => 'Wirecard PayPal',
-		'merchant_account_id' => '2a0e9351-24ed-4110-9a1b-fd0fee6bec26',
-		'merchant_secret' => 'dbc5a498-9a66-43b9-bf1d-a618dd399684',
-		'base_url' => 'https://api-test.wirecard.com',
-		'http_password' => 'qD2wzQ_hrc!8',
-		'http_user' => '70000-APITEST-AP',
-		'payment_action' => 'pay',
-		'shopping_basket' => '1',
-		'descriptor' => '1',
-		'additional_info' => '0',
-	);
-
-	/**
-	 * Basic index method
+	 * Basic getMethod method
 	 *
 	 * @since 1.0.0
 	 */
-	public function index() {
-		parent::index();
-	}
-
-	/**
-	 * Get text for config fields
-	 *
-	 * @return mixed
-	 * @since 1.0.0
-	 */
-	protected function getConfigText() {
-		$data = parent::getConfigText();
-
-		$data['config_shopping_basket'] = $this->language->get('config_shopping_basket');
-		$data['config_shopping_basket_desc'] = $this->language->get('config_shopping_basket_desc');
-
-		return $data;
-	}
-
-	/**
-	 * Set data fields or load config
-	 *
-	 * @return array
-	 * @since 1.0.0
-	 */
-	protected function getRequestData() {
-		$this->configFields = array_merge($this->configFields, array('shopping_basket'));
-
-		return parent::getRequestData();
+	public function getMethod($address, $total) {
+		return parent::getMethod($address, $total);
 	}
 }

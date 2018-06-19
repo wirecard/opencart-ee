@@ -1,0 +1,92 @@
+<div class="form-group required">
+    <label class="col-sm-2 control-label" for="input-status">{{ config_status }}</label>
+    <div class="col-sm-10">
+        <select name="{{ prefix ~ 'status' }}" id="input-status" class="form-control">
+            {% if status %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+            {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+            {% endif %}
+        </select>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_status_desc }}</i>
+        </div>
+    </div>
+</div>
+<div class="form-group required">
+    <label class="col-sm-2 control-label" for="input-title">{{ config_title }}</label>
+    <div class="col-sm-10">
+        <input
+                name="{{ prefix ~ 'title' }}"
+                id="input-title"
+                class="form-control"
+                type="text"
+                value="{{ title }}">
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_title_desc }}</i>
+        </div>
+    </div>
+</div>
+<div class="form-group required">
+    <label class="col-sm-2 control-label" for="input-merchant-account-id">{{ config_merchant_account_id }}</label>
+    <div class="col-sm-10">
+        <input
+                name="{{ prefix ~ 'merchant_account_id' }}"
+                id="input-merchant-account-id"
+                class="form-control"
+                type="text"
+                value="{{ merchant_account_id }}">
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_merchant_account_id_desc }}</i>
+        </div>
+    </div>
+</div>
+<div class="form-group required">
+    <label class="col-sm-2 control-label" for="input-merchant-secret">{{ config_merchant_secret }}</label>
+    <div class="col-sm-10">
+        <input
+                name="{{ prefix ~ 'merchant_secret' }}"
+                id="input-merchant-secret"
+                class="form-control"
+                type="text"
+                value="{{ merchant_secret }}">
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_merchant_secret_desc }}</i>
+        </div>
+    </div>
+</div>
+<div class="form-group required">
+    <label class="col-sm-2 control-label" for="input-status">{{ config_payment_action }}</label>
+    <div class="col-sm-10">
+        <select name="{{ prefix ~ 'payment_action' }}" id="input-status" class="form-control">
+            {% if payment_action == 'pay' %}
+                <option value="pay" selected="selected">{{ text_payment_action_pay }}</option>
+                <option value="reserve">{{ text_payment_action_reserve }}</option>
+            {% else %}
+                <option value="pay">{{ text_payment_action_pay }}</option>
+                <option value="reserve" selected="selected">{{ text_payment_action_reserve }}</option>
+            {% endif %}
+        </select>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_payment_action_desc }}</i>
+        </div>
+    </div>
+</div>
+<hr>
