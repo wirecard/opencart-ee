@@ -340,4 +340,24 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $this->response->getOutput());
     }
+
+    public function testGetType() {
+        $this->controller = new ControllerExtensionPaymentWirecardPGPayPal(
+            $this->registry,
+            $this->config,
+            $this->loader,
+            $this->session,
+            $this->response,
+            $this->modelOrder,
+            $this->url,
+            $this->modelPaypal,
+            $this->language,
+            $this->cart
+        );
+
+        $actual = $this->controller->getType();
+        $expected = 'paypal';
+
+        $this->assertEquals($expected, $actual);
+    }
 }
