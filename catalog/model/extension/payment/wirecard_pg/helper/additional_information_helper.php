@@ -109,21 +109,22 @@ class AdditionalInformationHelper extends Model {
 	 */
 	public function setAdditionalInformation($transaction, $order)
 	{
-			$transaction->setOrderDetail(sprintf(
+			/*$transaction->setOrderDetail(sprintf(
 				'%s %s %s',
 				$order['email'],
 				$order['firstname'],
 				$order['lastname']
-			));
+			));*/
 			if ($order['ip']) {
 				$transaction->setIpAddress($order['ip']);
 			} else {
 				$transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
 			}
+
 			if (strlen($order['customer_id'])) {
 				$transaction->setConsumerId($order['customer_id']);
 			}
-			//$transaction->setOrderNumber($order['order_id']);
+			$transaction->setOrderNumber($order['order_id']);
 			$transaction->setDescriptor($this->createDescriptor($order));
 
 			$accountHolder = new PGAccountHolder();

@@ -28,78 +28,29 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
-
-require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
-
-use Wirecard\PaymentSdk\Transaction\PayPalTransaction;
-use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
+require_once(dirname( __FILE__ ) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ControllerExtensionPaymentWirecardPGPayPal
+ * Class ModelExtensionPaymentWirecardPGCreditCard
  *
- * PayPal Transaction controller
+ * CreditCard Transaction model
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaymentGateway {
+class ModelExtensionPaymentWirecardPGCreditCard extends ModelExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'paypal';
+	protected $type = 'creditcard';
 
 	/**
-	 * Basic index method
+	 * Basic getMethod method
 	 *
 	 * @since 1.0.0
 	 */
-	public function index($data = null) {
-		return parent::index();
-	}
-
-	/**
-	 * Create paypal transaction
-	 *
-	 * @since 1.0.0
-	 */
-	public function confirm() {
-
-		$this->transaction = new PayPalTransaction();
-
-		parent::confirm();
-	}
-
-	/**
-	 * Create payment specific config
-	 *
-	 * @param array $currency
-	 * @return \Wirecard\PaymentSdk\Config\Config
-	 * @since 1.0.0
-	 */
-	public function getConfig($currency = null)
-	{
-		$merchant_account_id = $this->getShopConfigVal('merchant_account_id');
-		$merchant_secret = $this->getShopConfigVal('merchant_secret');
-
-		$config = parent::getConfig($currency);
-		$paymentConfig = new PaymentMethodConfig(PayPalTransaction::NAME, $merchant_account_id, $merchant_secret);
-		$config->add($paymentConfig);
-
-		return $config;
-	}
-
-	/**
-	 * Payment specific model getter
-	 *
-	 * @return Model
-	 * @since 1.0.0
-	 */
-	public function getModel()
-	{
-		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
-
-		return $this->model_extension_payment_wirecard_pg_paypal;
+	public function getMethod($address, $total) {
+		return parent::getMethod($address, $total);
 	}
 }
-

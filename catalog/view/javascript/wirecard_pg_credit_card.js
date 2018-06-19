@@ -1,4 +1,3 @@
-<?php
 /**
  * Shop System Plugins - Terms of Use
  *
@@ -29,77 +28,82 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
-
-use Wirecard\PaymentSdk\Transaction\PayPalTransaction;
-use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
-
 /**
- * Class ControllerExtensionPaymentWirecardPGPayPal
- *
- * PayPal Transaction controller
+ * When document loads get the data for the credit card form
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaymentGateway {
+$(document).ready(function() {
+	getCreditCardRequestData();
+});
 
-	/**
-	 * @var string
-	 * @since 1.0.0
-	 */
-	protected $type = 'paypal';
+/**
+ * On confirm button submit the form
+ *
+ * @since 1.0.0
+ */
+$('#button-confirm').on('click', function() {
+	WirecardPaymentPage.seamlessSubmitForm({
+		onSuccess: setParentTransactionId,
+		onError: logError
+	})
+});
 
-	/**
-	 * Basic index method
-	 *
-	 * @since 1.0.0
-	 */
-	public function index($data = null) {
-		return parent::index();
+/**
+ * Set the paren transaction id to the form and submit it
+ *
+ * @param response
+ * @since 1.0.0
+ */
+function setParentTransactionId(response) {
+	var form = $('#wirecard-pg-form');
+	for (var key in response) {
+		if (response.hasOwnProperty(key)) {
+			form.append("<input type='hidden' name='" + key + "' value='" + response[key] + "'>");
+		}
 	}
-
-	/**
-	 * Create paypal transaction
-	 *
-	 * @since 1.0.0
-	 */
-	public function confirm() {
-
-		$this->transaction = new PayPalTransaction();
-
-		parent::confirm();
-	}
-
-	/**
-	 * Create payment specific config
-	 *
-	 * @param array $currency
-	 * @return \Wirecard\PaymentSdk\Config\Config
-	 * @since 1.0.0
-	 */
-	public function getConfig($currency = null)
-	{
-		$merchant_account_id = $this->getShopConfigVal('merchant_account_id');
-		$merchant_secret = $this->getShopConfigVal('merchant_secret');
-
-		$config = parent::getConfig($currency);
-		$paymentConfig = new PaymentMethodConfig(PayPalTransaction::NAME, $merchant_account_id, $merchant_secret);
-		$config->add($paymentConfig);
-
-		return $config;
-	}
-
-	/**
-	 * Payment specific model getter
-	 *
-	 * @return Model
-	 * @since 1.0.0
-	 */
-	public function getModel()
-	{
-		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
-
-		return $this->model_extension_payment_wirecard_pg_paypal;
-	}
+	form.submit();
 }
 
+/**
+ * On success set the hight of the iframe
+ * @since 1.0.0
+ */
+function callback() {
+	$('#creditcard-form-div').height(500);
+}
+
+/**
+ * Log errors to console
+ *
+ * @param error
+ * @since 1.0.0
+ */
+function logError(error) {
+	console.log(error);
+}
+
+/**
+ * Get data with an ajax for the seamlessrenderform
+ * @since 1.0.0
+ */
+function getCreditCardRequestData() {
+	$.ajax({
+		url: 'index.php?route=extension/payment/wirecard_pg_creditcard/getCreditCardUiRequestData',
+		type: 'post',
+		dataType: 'json',
+		success: function(data) {
+			if (data != null) {
+				WirecardPaymentPage.seamlessRenderForm({
+					requestData: data,
+					wrappingDivId: "creditcard-form-div",
+					onSuccess: callback,
+					onError: logError
+				});
+			}
+		},
+		error: function (error) {
+			conosle.log(error);
+		}
+	});
+}
