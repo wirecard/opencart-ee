@@ -29,6 +29,8 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
+use Mockery as m;
+
 require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_creditcard.php';
 require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_creditcard.php';
 
@@ -60,7 +62,7 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 
 		$this->response = $this->getMockBuilder(Response::class)
 			->disableOriginalConstructor()
-			->setMethods(['addHeader', 'setOutput', 'getOutput'])
+			->setMethods(['addHeader', 'setOutput', 'getOutput', 'redirect'])
 			->getMock();
 
 		$this->modelOrder = $this->getMockBuilder(ModelCheckoutOrder::class)
@@ -162,7 +164,20 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 
 	public function testSuccessConfirm()
 	{
-		$this->controller->confirm();
+        $orderManager = m::mock('overload:PGOrderManager');
+        $orderManager->shouldReceive('createResponseOrder');
+
+	    $_POST['merchant_account_id'] = '1111111111';
+	    $_POST['transaction_id'] = 'da04876d-1d92-431c-b33a-49080914c996';
+	    $_POST['transaction_type'] = 'authorization';
+	    $_POST['payment_method'] = 'creditcard';
+        $_POST['request_id'] = '123';
+        $_POST['transaction_state'] = 'success';
+        $_POST['status_code_1'] = '201.0000';
+        $_POST['status_description_1'] = '3d-acquirer:The resource was successfully created.';
+        $_POST['status_severity_1'] = 'information';
+
+        $this->controller->confirm();
 		$json['response'] = [];
 		$this->response->method('getOutput')->willReturn(json_encode($json));
 
