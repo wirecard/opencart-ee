@@ -34,6 +34,7 @@ require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 use Wirecard\PaymentSdk\Transaction\CreditCardTransaction;
 use Wirecard\PaymentSdk\Entity\Amount;
 use Wirecard\PaymentSdk\Config\CreditCardConfig;
+use Wirecard\PaymentSdk\TransactionService;
 
 /**
  * Class ControllerExtensionPaymentWirecardPGCreditCard
@@ -55,19 +56,23 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 *
 	 * @since 1.0.0
 	 */
-	public function index() {
-		return parent::index();
+	public function index($data = null) {
+
+		$data['base_url'] = $this->getShopConfigVal('base_url');
+		$data['credit_card'] = $this->load->view('extension/payment/wirecard_credit_card_ui', $data);
+		return parent::index($data);
 	}
 
 	/**
-	 * Create CreditCard transaction
+	 * After the order is confirmed in frontend
 	 *
 	 * @since 1.0.0
 	 */
 	public function confirm() {
-		$this->transaction = new CreditCardTransaction();
+		$transactionService = new TransactionService($this->getConfig(), $this->getLogger());
+		$response = $transactionService->processJsResponse($_POST, $this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
 
-		parent::confirm();
+		return $this->processResponse($response, $this->getLogger());
 	}
 
 	/**
@@ -87,7 +92,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		if ($this->getShopConfigVal('three_d_merchant_account_id') !== '') {
 			$paymentConfig->setThreeDCredentials(
 				$this->getShopConfigVal('three_d_merchant_account_id'),
-				$this->getShopConfigVal('three_d_secret')
+				$this->getShopConfigVal('three_d_merchant_secret')
 			);
 		}
 
@@ -108,7 +113,6 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 				)
 			);
 		}
-
 		$config->add($paymentConfig);
 
 		return $config;
@@ -124,6 +128,41 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
 
 		return $this->model_extension_payment_wirecard_pg_creditcard;
+	}
+
+	/**
+	 * return data via ajax call for the seamless form renderer
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public function getCreditCardUiRequestData() {
+		$this->transaction = new CreditCardTransaction();
+		$this->prepareTransaction();
+		$this->transaction->setConfig($this->paymentConfig->get(CreditCardTransaction::NAME));
+		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
+
+		$transactionService = new TransactionService($this->paymentConfig, $this->getLogger());
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(($transactionService->getCreditCardUiWithData(
+			$this->transaction,
+			$this->getPaymentAction($this->getShopConfigVal('payment_action')),
+			'en'
+		)));
+	}
+
+	/**
+	 * Get payment action
+	 *
+	 * @param string $action
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function getPaymentAction($action) {
+		if ($action == 'pay') {
+			return 'purchase';
+		} else {
+			return 'authorization';
+		}
 	}
 }
 

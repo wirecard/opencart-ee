@@ -29,6 +29,8 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
+use Mockery as m;
+
 require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_creditcard.php';
 require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_creditcard.php';
 
@@ -50,8 +52,7 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 	const SHOP = 'OpenCart';
 	const PLUGIN = 'Wirecard_PaymentGateway';
 
-	public function setUp()
-	{
+	public function setUp() {
 		$this->registry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->getMock();
 
 		$this->config = $this->getMockBuilder(Config::class)->disableOriginalConstructor()->getMock();
@@ -60,7 +61,7 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 
 		$this->response = $this->getMockBuilder(Response::class)
 			->disableOriginalConstructor()
-			->setMethods(['addHeader', 'setOutput', 'getOutput'])
+			->setMethods(['addHeader', 'setOutput', 'getOutput', 'redirect'])
 			->getMock();
 
 		$this->modelOrder = $this->getMockBuilder(ModelCheckoutOrder::class)
@@ -138,8 +139,7 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 		);
 	}
 
-	public function testIndexActive()
-	{
+	public function testIndexActive() {
 		$this->config->expects($this->at(0))->method('get')->willReturn(1);
 		$this->loader->method('view')->willReturn('active');
 		$this->controller = new ControllerExtensionPaymentWirecardPGCreditCard(
@@ -160,9 +160,21 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 		$this->assertNotNull($actual);
 	}
 
-	public function testSuccessConfirm()
-	{
-		$this->controller->confirm();
+	public function testSuccessConfirm() {
+        $orderManager = m::mock('overload:PGOrderManager');
+        $orderManager->shouldReceive('createResponseOrder');
+
+	    $_POST['merchant_account_id'] = '1111111111';
+	    $_POST['transaction_id'] = 'da04876d-1d92-431c-b33a-49080914c996';
+	    $_POST['transaction_type'] = 'authorization';
+	    $_POST['payment_method'] = 'creditcard';
+        $_POST['request_id'] = '123';
+        $_POST['transaction_state'] = 'success';
+        $_POST['status_code_1'] = '201.0000';
+        $_POST['status_description_1'] = '3d-acquirer:The resource was successfully created.';
+        $_POST['status_severity_1'] = 'information';
+
+        $this->controller->confirm();
 		$json['response'] = [];
 		$this->response->method('getOutput')->willReturn(json_encode($json));
 
@@ -171,8 +183,7 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $this->response->getOutput());
 	}
 
-	public function testGetConfig()
-	{
+	public function testGetConfig() {
 		$this->config->expects($this->at(0))->method('get')->willReturn('account123');
 		$this->config->expects($this->at(1))->method('get')->willReturn('secret123');
 		$this->config->expects($this->at(2))->method('get')->willReturn('api-test.com');
@@ -216,10 +227,23 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $actual);
 	}
 
-	public function testGetModel()
-	{
+	public function testGetModel() {
 		$actual = $this->controller->getModel();
 
 		$this->assertInstanceOf(get_class($this->modelCreditCard), $actual);
 	}
+
+	public function testGetCreditCardUiRequestData() {
+        $actual = $this->controller;
+        $transactionService = m::mock('overload:TransactionService');
+        $transactionService->shouldReceive('getCreditCardUiWithData');
+        $actual->getCreditCardUiRequestData();
+
+        $this->assertNull($actual->response->getOutput());
+    }
+
+    public function tetGetPaymentAction() {
+	    $actual = $this->controller->getPaymentAction('pay');
+	    $this->assertEquals('purchase', $actual);
+    }
 }
