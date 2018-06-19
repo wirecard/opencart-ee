@@ -1,0 +1,23 @@
+#!/bin/sh
+if composer cs-check > /dev/null 2>&1 ; then
+    echo ""
+    echo "----------"
+    echo "No errors in code style found. Good job! :)"
+    echo "----------"
+    echo ""
+else
+	echo ""
+	echo "----------"
+	echo -n "Applying code style changes ... "
+	
+    composer cs-fix > /dev/null 2>&1
+    
+	echo "Applied!"
+	echo -n "Adding fixed files to commit ... "
+	
+	git add --all > /dev/null 2>&1
+	
+	echo "Added!"
+	echo "----------"
+    echo ""
+fi
