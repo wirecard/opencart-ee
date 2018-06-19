@@ -89,8 +89,7 @@ class AdditionalInformationHelper extends Model {
 	 * @return Transaction
 	 * @since 1.0.0
 	 */
-	public function setIdentificationData($transaction, $order)
-	{
+	public function setIdentificationData($transaction, $order) {
 		$customFields = new \Wirecard\PaymentSdk\Entity\CustomFieldCollection();
 		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('orderId', $order['order_id']));
 		$transaction->setCustomFields($customFields);
@@ -107,14 +106,13 @@ class AdditionalInformationHelper extends Model {
 	 * @return Transaction
 	 * @since 1.0.0
 	 */
-	public function setAdditionalInformation($transaction, $order)
-	{
-			/*$transaction->setOrderDetail(sprintf(
+	public function setAdditionalInformation($transaction, $order) {
+			$transaction->setOrderDetail(sprintf(
 				'%s %s %s',
 				$order['email'],
 				$order['firstname'],
 				$order['lastname']
-			));*/
+			));
 			if ($order['ip']) {
 				$transaction->setIpAddress($order['ip']);
 			} else {
