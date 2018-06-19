@@ -32,7 +32,7 @@
 class NotificationHandler {
 
 	/**
-	 * @param Config $config
+	 * @param \Wirecard\PaymentSdk\Config\Config $config
 	 * @param PGLogger $logger
 	 * @param string $payload
 	 * @return bool|\Wirecard\PaymentSdk\Response\FailureResponse|\Wirecard\PaymentSdk\Response\InteractionResponse|\Wirecard\PaymentSdk\Response\Response|\Wirecard\PaymentSdk\Response\SuccessResponse

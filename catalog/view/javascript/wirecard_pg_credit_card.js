@@ -103,7 +103,7 @@ function getCreditCardRequestData() {
 			}
 		},
 		error: function (error) {
-			conosle.log(error);
+			console.log(error);
 		}
 	});
 }

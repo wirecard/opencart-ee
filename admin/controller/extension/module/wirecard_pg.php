@@ -38,6 +38,8 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 
 	const ROUTE = 'extension/payment/wirecard_pg';
 
+	private $error;
+
 	/**
 	 * Display transaction panel
 	 *
@@ -47,16 +49,6 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 		$this->load->language(self::ROUTE);
 
 		$this->document->setTitle($this->language->get('heading_title'));
-
-		$this->load->model('setting/setting');
-
-		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-			$this->model_setting_setting->editSetting('module_wirecard_pg', $this->request->post);
-
-			$this->session->data['success'] = $this->language->get('text_success');
-
-			$this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true));
-		}
 
 		if (isset($this->error['warning'])) {
 			$data['error_warning'] = $this->error['warning'];
@@ -123,7 +115,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 		if (isset($this->request->get['id'])) {
 			$data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
 		} else {
-			$data['error'] = $this->language->get('error_no_transaction');
+			$data['error_warning'] = $this->language->get('error_no_transaction');
 		}
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/details', $data));
