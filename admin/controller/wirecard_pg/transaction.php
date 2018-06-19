@@ -125,10 +125,10 @@ class ControllerWirecardPGTransaction extends Controller {
 
 			$controller = $this->getPaymentController($transaction['payment_method']);
 			$transactionId = $transactionHandler->createCancelTransaction($controller, $transaction, $this->config);
-			if (!$transactionId) {
-				$data['error'] = 'failure';
+			if ($transactionId) {
+				$this->response->redirect($this->url->link(self::TRANSACTION, 'user_token=' . $this->session->data['user_token'] . '&id=' . $transactionId, true));
 			} else {
-				$data['transaction'] = $this->getTransactionDetails($transactionId);
+				$data['error'] = $this->session->data['admin_error'];
 			}
 		} else {
 			$data['error'] = $this->language->get('error_no_transaction');
@@ -184,7 +184,7 @@ class ControllerWirecardPGTransaction extends Controller {
 		$backendService = new \Wirecard\PaymentSdk\BackendService($controller->getConfig());
 		$backOperations = $backendService->retrieveBackendOperations($transaction, true);
 
-		if ($backOperations) {
+		if (!empty($backOperations)) {
 			$operations = array();
 			foreach ($backOperations as $item => $value) {
 				$key = key($value);

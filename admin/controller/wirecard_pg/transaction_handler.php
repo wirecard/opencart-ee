@@ -63,16 +63,36 @@ class ControllerWirecardPGTransactionHandler extends Controller {
 			$logger->error( __METHOD__ . ':' . $exception->getMessage() );
 		}
 
-		if ( $response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse ) {
-			$this->load->model('checkout/order');
-			$orderId = $response->getCustomFields()->get('orderId');
-			$order = $this->model_checkout_order->getOrder($orderId);
+		if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
+			$responseData = $response->getData();
+			$order = array(
+				'orderId' => $response->getCustomFields()->get('orderId'),
+				'amount' => $responseData['requested-amount'],
+				'currency_code' => $responseData['currency']
+			);
 
-			/** @var ModelExtensionPaymentGateway $transactionModel */
-			$transactionModel = $paymentController->getModel();
-			$transactionModel->createTransaction($response, $order, 'awaiting', $paymentController->getType());
+			$this->load->model('extension/payment/wirecard_pg');
+			$this->model_extension_payment_wirecard_pg->createTransaction(
+				$response,
+				$order,
+				'awaiting',
+				$paymentController->getType()
+			);
 
 			return $response->getTransactionId();
+		}
+
+		$this->session->data['admin_error'] = $this->language->get('error_occured');
+
+		if ($response instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
+			$errors = '';
+
+			foreach ($response->getStatusCollection()->getIterator() as $item) {
+				$errors .= $item->getDescription() . "<br>\n";
+				$logger->error($item->getDescription());
+			}
+
+			$this->session->data['admin_error'] = $errors;
 		}
 
 		return false;
