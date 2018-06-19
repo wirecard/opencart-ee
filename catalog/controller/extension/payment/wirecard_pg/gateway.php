@@ -357,7 +357,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$orderManager = new PGOrderManager($this->registry);
 
 		if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
-			$orderManager->createResponseOrder($result);
+			$orderManager->createResponseOrder($result, $this);
 			$this->response->redirect($this->url->link('checkout/success'));
 
 			return true;
