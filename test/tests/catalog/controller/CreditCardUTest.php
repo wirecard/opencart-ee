@@ -52,8 +52,7 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 	const SHOP = 'OpenCart';
 	const PLUGIN = 'Wirecard_PaymentGateway';
 
-	public function setUp()
-	{
+	public function setUp() {
 		$this->registry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->getMock();
 
 		$this->config = $this->getMockBuilder(Config::class)->disableOriginalConstructor()->getMock();
@@ -140,8 +139,7 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 		);
 	}
 
-	public function testIndexActive()
-	{
+	public function testIndexActive() {
 		$this->config->expects($this->at(0))->method('get')->willReturn(1);
 		$this->loader->method('view')->willReturn('active');
 		$this->controller = new ControllerExtensionPaymentWirecardPGCreditCard(
@@ -162,8 +160,7 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 		$this->assertNotNull($actual);
 	}
 
-	public function testSuccessConfirm()
-	{
+	public function testSuccessConfirm() {
         $orderManager = m::mock('overload:PGOrderManager');
         $orderManager->shouldReceive('createResponseOrder');
 
@@ -186,8 +183,7 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $this->response->getOutput());
 	}
 
-	public function testGetConfig()
-	{
+	public function testGetConfig() {
 		$this->config->expects($this->at(0))->method('get')->willReturn('account123');
 		$this->config->expects($this->at(1))->method('get')->willReturn('secret123');
 		$this->config->expects($this->at(2))->method('get')->willReturn('api-test.com');
@@ -231,10 +227,23 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $actual);
 	}
 
-	public function testGetModel()
-	{
+	public function testGetModel() {
 		$actual = $this->controller->getModel();
 
 		$this->assertInstanceOf(get_class($this->modelCreditCard), $actual);
 	}
+
+	public function testGetCreditCardUiRequestData() {
+        $actual = $this->controller;
+        $transactionService = m::mock('overload:TransactionService');
+        $transactionService->shouldReceive('getCreditCardUiWithData');
+        $actual->getCreditCardUiRequestData();
+
+        $this->assertNull($actual->response->getOutput());
+    }
+
+    public function tetGetPaymentAction() {
+	    $actual = $this->controller->getPaymentAction('pay');
+	    $this->assertEquals('purchase', $actual);
+    }
 }

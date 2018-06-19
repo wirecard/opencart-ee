@@ -5,11 +5,11 @@
  */
 abstract class Controller
 {
+    public $response;
     protected $registry;
     protected $config;
     protected $load;
     protected $session;
-    protected $response;
     protected $url;
     protected $language;
     protected $cart;
