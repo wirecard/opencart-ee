@@ -15,7 +15,11 @@
             <exclude>
                 <directory>admin/controller</directory>
                 <directory>system</directory>
+                <directory>admin/language</directory>
+                <directory>catalog/language</directory>
                 <directory>test</directory>
+                <file>catalog/model/extension/payment/wirecard_pg/helper/pg_order_manager.php</file>
+                <file>catalog/model/extension/payment/wirecard_pg/handler/notification_handler.php</file>
             </exclude>
         </whitelist>
     </filter>

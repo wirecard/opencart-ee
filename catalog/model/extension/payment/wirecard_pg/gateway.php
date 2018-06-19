@@ -69,7 +69,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	public function getMethod($address, $total) {
 		$prefix = $this->prefix . $this->type;
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
-		$logo = '<img src="./image/wirecard_pg/'. $this->type .'.png" width="100"/>';
+		$logo = '<img src="./catalog/view/image/wirecard_pg/'. $this->type .'.png" width="100"/>';
 		$title = $logo . ' ' . $this->config->get($prefix . '_title');
 
 		$method_data = array(
@@ -129,5 +129,70 @@ abstract class ModelExtensionPaymentGateway extends Model {
 		}
 
 		return $redirect;
+	}
+
+	/**
+	 * Create transaction entry
+	 *
+	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
+	 * @param array $order
+	 * @param string $transactionState
+	 * @param string $paymentMethod
+	 * @since 1.0.0
+	 */
+	public function createTransaction($response, $order, $transactionState, $paymentMethod) {
+		$amount = $response->getData()['requested-amount'];
+		$orderId = $response->getCustomFields()->get('orderId');
+		$currency = $order['currency_code'];
+
+		$this->db->query("
+            INSERT INTO `" . DB_PREFIX . "wirecard_ee_transactions` SET 
+            `order_id` = '" . (int)$orderId . "', 
+            `transaction_id` = '" . $this->db->escape($response->getTransactionId()) . "', 
+            `parent_transaction_id` = '" . $this->db->escape($response->getParentTransactionId()) . "', 
+            `transaction_type` = '" . $this->db->escape($response->getTransactionType()) . "',
+            `payment_method` = '" . $this->db->escape($paymentMethod) . "', 
+            `transaction_state` = '" . $this->db->escape($transactionState) . "',
+            `amount` = '" . (float)$amount . "',
+            `currency` = '" . $this->db->escape($currency) . "',
+            `response` = '" . $this->db->escape(json_encode($response->getData())) . "',
+            `date_added` = NOW()
+            ");
+	}
+
+	/**
+	 * Update transaction with specific transactionstate
+	 *
+	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
+	 * @param $transactionState
+	 * @since 1.0.0
+	 */
+	public function updateTransactionState($response, $transactionState) {
+		$this->db->query("
+        UPDATE `" . DB_PREFIX . "wirecard_ee_transactions` SET 
+            `transaction_state` = '" . $this->db->escape($transactionState) . "', 
+            `response` = '" . $this->db->escape(json_encode($response->getData())) . "', 
+            `date_modified` = NOW() WHERE 
+            `transaction_id` = '" . $this->db->escape($response->getTransactionId()) . "'
+        ");
+	}
+
+	/**
+	 * Get transaction via transaction id
+	 *
+	 * @param $transactionId
+	 * @return bool|array
+	 * @since 1.0.0
+	 */
+	public function getTransaction($transactionId) {
+		$query = $this->db->query("
+	        SELECT * FROM `" . DB_PREFIX . "wirecard_ee_transactions` WHERE `transaction_id` = '" . $this->db->escape($transactionId) . "'
+	    ");
+
+		if ($query->num_rows) {
+			return $query->row;
+		}
+
+		return false;
 	}
 }

@@ -43,6 +43,9 @@ use Wirecard\PaymentSdk\Exception\MalformedResponseException;
  */
 abstract class ControllerExtensionPaymentGateway extends Controller {
 
+	const ROUTE = 'extension/payment/wirecard_pg_';
+	const PATH = 'extension/payment/wirecard_pg';
+
 	/**
 	 * @var string
 	 * @since 1.0.0
@@ -97,18 +100,20 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	public function index($data = null) {
 		$this->load->model('checkout/order');
-		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
+
+		$this->load->language(self::PATH);
+		$this->load->language(self::ROUTE . $this->type);
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
 		$data['active'] = $this->getShopConfigVal('status');
 		$data['button_confirm'] = $this->language->get('button_confirm');
 		$data['additional_info'] = $this->getShopConfigVal('additional_info');
-		$data['action'] = $this->url->link('extension/payment/wirecard_pg_' . $this->type . '/confirm', '', true);
+		$data['action'] = $this->url->link(self::ROUTE . $this->type . '/confirm', '', true);
 		$sessionId = $this->getShopConfigVal('merchant_account_id') . '_' . $this->createSessionString($order);
 		$data['session_id'] = substr($sessionId, 0, 127);
 		$data['type'] = $this->type;
 
-		return $this->load->view('extension/payment/wirecard_pg', $data);
+		return $this->load->view(self::PATH, $data);
 	}
 
 	/**
@@ -145,7 +150,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	public function prepareTransaction() {
-		$this->load->language('extension/payment/wirecard_pg');
+		$this->load->language(self::PATH);
 		$this->load->model('checkout/order');
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 		$this->load->model('checkout/order');
@@ -278,7 +283,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		}
 	}
 
-  /**
+	/**
 	 * Create notification url
 	 *
 	 * @return string
@@ -286,7 +291,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	protected function getNotificationUrl() {
 		return $this->url->link(
-			'extension/payment/wirecard_pg_' . $this->type . '/notify', '', 'SSL'
+			self::ROUTE . $this->type . '/notify', '', 'SSL'
 		);
 	}
 
@@ -298,15 +303,18 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	protected function getRedirects() {
 		return new \Wirecard\PaymentSdk\Entity\Redirect(
-			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'),
-			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response&cancelled=1', '', 'SSL'),
-			$this->url->link('extension/payment/wirecard_pg_'. $this->type . '/response', '', 'SSL')
+			$this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL'),
+			$this->url->link(self::ROUTE . $this->type . '/response&cancelled=1', '', 'SSL'),
+			$this->url->link(self::ROUTE. $this->type . '/response', '', 'SSL')
 		);
 	}
 
 	/**
+	 * Get configuration value per fieldname
+	 *
 	 * @param string $field
 	 * @return bool|string
+	 * @since 1.0.0
 	 */
 	protected function getShopConfigVal($field) {
 		return $this->config->get($this->prefix . $this->type . '_' . $field);
@@ -328,6 +336,16 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	}
 
 	/**
+	 * Get payment type
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function getType() {
+		return $this->type;
+	}
+
+	/**
 	 * Process the response data
 	 *
 	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse | \Wirecard\PaymentSdk\Response\FormInteractionResponse |
@@ -339,7 +357,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$orderManager = new PGOrderManager($this->registry);
 
 		if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
-			$orderManager->createResponseOrder($result);
+			$orderManager->createResponseOrder($result, $this);
 			$this->response->redirect($this->url->link('checkout/success'));
 
 			return true;

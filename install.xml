@@ -3,4 +3,18 @@
     <version>1.0.0</version>
     <author>Wirecard</author>
     <code>WirecardPG</code>
+    <file path="admin/controller/common/column_left.php">
+        <operation>
+            <search><![CDATA[$design = array();]]></search>
+            <add position="before"><![CDATA[
+                $data['menus'][] = array(
+					'id'       => 'menu-wirecard',
+					'icon'	   => 'fa-money',
+					'name'	   => 'Wirecard Transactions',
+					'href'     => $this->url->link('extension/module/wirecard_pg', 'user_token=' . $this->session->data['user_token'], 'SSL'),
+					'children' => array()
+				);
+                ]]></add>
+        </operation>
+    </file>
 </modification>

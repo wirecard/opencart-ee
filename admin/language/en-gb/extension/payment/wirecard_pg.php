@@ -32,6 +32,16 @@
 // Breadcrumb
 $_['text_extension'] = 'Extensions';
 
+// Admin Panel
+$_['heading_title'] = 'Wirecard Payment Processing Gateway';
+$_['text_list'] = 'Transactions';
+
+// Transaction Details
+$_['text_transaction'] = 'Transaction';
+$_['heading_transaction_details'] = 'Transactiondetails';
+$_['text_response_data'] = 'Response Data';
+$_['error_no_transaction'] = 'No transaction available.';
+
 // Configuration
 $_['text_enabled'] = 'Enabled';
 $_['text_disabled'] = 'Disabled';

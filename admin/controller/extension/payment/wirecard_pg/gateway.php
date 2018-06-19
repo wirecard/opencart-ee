@@ -132,6 +132,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	}
 
 	/**
+	 * Install process
+	 *
+	 * @since 1.0.0
+	 */
+	public function install() {
+		$this->load->model('extension/payment/wirecard_pg');
+
+		$this->model_extension_payment_wirecard_pg->install();
+	}
+
+	/**
 	 * Get text for config fields
 	 *
 	 * @return mixed

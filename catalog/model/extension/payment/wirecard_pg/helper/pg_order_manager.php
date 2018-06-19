@@ -36,21 +36,30 @@
  */
 class PGOrderManager extends Model {
 
+	const PENDING = 1;
+
 	/**
 	 * Create new order with specific orderstate
 	 *
 	 * @param \Wirecard\PaymentSdk\Response\Response $response
+	 * @param ControllerExtensionPaymentGateway $paymentController
 	 * @since 1.0.0
 	 */
-	public function createResponseOrder($response) {
+	public function createResponseOrder($response, $paymentController) {
 		$this->load->model('checkout/order');
 		$orderId = $response->getCustomFields()->get('orderId');
 		$order = $this->model_checkout_order->getOrder($orderId);
+		/** @var ModelExtensionPaymentGateway $transactionModel */
+		$transactionModel = $paymentController->getModel();
 
-		//Update pending order with responsedata
-		if ($order['order_status'] == 1) {
-			$this->model_checkout_order->addOrderHistory($orderId, 1, json_encode($response->getData()), false);
-			//transaction should be saved here
+		if (self::PENDING == $order['order_status']) {
+			$this->model_checkout_order->addOrderHistory(
+				$orderId,
+				self::PENDING,
+				'<pre>' . htmlentities($response->getRawData()) . '</pre>',
+				false
+			);
+			$transactionModel->createTransaction($response, $order, 'awaiting', $paymentController->getType());
 		}
 	}
 
@@ -66,12 +75,13 @@ class PGOrderManager extends Model {
 		$this->load->model('checkout/order');
 		$this->load->language('extension/payment/wirecard_pg');
 		$order = $this->model_checkout_order->getOrder($orderId);
+		/** @var ModelExtensionPaymentGateway $transactionModel */
+		$transactionModel = $paymentController->getModel();
 
 		//not in use yet but with order state US
 		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig());
-		if ($order['order_status_id']) {
 			//Update an pending order state
-			if ($order['order_status_id'] == 1) {
+			if (self::PENDING == $order['order_status_id']) {
 				$this->model_checkout_order->addOrderHistory(
 					$orderId,
 					//update the order state
@@ -79,8 +89,12 @@ class PGOrderManager extends Model {
 					'<pre>' . htmlentities($response->getRawData()) . '</pre>',
 					true
 				);
+				if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse && $transactionModel->getTransaction($response->getTransactionId())) {
+					$transactionModel->updateTransactionState($response, 'success');
+				} else {
+					$transactionModel->createTransaction($response, $order, 'success', $paymentController->getType());
+				}
 			}
 			//Cancel to implement
-		}
 	}
 }
