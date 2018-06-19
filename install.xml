@@ -3,51 +3,15 @@
     <version>1.0.0</version>
     <author>Wirecard</author>
     <code>WirecardPG</code>
-    <file path="admin/controller/marketplace/install.php">
-        <operation>
-            <search>
-                <![CDATA[
-                if ($safe) {
-                ]]>
-            </search>
-            <add position="before"><![CDATA[
-                $safe = true;
-                ]]>
-            </add>
-        </operation>
-        <operation>
-            <search><![CDATA[
-                if (is_dir($file) && !is_dir($path)) {
-                ]]>
-            </search>
-            <add position="before"><![CDATA[
-                if ($path == '') {
-					// Get the ROOT
-					$app_root = explode('/',DIR_APPLICATION);
-					unset($app_root[count($app_root)-2]);
-					$app_root = implode('/',$app_root);
-
-					$path = $app_root . $destination;
-
-				}
-            ]]>
-            </add>
-        </operation>
-    </file>
     <file path="admin/controller/common/column_left.php">
         <operation>
-            <search><![CDATA[
-                $design = array();
-                ]]></search>
+            <search><![CDATA[$design = array();]]></search>
             <add position="before"><![CDATA[
-            	$this->load->model('user/user_group');
-				$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'wirecard_pg/panel');
-			    $this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'wirecard_pg/panel');
                 $data['menus'][] = array(
 					'id'       => 'menu-wirecard',
 					'icon'	   => 'fa-money',
 					'name'	   => 'Wirecard Transactions',
-					'href'     => $this->url->link('wirecard_pg/panel', 'user_token=' . $this->session->data['user_token'], 'SSL'),
+					'href'     => $this->url->link('extension/module/wirecard_pg', 'user_token=' . $this->session->data['user_token'], 'SSL'),
 					'children' => array()
 				);
                 ]]></add>
