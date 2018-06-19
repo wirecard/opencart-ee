@@ -65,3 +65,5 @@ $_['config_payment_action_desc'] = 'Select between "Purchase" to capture/invoice
 $_['text_success'] = 'Your modifications are saved!';
 $_['success_credentials'] = 'Merchant configuration was successfully tested.';
 $_['error_credentials'] = 'Test failed, please check your credentials.';
+
+$_['redirect_text'] = 'You are being redirected. Please wait';

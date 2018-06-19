@@ -330,6 +330,14 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		return $session;
 	}
 
+	/**
+	 * Process the response data
+	 *
+	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse | \Wirecard\PaymentSdk\Response\FormInteractionResponse |
+	 * \Wirecard\PaymentSdk\Response\FailureResponse $result
+	 * @param Logger $logger
+	 * @return bool | array
+	 */
 	public function processResponse($result, $logger) {
 		$orderManager = new PGOrderManager($this->registry);
 
@@ -339,12 +347,16 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 			return true;
 		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FormInteractionResponse) {
+			$this->load->language('information/static');
+
 			$data['url'] = $result->getUrl();
 			$data['method'] = $result->getMethod();
 			$data['form_fields'] = $result->getFormFields();
 
-			/*@TODO build template with this data and redirect to it*/
-
+			$data['footer'] = $this->load->controller('common/footer');
+			$data['header'] = $this->load->controller('common/header');
+			$data['redirect_text'] = $this->language->get('redirect_text');
+			$this->response->setOutput($this->load->view('extension/payment/wirecard_interaction_response', $data));
 		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			$errors = '';
 

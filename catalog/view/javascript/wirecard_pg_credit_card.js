@@ -28,10 +28,20 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
+/**
+ * When document loads get the data for the credit card form
+ *
+ * @since 1.0.0
+ */
 $(document).ready(function() {
 	getCreditCardRequestData();
 });
 
+/**
+ * On confirm button submit the form
+ *
+ * @since 1.0.0
+ */
 $('#button-confirm').on('click', function() {
 	WirecardPaymentPage.seamlessSubmitForm({
 		onSuccess: setParentTransactionId,
@@ -39,25 +49,44 @@ $('#button-confirm').on('click', function() {
 	})
 });
 
+/**
+ * Set the paren transaction id to the form and submit it
+ *
+ * @param response
+ * @since 1.0.0
+ */
 function setParentTransactionId(response) {
 	var form = $('#wirecard-pg-form');
-	for(var key in response){
-		if(response.hasOwnProperty(key)) {
+	for (var key in response) {
+		if (response.hasOwnProperty(key)) {
 			form.append("<input type='hidden' name='" + key + "' value='" + response[key] + "'>");
 		}
 	}
-	form.append("<input id='jsresponse' type='hidden' name='jsresponse' value='true'>");
 	form.submit();
 }
 
-function logCallback(response) {
+/**
+ * On success set the hight of the iframe
+ * @since 1.0.0
+ */
+function callback() {
 	$('#creditcard-form-div').height(500);
 }
 
+/**
+ * Log errors to console
+ *
+ * @param error
+ * @since 1.0.0
+ */
 function logError(error) {
 	console.log(error);
 }
 
+/**
+ * Get data with an ajax for the seamlessrenderform
+ * @since 1.0.0
+ */
 function getCreditCardRequestData() {
 	$.ajax({
 		url: 'index.php?route=extension/payment/wirecard_pg_creditcard/getCreditCardUiRequestData',
@@ -65,17 +94,16 @@ function getCreditCardRequestData() {
 		dataType: 'json',
 		success: function(data) {
 			if (data != null) {
-				console.log('init');
 				WirecardPaymentPage.seamlessRenderForm({
 					requestData: data,
 					wrappingDivId: "creditcard-form-div",
-					onSuccess: logCallback,
+					onSuccess: callback,
 					onError: logError
 				});
 			}
 		},
-		error: function(xhr, ajaxOptions, thrownError) {
-			console.log('errrrrrorrorr');
+		error: function (error) {
+			conosle.log(error);
 		}
 	});
 }

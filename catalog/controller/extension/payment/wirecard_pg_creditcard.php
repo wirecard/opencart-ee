@@ -59,19 +59,18 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	public function index($data = null) {
 
 		$data['base_url'] = $this->getShopConfigVal('base_url');
-		//load template for the ui to load
 		$data['credit_card'] = $this->load->view('extension/payment/wirecard_credit_card_ui', $data);
 		return parent::index($data);
 	}
 
 	/**
-	 * Create CreditCard transaction
+	 * After the order is confirmed in frontend
 	 *
 	 * @since 1.0.0
 	 */
 	public function confirm() {
 		$transactionService = new TransactionService($this->getConfig(), $this->getLogger());
-		$response = $transactionService->processJsResponse($_POST, $this->getRedirects());
+		$response = $transactionService->processJsResponse($_POST, $this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
 
 		return $this->processResponse($response, $this->getLogger());
 	}
@@ -133,12 +132,16 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		return $this->model_extension_payment_wirecard_pg_creditcard;
 	}
 
+	/**
+	 * return data via ajax call for the seamless form renderer
+	 * @return array
+	 * @since 1.0.0
+	 */
 	public function getCreditCardUiRequestData() {
 		$this->transaction = new CreditCardTransaction();
 		$this->prepareTransaction();
-		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
-
 		$this->transaction->setConfig($this->paymentConfig->get(CreditCardTransaction::NAME));
+		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
 
 		$transactionService = new TransactionService($this->paymentConfig, $this->getLogger());
 		$this->response->addHeader('Content-Type: application/json');
@@ -149,6 +152,13 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		)));
 	}
 
+	/**
+	 * Get payment action
+	 *
+	 * @param string $action
+	 * @return string
+	 * @since 1.0.0
+	 */
 	public function getPaymentAction($action) {
 		if ($action == 'pay') {
 			return 'purchase';
