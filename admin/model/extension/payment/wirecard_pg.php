@@ -100,7 +100,7 @@ class ModelExtensionPaymentWirecardPG extends Model {
 	 */
 	public function getTransactionList() {
 		$transactions = $this->db->query("
-            SELECT * FROM `" . DB_PREFIX . "wirecard_ee_transactions` ORDER BY tx_id
+            SELECT * FROM `" . DB_PREFIX . "wirecard_ee_transactions` ORDER BY tx_id DESC
             ")->rows;
 
 		return $transactions;
