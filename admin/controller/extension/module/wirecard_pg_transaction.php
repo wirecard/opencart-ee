@@ -97,7 +97,7 @@ class ControllerExtensionModuleWirecardPGTransaction extends Controller {
 			$data = array(
 				'transaction_id' => $transaction['transaction_id'],
 				'response' => json_decode($transaction['response'], true),
-				'operations' => $transaction['transaction_state'] == 'success' ? $operations : false
+				'operations' => ($transaction['transaction_state'] == 'success') ? $operations : false
 			);
 		}
 
