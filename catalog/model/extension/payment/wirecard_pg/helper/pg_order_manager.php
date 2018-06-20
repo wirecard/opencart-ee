@@ -37,6 +37,7 @@
 class PGOrderManager extends Model {
 
 	const PENDING = 1;
+	const PROCESSING = 2;
 
 	/**
 	 * Create new order with specific orderstate
@@ -46,21 +47,21 @@ class PGOrderManager extends Model {
 	 * @since 1.0.0
 	 */
 	public function createResponseOrder($response, $paymentController) {
-		$this->load->model('checkout/order');
-		$orderId = $response->getCustomFields()->get('orderId');
-		$order = $this->model_checkout_order->getOrder($orderId);
-		/** @var ModelExtensionPaymentGateway $transactionModel */
-		$transactionModel = $paymentController->getModel();
+        $this->load->model('checkout/order');
+        $orderId = $response->getCustomFields()->get('orderId');
+        $order = $this->model_checkout_order->getOrder($orderId);
+        /** @var ModelExtensionPaymentGateway $transactionModel */
+        $transactionModel = $paymentController->getModel();
 
-		if (self::PENDING == $order['order_status']) {
-			$this->model_checkout_order->addOrderHistory(
-				$orderId,
-				self::PENDING,
-				'<pre>' . htmlentities($response->getRawData()) . '</pre>',
-				false
-			);
-			$transactionModel->createTransaction($response, $order, 'awaiting', $paymentController->getType());
-		}
+        if (self::PROCESSING != $order['order_status_id']) {
+            $this->model_checkout_order->addOrderHistory(
+                $orderId,
+                self::PENDING,
+                '<pre>' . htmlentities($response->getRawData()) . '</pre>',
+                false
+            );
+            $transactionModel->createTransaction($response, $order, 'awaiting', $paymentController->getType());
+        }
 	}
 
 	/**
@@ -80,21 +81,21 @@ class PGOrderManager extends Model {
 
 		//not in use yet but with order state US
 		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig());
-			//Update an pending order state
-			if (self::PENDING == $order['order_status_id']) {
-				$this->model_checkout_order->addOrderHistory(
-					$orderId,
-					//update the order state
-					2/*$this->getOrderState($backendService->getOrderState($response->getTransactionType()))*/,
-					'<pre>' . htmlentities($response->getRawData()) . '</pre>',
-					true
-				);
-				if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse && $transactionModel->getTransaction($response->getTransactionId())) {
-					$transactionModel->updateTransactionState($response, 'success');
-				} else {
-					$transactionModel->createTransaction($response, $order, 'success', $paymentController->getType());
-				}
-			}
-			//Cancel to implement
+        //Update an pending order state
+        if (self::PENDING == $order['order_status_id'] || 0 == $order['order_status_id']) {
+            $this->model_checkout_order->addOrderHistory(
+                $orderId,
+                //update the order state
+                2/*$this->getOrderState($backendService->getOrderState($response->getTransactionType()))*/,
+                '<pre>' . htmlentities($response->getRawData()) . '</pre>',
+                true
+            );
+            if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse && $transactionModel->getTransaction($response->getTransactionId())) {
+                $transactionModel->updateTransactionState($response, 'success');
+            } else {
+                $transactionModel->createTransaction($response, $order, 'success', $paymentController->getType());
+            }
+        }
+        //Cancel to implement
 	}
 }
