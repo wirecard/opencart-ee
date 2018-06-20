@@ -67,6 +67,10 @@ class ControllerExtensionModuleWirecardPGTransaction extends Controller {
 		$data['text_backend_operations'] = $this->language->get('text_backend_operations');
 		$data['route_href'] = $this->url->link(self::TRANSACTION . '/');
 
+		if (isset($this->session->data['admin_error'])) {
+            $data['error_warning'] = $this->session->data['admin_error'];
+            unset($this->session->data['admin_error']);
+        }
 		if (isset($this->request->get['id'])) {
 			$data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
 		} else {
@@ -129,12 +133,12 @@ class ControllerExtensionModuleWirecardPGTransaction extends Controller {
 				$this->response->redirect($this->url->link(self::TRANSACTION, 'user_token=' . $this->session->data['user_token'] . '&id=' . $transactionId, true));
 			} else {
 				$data['error_warning'] = $this->session->data['admin_error'];
+                $this->response->redirect($this->url->link(self::TRANSACTION, 'user_token=' . $this->session->data['user_token'] . '&id=' . $this->request->get['id'], true));
 			}
-		} else {
-			$data['error_warning'] = $this->language->get('error_no_transaction');
 		}
 
-		$this->response->setOutput($this->load->view('extension/wirecard_pg/details', $data));
+        $this->session->data['admin_error'] = $this->language->get('error_no_transaction');
+		$this->response->redirect($this->url->link(self::TRANSACTION, 'user_token=' . $this->session->data['user_token'] . '&id=' . $this->request->get['id'], true));
 	}
 
 	/**

@@ -74,7 +74,7 @@ class ControllerExtensionPaymentWirecardPGTransactionHandler extends Controller 
 				$response,
 				$order,
 				'awaiting',
-				$paymentController->getType()
+				$paymentController
 			);
 
 			return $response->getTransactionId();

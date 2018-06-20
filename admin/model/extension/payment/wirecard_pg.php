@@ -67,21 +67,23 @@ class ModelExtensionPaymentWirecardPG extends Model {
 	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
 	 * @param array $order
 	 * @param string $transactionState
-	 * @param string $paymentMethod
+	 * @param ControllerExtensionPaymentGateway $paymentController
 	 * @since 1.0.0
 	 */
-	public function createTransaction($response, $order, $transactionState, $paymentMethod) {
+	public function createTransaction($response, $order, $transactionState, $paymentController) {
 		$amount = $response->getData()['requested-amount'];
 		$orderId = $response->getCustomFields()->get('orderId');
 		$currency = $order['currency_code'];
+
+		$parentTransactionId = $this->checkParentTransaction($response);
 
 		$this->db->query("
             INSERT INTO `" . DB_PREFIX . "wirecard_ee_transactions` SET 
             `order_id` = '" . (int)$orderId . "', 
             `transaction_id` = '" . $this->db->escape($response->getTransactionId()) . "', 
-            `parent_transaction_id` = '" . $this->db->escape($response->getParentTransactionId()) . "', 
+            `parent_transaction_id` = '" . $this->db->escape($parentTransactionId) . "', 
             `transaction_type` = '" . $this->db->escape($response->getTransactionType()) . "',
-            `payment_method` = '" . $this->db->escape($paymentMethod) . "', 
+            `payment_method` = '" . $this->db->escape($paymentController->getType()) . "', 
             `transaction_state` = '" . $this->db->escape($transactionState) . "',
             `amount` = '" . (float)$amount . "',
             `currency` = '" . $this->db->escape($currency) . "',
@@ -122,4 +124,39 @@ class ModelExtensionPaymentWirecardPG extends Model {
 
 		return false;
 	}
+
+    /**
+     * Check for existing parent transaction and close it
+     *
+     * @param $response
+     * @return string|null
+     * @since 1.0.0
+     */
+	public function checkParentTransaction($response) {
+	    $parentTransactionId = null;
+	    $parentTransaction = $this->getTransaction($response->getParentTransactionId());
+
+	    if ($parentTransaction) {
+            $parentTransactionId = $response->getParentTransactionId();
+            $this->updateTransactionState($response, 'closed');
+        }
+
+        return $parentTransactionId;
+    }
+
+    /**
+     * Update transaction with specific transactionstate
+     *
+     * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
+     * @param $transactionState
+     * @since 1.0.0
+     */
+    public function updateTransactionState($response, $transactionState) {
+        $this->db->query("
+        UPDATE `" . DB_PREFIX . "wirecard_ee_transactions` SET 
+            `transaction_state` = '" . $this->db->escape($transactionState) . "', 
+            `date_modified` = NOW() WHERE 
+            `transaction_id` = '" . $this->db->escape($response->getTransactionId()) . "'
+        ");
+    }
 }
