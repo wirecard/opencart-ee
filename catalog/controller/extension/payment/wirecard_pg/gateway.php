@@ -88,7 +88,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return PGLogger
 	 * @since 1.0.0
 	 */
-	protected function getLogger() {
+	public function getLogger() {
 		return new PGLogger($this->config);
 	}
 

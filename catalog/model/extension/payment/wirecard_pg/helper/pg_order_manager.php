@@ -109,7 +109,7 @@ class PGOrderManager extends Model {
 	 *
 	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
 	 * @param ModelExtensionPaymentGateway $transactionModel
-     * @param ControllerExtensionPaymentGateway $paymentController
+	 * @param ControllerExtensionPaymentGateway $paymentController
 	 * @since 1.0.0
 	 */
 	public function updateNotifyOrder($response, $transactionModel, $paymentController) {
@@ -123,10 +123,10 @@ class PGOrderManager extends Model {
 			);
 			$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig());
 			if ($backendService->isFinal($response->getTransactionType())) {
-                $transactionModel->updateTransactionState($response, 'closed');
-            } else {
-                $transactionModel->updateTransactionState($response, 'success');
-            }
+				$transactionModel->updateTransactionState($response, 'closed');
+			} else {
+				$transactionModel->updateTransactionState($response, 'success');
+			}
 		}
 	}
 }

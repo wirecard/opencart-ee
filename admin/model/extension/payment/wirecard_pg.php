@@ -125,38 +125,38 @@ class ModelExtensionPaymentWirecardPG extends Model {
 		return false;
 	}
 
-    /**
-     * Check for existing parent transaction and close it
-     *
-     * @param $response
-     * @return string|null
-     * @since 1.0.0
-     */
+	/**
+	 * Check for existing parent transaction and close it
+	 *
+	 * @param $response
+	 * @return string|null
+	 * @since 1.0.0
+	 */
 	public function checkParentTransaction($response) {
-	    $parentTransactionId = null;
-	    $parentTransaction = $this->getTransaction($response->getParentTransactionId());
+		$parentTransactionId = null;
+		$parentTransaction = $this->getTransaction($response->getParentTransactionId());
 
-	    if ($parentTransaction) {
-            $parentTransactionId = $response->getParentTransactionId();
-            $this->updateTransactionState($response, 'closed');
-        }
+		if ($parentTransaction) {
+			$parentTransactionId = $response->getParentTransactionId();
+			$this->updateTransactionState($parentTransactionId, 'closed');
+		}
 
-        return $parentTransactionId;
-    }
+		return $parentTransactionId;
+	}
 
-    /**
-     * Update transaction with specific transactionstate
-     *
-     * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
-     * @param $transactionState
-     * @since 1.0.0
-     */
-    public function updateTransactionState($response, $transactionState) {
-        $this->db->query("
+	/**
+	 * Update transaction with specific transactionstate
+	 *
+	 * @param string $transactionId
+	 * @param $transactionState
+	 * @since 1.0.0
+	 */
+	public function updateTransactionState($transactionId, $transactionState) {
+		$this->db->query("
         UPDATE `" . DB_PREFIX . "wirecard_ee_transactions` SET 
             `transaction_state` = '" . $this->db->escape($transactionState) . "', 
             `date_modified` = NOW() WHERE 
-            `transaction_id` = '" . $this->db->escape($response->getTransactionId()) . "'
+            `transaction_id` = '" . $this->db->escape($transactionId) . "'
         ");
-    }
+	}
 }
