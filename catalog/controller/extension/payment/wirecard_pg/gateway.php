@@ -420,10 +420,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * Create cancel transaction
 	 *
 	 * @param array $parentTransaction
+	 * @param \Wirecard\PaymentSdk\Transaction\Operation $operation
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
 	 * @since 1.0.0
 	 */
-	public function createCancelTransaction($parentTransaction) {
+	public function createTransaction($parentTransaction, $operation) {
 		$this->transaction->setParentTransactionId($parentTransaction['transaction_id']);
 
 		return $this->transaction;

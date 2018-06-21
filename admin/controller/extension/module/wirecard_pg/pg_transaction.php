@@ -105,11 +105,11 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 	}
 
 	/**
-	 * Handle cancel transactions
+	 * Handle back-end transactions
 	 *
 	 * @since 1.0.0
 	 */
-	public function cancel() {
+	public function process() {
 		$this->load->language(self::ROUTE);
 		$panel = new ControllerExtensionModuleWirecardPG($this->registry);
 
@@ -123,12 +123,13 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 
 		$transactionHandler = new ControllerExtensionPaymentWirecardPGTransactionHandler($this->registry);
 
-		if (isset($this->request->get['id'])) {
+		if (isset($this->request->get['id']) && isset($this->request->get['op'])) {
 			$this->load->model(self::ROUTE);
 			$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($this->request->get['id']);
+			$operation = $this->request->get['op'];
 
 			$controller = $this->getPaymentController($transaction['payment_method']);
-			$transactionId = $transactionHandler->createCancelTransaction($controller, $transaction, $this->config);
+			$transactionId = $transactionHandler->processTransaction($controller, $transaction, $this->config, $operation);
 			if ($transactionId) {
 				$this->response->redirect($this->url->link(self::TRANSACTION, 'user_token=' . $this->session->data['user_token'] . '&id=' . $transactionId, true));
 			} else {
@@ -193,8 +194,8 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			foreach ($backOperations as $item => $value) {
 				$key = key($value);
 				$op = array(
-					'action' => $this->url->link(self::TRANSACTION . '/' . $key,
-						'user_token=' . $this->session->data['user_token'] . '&id=' . $parentTransaction['transaction_id'],
+					'action' => $this->url->link(self::TRANSACTION . '/process',
+						'user_token=' . $this->session->data['user_token'] . '&id=' . $parentTransaction['transaction_id'] . '&op=' . $key,
 						true),
 					'text' => $value[$key]
 				);
