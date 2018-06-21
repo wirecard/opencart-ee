@@ -40,6 +40,7 @@ $_['text_list'] = 'Transactions';
 $_['text_transaction'] = 'Transaction';
 $_['heading_transaction_details'] = 'Transactiondetails';
 $_['text_response_data'] = 'Response Data';
+$_['text_backend_operations'] = 'Possible Back-end Operations';
 $_['error_no_transaction'] = 'No transaction available.';
 
 // Configuration

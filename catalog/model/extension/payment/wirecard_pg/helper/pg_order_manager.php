@@ -60,7 +60,7 @@ class PGOrderManager extends Model {
 				'<pre>' . htmlentities($response->getRawData()) . '</pre>',
 				false
 			);
-			$transactionModel->createTransaction($response, $order, 'awaiting', $paymentController->getType());
+			$transactionModel->createTransaction($response, $order, 'awaiting', $paymentController);
 		}
 	}
 
@@ -93,9 +93,40 @@ class PGOrderManager extends Model {
 			if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse && $transactionModel->getTransaction($response->getTransactionId())) {
 				$transactionModel->updateTransactionState($response, 'success');
 			} else {
-				$transactionModel->createTransaction($response, $order, 'success', $paymentController->getType());
+				$transactionModel->createTransaction($response, $order, 'success', $paymentController);
 			}
 		}
 		//Cancel to implement
+		if (self::PROCESSING == $order['order_status_id']) {
+			if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
+				$this->updateNotifyOrder($response, $transactionModel, $paymentController);
+			}
+		}
+	}
+
+	/**
+	 * Update order state and transaction table
+	 *
+	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
+	 * @param ModelExtensionPaymentGateway $transactionModel
+	 * @param ControllerExtensionPaymentGateway $paymentController
+	 * @since 1.0.0
+	 */
+	public function updateNotifyOrder($response, $transactionModel, $paymentController) {
+		//just for cancel operation for the moment
+		if (\Wirecard\PaymentSdk\Transaction\Transaction::TYPE_VOID_AUTHORIZATION == $response->getTransactionType()) {
+			$this->model_checkout_order->addOrderHistory(
+				$response->getCustomFields()->get('orderId'),
+				7,
+				'<pre>' . htmlentities($response->getRawData()) . '</pre>',
+				false
+			);
+			$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig());
+			if ($backendService->isFinal($response->getTransactionType())) {
+				$transactionModel->updateTransactionState($response, 'closed');
+			} else {
+				$transactionModel->updateTransactionState($response, 'success');
+			}
+		}
 	}
 }

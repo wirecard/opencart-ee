@@ -88,7 +88,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return PGLogger
 	 * @since 1.0.0
 	 */
-	protected function getLogger() {
+	public function getLogger() {
 		return new PGLogger($this->config);
 	}
 
@@ -390,5 +390,42 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 			return false;
 		}
+	}
+
+	/**
+	 * Get new instance of payment specific transaction
+	 *
+	 * @return null
+	 * @since 1.0.0
+	 */
+	public function getTransactionInstance() {
+		return null;
+	}
+
+
+	/**
+	 * Get payment controller
+	 *
+	 * @param string $type
+	 * @return ControllerExtensionPaymentGateway
+	 * @since 1.0.0
+	 */
+	public function getController($type) {
+		$controller = $this->load->controller('extension/payment/wirecard_pg_' . $type);
+
+		return $controller;
+	}
+
+	/**
+	 * Create cancel transaction
+	 *
+	 * @param array $parentTransaction
+	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
+	 * @since 1.0.0
+	 */
+	public function createCancelTransaction($parentTransaction) {
+		$this->transaction->setParentTransactionId($parentTransaction['transaction_id']);
+
+		return $this->transaction;
 	}
 }

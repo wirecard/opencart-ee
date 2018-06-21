@@ -364,4 +364,51 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    public function testCreateCancelTransaction() {
+        $this->controller = new ControllerExtensionPaymentWirecardPGPayPal(
+            $this->registry,
+            $this->config,
+            $this->loader,
+            $this->session,
+            $this->response,
+            $this->modelOrder,
+            $this->url,
+            $this->modelPaypal,
+            $this->language,
+            $this->cart
+        );
+
+        $transaction = array(
+            'transaction_id' => '1234'
+        );
+
+        $expected = new \Wirecard\PaymentSdk\Transaction\PayPalTransaction();
+        $expected->setParentTransactionId('1234');
+
+        $actual = $this->controller->createCancelTransaction($transaction);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testGetInstance() {
+        $this->controller = new ControllerExtensionPaymentWirecardPGPayPal(
+            $this->registry,
+            $this->config,
+            $this->loader,
+            $this->session,
+            $this->response,
+            $this->modelOrder,
+            $this->url,
+            $this->modelPaypal,
+            $this->language,
+            $this->cart
+        );
+
+        $expected = new \Wirecard\PaymentSdk\Transaction\PayPalTransaction();
+
+        $actual = $this->controller->getTransactionInstance();
+
+        $this->assertEquals($expected, $actual);
+    }
 }
