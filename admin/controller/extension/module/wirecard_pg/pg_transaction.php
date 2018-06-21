@@ -190,13 +190,12 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 
 		if (!empty($backOperations)) {
 			$operations = array();
-			foreach ($backOperations as $item => $value) {
-				$key = key($value);
+			foreach ($backOperations as $key => $value) {
 				$op = array(
 					'action' => $this->url->link(self::TRANSACTION . '/' . $key,
 						'user_token=' . $this->session->data['user_token'] . '&id=' . $parentTransaction['transaction_id'],
 						true),
-					'text' => $value[$key]
+					'text' => $value
 				);
 				array_push($operations, $op);
 			}

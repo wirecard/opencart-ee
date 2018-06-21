@@ -265,7 +265,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->response->redirect($this->url->link('checkout/checkout'));
 
 			return;
-		} catch (MalformedResponseException $exception ) {
+		} catch (MalformedResponseException $exception) {
 			$wasCancelled = isset($_REQUEST['cancelled']);
 
 			if ($wasCancelled) {

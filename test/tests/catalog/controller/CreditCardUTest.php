@@ -34,6 +34,10 @@ use Mockery as m;
 require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_creditcard.php';
 require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_creditcard.php';
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class CreditCardUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
@@ -245,5 +249,9 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
     public function tetGetPaymentAction() {
 	    $actual = $this->controller->getPaymentAction('pay');
 	    $this->assertEquals('purchase', $actual);
+    }
+
+    public function testGetTransactionInstance() {
+		$this->assertTrue($this->controller->getTransactionInstance() instanceof \Wirecard\PaymentSdk\Transaction\CreditCardTransaction);
     }
 }
