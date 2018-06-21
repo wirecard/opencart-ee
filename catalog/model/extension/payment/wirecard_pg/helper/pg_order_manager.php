@@ -53,7 +53,7 @@ class PGOrderManager extends Model {
 		/** @var ModelExtensionPaymentGateway $transactionModel */
 		$transactionModel = $paymentController->getModel();
 
-		if (self::PROCESSING != $order['order_status_id']) {
+		if (self::PROCESSING != $order['order_status_id'] && !is_array($transactionModel->getTransaction($response->getTransactionId()))) {
 			$this->model_checkout_order->addOrderHistory(
 				$orderId,
 				self::PENDING,
@@ -72,6 +72,10 @@ class PGOrderManager extends Model {
 	 * @since 1.0.0
 	 */
 	public function createNotifyOrder($response, $paymentController) {
+		//credit card special case for 3d transactions
+		if ($response->getTransactionType() == 'check-payer-response') {
+			return;
+		}
 		$orderId = $response->getCustomFields()->get('orderId');
 		$this->load->model('checkout/order');
 		$this->load->language('extension/payment/wirecard_pg');
@@ -95,9 +99,7 @@ class PGOrderManager extends Model {
 			} else {
 				$transactionModel->createTransaction($response, $order, 'success', $paymentController);
 			}
-		}
-		//Cancel to implement
-		if (self::PROCESSING == $order['order_status_id']) {
+		} elseif (self::PROCESSING == $order['order_status_id']) {
 			if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
 				$this->updateNotifyOrder($response, $transactionModel, $paymentController);
 			}

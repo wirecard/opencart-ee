@@ -168,5 +168,16 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 			return 'authorization';
 		}
 	}
+
+	/**
+	 * Get new instance of payment specific transaction
+	 *
+	 * @return CreditCardTransaction
+	 * @since 1.0.0
+	 */
+	public function getTransactionInstance() {
+		return new CreditCardTransaction();
+	}
+
 }
 
