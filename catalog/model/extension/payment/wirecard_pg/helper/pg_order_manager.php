@@ -81,7 +81,7 @@ class PGOrderManager extends Model {
 
 		//not in use yet but with order state US
 		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig());
-        //Update an pending order state
+		//Update an pending order state
 		if (self::PENDING == $order['order_status_id'] || 0 == $order['order_status_id']) {
 			$this->model_checkout_order->addOrderHistory(
 				$orderId,
@@ -96,6 +96,6 @@ class PGOrderManager extends Model {
 				$transactionModel->createTransaction($response, $order, 'success', $paymentController->getType());
 			}
 		}
-        //Cancel to implement
+		//Cancel to implement
 	}
 }

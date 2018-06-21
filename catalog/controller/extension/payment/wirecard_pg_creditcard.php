@@ -69,8 +69,8 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 * @since 1.0.0
 	 */
 	public function confirm() {
-        $this->load->model('checkout/order');
-        $this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
+		$this->load->model('checkout/order');
+		$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
 
 		$transactionService = new TransactionService($this->getConfig(), $this->getLogger());
 		$response = $transactionService->processJsResponse($_POST, $this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
@@ -135,7 +135,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 
 	/**
 	 * Return data via ajax call for the seamless form renderer
-     *
+	 *
 	 * @return array
 	 * @since 1.0.0
 	 */
