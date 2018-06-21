@@ -77,7 +77,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 			$transactionService = new TransactionService($this->getConfig(), $this->getLogger());
 			$response = $transactionService->processJsResponse($_POST,
 				$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
-		} catch (MalformedResponseException $exception ) {
+		} catch (MalformedResponseException $exception) {
 			$logger = $this->getLogger();
 			$logger->error( __METHOD__ . ':' . 'Response is malformed: ' . $exception->getMessage());
 			$this->session->data['error'] = $exception->getMessage();
