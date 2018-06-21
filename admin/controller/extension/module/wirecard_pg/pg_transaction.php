@@ -33,13 +33,13 @@ require_once __DIR__ . '/../wirecard_pg.php';
 require_once __DIR__ . '/../../payment/wirecard_pg/transaction_handler.php';
 
 /**
- * Class ControllerExtensionPaymentWirecardPGTransaction
+ * Class ControllerExtensionModuleWirecardPGPGTransaction
  *
  * Transaction controller
  *
  * @since 1.0.0
  */
-class ControllerExtensionModuleWirecardPGTransaction extends Controller {
+class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 
 	const ROUTE = 'extension/payment/wirecard_pg';
 	const PANEL = 'extension/module/wirecard_pg';
