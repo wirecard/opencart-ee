@@ -38,6 +38,7 @@ class PGOrderManager extends Model {
 
 	const PENDING = 1;
 	const PROCESSING = 2;
+	const CHECK_PAYER_RESPONSE = 'check-payer-response';
 
 	/**
 	 * Create new order with specific orderstate
@@ -73,7 +74,7 @@ class PGOrderManager extends Model {
 	 */
 	public function createNotifyOrder($response, $paymentController) {
 		//credit card special case for 3d transactions
-		if ($response->getTransactionType() == 'check-payer-response') {
+		if (self::CHECK_PAYER_RESPONSE == $response->getTransactionType()) {
 			return;
 		}
 		$orderId = $response->getCustomFields()->get('orderId');
