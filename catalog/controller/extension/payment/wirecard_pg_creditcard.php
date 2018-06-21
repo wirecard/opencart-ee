@@ -135,7 +135,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 
 	/**
 	 * Return data via ajax call for the seamless form renderer
-     * 
+     *
 	 * @return array
 	 * @since 1.0.0
 	 */
