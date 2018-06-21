@@ -66,8 +66,8 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 		$this->load->model('setting/extension');
 		$this->load->model('user/user_group');
 
-		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'extension/module/wirecard_pg_transaction');
-		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'extension/module/wirecard_pg_transaction');
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'extension/module/wirecard_pg/pg_transaction');
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'extension/module/wirecard_pg/pg_transaction');
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/panel', $data));
 	}
@@ -93,7 +93,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 				'transaction_state' => $transaction['transaction_state'],
 				'amount' => $transaction['amount'],
 				'currency' => $transaction['currency'],
-				'href' => $this->url->link('extension/module/wirecard_pg_transaction', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['transaction_id'], true)
+				'href' => $this->url->link('extension/module/wirecard_pg/pg_transaction', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['transaction_id'], true)
 			);
 		}
 
