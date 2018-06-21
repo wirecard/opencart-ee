@@ -97,7 +97,11 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$data = array(
 				'transaction_id' => $transaction['transaction_id'],
 				'response' => json_decode($transaction['response'], true),
-				'operations' => ($transaction['transaction_state'] == 'success') ? $operations : false
+				'operations' => ($transaction['transaction_state'] == 'success') ? $operations : false,
+				'action' => $this->url->link(
+					self::TRANSACTION . '/process', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['transaction_id'],
+					true
+				)
 			);
 		}
 
@@ -123,10 +127,10 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 
 		$transactionHandler = new ControllerExtensionPaymentWirecardPGTransactionHandler($this->registry);
 
-		if (isset($this->request->get['id']) && isset($this->request->get['op'])) {
+		if (isset($this->request->get['id']) && isset($this->request->post['operation'])) {
 			$this->load->model(self::ROUTE);
 			$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($this->request->get['id']);
-			$operation = $this->request->get['op'];
+			$operation = $this->request->post['operation'];
 
 			$controller = $this->getPaymentController($transaction['payment_method']);
 			$transactionId = $transactionHandler->processTransaction($controller, $transaction, $this->config, $operation);
@@ -194,9 +198,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			foreach ($backOperations as $item => $value) {
 				$key = key($value);
 				$op = array(
-					'action' => $this->url->link(self::TRANSACTION . '/process',
-						'user_token=' . $this->session->data['user_token'] . '&id=' . $parentTransaction['transaction_id'] . '&op=' . $key,
-						true),
+					'action' => $key,
 					'text' => $value[$key]
 				);
 				array_push($operations, $op);

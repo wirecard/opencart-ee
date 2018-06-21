@@ -30,9 +30,12 @@
                     </div>
                     <div class="panel-group">
                         <br>
+                        <form action="{{ transaction.action }}" method="post" enctype="multipart/form-data" id="wirecard-operation" class="form-horizontal">
                         {% for key,operation in transaction.operations %}
-                            <a class="btn btn-primary" href="{{ operation.action }}">{{ operation.text }}</a>
+                            <button type="submit" form="wirecard-operation" data-toggle="tooltip" class="btn btn-primary" name="operation" value="{{ operation.action }}">{{ operation.text }}</button>
                         {% endfor %}
+                            <input type="text" name="amount" value="{{ transaction.response.amount }}" id="amount" class="form-control">
+                        </form>
                     </div>
                     {% endif %}
                 <div class="panel-heading">
