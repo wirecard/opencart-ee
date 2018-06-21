@@ -390,4 +390,25 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    public function testGetInstance() {
+        $this->controller = new ControllerExtensionPaymentWirecardPGPayPal(
+            $this->registry,
+            $this->config,
+            $this->loader,
+            $this->session,
+            $this->response,
+            $this->modelOrder,
+            $this->url,
+            $this->modelPaypal,
+            $this->language,
+            $this->cart
+        );
+
+        $expected = new \Wirecard\PaymentSdk\Transaction\PayPalTransaction();
+
+        $actual = $this->controller->getTransactionInstance();
+
+        $this->assertEquals($expected, $actual);
+    }
 }
