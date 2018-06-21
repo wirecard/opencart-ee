@@ -62,6 +62,13 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 
 		$data['transactions'] = $this->loadTransactionData();
 
+		$this->load->model('setting/setting');
+		$this->load->model('setting/extension');
+		$this->load->model('user/user_group');
+
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'extension/module/wirecard_pg_transaction');
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'extension/module/wirecard_pg_transaction');
+
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/panel', $data));
 	}
 
@@ -86,39 +93,11 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 				'transaction_state' => $transaction['transaction_state'],
 				'amount' => $transaction['amount'],
 				'currency' => $transaction['currency'],
-				'href' => $this->url->link('extension/module/wirecard_pg/transaction', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['tx_id'], true)
+				'href' => $this->url->link('extension/module/wirecard_pg_transaction', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['transaction_id'], true)
 			);
 		}
 
 		return $transactions;
-	}
-
-	/**
-	 * Display transaction details
-	 *
-	 * @since 1.0.0
-	 */
-	public function transaction() {
-		$this->load->language(self::ROUTE);
-
-		$data['title'] = $this->language->get('heading_transaction_details');
-
-		$this->document->setTitle($data['title']);
-
-		$data['breadcrumbs'] = $this->getBreadcrumbs();
-
-		$data = array_merge($data, $this->getCommons());
-
-		$data['text_transaction'] = $this->language->get('text_transaction');
-		$data['text_response_data'] = $this->language->get('text_response_data');
-
-		if (isset($this->request->get['id'])) {
-			$data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
-		} else {
-			$data['error_warning'] = $this->language->get('error_no_transaction');
-		}
-
-		$this->response->setOutput($this->load->view('extension/wirecard_pg/details', $data));
 	}
 
 	/**
@@ -127,15 +106,15 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 	 * @return array
 	 * @since 1.0.0
 	 */
-	private function getBreadcrumbs() {
+	public function getBreadcrumbs() {
 		$breadcrumbs = array();
 
-		$data['breadcrumbs'][] = array(
+		$breadcrumbs[] = array(
 			'text' => $this->language->get('text_home'),
 			'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
 		);
 
-		$data['breadcrumbs'][] = array(
+		$breadcrumbs[] = array(
 			'text' => $this->language->get('text_extension'),
 			'href' => $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true)
 		);
@@ -154,7 +133,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 	 * @return array
 	 * @since 1.0.0
 	 */
-	private function getCommons() {
+	public function getCommons() {
 		$data['user_token'] = $this->session->data['user_token'];
 
 		$data['header'] = $this->load->controller('common/header');
@@ -163,27 +142,4 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 
 		return $data;
 	}
-
-	/**
-	 * Get transaction detail data via id
-	 *
-	 * @param $id
-	 * @return bool|array
-	 * @since 1.0.0
-	 */
-	private function getTransactionDetails($id) {
-		$this->load->model(self::ROUTE);
-		$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($id);
-		$data = false;
-
-		if ($transaction) {
-			$data = array(
-				'transaction_id' => $transaction['transaction_id'],
-				'response' => json_decode($transaction['response'], true)
-			);
-		}
-
-		return $data;
-	}
-
 }

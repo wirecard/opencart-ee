@@ -137,10 +137,10 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
 	 * @param array $order
 	 * @param string $transactionState
-	 * @param string $paymentMethod
+	 * @param ControllerExtensionPaymentGateway $paymentController
 	 * @since 1.0.0
 	 */
-	public function createTransaction($response, $order, $transactionState, $paymentMethod) {
+	public function createTransaction($response, $order, $transactionState, $paymentController) {
 		$amount = $response->getData()['requested-amount'];
 		$orderId = $response->getCustomFields()->get('orderId');
 		$currency = $order['currency_code'];
@@ -149,9 +149,9 @@ abstract class ModelExtensionPaymentGateway extends Model {
             INSERT INTO `" . DB_PREFIX . "wirecard_ee_transactions` SET 
             `order_id` = '" . (int)$orderId . "', 
             `transaction_id` = '" . $this->db->escape($response->getTransactionId()) . "', 
-            `parent_transaction_id` = '" . $this->db->escape($response->getParentTransactionId()) . "', 
+            `parent_transaction_id` = '', 
             `transaction_type` = '" . $this->db->escape($response->getTransactionType()) . "',
-            `payment_method` = '" . $this->db->escape($paymentMethod) . "', 
+            `payment_method` = '" . $this->db->escape($paymentController->getType()) . "', 
             `transaction_state` = '" . $this->db->escape($transactionState) . "',
             `amount` = '" . (float)$amount . "',
             `currency` = '" . $this->db->escape($currency) . "',
@@ -171,7 +171,8 @@ abstract class ModelExtensionPaymentGateway extends Model {
 		$this->db->query("
         UPDATE `" . DB_PREFIX . "wirecard_ee_transactions` SET 
             `transaction_state` = '" . $this->db->escape($transactionState) . "', 
-            `response` = '" . $this->db->escape(json_encode($response->getData())) . "', 
+            `response` = '" . $this->db->escape(json_encode($response->getData())) . "',
+            `transaction_type` = '" . $this->db->escape($response->getTransactionType()) . "',
             `date_modified` = NOW() WHERE 
             `transaction_id` = '" . $this->db->escape($response->getTransactionId()) . "'
         ");
