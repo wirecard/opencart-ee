@@ -33,7 +33,7 @@
 $_['text_extension'] = 'Extensions';
 
 // Admin Panel
-$_['heading_title'] = 'Wirecard Payment Processing Gateway';
+$_['heading_title'] = 'Wirecard Transactions';
 $_['text_list'] = 'Transactions';
 
 // Transaction Details

@@ -30,4 +30,4 @@
  */
 
 // Page Title
-$_['heading_title'] = 'Wirecard Payment Processing Gateway';
+$_['heading_title'] = 'Wirecard';
