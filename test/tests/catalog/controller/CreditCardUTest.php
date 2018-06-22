@@ -194,12 +194,13 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 		$this->config->expects($this->at(3))->method('get')->willReturn('user');
 		$this->config->expects($this->at(4))->method('get')->willReturn('password');
 		$this->config->expects($this->at(5))->method('get')->willReturn('three_d');
-		$this->config->expects($this->at(6))->method('get')->willReturn('account123three_d');
-		$this->config->expects($this->at(7))->method('get')->willReturn('secret_three_d');
-		$this->config->expects($this->at(8))->method('get')->willReturn(10);
+		$this->config->expects($this->at(6))->method('get')->willReturn('three_d');
+		$this->config->expects($this->at(7))->method('get')->willReturn('account123three_d');
+		$this->config->expects($this->at(8))->method('get')->willReturn('secret_three_d');
 		$this->config->expects($this->at(9))->method('get')->willReturn(10);
-		$this->config->expects($this->at(10))->method('get')->willReturn(20);
+		$this->config->expects($this->at(10))->method('get')->willReturn(10);
 		$this->config->expects($this->at(11))->method('get')->willReturn(20);
+		$this->config->expects($this->at(12))->method('get')->willReturn(20);
 
 		$this->controller = new ControllerExtensionPaymentWirecardPGCreditCard(
 			$this->registry,
