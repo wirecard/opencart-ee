@@ -195,11 +195,10 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 
 		if (!empty($backOperations)) {
 			$operations = array();
-			foreach ($backOperations as $item => $value) {
-				$key = key($value);
+			foreach ($backOperations as $key => $value) {
 				$op = array(
 					'action' => $key,
-					'text' => $value[$key]
+					'text' => $value
 				);
 				array_push($operations, $op);
 			}

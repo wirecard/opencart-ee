@@ -35,6 +35,7 @@ use Wirecard\PaymentSdk\Transaction\CreditCardTransaction;
 use Wirecard\PaymentSdk\Entity\Amount;
 use Wirecard\PaymentSdk\Config\CreditCardConfig;
 use Wirecard\PaymentSdk\TransactionService;
+use Wirecard\PaymentSdk\Exception\MalformedResponseException;
 
 /**
  * Class ControllerExtensionPaymentWirecardPGCreditCard
@@ -69,8 +70,12 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 * @since 1.0.0
 	 */
 	public function confirm() {
+		$this->load->model('checkout/order');
+		$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
+
 		$transactionService = new TransactionService($this->getConfig(), $this->getLogger());
-		$response = $transactionService->processJsResponse($_POST, $this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
+		$response = $transactionService->processJsResponse($_POST,
+			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
 
 		return $this->processResponse($response, $this->getLogger());
 	}
@@ -131,7 +136,8 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	}
 
 	/**
-	 * return data via ajax call for the seamless form renderer
+	 * Return data via ajax call for the seamless form renderer
+	 *
 	 * @return array
 	 * @since 1.0.0
 	 */
@@ -164,5 +170,16 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 			return 'authorization';
 		}
 	}
+
+	/**
+	 * Get new instance of payment specific transaction
+	 *
+	 * @return CreditCardTransaction
+	 * @since 1.0.0
+	 */
+	public function getTransactionInstance() {
+		return new CreditCardTransaction();
+	}
+
 }
 

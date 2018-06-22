@@ -60,7 +60,12 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
     {
         $this->registry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->getMock();
 
-        $this->config = $this->getMockBuilder(Config::class)->disableOriginalConstructor()->getMock();
+        $this->config = $this->getMockBuilder(Config::class)
+	        ->disableOriginalConstructor()
+	        ->setMethods(['get'])
+	        ->getMock();
+
+        $this->config->method('get')->willReturn('somthing');
 
         $this->session = $this->getMockBuilder(Session::class)->disableOriginalConstructor()->getMock();
 
@@ -147,15 +152,16 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
 
     public function testGetConfig()
     {
-        $this->config->expects($this->at(0))->method('get')->willReturn('account123');
-        $this->config->expects($this->at(1))->method('get')->willReturn('secret123');
-        $this->config->expects($this->at(2))->method('get')->willReturn('api-test.com');
-        $this->config->expects($this->at(3))->method('get')->willReturn('user');
-        $this->config->expects($this->at(4))->method('get')->willReturn('password');
+	    $config = $this->getMockBuilder(Config::class)->disableOriginalConstructor()->getMock();
+	    $config->expects($this->at(0))->method('get')->willReturn('account123');
+        $config->expects($this->at(1))->method('get')->willReturn('secret123');
+        $config->expects($this->at(2))->method('get')->willReturn('api-test.com');
+        $config->expects($this->at(3))->method('get')->willReturn('user');
+        $config->expects($this->at(4))->method('get')->willReturn('password');
 
         $this->controller = new ControllerExtensionPaymentWirecardPGPayPal(
             $this->registry,
-            $this->config,
+            $config,
             $this->loader,
             $this->session,
             $this->response,
