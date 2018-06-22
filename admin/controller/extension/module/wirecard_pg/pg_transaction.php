@@ -99,6 +99,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 				'transaction_id' => $transaction['transaction_id'],
 				'response' => json_decode($transaction['response'], true),
 				'amount' => $transaction['amount'],
+				'currency' => $transaction['currency'],
 				'operations' => ($transaction['transaction_state'] == 'success') ? $operations : false,
 				'action' => $this->url->link(
 					self::TRANSACTION . '/process', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['transaction_id'],
@@ -133,9 +134,10 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$this->load->model(self::ROUTE);
 			$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($this->request->get['id']);
 			$operation = $this->request->post['operation'];
+			$amount = new \Wirecard\PaymentSdk\Entity\Amount($this->request->post['amount'], $this->request->post['currency']);
 
 			$controller = $this->getPaymentController($transaction['payment_method']);
-			$transactionId = $transactionHandler->processTransaction($controller, $transaction, $this->config, $operation);
+			$transactionId = $transactionHandler->processTransaction($controller, $transaction, $this->config, $operation, $amount);
 			if ($transactionId) {
 				$this->response->redirect($this->url->link(self::TRANSACTION, 'user_token=' . $this->session->data['user_token'] . '&id=' . $transactionId, true));
 			} else {
