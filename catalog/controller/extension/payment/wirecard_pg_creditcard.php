@@ -58,8 +58,9 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 * @since 1.0.0
 	 */
 	public function index($data = null) {
-
+		$this->load->language('extension/payment/wirecard_pg');
 		$data['base_url'] = $this->getShopConfigVal('base_url');
+		$data['loading_text'] = $this->language->get('loading_text');
 		$data['credit_card'] = $this->load->view('extension/payment/wirecard_credit_card_ui', $data);
 		return parent::index($data);
 	}
@@ -94,7 +95,8 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		$config = parent::getConfig($currency);
 		$paymentConfig = new CreditCardConfig($merchant_account_id, $merchant_secret);
 
-		if ($this->getShopConfigVal('three_d_merchant_account_id') !== '') {
+		if ($this->getShopConfigVal('three_d_merchant_account_id') !== '' &&
+			$this->getShopConfigVal('three_d_merchant_account_id') !== 'null') {
 			$paymentConfig->setThreeDCredentials(
 				$this->getShopConfigVal('three_d_merchant_account_id'),
 				$this->getShopConfigVal('three_d_merchant_secret')

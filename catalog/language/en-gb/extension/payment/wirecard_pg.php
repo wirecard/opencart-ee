@@ -31,3 +31,6 @@
 
 $_['order_cancelled'] = 'Order was cancelled.';
 $_['order_error'] = 'An error occurred during checkout process.';
+
+$_['redirect_text'] = 'You are being redirected. Please wait';
+$_['loading_text'] = 'Credit card payment form is loading.';
