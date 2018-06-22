@@ -65,6 +65,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		$data['text_transaction'] = $this->language->get('text_transaction');
 		$data['text_response_data'] = $this->language->get('text_response_data');
 		$data['text_backend_operations'] = $this->language->get('text_backend_operations');
+		$date['text_request_amount'] = $this->language->get('text_request_amount');
 		$data['route_href'] = $this->url->link(self::TRANSACTION . '/');
 
 		if (isset($this->session->data['admin_error'])) {
@@ -97,6 +98,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$data = array(
 				'transaction_id' => $transaction['transaction_id'],
 				'response' => json_decode($transaction['response'], true),
+				'amount' => $transaction['amount'],
 				'operations' => ($transaction['transaction_state'] == 'success') ? $operations : false,
 				'action' => $this->url->link(
 					self::TRANSACTION . '/process', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['transaction_id'],

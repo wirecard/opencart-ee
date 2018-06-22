@@ -116,20 +116,41 @@ class PGOrderManager extends Model {
 	 * @since 1.0.0
 	 */
 	public function updateNotifyOrder($response, $transactionModel, $paymentController) {
-		//just for cancel operation for the moment
-		if (\Wirecard\PaymentSdk\Transaction\Transaction::TYPE_VOID_AUTHORIZATION == $response->getTransactionType()) {
-			$this->model_checkout_order->addOrderHistory(
-				$response->getCustomFields()->get('orderId'),
-				7,
-				'<pre>' . htmlentities($response->getRawData()) . '</pre>',
-				false
-			);
-			$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig());
-			if ($backendService->isFinal($response->getTransactionType())) {
-				$transactionModel->updateTransactionState($response, 'closed');
-			} else {
-				$transactionModel->updateTransactionState($response, 'success');
-			}
+		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig());
+		$state = $this->getOrderState($backendService->getOrderState($response->getTransactionType()));
+		$this->model_checkout_order->addOrderHistory(
+			$response->getCustomFields()->get('orderId'),
+			$state,
+			'<pre>' . htmlentities($response->getRawData()) . '</pre>',
+			false
+		);
+		if ($backendService->isFinal($response->getTransactionType())) {
+			$transactionModel->updateTransactionState($response, 'closed');
+		} else {
+			$transactionModel->updateTransactionState($response, 'success');
+		}
+	}
+
+	/**
+	 * Temporarly getOrderState method, should be updated/removed with US for Ordermanagement
+	 *
+	 * @param string $state
+	 * @return int
+	 * @since 1.0.0
+	 */
+	public function getOrderState($state) {
+		switch ($state) {
+			//should be authorization/authorized and not processing
+			case 'authorized':
+				return 2;
+			case 'cancelled':
+				return 7;
+			case 'refunded':
+				return 11;
+			//temporarly is state complete, should be processing
+			case 'processing':
+			default:
+				return 5;
 		}
 	}
 }
