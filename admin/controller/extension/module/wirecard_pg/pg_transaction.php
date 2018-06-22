@@ -95,10 +95,11 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 
 		if ($transaction) {
 			$operations = $this->getBackendOperations($transaction);
+			$amount = $this->model_extension_payment_wirecard_pg->getTransactionMaxAmount($id);
 			$data = array(
 				'transaction_id' => $transaction['transaction_id'],
 				'response' => json_decode($transaction['response'], true),
-				'amount' => $transaction['amount'],
+				'amount' => $amount,
 				'currency' => $transaction['currency'],
 				'operations' => ($transaction['transaction_state'] == 'success') ? $operations : false,
 				'action' => $this->url->link(

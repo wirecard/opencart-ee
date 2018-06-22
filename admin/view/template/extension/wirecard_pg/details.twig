@@ -32,7 +32,7 @@
                         <br>
                         <form action="{{ transaction.action }}" method="post" enctype="multipart/form-data" id="wirecard-operation" class="form-horizontal">
                             <label for="amount">{{ text_request_amount }} in {{ transaction.currency }}</label>&nbsp;<input type="number" name="amount" value="{{ transaction.amount }}" id="amount" class="input-sm" step="0.01" min="0.01" max="{{ transaction.amount }}"> &nbsp;
-                            <input type="hidden" value="{{ transaction.currency }}">
+                            <input type="hidden" name="currency" value="{{ transaction.currency }}">
                         {% for key,operation in transaction.operations %}
                             <button type="submit" form="wirecard-operation" data-toggle="tooltip" class="btn btn-primary" name="operation" value="{{ operation.action }}">{{ operation.text }}</button>
                         {% endfor %}
