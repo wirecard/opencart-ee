@@ -100,7 +100,7 @@ class PGOrderManager extends Model {
 			} else {
 				$transactionModel->createTransaction($response, $order, 'success', $paymentController);
 			}
-		} elseif (self::PROCESSING == $order['order_status_id']) {
+		} else {
 			if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
 				$this->updateNotifyOrder($response, $transactionModel, $paymentController);
 			}
@@ -116,7 +116,8 @@ class PGOrderManager extends Model {
 	 * @since 1.0.0
 	 */
 	public function updateNotifyOrder($response, $transactionModel, $paymentController) {
-		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig());
+		$logger = $paymentController->getLogger();
+		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig(), $logger);
 		$state = $this->getOrderState($backendService->getOrderState($response->getTransactionType()));
 		$this->model_checkout_order->addOrderHistory(
 			$response->getCustomFields()->get('orderId'),
