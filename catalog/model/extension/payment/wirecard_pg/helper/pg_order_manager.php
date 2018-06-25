@@ -122,7 +122,7 @@ class PGOrderManager extends Model {
 			$response->getCustomFields()->get('orderId'),
 			$state,
 			'<pre>' . htmlentities($response->getRawData()) . '</pre>',
-			false
+			true
 		);
 		if ($backendService->isFinal($response->getTransactionType())) {
 			$transactionModel->updateTransactionState($response, 'closed');
