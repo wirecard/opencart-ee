@@ -128,13 +128,15 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 	}
 
 	/**
-	 * Get common header, sidebar and footer
+	 * Get common live chat, header, sidebar and footer
 	 *
 	 * @return array
 	 * @since 1.0.0
 	 */
 	public function getCommons() {
 		$data['user_token'] = $this->session->data['user_token'];
+
+		$data['live_chat'] = $this->load->view('extension/wirecard_pg/live_chat', $data);
 
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');

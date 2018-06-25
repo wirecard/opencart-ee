@@ -127,6 +127,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$data = array_merge($data, $this->getRequestData());
 
 		$data = array_merge($data, $this->loadConfigBlocks($data));
+		$data = array_merge($data, $this->loadLiveChat($data));
 
 		$this->response->setOutput($this->load->view('extension/payment/wirecard_pg', $data));
 	}
@@ -282,6 +283,19 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$data['basic_config'] = $this->load->view('extension/payment/wirecard_pg/basic_config', $data);
 		$data['credentials_config'] = $this->load->view('extension/payment/wirecard_pg/credentials_config', $data);
 		$data['advanced_config'] = $this->load->view('extension/payment/wirecard_pg/advanced_config', $data);
+
+		return $data;
+	}
+
+	/**
+	 * Load template block for live chat.
+	 *
+	 * @param $data
+	 * @return mixed
+	 * @since 1.0.0
+	 */
+	protected function loadLiveChat($data) {
+		$data['live_chat'] = $this->load->view('extension/wirecard_pg/live_chat', $data);
 
 		return $data;
 	}
