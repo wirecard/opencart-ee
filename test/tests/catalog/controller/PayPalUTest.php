@@ -386,13 +386,14 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
         );
 
         $transaction = array(
-            'transaction_id' => '1234'
+            'transaction_id' => '1234',
+            'amount' => '10'
         );
 
         $expected = new \Wirecard\PaymentSdk\Transaction\PayPalTransaction();
         $expected->setParentTransactionId('1234');
 
-        $actual = $this->controller->createCancelTransaction($transaction);
+        $actual = $this->controller->createTransaction($transaction, null);
 
         $this->assertEquals($expected, $actual);
     }
