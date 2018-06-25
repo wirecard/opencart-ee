@@ -72,23 +72,23 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/panel', $data));
 	}
 
-    /**
-     * Install process
-     *
-     * @since 1.0.0
-     */
-    public function install() {
-        $this->load->model('extension/payment/wirecard_pg');
-        $this->load->model('localisation/order_status');
+	/**
+	 * Install process
+	 *
+	 * @since 1.0.0
+	 */
+	public function install() {
+		$this->load->model('extension/payment/wirecard_pg');
+		$this->load->model('localisation/order_status');
 
-        $orderStatus['order_status'][1] = array(
-            'name' => 'Authorized'
-        );
+		$orderStatus['order_status'][1] = array(
+			'name' => 'Authorized'
+		);
 
-        $this->model_localisation_order_status->addOrderStatus($orderStatus);
+		$this->model_localisation_order_status->addOrderStatus($orderStatus);
 
-        $this->model_extension_payment_wirecard_pg->install();
-    }
+		$this->model_extension_payment_wirecard_pg->install();
+	}
 
 	/**
 	 * Load transactionlist data
