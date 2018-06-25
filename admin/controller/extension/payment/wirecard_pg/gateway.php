@@ -96,7 +96,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type );
 
 		$this->load->model('setting/setting');
-		$this->load->model('localisation/order_status');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
@@ -129,17 +128,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$data = array_merge($data, $this->loadConfigBlocks($data));
 
 		$this->response->setOutput($this->load->view('extension/payment/wirecard_pg', $data));
-	}
-
-	/**
-	 * Install process
-	 *
-	 * @since 1.0.0
-	 */
-	public function install() {
-		$this->load->model('extension/payment/wirecard_pg');
-
-		$this->model_extension_payment_wirecard_pg->install();
 	}
 
 	/**
