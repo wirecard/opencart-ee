@@ -220,7 +220,13 @@ class SepaUTest extends \PHPUnit_Framework_TestCase
 		$this->assertNotNull($actual);
 	}
 
-	public function testGetType() {
+	public function testGetMethod()
+	{
+		$this->modelSepa->getMethod();
+	}
+
+	public function testGetType()
+	{
 		$this->controller = new ControllerExtensionPaymentWirecardPGSepa(
 			$this->registry,
 			$this->config,
@@ -240,7 +246,8 @@ class SepaUTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $actual);
 	}
 
-	public function testGetInstance() {
+	public function testGetInstance()
+	{
 		$this->controller = new ControllerExtensionPaymentWirecardPGSepa(
 			$this->registry,
 			$this->config,

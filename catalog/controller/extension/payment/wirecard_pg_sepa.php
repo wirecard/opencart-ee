@@ -109,32 +109,5 @@ class ControllerExtensionPaymentWirecardPGSepa extends ControllerExtensionPaymen
 	public function getTransactionInstance() {
 		return new SepaTransaction();
 	}
-
-	/**
-	 * Create SEPA cancel transaction
-	 *
-	 * @param array $parentTransaction
-	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
-	 * @since 1.0.0
-	 */
-	public function createCancelTransaction($parentTransaction) {
-		$this->transaction = new SepaTransaction();
-
-		return parent::createCancelTransaction($parentTransaction);
-	}
-
-	/**
-	 * Create SEPA success transaction
-	 *
-	 * @param array $parentTransaction
-	 * @param float $captureAmount
-	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
-	 * @since 1.0.0
-	 */
-	public function createCaptureTransaction($parentTransaction, $captureAmount = null) {
-		$this->transaction = new SepaTransaction();
-
-		return parent::createCaptureTransaction($parentTransaction, $captureAmount);
-	}
 }
 
