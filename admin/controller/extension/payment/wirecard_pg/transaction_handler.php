@@ -41,22 +41,24 @@ include_once(DIR_SYSTEM . 'library/autoload.php');
 class ControllerExtensionPaymentWirecardPGTransactionHandler extends Controller {
 
 	/**
-	 * Send cancel request
+	 * Send request with specific transaction and operation
 	 *
 	 * @param ControllerExtensionPaymentGateway $paymentController
 	 * @param array $parentTransaction
 	 * @param Config $config
+	 * @param \Wirecard\PaymentSdk\Transaction\Operation $operation
+	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
 	 * @return string
 	 * @since 1.0.0
 	 */
-	public function createCancelTransaction($paymentController, $parentTransaction, $config) {
+	public function processTransaction($paymentController, $parentTransaction, $config, $operation, $amount) {
 		$logger = new PGLogger($config);
 		$transactionService = new \Wirecard\PaymentSdk\TransactionService($paymentController->getConfig(), $logger);
-		$transaction = $paymentController->createCancelTransaction($parentTransaction);
+		$transaction = $paymentController->createTransaction($parentTransaction, $amount);
 
 		try {
 			/* @var \Wirecard\PaymentSdk\Response\Response $response */
-			$response = $transactionService->process($transaction, \Wirecard\PaymentSdk\Transaction\Operation::CANCEL);
+			$response = $transactionService->process($transaction, $operation);
 		} catch ( \Exception $exception ) {
 			$logger->error( __METHOD__ . ':' . $exception->getMessage() );
 		}

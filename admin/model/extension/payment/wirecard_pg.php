@@ -75,7 +75,7 @@ class ModelExtensionPaymentWirecardPG extends Model {
 		$orderId = $response->getCustomFields()->get('orderId');
 		$currency = $order['currency_code'];
 
-		$parentTransactionId = $this->checkParentTransaction($response);
+		$parentTransactionId = $this->checkParentTransaction($response, $amount);
 
 		$this->db->query("
             INSERT INTO `" . DB_PREFIX . "wirecard_ee_transactions` SET 
@@ -126,19 +126,47 @@ class ModelExtensionPaymentWirecardPG extends Model {
 	}
 
 	/**
+	 * Get all follow up transactions and calculate rest amount
+	 *
+	 * @param string $transactionId
+	 * @param float $amount
+	 * @return float
+	 * @since 1.0.0
+	 */
+	public function getTransactionMaxAmount($transactionId, $amount = 0) {
+		$baseAmount = $this->db->query("
+	    SELECT amount FROM `" . DB_PREFIX ."wirecard_ee_transactions` WHERE `transaction_id` = '" . $this->db->escape($transactionId) . "'
+	    ")->row['amount'];
+
+		$followAmounts = $this->db->query("
+	    SELECT amount FROM `" . DB_PREFIX . "wirecard_ee_transactions` WHERE `parent_transaction_id` = '" . $this->db->escape($transactionId) . "'
+	    ")->rows;
+
+		foreach ($followAmounts as $value) {
+			$baseAmount -= $value['amount'];
+		}
+		$baseAmount -= $amount;
+
+		return $baseAmount;
+	}
+
+	/**
 	 * Check for existing parent transaction and close it
 	 *
 	 * @param $response
 	 * @return string|null
 	 * @since 1.0.0
 	 */
-	public function checkParentTransaction($response) {
+	public function checkParentTransaction($response, $amount) {
 		$parentTransactionId = null;
 		$parentTransaction = $this->getTransaction($response->getParentTransactionId());
 
 		if ($parentTransaction) {
 			$parentTransactionId = $response->getParentTransactionId();
-			$this->updateTransactionState($parentTransactionId, 'closed');
+			$restAmount = $this->getTransactionMaxAmount($parentTransactionId, $amount);
+			if ($restAmount <= 0) {
+				$this->updateTransactionState($parentTransactionId, 'closed');
+			}
 		}
 
 		return $parentTransactionId;
