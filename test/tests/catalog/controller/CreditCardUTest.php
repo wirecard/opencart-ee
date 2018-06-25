@@ -255,4 +255,13 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
     public function testGetTransactionInstance() {
 		$this->assertTrue($this->controller->getTransactionInstance() instanceof \Wirecard\PaymentSdk\Transaction\CreditCardTransaction);
     }
+
+    public function testCreateTransaction() {
+		$expected = new \Wirecard\PaymentSdk\Transaction\CreditCardTransaction();
+		$expected->setParentTransactionId('asd');
+		$expected->setAmount(new \Wirecard\PaymentSdk\Entity\Amount(20, 'EUR'));
+		$actual = $this->controller->createTransaction(['transaction_id' => 'asd'], new \Wirecard\PaymentSdk\Entity\Amount(20, 'EUR'));
+
+		$this->assertEquals($expected, $actual);
+    }
 }
