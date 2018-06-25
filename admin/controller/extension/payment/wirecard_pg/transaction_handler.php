@@ -53,14 +53,14 @@ class ControllerExtensionPaymentWirecardPGTransactionHandler extends Controller 
 	 */
 	public function processTransaction($paymentController, $parentTransaction, $config, $operation, $amount) {
 		$logger = new PGLogger($config);
-		$transactionService = new \Wirecard\PaymentSdk\TransactionService($paymentController->getConfig(), $logger);
+		$backendTransactionService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig(), $logger);
 		$transaction = $paymentController->createTransaction($parentTransaction, $amount);
 
 		try {
 			/* @var \Wirecard\PaymentSdk\Response\Response $response */
-			$response = $transactionService->process($transaction, $operation);
+			$response = $backendTransactionService->process($transaction, $operation);
 		} catch ( \Exception $exception ) {
-			$logger->error( __METHOD__ . ':' . $exception->getMessage() );
+			$logger->error(__METHOD__ . ':' . $exception->getMessage());
 		}
 
 		if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {

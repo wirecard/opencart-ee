@@ -183,5 +183,19 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		return new CreditCardTransaction();
 	}
 
+	/**
+	 * Create CreditCard transaction
+	 *
+	 * @param array $parentTransaction
+	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
+	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
+	 * @since 1.0.0
+	 */
+	public function createTransaction($parentTransaction, $amount) {
+		$this->transaction = new CreditCardTransaction();
+
+		return parent::createTransaction($parentTransaction, $amount);
+	}
+
 }
 
