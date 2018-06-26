@@ -59,12 +59,11 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	}
 
 	/**
-	 * Create paypal transaction
+	 * Create Sofort. transaction
 	 *
 	 * @since 1.0.0
 	 */
 	public function confirm() {
-
 		$this->transaction = new SofortTransaction();
 
 		parent::confirm();
