@@ -76,7 +76,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 			'code'       => 'wirecard_pg_' . $this->type,
 			'title'      => $title,
 			'terms'      => '',
-			'sort_order' => 1
+			'sort_order' => $this->config->get($prefix . '_sort_order')
 		);
 
 		return $method_data;
