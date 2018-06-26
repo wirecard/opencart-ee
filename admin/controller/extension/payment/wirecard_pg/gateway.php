@@ -290,7 +290,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	/**
 	 * Load template block for live chat.
 	 *
-	 * @param $data
+	 * @param array $data
 	 * @return mixed
 	 * @since 1.0.0
 	 */
