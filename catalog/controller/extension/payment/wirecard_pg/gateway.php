@@ -249,6 +249,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	public function response() {
+		$orderManager = new PGOrderManager($this->registry);
 		$this->load->language('extension/payment/wirecard_pg');
 
 		$logger = $this->getLogger();
@@ -271,8 +272,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			if ($wasCancelled) {
 				$this->session->data['error'] = $this->language->get('order_cancelled');
 				$logger->warning('Order was cancelled');
-				$orderManager = new PGOrderManager($this->registry);
-				$orderManager->updateCancelOrder($_REQUEST['orderId']);
+				$orderManager->updateCancelFailureOrder($_REQUEST['orderId'], 'cancelled');
 				$this->response->redirect($this->url->link('checkout/checkout'));
 
 				return;
@@ -384,6 +384,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			}
 
 			$this->session->data['error'] = $errors;
+			$orderManager->updateCancelFailureOrder($result->getCustomFields()->get('orderId'), 'failed');
 			$this->response->redirect($this->url->link('checkout/checkout'));
 
 			return false;

@@ -44,7 +44,8 @@ class PGOrderManager extends Model {
 		'Authorized' => 'authorized',
 		'Processing' => 'processing',
 		'Canceled' => 'cancelled',
-		'Refunded' => 'refunded'
+		'Refunded' => 'refunded',
+		'Failed' => 'failed'
 	);
 
 	/**
@@ -139,16 +140,17 @@ class PGOrderManager extends Model {
 	}
 
 	/**
-	 * Update order history and transaction entry after cancelation
+	 * Update order history and transaction entry after cancel or failure
 	 *
 	 * @param $orderId
+	 * @param $state
 	 * @since 1.0.0
 	 */
-	public function updateCancelOrder($orderId) {
+	public function updateCancelFailureOrder($orderId, $state) {
 		$this->load->model('checkout/order');
 		$this->model_checkout_order->addOrderHistory(
 			$orderId,
-			$this->getOrderState('cancelled'),
+			$this->getOrderState($state),
 			'',
 			false
 		);
