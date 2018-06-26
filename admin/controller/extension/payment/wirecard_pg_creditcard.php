@@ -89,6 +89,8 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 	protected function getConfigText() {
 		$data = parent::getConfigText();
 
+		$data['config_merchant_account_id_desc'] = $this->language->get('config_merchant_account_id_cc_desc');
+		$data['config_merchant_secret_desc'] = $this->language->get('config_merchant_secret_cc_desc');
 		$data['config_three_d_merchant_account_id'] = $this->language->get('config_three_d_merchant_account_id');
 		$data['config_three_d_merchant_account_id_desc'] = $this->language->get('config_three_d_merchant_account_id_desc');
 		$data['config_three_d_merchant_secret'] = $this->language->get('config_three_d_merchant_secret');
@@ -117,7 +119,13 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 		return parent::getRequestData();
 	}
 
-	protected function loadConfigBlocks($data) {
+	/**
+	 * Load required blocks for configuration view.
+	 *
+	 * @param array $data
+	 * @return array
+	 */
+	public function loadConfigBlocks($data) {
 		$data = parent::loadConfigBlocks($data);
 
 		$data['three_d_config'] = $this->load->view('extension/payment/wirecard_pg/three_d_config', $data);

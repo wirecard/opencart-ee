@@ -47,7 +47,7 @@ class PGLogger implements LoggerInterface
 	 * @var Log
 	 * @since 1.0.0
 	 */
-	private $logger;
+	public $logger;
 
 	/**
 	 * Logger constructor.
