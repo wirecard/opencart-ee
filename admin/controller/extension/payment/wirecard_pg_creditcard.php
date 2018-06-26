@@ -115,7 +115,13 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 		return parent::getRequestData();
 	}
 
-	protected function loadConfigBlocks($data) {
+	/**
+	 * Load required blocks for configuration view.
+	 *
+	 * @param array $data
+	 * @return array
+	 */
+	public function loadConfigBlocks($data) {
 		$data = parent::loadConfigBlocks($data);
 
 		$data['three_d_config'] = $this->load->view('extension/payment/wirecard_pg/three_d_config', $data);
