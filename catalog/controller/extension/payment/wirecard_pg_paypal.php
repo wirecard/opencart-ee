@@ -111,16 +111,17 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 	}
 
 	/**
-	 * Create Paypal cancel transaction
+	 * Create Paypal transaction
 	 *
 	 * @param array $parentTransaction
+	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
 	 * @since 1.0.0
 	 */
-	public function createCancelTransaction($parentTransaction) {
+	public function createTransaction($parentTransaction, $amount) {
 		$this->transaction = new PayPalTransaction();
 
-		return parent::createCancelTransaction($parentTransaction);
+		return parent::createTransaction($parentTransaction, $amount);
 	}
 }
 
