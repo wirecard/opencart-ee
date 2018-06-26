@@ -43,5 +43,5 @@ $_['config_three_d_merchant_secret_desc'] = 'Secret Key is mandatory to calculat
 $_['config_ssl_max_limit'] = 'Non 3-D Secure Max. Limit';
 $_['config_limit_desc'] = 'Amount in default shop currency';
 $_['config_three_d_min_limit'] = '3-D Secure Min. Limit';
-$_['config_merchant_account_id_cc_desc'] = 'Unique identifier assigned to your merchant account. Can be set to "null" to force SSL process.';
-$_['config_merchant_secret_cc_desc'] = 'Secret Key is mandatory to calculate the Digital Signature for payments. Can be set to "null" to force SSL process.';
+$_['config_merchant_account_id_cc_desc'] = 'Unique identifier assigned to your merchant account. Can be set to "null" to force 3-D process.';
+$_['config_merchant_secret_cc_desc'] = 'Secret Key is mandatory to calculate the Digital Signature for payments. Can be set to "null" to force 3-D process.';
