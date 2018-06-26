@@ -188,18 +188,21 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 	}
 
 	public function testGetConfig() {
-		$this->config->expects($this->at(0))->method('get')->willReturn('account123');
-		$this->config->expects($this->at(1))->method('get')->willReturn('secret123');
-		$this->config->expects($this->at(2))->method('get')->willReturn('api-test.com');
-		$this->config->expects($this->at(3))->method('get')->willReturn('user');
-		$this->config->expects($this->at(4))->method('get')->willReturn('password');
-		$this->config->expects($this->at(5))->method('get')->willReturn('three_d');
-		$this->config->expects($this->at(6))->method('get')->willReturn('account123three_d');
-		$this->config->expects($this->at(7))->method('get')->willReturn('secret_three_d');
-		$this->config->expects($this->at(8))->method('get')->willReturn(10);
+		$this->config->expects($this->at(0))->method('get')->willReturn('api-test.com');
+		$this->config->expects($this->at(1))->method('get')->willReturn('user');
+		$this->config->expects($this->at(2))->method('get')->willReturn('password');
+
+		$this->config->expects($this->at(3))->method('get')->willReturn('account123');
+		$this->config->expects($this->at(4))->method('get')->willReturn('account123');
+		$this->config->expects($this->at(5))->method('get')->willReturn('secret123');
+
+		$this->config->expects($this->at(6))->method('get')->willReturn('three_d_acc');
+		$this->config->expects($this->at(7))->method('get')->willReturn('account123three_d');
+		$this->config->expects($this->at(8))->method('get')->willReturn('secret_three_d');
 		$this->config->expects($this->at(9))->method('get')->willReturn(10);
-		$this->config->expects($this->at(10))->method('get')->willReturn(20);
+		$this->config->expects($this->at(10))->method('get')->willReturn(10);
 		$this->config->expects($this->at(11))->method('get')->willReturn(20);
+		$this->config->expects($this->at(12))->method('get')->willReturn(20);
 
 		$this->controller = new ControllerExtensionPaymentWirecardPGCreditCard(
 			$this->registry,
@@ -253,5 +256,14 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 
     public function testGetTransactionInstance() {
 		$this->assertTrue($this->controller->getTransactionInstance() instanceof \Wirecard\PaymentSdk\Transaction\CreditCardTransaction);
+    }
+
+    public function testCreateTransaction() {
+		$expected = new \Wirecard\PaymentSdk\Transaction\CreditCardTransaction();
+		$expected->setParentTransactionId('asd');
+		$expected->setAmount(new \Wirecard\PaymentSdk\Entity\Amount(20, 'EUR'));
+		$actual = $this->controller->createTransaction(['transaction_id' => 'asd'], new \Wirecard\PaymentSdk\Entity\Amount(20, 'EUR'));
+
+		$this->assertEquals($expected, $actual);
     }
 }
