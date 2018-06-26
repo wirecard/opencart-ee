@@ -73,6 +73,8 @@ $_['config_payment_action'] = 'Payment Action';
 $_['text_payment_action_pay'] = 'Purchase';
 $_['text_payment_action_reserve'] = 'Authorization';
 $_['config_payment_action_desc'] = 'Select between "Purchase" to capture/invoice your order automatically or "Authorization" to capture/invoice manually.';
+$_['config_sort_order'] = 'Sort Order';
+$_['config_sort_order_desc'] = 'sort order description';
 
 $_['text_success'] = 'Your modifications are saved!';
 $_['success_credentials'] = 'Merchant configuration was successfully tested.';

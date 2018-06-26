@@ -83,7 +83,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		'http_password',
 		'payment_action',
 		'descriptor',
-		'additional_info'
+		'additional_info',
+		'sort_order'
 	);
 
 	/**
@@ -145,40 +146,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	/**
 	 * Get text for config fields
 	 *
+	 * @param array $fields
 	 * @return mixed
 	 * @since 1.0.0
 	 */
-	protected function getConfigText() {
-		$data['text_enabled'] = $this->language->get('text_enabled');
-		$data['text_disabled'] = $this->language->get('text_disabled');
-		$data['config_status'] = $this->language->get('config_status');
-		$data['config_title'] = $this->language->get('config_title');
-		$data['config_title_desc'] = $this->language->get('config_title_desc');
-		$data['config_status_desc'] = $this->language->get('config_status_desc');
-		$data['config_merchant_account_id'] = $this->language->get('config_merchant_account_id');
-		$data['config_merchant_account_id_desc'] = $this->language->get('config_merchant_account_id_desc');
-		$data['config_merchant_secret'] = $this->language->get('config_merchant_secret');
-		$data['config_merchant_secret_desc'] = $this->language->get('config_merchant_secret_desc');
-		$data['config_base_url'] = $this->language->get('config_base_url');
-		$data['config_base_url_desc'] = $this->language->get('config_base_url_desc');
-		$data['config_http_user'] = $this->language->get('config_http_user');
-		$data['config_http_user_desc'] = $this->language->get('config_http_user_desc');
-		$data['config_http_password'] = $this->language->get('config_http_password');
-		$data['config_http_password_desc'] = $this->language->get('config_http_password_desc');
-		$data['text_advanced'] = $this->language->get('text_advanced');
-		$data['text_credentials'] = $this->language->get('text_credentials');
-		$data['test_credentials'] = $this->language->get('test_credentials');
-		$data['config_descriptor'] = $this->language->get('config_descriptor');
-		$data['config_descriptor_desc'] = $this->language->get('config_descriptor_desc');
-		$data['config_additional_info'] = $this->language->get('config_additional_info');
-		$data['config_additional_info_desc'] = $this->language->get('config_additional_info_desc');
-		$data['config_payment_action'] = $this->language->get('config_payment_action');
-		$data['text_payment_action_pay'] = $this->language->get('text_payment_action_pay');
-		$data['text_payment_action_reserve'] = $this->language->get('text_payment_action_reserve');
-		$data['config_payment_action_desc'] = $this->language->get('config_payment_action_desc');
-		$data['config_session_string_desc'] = $this->language->get('config_session_string_desc');
-
-		return $data;
+	protected function getConfigText($fields = null) {
+		return $this->getLanguageFields(array_merge($this->getDefaultLanguageFields(), $fields));
 	}
 
 	/**
@@ -301,5 +274,55 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		} else {
 			return strlen($this->config->get($prefix . $key)) ? $this->config->get($prefix . $key) : $this->default[$key];
 		}
+	}
+
+	/**
+	 * Return language fields
+	 *
+	 * @param array $configFieldTexts
+	 * @return array
+	 * @since 1.0.0
+	 */
+	private function getLanguageFields($configFieldTexts) {
+		foreach ($configFieldTexts as $fieldText) {
+			$data[$fieldText] = $this->language->get($fieldText);
+		}
+
+		return $data;
+	}
+
+	private function getDefaultLanguageFields() {
+		return array(
+			'text_enabled',
+			'text_disabled',
+			'config_status',
+			'config_title',
+			'config_title_desc',
+			'config_status_desc',
+			'config_merchant_account_id',
+			'config_merchant_account_id_desc',
+			'config_merchant_secret',
+			'config_merchant_secret_desc',
+			'config_base_url',
+			'config_base_url_desc',
+			'config_http_user',
+			'config_http_user_desc',
+			'config_http_password',
+			'config_http_password_desc',
+			'text_advanced',
+			'text_credentials',
+			'test_credentials',
+			'config_descriptor',
+			'config_descriptor_desc',
+			'config_additional_info',
+			'config_additional_info_desc',
+			'config_payment_action',
+			'text_payment_action_pay',
+			'text_payment_action_reserve',
+			'config_payment_action_desc',
+			'config_session_string_desc',
+			'config_sort_order',
+			'config_sort_order_desc',
+		);
 	}
 }
