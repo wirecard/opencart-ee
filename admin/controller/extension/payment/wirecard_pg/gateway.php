@@ -278,7 +278,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return array
 	 * @since 1.0.0
 	 */
-	protected function loadConfigBlocks($data) {
+	public function loadConfigBlocks($data) {
 		$data['payment_header'] = $this->load->view('extension/payment/wirecard_pg/header', $data);
 		$data['basic_config'] = $this->load->view('extension/payment/wirecard_pg/basic_config', $data);
 		$data['credentials_config'] = $this->load->view('extension/payment/wirecard_pg/credentials_config', $data);
@@ -294,7 +294,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return mixed
 	 * @since 1.0.0
 	 */
-	protected function loadLiveChat($data) {
+	public function loadLiveChat($data) {
 		$data['live_chat'] = $this->load->view('extension/wirecard_pg/live_chat', $data);
 
 		return $data;
