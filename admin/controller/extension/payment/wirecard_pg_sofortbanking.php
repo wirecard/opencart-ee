@@ -32,39 +32,39 @@
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ControllerExtensionPaymentWirecardPGPayPal
+ * Class ControllerExtensionPaymentWirecardPGSofortbanking
  *
- * PayPal payment transaction controller
+ * Sofort. payment transaction controller
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'paypal';
+	protected $type = 'sofortbanking';
 
 	/**
-	 * PayPal default configuration settings
+	 * Sofort. default configuration settings
 	 *
 	 * @var array
 	 * @since 1.0.0
 	 */
 	protected $default = array (
 		'status' => 0,
-		'title' => 'Wirecard PayPal',
-		'merchant_account_id' => '2a0e9351-24ed-4110-9a1b-fd0fee6bec26',
+		'title' => 'Wirecard Sofort.',
+		'merchant_account_id' => 'c021a23a-49a5-4987-aa39-e8e858d29bad',
 		'merchant_secret' => 'dbc5a498-9a66-43b9-bf1d-a618dd399684',
 		'base_url' => 'https://api-test.wirecard.com',
 		'http_password' => 'qD2wzQ_hrc!8',
 		'http_user' => '70000-APITEST-AP',
 		'payment_action' => 'pay',
-		'shopping_basket' => '1',
 		'descriptor' => '1',
-		'descriptor_required' => '0',
+		'descriptor_required' => 'LOLOLOLO',
 		'additional_info' => '0',
+		'shopping_basket' => '1',
 	);
 
 	/**

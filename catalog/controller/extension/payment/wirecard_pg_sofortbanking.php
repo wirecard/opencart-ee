@@ -31,23 +31,23 @@
 
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
-use Wirecard\PaymentSdk\Transaction\SepaTransaction;
+use Wirecard\PaymentSdk\Transaction\SofortTransaction;
 use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
 
 /**
- * Class ControllerExtensionPaymentWirecardPGSepa
+ * Class ControllerExtensionPaymentWirecardPGSofortbanking
  *
- * SEPA Transaction controller
+ * Sofort. Transaction controller
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGSepa extends ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'sepa';
+	protected $type = 'sofortbanking';
 
 	/**
 	 * Basic index method
@@ -65,7 +65,7 @@ class ControllerExtensionPaymentWirecardPGSepa extends ControllerExtensionPaymen
 	 */
 	public function confirm() {
 
-		$this->transaction = new SepaTransaction();
+		$this->transaction = new SofortTransaction();
 
 		parent::confirm();
 	}
@@ -82,7 +82,7 @@ class ControllerExtensionPaymentWirecardPGSepa extends ControllerExtensionPaymen
 		$merchant_secret = $this->getShopConfigVal('merchant_secret');
 
 		$config = parent::getConfig($currency);
-		$paymentConfig = new PaymentMethodConfig(SepaTransaction::NAME, $merchant_account_id, $merchant_secret);
+		$paymentConfig = new PaymentMethodConfig(SofortTransaction::NAME, $merchant_account_id, $merchant_secret);
 		$config->add($paymentConfig);
 
 		return $config;
@@ -116,7 +116,7 @@ class ControllerExtensionPaymentWirecardPGSepa extends ControllerExtensionPaymen
 	}
 
 	/**
-	 * Create Sepa transaction
+	 * Create Sofort. transaction
 	 *
 	 * @param array $parentTransaction
 	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
@@ -124,7 +124,7 @@ class ControllerExtensionPaymentWirecardPGSepa extends ControllerExtensionPaymen
 	 * @since 1.0.0
 	 */
 	public function createTransaction($parentTransaction, $amount) {
-		$this->transaction = new SepaTransaction();
+		$this->transaction = new SofortTransaction();
 
 		return parent::createTransaction($parentTransaction, $amount);
 	}
@@ -132,11 +132,11 @@ class ControllerExtensionPaymentWirecardPGSepa extends ControllerExtensionPaymen
 	/**
 	 * Get new instance of payment specific transaction
 	 *
-	 * @return SepaTransaction
+	 * @return SofortTransaction
 	 * @since 1.0.0
 	 */
 	public function getTransactionInstance() {
-		return new SepaTransaction();
+		return new SofortTransaction();
 	}
 }
 

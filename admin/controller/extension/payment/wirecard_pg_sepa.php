@@ -62,6 +62,7 @@ class ControllerExtensionPaymentWirecardPGSepa extends \ControllerExtensionPayme
 		'http_user' => '70000-APITEST-AP',
 		'payment_action' => 'pay',
 		'descriptor' => '1',
+		'descriptor_required' => '0',
 		'additional_info' => '0',
 		'shopping_basket' => '1',
 	);

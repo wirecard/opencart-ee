@@ -24,8 +24,8 @@
 <div class="form-group">
     <label class="col-sm-2 control-label" for="input-descriptor">{{ config_descriptor }}</label>
     <div class="col-sm-10">
-        <select name="{{ prefix ~ 'descriptor' }}" id="input-descriptor" class="form-control">
-            {% if descriptor %}
+        <select name="{{ prefix ~ 'descriptor' }}" id="input-descriptor" class="form-control" {% if descriptor_required %}disabled{% endif %}>
+            {% if descriptor or descriptor_required %}
                 <option value="1" selected="selected">{{ text_enabled }}</option>
                 <option value="0">{{ text_disabled }}</option>
             {% else %}
