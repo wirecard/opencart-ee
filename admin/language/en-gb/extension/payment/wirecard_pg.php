@@ -73,6 +73,10 @@ $_['config_payment_action'] = 'Payment Action';
 $_['text_payment_action_pay'] = 'Purchase';
 $_['text_payment_action_reserve'] = 'Authorization';
 $_['config_payment_action_desc'] = 'Select between "Purchase" to capture/invoice your order automatically or "Authorization" to capture/invoice manually.';
+$_['config_delete_cancel_order'] = 'Delete canceled order';
+$_['config_delete_cancel_order_desc'] = 'Automatically delete order after canceled payment process.';
+$_['config_delete_failure_order'] = 'Delete failed order';
+$_['config_delete_failure_order_desc'] = 'Automatically delete order after failed payment process.';
 
 $_['text_success'] = 'Your modifications are saved!';
 $_['success_credentials'] = 'Merchant configuration was successfully tested.';

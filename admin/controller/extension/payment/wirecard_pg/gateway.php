@@ -83,7 +83,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		'http_password',
 		'payment_action',
 		'descriptor',
-		'additional_info'
+		'additional_info',
+		'delete_cancel_order',
+		'delete_failure_order'
 	);
 
 	/**
@@ -165,6 +167,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$data['text_payment_action_reserve'] = $this->language->get('text_payment_action_reserve');
 		$data['config_payment_action_desc'] = $this->language->get('config_payment_action_desc');
 		$data['config_session_string_desc'] = $this->language->get('config_session_string_desc');
+		$data['config_delete_cancel_order'] = $this->language->get('config_delete_cancel_order');
+		$data['config_delete_cancel_order_desc'] = $this->language->get('config_delete_cancel_order_desc');
+		$data['config_delete_failure_order'] = $this->language->get('config_delete_failure_order');
+		$data['config_delete_failure_order_desc'] = $this->language->get('config_delete_failure_order_desc');
 
 		return $data;
 	}

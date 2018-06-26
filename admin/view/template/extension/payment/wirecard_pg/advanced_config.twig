@@ -1,5 +1,5 @@
 <h3 class="panel-title"><b>{{ text_advanced }}</b></h3>
-<div class="form-group required">
+<div class="form-group">
     <label class="col-sm-2 control-label" for="input-shopping-basket">{{ config_shopping_basket }}</label>
     <div class="col-sm-10">
         <select class="form-control"
@@ -59,6 +59,48 @@
         <div class="col-sm-2"></div>
         <div class="col-sm-10 description">
             <i>{{ config_additional_info_desc }}</i>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="input-delete-cancel-order">{{ config_delete_cancel_order }}</label>
+    <div class="col-sm-10">
+        <select name="{{ prefix ~ 'delete_cancel_order' }}" id="input-delete-cancel-order" class="form-control">
+            {% if delete_cancel_order %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+            {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+
+            {% endif %}
+        </select>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_delete_cancel_order_desc }}</i>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="input-delete-failure-order">{{ config_delete_failure_order }}</label>
+    <div class="col-sm-10">
+        <select name="{{ prefix ~ 'delete_failure_order' }}" id="input-delete-failure-order" class="form-control">
+            {% if delete_failure_order %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+            {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+
+            {% endif %}
+        </select>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_delete_failure_order_desc }}</i>
         </div>
     </div>
 </div>
