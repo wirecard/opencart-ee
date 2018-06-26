@@ -139,6 +139,23 @@ class PGOrderManager extends Model {
 	}
 
 	/**
+	 * Update order history and transaction entry after cancelation
+	 *
+	 * @param $orderId
+	 * @since 1.0.0
+	 */
+	public function updateCancelOrder($orderId) {
+		$this->load->model('checkout/order');
+		$this->model_checkout_order->addOrderHistory(
+			$orderId,
+			$this->getOrderState('cancelled'),
+			'',
+			false
+		);
+		//Update transaction in transactiontable here
+	}
+
+	/**
 	 * Get Order state per transaction type
 	 *
 	 * @param string $state
