@@ -4,7 +4,7 @@
  * Class Log
  */
 class Log {
-    private $messages = array();
+    public $messages = array();
     private $handle;
 
     public function __construct($filename) {
