@@ -154,7 +154,6 @@ class PGOrderManager extends Model {
 			'',
 			false
 		);
-		//Update transaction in transactiontable here
 	}
 
 	/**
