@@ -250,6 +250,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	public function response() {
 		$orderManager = new PGOrderManager($this->registry);
+		$deleteCancel = $this->getShopConfigVal('delete_cancel_order');
 		$this->load->language('extension/payment/wirecard_pg');
 
 		$logger = $this->getLogger();
@@ -272,7 +273,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			if ($wasCancelled) {
 				$this->session->data['error'] = $this->language->get('order_cancelled');
 				$logger->warning('Order was cancelled');
-				$orderManager->updateCancelFailureOrder($_REQUEST['orderId'], 'cancelled');
+				$orderManager->updateCancelFailureOrder($_REQUEST['orderId'], 'cancelled', $deleteCancel);
 				$this->response->redirect($this->url->link('checkout/checkout'));
 
 				return;
@@ -358,6 +359,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	public function processResponse($result, $logger) {
 		$orderManager = new PGOrderManager($this->registry);
+		$deleteFailure = $this->getShopConfigVal('delete_failure_order');
 
 		if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
 			$orderManager->createResponseOrder($result, $this);
@@ -384,7 +386,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			}
 
 			$this->session->data['error'] = $errors;
-			$orderManager->updateCancelFailureOrder($result->getCustomFields()->get('orderId'), 'failed');
+			$orderManager->updateCancelFailureOrder($result->getCustomFields()->get('orderId'), 'failed', $deleteFailure);
 			$this->response->redirect($this->url->link('checkout/checkout'));
 
 			return false;

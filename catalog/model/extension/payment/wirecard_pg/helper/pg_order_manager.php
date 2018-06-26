@@ -140,20 +140,26 @@ class PGOrderManager extends Model {
 	}
 
 	/**
-	 * Update order history and transaction entry after cancel or failure
+	 * Update/Delete order history after cancel or failure
 	 *
-	 * @param $orderId
-	 * @param $state
+	 * @param int $orderId
+	 * @param string $state
+	 * @param int $delete
 	 * @since 1.0.0
 	 */
-	public function updateCancelFailureOrder($orderId, $state) {
+	public function updateCancelFailureOrder($orderId, $state, $delete) {
 		$this->load->model('checkout/order');
-		$this->model_checkout_order->addOrderHistory(
-			$orderId,
-			$this->getOrderState($state),
-			'',
-			false
-		);
+
+		if ($delete) {
+			$this->model_checkout_order->deleteOrder($orderId);
+		} else {
+			$this->model_checkout_order->addOrderHistory(
+				$orderId,
+				$this->getOrderState($state),
+				'',
+				false
+			);
+		}
 	}
 
 	/**
