@@ -113,6 +113,7 @@ function getCreditCardRequestData() {
 		}
 		if ( maxWait <= 0 ) {
 			console.error('WPP did not respond in ' + Integer.valueOf(maxWait/1000) + 'seconds');
+			clearInterval(WPPavailableInterval);
 		}
 	}, waitStep );
 }

@@ -74,7 +74,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	protected $configFields = array(
-		'title',
 		'status',
 		'merchant_account_id',
 		'merchant_secret',
@@ -85,6 +84,14 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		'descriptor',
 		'additional_info',
 		'sort_order'
+	);
+
+	/**
+	 * @var array
+	 * @since 1.0.0
+	 */
+	protected $multiLangConfigFields = array(
+		'title'
 	);
 
 	/**
@@ -128,6 +135,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$data = array_merge($data, $this->getRequestData());
 
 		$data = array_merge($data, $this->loadConfigBlocks($data));
+
+		$languageHelper = new ControllerExtensionPaymentWirecardPGLanguageHelper($this->registry);
+
+		$data = array_merge($data, $languageHelper->getConfigFields($this->multiLangConfigFields));
 
 		$this->response->setOutput($this->load->view('extension/payment/wirecard_pg', $data));
 	}
@@ -291,6 +302,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		return $data;
 	}
 
+	/**
+	 * Return language codes
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
 	private function getDefaultLanguageFields() {
 		return array(
 			'text_enabled',
