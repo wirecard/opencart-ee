@@ -89,14 +89,17 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 * @since 1.0.0
 	 */
 	public function getConfig($currency = null) {
-		$merchant_account_id = $this->getShopConfigVal('merchant_account_id');
-		$merchant_secret = $this->getShopConfigVal('merchant_secret');
-
 		$config = parent::getConfig($currency);
-		$paymentConfig = new CreditCardConfig($merchant_account_id, $merchant_secret);
+		$paymentConfig = new CreditCardConfig();
 
-		if ($this->getShopConfigVal('three_d_merchant_account_id') !== '' &&
-			$this->getShopConfigVal('three_d_merchant_account_id') !== 'null') {
+		if ($this->getShopConfigVal('merchant_account_id') !== 'null') {
+			$paymentConfig->setSSLCredentials(
+				$this->getShopConfigVal('merchant_account_id'),
+				$this->getShopConfigVal('merchant_secret')
+			);
+		}
+
+		if ($this->getShopConfigVal('three_d_merchant_account_id') !== 'null') {
 			$paymentConfig->setThreeDCredentials(
 				$this->getShopConfigVal('three_d_merchant_account_id'),
 				$this->getShopConfigVal('three_d_merchant_secret')

@@ -87,6 +87,8 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 	protected function getConfigText() {
 		$data = parent::getConfigText();
 
+		$data['config_merchant_account_id_desc'] = $this->language->get('config_merchant_account_id_cc_desc');
+		$data['config_merchant_secret_desc'] = $this->language->get('config_merchant_secret_cc_desc');
 		$data['config_three_d_merchant_account_id'] = $this->language->get('config_three_d_merchant_account_id');
 		$data['config_three_d_merchant_account_id_desc'] = $this->language->get('config_three_d_merchant_account_id_desc');
 		$data['config_three_d_merchant_secret'] = $this->language->get('config_three_d_merchant_secret');
