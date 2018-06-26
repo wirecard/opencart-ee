@@ -38,17 +38,36 @@
  */
 class ControllerExtensionPaymentWirecardPGLanguageHelper extends Controller {
 
-	public function getConfigFields($fields) {
+	/**
+	 * Get config fields depending on the lang in the shop if no config is set the def value will be taken
+	 *
+	 * @param array $fields
+	 * @param string $prefix
+	 * @param string $type
+	 * @param array $default
+	 * @return array
+	 */
+	public function getConfigFields($fields, $prefix, $type, $default) {
+		$prefix = $prefix . $type . '_';
 		$keys = [];
 		foreach ($fields as $field) {
 			foreach ($this->getAllLanguagesCodes() as $code) {
-				$keys[$field][] = $field . '_' . $code;
+				if (is_array($this->config->get($prefix . $field)) &&
+					array_key_exists($code, $this->config->get($prefix . $field))) {
+					$keys[$field][$code] = $this->config->get($prefix . $field)[$code];
+				} else {
+					$keys[$field][$code] = $default[$field];
+				}
 			}
 		}
-
 		return $keys;
 	}
 
+	/**
+	 * Get shop language codes
+	 *
+	 * @return array
+	 */
 	private function getAllLanguagesCodes() {
 		$this->load->model('localisation/language');
 
