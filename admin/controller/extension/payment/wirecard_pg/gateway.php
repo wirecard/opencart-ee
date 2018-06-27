@@ -83,7 +83,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		'http_password',
 		'payment_action',
 		'descriptor',
-		'additional_info'
+		'additional_info',
+		'delete_cancel_order',
+		'delete_failure_order'
 	);
 
 	/**
@@ -96,7 +98,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type );
 
 		$this->load->model('setting/setting');
-		$this->load->model('localisation/order_status');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
@@ -130,17 +131,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$data = array_merge($data, $this->loadLiveChat($data));
 
 		$this->response->setOutput($this->load->view('extension/payment/wirecard_pg', $data));
-	}
-
-	/**
-	 * Install process
-	 *
-	 * @since 1.0.0
-	 */
-	public function install() {
-		$this->load->model('extension/payment/wirecard_pg');
-
-		$this->model_extension_payment_wirecard_pg->install();
 	}
 
 	/**
@@ -178,6 +168,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$data['text_payment_action_reserve'] = $this->language->get('text_payment_action_reserve');
 		$data['config_payment_action_desc'] = $this->language->get('config_payment_action_desc');
 		$data['config_session_string_desc'] = $this->language->get('config_session_string_desc');
+		$data['config_delete_cancel_order'] = $this->language->get('config_delete_cancel_order');
+		$data['config_delete_cancel_order_desc'] = $this->language->get('config_delete_cancel_order_desc');
+		$data['config_delete_failure_order'] = $this->language->get('config_delete_failure_order');
+		$data['config_delete_failure_order_desc'] = $this->language->get('config_delete_failure_order_desc');
 
 		return $data;
 	}
