@@ -30,12 +30,12 @@
  */
 
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
+require_once(dirname(__FILE__) . '/wirecard_pg_sepa.php');
 
 use Wirecard\PaymentSdk\Transaction\SofortTransaction;
 use Wirecard\PaymentSdk\Transaction\SepaTransaction;
 use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
 use Wirecard\PaymentSdk\Transaction\Operation;
-use Wirecard\PaymentSdk\Entity\AccountHolder;
 
 /**
  * Class ControllerExtensionPaymentWirecardPGSofortbanking
@@ -68,6 +68,7 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	 */
 	public function confirm() {
 		$this->transaction = new SofortTransaction();
+		$this->prepareTransaction();
 
 		parent::confirm();
 	}
@@ -80,15 +81,17 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	 * @since 1.0.0
 	 */
 	public function getConfig($currency = null) {
+		if ($this->operation == Operation::CREDIT) {
+			$sepaController = new ControllerExtensionPaymentWirecardPGSepa($this->registry);
+			return $sepaController->getConfig($currency);
+		}
+
 		$merchant_account_id = $this->getShopConfigVal('merchant_account_id');
 		$merchant_secret = $this->getShopConfigVal('merchant_secret');
 
 		$config = parent::getConfig($currency);
 		$paymentConfig = new PaymentMethodConfig(SofortTransaction::NAME, $merchant_account_id, $merchant_secret);
 		$config->add($paymentConfig);
-
-		$logger = $this->getLogger();
-		$logger->debug(json_encode([ 'MAID' => $merchant_account_id, "SECRET" => $merchant_secret ]));
 
 		return $config;
 	}
@@ -124,10 +127,14 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
 	 * @since 1.0.0
 	 */
-	public function createTransaction($parentTransaction, $amount, $operation = null) {
-		$this->transaction = $operation == Operation::CREDIT ? new SepaTransaction() : new SofortTransaction();
+	public function createTransaction($parentTransaction, $amount) {
+		if ($this->operation == Operation::CREDIT) {
+			$this->transaction = new SepaTransaction();
+		} else {
+			$this->transaction = new SofortTransaction();
+		}
 
-		return parent::createTransaction($parentTransaction, $amount, $operation);
+		return parent::createTransaction($parentTransaction, $amount);
 	}
 
 	/**

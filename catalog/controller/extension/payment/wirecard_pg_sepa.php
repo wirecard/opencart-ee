@@ -32,7 +32,7 @@
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
 use Wirecard\PaymentSdk\Transaction\SepaTransaction;
-use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
+use Wirecard\PaymentSdk\Config\SepaConfig;
 
 /**
  * Class ControllerExtensionPaymentWirecardPGSepa
@@ -59,12 +59,11 @@ class ControllerExtensionPaymentWirecardPGSepa extends ControllerExtensionPaymen
 	}
 
 	/**
-	 * Create paypal transaction
+	 * Create SEPA transaction
 	 *
 	 * @since 1.0.0
 	 */
 	public function confirm() {
-
 		$this->transaction = new SepaTransaction();
 
 		parent::confirm();
@@ -82,7 +81,7 @@ class ControllerExtensionPaymentWirecardPGSepa extends ControllerExtensionPaymen
 		$merchant_secret = $this->getShopConfigVal('merchant_secret');
 
 		$config = parent::getConfig($currency);
-		$paymentConfig = new PaymentMethodConfig(SepaTransaction::NAME, $merchant_account_id, $merchant_secret);
+		$paymentConfig = new SepaConfig($merchant_account_id, $merchant_secret);
 		$config->add($paymentConfig);
 
 		return $config;
@@ -108,15 +107,11 @@ class ControllerExtensionPaymentWirecardPGSepa extends ControllerExtensionPaymen
 	 * @since 1.0.0
 	 */
 	public function getPaymentAction($action) {
-		if ($action == 'pay') {
-			return 'purchase';
-		} else {
-			return 'authorization';
-		}
+		return 'debit';
 	}
 
 	/**
-	 * Create Sepa transaction
+	 * Create SEPA transaction
 	 *
 	 * @param array $parentTransaction
 	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
@@ -124,7 +119,7 @@ class ControllerExtensionPaymentWirecardPGSepa extends ControllerExtensionPaymen
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
 	 * @since 1.0.0
 	 */
-	public function createTransaction($parentTransaction, $amount, $operation = null) {
+	public function createTransaction($parentTransaction, $amount) {
 		$this->transaction = new SepaTransaction();
 
 		return parent::createTransaction($parentTransaction, $amount);

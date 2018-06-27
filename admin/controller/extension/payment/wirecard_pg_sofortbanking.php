@@ -55,16 +55,16 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExten
 	protected $default = array (
 		'status' => 0,
 		'title' => 'Wirecard Sofort.',
-		'merchant_account_id' => 'c021a23a-49a5-4987-aa39-e8e858d29bad',
+		'merchant_account_id' => '6c0e7efd-ee58-40f7-9bbd-5e7337a052cd',
 		'merchant_secret' => 'dbc5a498-9a66-43b9-bf1d-a618dd399684',
 		'base_url' => 'https://api-test.wirecard.com',
-		'http_password' => 'qD2wzQ_hrc!8',
-		'http_user' => '70000-APITEST-AP',
-		'payment_action' => 'pay',
-		'descriptor' => '1',
-		'descriptor_required' => 'LOLOLOLO',
-		'additional_info' => '0',
-		'shopping_basket' => '1',
+		'http_password' => '3!3013=D3fD8X7',
+		'http_user' => '16390-testing',
+		'payment_action' => 'debit',
+		'descriptor' => 1,
+		'descriptor_required' => 1,
+		'additional_info' => 0,
+		'shopping_basket' => 1,
 	);
 
 	/**

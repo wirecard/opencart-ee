@@ -64,7 +64,6 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 	 * @since 1.0.0
 	 */
 	public function confirm() {
-
 		$this->transaction = new PayPalTransaction();
 
 		parent::confirm();
@@ -119,7 +118,7 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
 	 * @since 1.0.0
 	 */
-	public function createTransaction($parentTransaction, $amount, $operation = null) {
+	public function createTransaction($parentTransaction, $amount) {
 		$this->transaction = new PayPalTransaction();
 
 		return parent::createTransaction($parentTransaction, $amount);

@@ -55,16 +55,16 @@ class ControllerExtensionPaymentWirecardPGSepa extends \ControllerExtensionPayme
 	protected $default = array (
 		'status' => 0,
 		'title' => 'Wirecard SEPA',
-		'merchant_account_id' => '4c901196-eff7-411e-82a3-5ef6b6860d64',
+		'merchant_account_id' => '59a01668-693b-49f0-8a1f-f3c1ba025d45',
 		'merchant_secret' => 'ecdf5990-0372-47cd-a55d-037dccfe9d25',
 		'base_url' => 'https://api-test.wirecard.com',
-		'http_password' => 'qD2wzQ_hrc!8',
-		'http_user' => '70000-APITEST-AP',
+		'http_password' => '3!3013=D3fD8X7',
+		'http_user' => '16390-testing',
 		'payment_action' => 'pay',
-		'descriptor' => '1',
-		'descriptor_required' => '0',
-		'additional_info' => '0',
-		'shopping_basket' => '1',
+		'descriptor' => 1,
+		'descriptor_required' => 0,
+		'additional_info' => 0,
+		'shopping_basket' => 1,
 	);
 
 	/**

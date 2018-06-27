@@ -53,9 +53,13 @@ class ControllerExtensionPaymentWirecardPGTransactionHandler extends Controller 
 	 */
 	public function processTransaction($paymentController, $parentTransaction, $config, $operation, $amount) {
 		$logger = new PGLogger($config);
-		$transactionService = new \Wirecard\PaymentSdk\TransactionService($paymentController->getConfig(), $logger);
-		$transaction = $paymentController->createTransaction($parentTransaction, $amount, $operation);
 
+		// This allows us to return the proper config/transactions if there are different types depending on the operation
+		// E.g. Sofort uses a SofortTransaction to debit and a SepaTransaction to credit a bank account.
+		$paymentController->setOperation($operation);
+
+		$backendTransactionService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig(), $logger);
+		$transaction = $paymentController->createTransaction($parentTransaction, $amount);
 		try {
 			/* @var \Wirecard\PaymentSdk\Response\Response $response */
 			$response = $backendTransactionService->process($transaction, $operation);
