@@ -73,6 +73,24 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 	}
 
 	/**
+	 * Install process
+	 *
+	 * @since 1.0.0
+	 */
+	public function install() {
+		$this->load->model('extension/payment/wirecard_pg');
+		$this->load->model('localisation/order_status');
+
+		$orderStatus['order_status'][1] = array(
+			'name' => 'Authorized'
+		);
+
+		$this->model_localisation_order_status->addOrderStatus($orderStatus);
+
+		$this->model_extension_payment_wirecard_pg->install();
+	}
+
+	/**
 	 * Load transactionlist data
 	 *
 	 * @since 1.0.0
@@ -128,13 +146,15 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 	}
 
 	/**
-	 * Get common header, sidebar and footer
+	 * Get common live chat, header, sidebar and footer
 	 *
 	 * @return array
 	 * @since 1.0.0
 	 */
 	public function getCommons() {
 		$data['user_token'] = $this->session->data['user_token'];
+
+		$data['live_chat'] = $this->load->view('extension/wirecard_pg/live_chat', $data);
 
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');

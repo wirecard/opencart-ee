@@ -83,6 +83,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		'payment_action',
 		'descriptor',
 		'additional_info',
+		'delete_cancel_order',
+		'delete_failure_order',
 		'sort_order'
 	);
 
@@ -104,7 +106,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type );
 
 		$this->load->model('setting/setting');
-		$this->load->model('localisation/order_status');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
@@ -136,18 +137,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		$data = array_merge($data, $this->loadConfigBlocks($data));
 
+		$data = array_merge($data, $this->loadLiveChat($data));
+
 		$this->response->setOutput($this->load->view('extension/payment/wirecard_pg', $data));
-	}
-
-	/**
-	 * Install process
-	 *
-	 * @since 1.0.0
-	 */
-	public function install() {
-		$this->load->model('extension/payment/wirecard_pg');
-
-		$this->model_extension_payment_wirecard_pg->install();
 	}
 
 	/**
@@ -257,7 +249,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return array
 	 * @since 1.0.0
 	 */
-	protected function loadConfigBlocks($data) {
+	public function loadConfigBlocks($data) {
 		$languageHelper = new ControllerExtensionPaymentWirecardPGLanguageHelper($this->registry);
 
 		$data['payment_header'] = $this->load->view('extension/payment/wirecard_pg/header', $data);
@@ -265,6 +257,19 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			array_merge($data, $languageHelper->getConfigFields($this->multiLangConfigFields, $this->prefix, $this->type, $this->default)));
 		$data['credentials_config'] = $this->load->view('extension/payment/wirecard_pg/credentials_config', $data);
 		$data['advanced_config'] = $this->load->view('extension/payment/wirecard_pg/advanced_config', $data);
+
+		return $data;
+	}
+
+	/**
+	 * Load template block for live chat.
+	 *
+	 * @param array $data
+	 * @return mixed
+	 * @since 1.0.0
+	 */
+	public function loadLiveChat($data) {
+		$data['live_chat'] = $this->load->view('extension/wirecard_pg/live_chat', $data);
 
 		return $data;
 	}
@@ -339,6 +344,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			'config_session_string_desc',
 			'config_sort_order',
 			'config_sort_order_desc',
+			'config_delete_cancel_order_desc',
+			'config_delete_failure_order',
+			'config_delete_failure_order_desc'
 		);
 	}
 }

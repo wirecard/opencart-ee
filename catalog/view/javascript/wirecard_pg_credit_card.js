@@ -34,6 +34,8 @@
  * @since 1.0.0
  */
 $(document).ready(function() {
+	$('#button-confirm').prop('disabled', true);
+	$('#creditcard-form-div').hide();
 	getCreditCardRequestData();
 });
 
@@ -70,7 +72,9 @@ function setParentTransactionId(response) {
  * @since 1.0.0
  */
 function callback() {
-	$('#creditcard-form-div').height(500);
+	$('#pg-spinner').fadeOut();
+	$('#creditcard-form-div').height(500).fadeIn();
+	$('#button-confirm').prop('disabled', false);
 }
 
 /**

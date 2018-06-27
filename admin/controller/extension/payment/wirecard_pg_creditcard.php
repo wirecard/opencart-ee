@@ -68,6 +68,8 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 		'descriptor' => '0',
 		'additional_info' => '1',
 		'sort_order' => '1',
+		'delete_cancel_order' => '0',
+		'delete_failure_order' => '0'
 	);
 
 	/**
@@ -116,7 +118,13 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 		return parent::getRequestData();
 	}
 
-	protected function loadConfigBlocks($data) {
+	/**
+	 * Load required blocks for configuration view.
+	 *
+	 * @param array $data
+	 * @return array
+	 */
+	public function loadConfigBlocks($data) {
 		$data = parent::loadConfigBlocks($data);
 
 		$data['three_d_config'] = $this->load->view('extension/payment/wirecard_pg/three_d_config', $data);

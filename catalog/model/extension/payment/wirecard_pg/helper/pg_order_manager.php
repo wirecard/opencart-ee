@@ -40,6 +40,14 @@ class PGOrderManager extends Model {
 	const PROCESSING = 2;
 	const CHECK_PAYER_RESPONSE = 'check-payer-response';
 
+	private $orderStates = array(
+		'Authorized' => 'authorized',
+		'Processing' => 'processing',
+		'Canceled' => 'cancelled',
+		'Refunded' => 'refunded',
+		'Failed' => 'failed'
+	);
+
 	/**
 	 * Create new order with specific orderstate
 	 *
@@ -84,14 +92,13 @@ class PGOrderManager extends Model {
 		/** @var ModelExtensionPaymentGateway $transactionModel */
 		$transactionModel = $paymentController->getModel();
 
-		//not in use yet but with order state US
-		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig());
-		//Update an pending order state
+		$logger = $paymentController->getLogger();
+		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig(), $logger);
+		$state = $this->getOrderState($backendService->getOrderState($response->getTransactionType()));
 		if (self::PENDING == $order['order_status_id'] || 0 == $order['order_status_id']) {
 			$this->model_checkout_order->addOrderHistory(
 				$orderId,
-				//update the order state
-				2/*$this->getOrderState($backendService->getOrderState($response->getTransactionType()))*/,
+				$state,
 				'<pre>' . htmlentities($response->getRawData()) . '</pre>',
 				true
 			);
@@ -133,25 +140,43 @@ class PGOrderManager extends Model {
 	}
 
 	/**
-	 * Temporarly getOrderState method, should be updated/removed with US for Ordermanagement
+	 * Update/Delete order history after cancel or failure
+	 *
+	 * @param int $orderId
+	 * @param string $state
+	 * @param int $delete
+	 * @since 1.0.0
+	 */
+	public function updateCancelFailureOrder($orderId, $state, $delete) {
+		$this->load->model('checkout/order');
+
+		if ($delete) {
+			$this->model_checkout_order->deleteOrder($orderId);
+		} else {
+			$this->model_checkout_order->addOrderHistory(
+				$orderId,
+				$this->getOrderState($state),
+				'',
+				false
+			);
+		}
+	}
+
+	/**
+	 * Get Order state per transaction type
 	 *
 	 * @param string $state
 	 * @return int
 	 * @since 1.0.0
 	 */
 	public function getOrderState($state) {
-		switch ($state) {
-			//should be authorization/authorized and not processing
-			case 'authorized':
-				return 2;
-			case 'cancelled':
-				return 7;
-			case 'refunded':
-				return 11;
-			//temporarly is state complete, should be processing
-			case 'processing':
-			default:
-				return 5;
+		$this->load->model('localisation/order_status');
+
+		$orderStatus = $this->model_localisation_order_status->getOrderStatuses();
+		foreach ($orderStatus as $status) {
+			if (isset($this->orderStates[$status['name']]) && ($state == $this->orderStates[$status['name']])) {
+				return $status['order_status_id'];
+			}
 		}
 	}
 }

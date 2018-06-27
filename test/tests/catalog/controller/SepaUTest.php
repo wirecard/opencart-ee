@@ -31,14 +31,14 @@
 
 use Mockery as m;
 
-require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_creditcard.php';
-require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_creditcard.php';
+require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_sepa.php';
+require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_sepa.php';
 
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-class CreditCardUTest extends \PHPUnit_Framework_TestCase
+class SepaUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
 	private $pluginVersion = '1.0.0';
@@ -49,17 +49,23 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 	private $response;
 	private $modelOrder;
 	private $url;
-	private $modelCreditCard;
+	private $modelSepa;
 	private $language;
 	private $cart;
 
 	const SHOP = 'OpenCart';
 	const PLUGIN = 'Wirecard_PaymentGateway';
 
-	public function setUp() {
+	public function setUp()
+	{
 		$this->registry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->getMock();
 
-		$this->config = $this->getMockBuilder(Config::class)->disableOriginalConstructor()->getMock();
+		$this->config = $this->getMockBuilder(Config::class)
+			->disableOriginalConstructor()
+			->setMethods(['get'])
+			->getMock();
+
+		$this->config->method('get')->willReturn('somthing');
 
 		$this->session = $this->getMockBuilder(Session::class)->disableOriginalConstructor()->getMock();
 
@@ -110,7 +116,7 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 
 		$this->url = $this->getMockBuilder(Url::class)->disableOriginalConstructor()->getMock();
 
-		$this->modelCreditCard = $this->getMockBuilder(ModelExtensionPaymentWirecardPGCreditCard::class)
+		$this->modelSepa = $this->getMockBuilder(ModelExtensionPaymentWirecardPGSepa::class)
 			->disableOriginalConstructor()
 			->setMethods(['sendRequest'])
 			->getMock();
@@ -127,9 +133,10 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 			["price" => 20.241, "name" => "Produkt2", "quantity" => 3, "product_id" => 1, "tax_class_id" => 1],
 			["price" => 3.241, "name" => "Produkt3", "quantity" => 5, "product_id" => 3, "tax_class_id" => 1]
 		];
+
 		$this->cart->method('getProducts')->willReturn($items);
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGCreditCard(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepa(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -137,16 +144,65 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelCreditCard,
+			$this->modelSepa,
 			$this->language,
 			$this->cart
 		);
 	}
 
-	public function testIndexActive() {
+	public function testGetConfig()
+	{
+		$config = $this->getMockBuilder(Config::class)->disableOriginalConstructor()->getMock();
+		$config->expects($this->at(0))->method('get')->willReturn('account123');
+		$config->expects($this->at(1))->method('get')->willReturn('secret123');
+		$config->expects($this->at(2))->method('get')->willReturn('api-test.com');
+		$config->expects($this->at(3))->method('get')->willReturn('user');
+		$config->expects($this->at(4))->method('get')->willReturn('password');
+
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepa(
+			$this->registry,
+			$config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelSepa,
+			$this->language,
+			$this->cart
+		);
+
+		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
+		$expected->add(new \Wirecard\PaymentSdk\Config\PaymentMethodConfig(
+			\Wirecard\PaymentSdk\Transaction\SepaTransaction::NAME,
+			'account123',
+			'secret123'
+		));
+		$expected->setShopInfo(self::SHOP, VERSION);
+		$expected->setPluginInfo(self::PLUGIN, $this->pluginVersion);
+
+		$currency = [
+			'currency_code' => 'EUR',
+			'currency_value' => 1
+		];
+		$actual = $this->controller->getConfig($currency);
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetModel()
+	{
+		$actual = $this->controller->getModel();
+
+		$this->assertInstanceOf(get_class($this->modelSepa), $actual);
+	}
+
+
+	public function testIndexActive()
+	{
 		$this->config->expects($this->at(0))->method('get')->willReturn(1);
 		$this->loader->method('view')->willReturn('active');
-		$this->controller = new ControllerExtensionPaymentWirecardPGCreditCard(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepa(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -154,7 +210,7 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelCreditCard,
+			$this->modelSepa,
 			$this->language,
 			$this->cart
 		);
@@ -164,47 +220,9 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 		$this->assertNotNull($actual);
 	}
 
-	public function testSuccessConfirm() {
-        $orderManager = m::mock('overload:PGOrderManager');
-        $orderManager->shouldReceive('createResponseOrder');
-
-	    $_POST['merchant_account_id'] = '1111111111';
-	    $_POST['transaction_id'] = 'da04876d-1d92-431c-b33a-49080914c996';
-	    $_POST['transaction_type'] = 'authorization';
-	    $_POST['payment_method'] = 'creditcard';
-        $_POST['request_id'] = '123';
-        $_POST['transaction_state'] = 'success';
-        $_POST['status_code_1'] = '201.0000';
-        $_POST['status_description_1'] = '3d-acquirer:The resource was successfully created.';
-        $_POST['status_severity_1'] = 'information';
-
-        $this->controller->confirm();
-		$json['response'] = [];
-		$this->response->method('getOutput')->willReturn(json_encode($json));
-
-		$expected = json_encode($json);
-
-		$this->assertEquals($expected, $this->response->getOutput());
-	}
-
-	public function testGetConfig() {
-		$this->config->expects($this->at(0))->method('get')->willReturn('api-test.com');
-		$this->config->expects($this->at(1))->method('get')->willReturn('user');
-		$this->config->expects($this->at(2))->method('get')->willReturn('password');
-
-		$this->config->expects($this->at(3))->method('get')->willReturn('account123');
-		$this->config->expects($this->at(4))->method('get')->willReturn('account123');
-		$this->config->expects($this->at(5))->method('get')->willReturn('secret123');
-
-		$this->config->expects($this->at(6))->method('get')->willReturn('three_d_acc');
-		$this->config->expects($this->at(7))->method('get')->willReturn('account123three_d');
-		$this->config->expects($this->at(8))->method('get')->willReturn('secret_three_d');
-		$this->config->expects($this->at(9))->method('get')->willReturn(10);
-		$this->config->expects($this->at(10))->method('get')->willReturn(10);
-		$this->config->expects($this->at(11))->method('get')->willReturn(20);
-		$this->config->expects($this->at(12))->method('get')->willReturn(20);
-
-		$this->controller = new ControllerExtensionPaymentWirecardPGCreditCard(
+	public function testGetType()
+	{
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepa(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -212,58 +230,36 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelCreditCard,
+			$this->modelSepa,
 			$this->language,
 			$this->cart
 		);
 
-		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
-		$creditCardConfig = new \Wirecard\PaymentSdk\Config\CreditCardConfig('account123', 'secret123');
-		$creditCardConfig->setThreeDCredentials('account123three_d','secret_three_d');
-		$creditCardConfig->addSslMaxLimit(new \Wirecard\PaymentSdk\Entity\Amount(10, 'EUR'));
-		$creditCardConfig->addThreeDMinLimit(new \Wirecard\PaymentSdk\Entity\Amount(20, 'EUR'));
-		$expected->add($creditCardConfig);
-		$expected->setShopInfo(self::SHOP, VERSION);
-		$expected->setPluginInfo(self::PLUGIN, $this->pluginVersion);
+		$actual = $this->controller->getType();
+		$expected = 'sepa';
 
-		$currency = [
-			'currency_code' => 'EUR',
-			'currency_value' => 1
-		];
-		$actual = $this->controller->getConfig($currency);
 		$this->assertEquals($expected, $actual);
 	}
 
-	public function testGetModel() {
-		$actual = $this->controller->getModel();
+	public function testGetInstance()
+	{
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepa(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelSepa,
+			$this->language,
+			$this->cart
+		);
 
-		$this->assertInstanceOf(get_class($this->modelCreditCard), $actual);
-	}
+		$expected = new \Wirecard\PaymentSdk\Transaction\SepaTransaction();
 
-	public function testGetCreditCardUiRequestData() {
-        $actual = $this->controller;
-        $transactionService = m::mock('overload:TransactionService');
-        $transactionService->shouldReceive('getCreditCardUiWithData');
-        $actual->getCreditCardUiRequestData();
-
-        $this->assertNull($actual->response->getOutput());
-    }
-
-    public function tetGetPaymentAction() {
-	    $actual = $this->controller->getPaymentAction('pay');
-	    $this->assertEquals('purchase', $actual);
-    }
-
-    public function testGetTransactionInstance() {
-		$this->assertTrue($this->controller->getTransactionInstance() instanceof \Wirecard\PaymentSdk\Transaction\CreditCardTransaction);
-    }
-
-    public function testCreateTransaction() {
-		$expected = new \Wirecard\PaymentSdk\Transaction\CreditCardTransaction();
-		$expected->setParentTransactionId('asd');
-		$expected->setAmount(new \Wirecard\PaymentSdk\Entity\Amount(20, 'EUR'));
-		$actual = $this->controller->createTransaction(['transaction_id' => 'asd'], new \Wirecard\PaymentSdk\Entity\Amount(20, 'EUR'));
+		$actual = $this->controller->getTransactionInstance();
 
 		$this->assertEquals($expected, $actual);
-    }
+	}
 }
