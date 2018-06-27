@@ -34,6 +34,8 @@ use Mockery as m;
 require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_sepact.php';
 require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_sepact.php';
 
+use Wirecard\PaymentSdk\Transaction\SepaTransaction;
+
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
