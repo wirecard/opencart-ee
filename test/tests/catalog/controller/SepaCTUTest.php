@@ -198,6 +198,30 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 	}
 
 
+	public function testConfirm()
+	{
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelSepaCT,
+			$this->language,
+			$this->cart
+		);
+
+		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSepaCT::class);
+		$prop = $reflector->getProperty('transaction');
+		$prop->setAccessible(true);
+
+		$this->controller->confirm();
+
+		$this->assertInstanceof(SepaTransaction::class, $prop->getValue($this->controller));
+	}
+
 	public function testIndexActive()
 	{
 		$this->config->expects($this->at(0))->method('get')->willReturn(1);
