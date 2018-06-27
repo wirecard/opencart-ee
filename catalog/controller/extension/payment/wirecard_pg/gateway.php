@@ -172,7 +172,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		$amount = new \Wirecard\PaymentSdk\Entity\Amount( $order['total'], $order['currency_code']);
 		$this->paymentConfig = $this->getConfig($currency);
-		$this->transaction->setRedirect($this->getRedirects());
+		$this->transaction->setRedirect($this->getRedirects($this->session->data['order_id']));
 		$this->transaction->setNotificationUrl($this->getNotificationUrl());
 		$this->transaction->setAmount($amount);
 
@@ -260,6 +260,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	public function response() {
+		$orderManager = new PGOrderManager($this->registry);
+		$deleteCancel = $this->getShopConfigVal('delete_cancel_order');
 		$this->load->language('extension/payment/wirecard_pg');
 
 		$logger = $this->getLogger();
@@ -282,6 +284,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			if ($wasCancelled) {
 				$this->session->data['error'] = $this->language->get('order_cancelled');
 				$logger->warning('Order was cancelled');
+				$orderManager->updateCancelFailureOrder($_REQUEST['orderId'], 'cancelled', $deleteCancel);
 				$this->response->redirect($this->url->link('checkout/checkout'));
 
 				return;
@@ -309,13 +312,14 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	/**
 	 * Create payment specific redirects
 	 *
+	 * @param int $orderId
 	 * @return \Wirecard\PaymentSdk\Entity\Redirect
 	 * @since 1.0.0
 	 */
-	protected function getRedirects() {
+	protected function getRedirects($orderId) {
 		return new \Wirecard\PaymentSdk\Entity\Redirect(
 			$this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL'),
-			$this->url->link(self::ROUTE . $this->type . '/response&cancelled=1', '', 'SSL'),
+			$this->url->link(self::ROUTE . $this->type . '/response&cancelled=1&orderId='. $orderId, '', 'SSL'),
 			$this->url->link(self::ROUTE. $this->type . '/response', '', 'SSL')
 		);
 	}
@@ -366,6 +370,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	public function processResponse($result, $logger) {
 		$orderManager = new PGOrderManager($this->registry);
+		$deleteFailure = $this->getShopConfigVal('delete_failure_order');
 
 		if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
 			$orderManager->createResponseOrder($result, $this);
@@ -392,6 +397,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			}
 
 			$this->session->data['error'] = $errors;
+			$orderManager->updateCancelFailureOrder($result->getCustomFields()->get('orderId'), 'failed', $deleteFailure);
 			$this->response->redirect($this->url->link('checkout/checkout'));
 
 			return false;

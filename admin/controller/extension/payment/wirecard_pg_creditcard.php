@@ -68,6 +68,8 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 		'descriptor' => '0',
 		'descriptor_required' => '0',
 		'additional_info' => '1',
+		'delete_cancel_order' => '0',
+		'delete_failure_order' => '0'
 	);
 
 	/**

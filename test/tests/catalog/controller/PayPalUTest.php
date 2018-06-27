@@ -254,6 +254,9 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
 
     public function testFailureResponse()
     {
+        $orderManager = m::mock('overload:PGOrderManager');
+        $orderManager->shouldReceive('updateCancelFailureOrder');
+
         $_REQUEST = array(
             "route" => "extension/payment/wirecard_pg_paypal/response",
             "psp_name" => "elastic-payments",
