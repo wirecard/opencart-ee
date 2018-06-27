@@ -32,7 +32,10 @@
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
 use Wirecard\PaymentSdk\Transaction\SofortTransaction;
+use Wirecard\PaymentSdk\Transaction\SepaTransaction;
 use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
+use Wirecard\PaymentSdk\Transaction\Operation;
+use Wirecard\PaymentSdk\Entity\AccountHolder;
 
 /**
  * Class ControllerExtensionPaymentWirecardPGSofortbanking
@@ -84,6 +87,9 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 		$paymentConfig = new PaymentMethodConfig(SofortTransaction::NAME, $merchant_account_id, $merchant_secret);
 		$config->add($paymentConfig);
 
+		$logger = $this->getLogger();
+		$logger->debug(json_encode([ 'MAID' => $merchant_account_id, "SECRET" => $merchant_secret ]));
+
 		return $config;
 	}
 
@@ -96,7 +102,7 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	public function getModel() {
 		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
 
-		return $this->model_extension_payment_wirecard_pg_paypal;
+		return $this->model_extension_payment_wirecard_pg_sofortbanking;
 	}
 
 	/**
@@ -107,11 +113,7 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	 * @since 1.0.0
 	 */
 	public function getPaymentAction($action) {
-		if ($action == 'pay') {
-			return 'purchase';
-		} else {
-			return 'authorization';
-		}
+		return 'debit';
 	}
 
 	/**
@@ -122,10 +124,10 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
 	 * @since 1.0.0
 	 */
-	public function createTransaction($parentTransaction, $amount) {
-		$this->transaction = new SofortTransaction();
+	public function createTransaction($parentTransaction, $amount, $operation = null) {
+		$this->transaction = $operation == Operation::CREDIT ? new SepaTransaction() : new SofortTransaction();
 
-		return parent::createTransaction($parentTransaction, $amount);
+		return parent::createTransaction($parentTransaction, $amount, $operation);
 	}
 
 	/**

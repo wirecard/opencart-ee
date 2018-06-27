@@ -97,7 +97,7 @@ class ControllerExtensionPaymentWirecardPGSepa extends ControllerExtensionPaymen
 	public function getModel() {
 		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
 
-		return $this->model_extension_payment_wirecard_pg_paypal;
+		return $this->model_extension_payment_wirecard_pg_sepa;
 	}
 
 	/**
@@ -120,10 +120,11 @@ class ControllerExtensionPaymentWirecardPGSepa extends ControllerExtensionPaymen
 	 *
 	 * @param array $parentTransaction
 	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
+	 * @param string $operation
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
 	 * @since 1.0.0
 	 */
-	public function createTransaction($parentTransaction, $amount) {
+	public function createTransaction($parentTransaction, $amount, $operation = null) {
 		$this->transaction = new SepaTransaction();
 
 		return parent::createTransaction($parentTransaction, $amount);

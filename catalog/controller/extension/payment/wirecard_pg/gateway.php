@@ -421,10 +421,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 *
 	 * @param array $parentTransaction
 	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
+	 * @param string $operation
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
 	 * @since 1.0.0
 	 */
-	public function createTransaction($parentTransaction, $amount) {
+	public function createTransaction($parentTransaction, $amount, $operation = null) {
 		$this->transaction->setParentTransactionId($parentTransaction['transaction_id']);
 		$this->transaction->setAmount($amount);
 
