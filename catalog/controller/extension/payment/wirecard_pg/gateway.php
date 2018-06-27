@@ -411,9 +411,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	public function getController($type) {
-		$controller = $this->load->controller('extension/payment/wirecard_pg_' . $type);
-
-		return $controller;
+		return $this->load->controller('extension/payment/wirecard_pg_' . $type);
 	}
 
 	/**

@@ -58,8 +58,9 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 * @since 1.0.0
 	 */
 	public function index($data = null) {
-
+		$this->load->language('extension/payment/wirecard_pg');
 		$data['base_url'] = $this->getShopConfigVal('base_url');
+		$data['loading_text'] = $this->language->get('loading_text');
 		$data['credit_card'] = $this->load->view('extension/payment/wirecard_credit_card_ui', $data);
 		return parent::index($data);
 	}
@@ -88,13 +89,17 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 * @since 1.0.0
 	 */
 	public function getConfig($currency = null) {
-		$merchant_account_id = $this->getShopConfigVal('merchant_account_id');
-		$merchant_secret = $this->getShopConfigVal('merchant_secret');
-
 		$config = parent::getConfig($currency);
-		$paymentConfig = new CreditCardConfig($merchant_account_id, $merchant_secret);
+		$paymentConfig = new CreditCardConfig();
 
-		if ($this->getShopConfigVal('three_d_merchant_account_id') !== '') {
+		if ($this->getShopConfigVal('merchant_account_id') !== 'null') {
+			$paymentConfig->setSSLCredentials(
+				$this->getShopConfigVal('merchant_account_id'),
+				$this->getShopConfigVal('merchant_secret')
+			);
+		}
+
+		if ($this->getShopConfigVal('three_d_merchant_account_id') !== 'null') {
 			$paymentConfig->setThreeDCredentials(
 				$this->getShopConfigVal('three_d_merchant_account_id'),
 				$this->getShopConfigVal('three_d_merchant_secret')
@@ -179,6 +184,20 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 */
 	public function getTransactionInstance() {
 		return new CreditCardTransaction();
+	}
+
+	/**
+	 * Create CreditCard transaction
+	 *
+	 * @param array $parentTransaction
+	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
+	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
+	 * @since 1.0.0
+	 */
+	public function createTransaction($parentTransaction, $amount) {
+		$this->transaction = new CreditCardTransaction();
+
+		return parent::createTransaction($parentTransaction, $amount);
 	}
 
 }
