@@ -64,7 +64,6 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaym
 	 * @since 1.0.0
 	 */
 	public function confirm() {
-
 		$this->transaction = new SepaTransaction();
 
 		parent::confirm();

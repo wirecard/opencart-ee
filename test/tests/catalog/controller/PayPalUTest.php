@@ -85,9 +85,9 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
 	        ->getMock();
 
         $orderDetails = array(
-            'order_id'                => '1',
-            'total'                   => '20',
-            'currency_code'           => 'EUR',
+            'order_id' => '1',
+            'total' => '20',
+            'currency_code' => 'EUR',
             'language_code' => 'en-GB',
             'email' => 'test@test.com',
             'firstname' => 'Jon',
