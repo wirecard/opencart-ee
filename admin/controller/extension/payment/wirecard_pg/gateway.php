@@ -129,15 +129,14 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true);
 		$data['user_token'] = $this->session->data['user_token'];
 
-		$data = array_merge($data, $this->createBreadcrumbs());
-
-		$data = array_merge($data, $this->getConfigText());
-
-		$data = array_merge($data, $this->getRequestData());
-
-		$data = array_merge($data, $this->loadConfigBlocks($data));
-
-		$data = array_merge($data, $this->loadLiveChat($data));
+		$data = array_merge(
+			$data,
+			$this->createBreadcrumbs(),
+			$this->getConfigText(),
+			$this->getRequestData(),
+			$this->loadConfigBlocks($data),
+			$this->loadLiveChat($data)
+		);
 
 		$this->response->setOutput($this->load->view('extension/payment/wirecard_pg', $data));
 	}
