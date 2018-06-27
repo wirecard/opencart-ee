@@ -31,13 +31,13 @@
 require_once(dirname( __FILE__ ) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ModelExtensionPaymentWirecardPGSepa
+ * Class ModelExtensionPaymentWirecardPGSepaCT
  *
- * SEPA Transaction model
+ * SEPA Credit Transfer Transaction model
  *
  * @since 1.0.0
  */
-class ModelExtensionPaymentWirecardPGSepa extends ModelExtensionPaymentGateway {
+class ModelExtensionPaymentWirecardPGSepaCT extends ModelExtensionPaymentGateway {
 
 	/**
 	 * @var string

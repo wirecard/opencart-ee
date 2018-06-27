@@ -273,6 +273,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	public function loadConfigBlocks($data) {
+		$data['payment_type'] = $this->type;
 		$data['payment_header'] = $this->load->view('extension/payment/wirecard_pg/header', $data);
 		$data['basic_config'] = $this->load->view('extension/payment/wirecard_pg/basic_config', $data);
 		$data['credentials_config'] = $this->load->view('extension/payment/wirecard_pg/credentials_config', $data);
