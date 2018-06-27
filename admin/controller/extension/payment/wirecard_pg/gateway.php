@@ -133,7 +133,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$data,
 			$this->createBreadcrumbs(),
 			$this->getConfigText(),
-			$this->getRequestData(),
+			$this->getRequestData()
+		);
+		$data = array_merge(
 			$this->loadConfigBlocks($data),
 			$this->loadLiveChat($data)
 		);
