@@ -67,7 +67,11 @@
     <div class="form-group">
         <div class="col-sm-2"></div>
         <div class="col-sm-10 description">
-            <i>{{ config_merchant_account_id_desc }}</i>
+            {% if type != 'creditcard' %}
+                <i>{{ config_merchant_account_id_desc }}</i>
+            {% else %}
+                <i>{{ config_merchant_account_id_cc_desc }}</i>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -84,7 +88,11 @@
     <div class="form-group">
         <div class="col-sm-2"></div>
         <div class="col-sm-10 description">
-            <i>{{ config_merchant_secret_desc }}</i>
+            {% if type != 'creditcard' %}
+                <i>{{ config_merchant_secret_desc }}</i>
+            {% else %}
+                <i>{{ config_merchant_secret_cc_desc }}</i>
+            {% endif %}
         </div>
     </div>
 </div>

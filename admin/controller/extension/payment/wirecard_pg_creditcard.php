@@ -90,6 +90,8 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 	 */
 	protected function getConfigText($fields = null) {
 		$configFieldTexts = array(
+			'config_merchant_account_id_cc_desc',
+			'config_merchant_secret_cc_desc',
 			'config_three_d_merchant_account_id',
 			'config_three_d_merchant_account_id_desc',
 			'config_three_d_merchant_secret',
