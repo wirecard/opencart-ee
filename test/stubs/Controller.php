@@ -16,9 +16,11 @@ abstract class Controller
     protected $request;
     public $model_extension_payment_wirecard_pg_paypal;
     public $model_extension_payment_wirecard_pg_creditcard;
+	public $model_extension_payment_wirecard_pg_sepact;
+	public $model_extension_payment_wirecard_pg_sofortbanking;
     public $model_checkout_order;
 
-    public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPaypal, $language, $cart)
+    public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPayment, $language, $cart)
     {
         $this->registry = $registry;
         $this->config = $config;
@@ -27,8 +29,10 @@ abstract class Controller
         $this->response = $response;
         $this->model_checkout_order = $orderModel;
         $this->url = $url;
-        $this->model_extension_payment_wirecard_pg_paypal = $modelPaypal;
-        $this->model_extension_payment_wirecard_pg_creditcard = $modelPaypal;
+        $this->model_extension_payment_wirecard_pg_paypal = $modelPayment;
+        $this->model_extension_payment_wirecard_pg_creditcard = $modelPayment;
+		$this->model_extension_payment_wirecard_pg_sepact = $modelPayment;
+		$this->model_extension_payment_wirecard_pg_sofortbanking = $modelPayment;
         $this->language = $language;
         $this->cart = $cart;
 

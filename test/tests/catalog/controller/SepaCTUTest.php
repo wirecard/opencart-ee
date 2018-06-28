@@ -36,8 +36,6 @@ require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg
 
 use Wirecard\PaymentSdk\Transaction\SepaTransaction;
 
-use Wirecard\PaymentSdk\Transaction\SepaTransaction;
-
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
@@ -177,8 +175,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
-		$expected->add(new \Wirecard\PaymentSdk\Config\PaymentMethodConfig(
-			\Wirecard\PaymentSdk\Transaction\SepaTransaction::NAME,
+		$expected->add(new \Wirecard\PaymentSdk\Config\SepaConfig(
 			'account123',
 			'secret123'
 		));
@@ -248,33 +245,9 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 		$this->assertNotNull($actual);
 	}
 
-	public function testConfirm()
-	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepa(
-			$this->registry,
-			$this->config,
-			$this->loader,
-			$this->session,
-			$this->response,
-			$this->modelOrder,
-			$this->url,
-			$this->modelSepa,
-			$this->language,
-			$this->cart
-		);
-
-		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSepa::class);
-		$prop = $reflector->getProperty('transaction');
-		$prop->setAccessible(true);
-
-		$this->controller->confirm();
-
-		$this->assertInstanceof(SepaTransaction::class, $prop->getValue($this->controller));
-	}
-
 	public function testPaymentAction()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepa(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -282,21 +255,18 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelSepa,
+			$this->modelSepaCT,
 			$this->language,
 			$this->cart
 		);
 
-		$actual = $this->controller->getPaymentAction('authorize');
-		$this->assertEquals('authorization', $actual);
-
 		$actual = $this->controller->getPaymentAction('pay');
-		$this->assertEquals('purchase', $actual);
+		$this->assertEquals('debit', $actual);
 	}
 
 	public function testCreateTransaction()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepa(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -304,12 +274,12 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelSepa,
+			$this->modelSepaCT,
 			$this->language,
 			$this->cart
 		);
 
-		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSepa::class);
+		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSepaCT::class);
 		$prop = $reflector->getProperty('transaction');
 		$prop->setAccessible(true);
 

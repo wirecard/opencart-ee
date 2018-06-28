@@ -259,11 +259,8 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 			$this->cart
 		);
 
-		$actual = $this->controller->getPaymentAction('authorize');
-		$this->assertEquals('authorization', $actual);
-
 		$actual = $this->controller->getPaymentAction('pay');
-		$this->assertEquals('purchase', $actual);
+		$this->assertEquals('debit', $actual);
 	}
 
 	public function testCreateTransaction()

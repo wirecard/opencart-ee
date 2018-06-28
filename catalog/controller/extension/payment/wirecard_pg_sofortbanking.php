@@ -30,7 +30,7 @@
  */
 
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
-require_once(dirname(__FILE__) . '/wirecard_pg_sepa.php');
+require_once(dirname(__FILE__) . '/wirecard_pg_sepact.php');
 
 use Wirecard\PaymentSdk\Transaction\SofortTransaction;
 use Wirecard\PaymentSdk\Transaction\SepaTransaction;
@@ -82,7 +82,7 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	 */
 	public function getConfig($currency = null) {
 		if ($this->operation == Operation::CREDIT) {
-			$sepaController = new ControllerExtensionPaymentWirecardPGSepa($this->registry);
+			$sepaController = new ControllerExtensionPaymentWirecardPGSepaCT($this->registry);
 			return $sepaController->getConfig($currency);
 		}
 

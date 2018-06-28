@@ -65,6 +65,8 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExten
 		'descriptor_required' => 1,
 		'additional_info' => 0,
 		'shopping_basket' => 1,
+		'delete_cancel_order' => 0,
+		'delete_failure_order' => 0
 	);
 
 	/**
