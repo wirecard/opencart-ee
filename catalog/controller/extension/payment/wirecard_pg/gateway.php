@@ -183,6 +183,13 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		if ($this->getShopConfigVal('additional_info')) {
 			$this->transaction = $additionalHelper->setAdditionalInformation($this->transaction, $order);
+			$this->transaction = $additionalHelper->addBasket(
+				$this->transaction,
+				$this->cart->getProducts(),
+				$this->session->data['shipping_method'],
+				$currency,
+				$order['total']
+			);
 		}
 
 		if (isset($this->request->post['fingerprint-session'])) {
