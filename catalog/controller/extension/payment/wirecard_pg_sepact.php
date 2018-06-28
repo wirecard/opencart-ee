@@ -35,19 +35,19 @@ use Wirecard\PaymentSdk\Transaction\SepaTransaction;
 use Wirecard\PaymentSdk\Config\SepaConfig;
 
 /**
- * Class ControllerExtensionPaymentWirecardPGSepa
+ * Class ControllerExtensionPaymentWirecardPGSepaCT
  *
- * SEPA Transaction controller
+ * SEPA Credit Transfer Transaction controller
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGSepa extends ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'sepa';
+	protected $type = 'sepact';
 
 	/**
 	 * Basic index method
@@ -59,7 +59,7 @@ class ControllerExtensionPaymentWirecardPGSepa extends ControllerExtensionPaymen
 	}
 
 	/**
-	 * Create SEPA transaction
+	 * Create SEPA Credit Transfer transaction
 	 *
 	 * @since 1.0.0
 	 */
@@ -96,7 +96,7 @@ class ControllerExtensionPaymentWirecardPGSepa extends ControllerExtensionPaymen
 	public function getModel() {
 		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
 
-		return $this->model_extension_payment_wirecard_pg_sepa;
+		return $this->model_extension_payment_wirecard_pg_sepact;
 	}
 
 	/**

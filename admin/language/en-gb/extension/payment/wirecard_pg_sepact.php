@@ -30,9 +30,9 @@
  */
 
 // Page Title
-$_['heading_title'] = 'Wirecard SEPA';
-$_['text_wirecard_pg_sepa'] = '<img src="./view/image/wirecard_pg/sepa.png" width="100"/>';
+$_['heading_title'] = 'Wirecard SEPA Credit Transfer';
+$_['text_wirecard_pg_sepact'] = '<img src="./view/image/wirecard_pg/sepa.png" width="100"/>';
 
 // Payment specific configuration
-$_['text_edit'] = 'Edit SEPA';
-$_['config_status_desc'] = 'Activate payment method SEPA to make it available for your consumers.';
+$_['text_edit'] = 'Edit SEPA Credit Transfer';
+$_['config_status_desc'] = 'Activate payment method SEPA Credit Transfer to make it available for your consumers.';
