@@ -29,10 +29,72 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-// Page Title
-$_['heading_title'] = 'Wirecard SEPA';
-$_['text_wirecard_pg_sepa'] = '<img src="./view/image/wirecard_pg/sepa.png" width="100"/>';
+require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
-// Payment specific configuration
-$_['text_edit'] = 'Edit SEPA';
-$_['config_status_desc'] = 'Activate payment method SEPA to make it available for your consumers.';
+use Wirecard\PaymentSdk\Transaction\SepaTransaction;
+use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
+
+/**
+ * Class ControllerExtensionPaymentWirecardPGSepaCT
+ *
+ * SEPA Credit Transfer Transaction controller
+ *
+ * @since 1.0.0
+ */
+class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaymentGateway {
+
+	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $type = 'sepact';
+
+	/**
+	 * Basic index method
+	 *
+	 * @since 1.0.0
+	 */
+	public function index($data = null) {
+		return parent::index();
+	}
+
+	/**
+	 * Create SEPA Credit Transfer transaction
+	 *
+	 * @since 1.0.0
+	 */
+	public function confirm() {
+		$this->transaction = new SepaTransaction();
+
+		parent::confirm();
+	}
+
+	/**
+	 * Create payment specific config
+	 *
+	 * @param array $currency
+	 * @return \Wirecard\PaymentSdk\Config\Config
+	 * @since 1.0.0
+	 */
+	public function getConfig($currency = null) {
+		$merchant_account_id = $this->getShopConfigVal('merchant_account_id');
+		$merchant_secret = $this->getShopConfigVal('merchant_secret');
+
+		$config = parent::getConfig($currency);
+		$paymentConfig = new PaymentMethodConfig(SepaTransaction::NAME, $merchant_account_id, $merchant_secret);
+		$config->add($paymentConfig);
+
+		return $config;
+	}
+
+	/**
+	 * Get new instance of payment specific transaction
+	 *
+	 * @return SepaTransaction
+	 * @since 1.0.0
+	 */
+	public function getTransactionInstance() {
+		return new SepaTransaction();
+	}
+}
+
