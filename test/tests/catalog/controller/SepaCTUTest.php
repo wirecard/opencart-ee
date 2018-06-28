@@ -32,7 +32,6 @@
 use Mockery as m;
 
 require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_sepact.php';
-require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_sepact.php';
 
 use Wirecard\PaymentSdk\Transaction\SepaTransaction;
 
@@ -51,7 +50,6 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 	private $response;
 	private $modelOrder;
 	private $url;
-	private $modelSepaCT;
 	private $language;
 	private $cart;
 
@@ -118,11 +116,6 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 		$this->url = $this->getMockBuilder(Url::class)->disableOriginalConstructor()->getMock();
 
-		$this->modelSepaCT = $this->getMockBuilder(ModelExtensionPaymentWirecardPGSepaCT::class)
-			->disableOriginalConstructor()
-			->setMethods(['sendRequest'])
-			->getMock();
-
 		$this->loader = $this->getMockBuilder(Loader::class)
 			->disableOriginalConstructor()
 			->setMethods(['model', 'language', 'view'])
@@ -146,7 +139,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelSepaCT,
+			null,
 			$this->language,
 			$this->cart
 		);
@@ -169,7 +162,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelSepaCT,
+			null,
 			$this->language,
 			$this->cart
 		);
@@ -191,14 +184,6 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $actual);
 	}
 
-	public function testGetModel()
-	{
-		$actual = $this->controller->getModel();
-
-		$this->assertInstanceOf(get_class($this->modelSepaCT), $actual);
-	}
-
-
 	public function testConfirm()
 	{
 		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
@@ -209,7 +194,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelSepaCT,
+			null,
 			$this->language,
 			$this->cart
 		);
@@ -235,7 +220,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelSepaCT,
+			null,
 			$this->language,
 			$this->cart
 		);
@@ -306,7 +291,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelSepaCT,
+			null,
 			$this->language,
 			$this->cart
 		);
@@ -327,7 +312,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelSepaCT,
+			null,
 			$this->language,
 			$this->cart
 		);

@@ -88,44 +88,6 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaym
 	}
 
 	/**
-	 * Payment specific model getter
-	 *
-	 * @return Model
-	 * @since 1.0.0
-	 */
-	public function getModel() {
-		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
-
-		return $this->model_extension_payment_wirecard_pg_sepact;
-	}
-
-	/**
-	 * Get payment action
-	 *
-	 * @param string $action
-	 * @return string
-	 * @since 1.0.0
-	 */
-	public function getPaymentAction($action) {
-		return 'debit';
-	}
-
-	/**
-	 * Create SEPA transaction
-	 *
-	 * @param array $parentTransaction
-	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
-	 * @param string $operation
-	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
-	 * @since 1.0.0
-	 */
-	public function createTransaction($parentTransaction, $amount) {
-		$this->transaction = new SepaTransaction();
-
-		return parent::createTransaction($parentTransaction, $amount);
-	}
-
-	/**
 	 * Get new instance of payment specific transaction
 	 *
 	 * @return SepaTransaction
