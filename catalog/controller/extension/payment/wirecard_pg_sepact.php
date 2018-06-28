@@ -88,18 +88,6 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaym
 	}
 
 	/**
-	 * Payment specific model getter
-	 *
-	 * @return Model
-	 * @since 1.0.0
-	 */
-	public function getModel() {
-		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
-
-		return $this->model_extension_payment_wirecard_pg_paypal;
-	}
-
-	/**
 	 * Get new instance of payment specific transaction
 	 *
 	 * @return SepaTransaction

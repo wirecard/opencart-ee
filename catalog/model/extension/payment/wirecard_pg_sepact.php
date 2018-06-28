@@ -33,7 +33,7 @@ require_once(dirname( __FILE__ ) . '/wirecard_pg/gateway.php');
 /**
  * Class ModelExtensionPaymentWirecardPGSepaCT
  *
- * SEPA Credit Transfer Transaction model
+ * Sepa Credit Transfer Transaction model
  *
  * @since 1.0.0
  */
@@ -43,7 +43,7 @@ class ModelExtensionPaymentWirecardPGSepaCT extends ModelExtensionPaymentGateway
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'sepa';
+	protected $type = 'sepact';
 
 	/**
 	 * Basic getMethod method
@@ -51,6 +51,6 @@ class ModelExtensionPaymentWirecardPGSepaCT extends ModelExtensionPaymentGateway
 	 * @since 1.0.0
 	 */
 	public function getMethod($address, $total) {
-		return parent::getMethod($address, $total);
+		return false;
 	}
 }
