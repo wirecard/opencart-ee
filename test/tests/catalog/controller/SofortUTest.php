@@ -208,7 +208,7 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetCreditConfig()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(
+		$constructorArgs = array(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -218,10 +218,15 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelSofort,
 			$this->language,
-			$this->cart,
-			$this->subController
+			$this->cart
 		);
 
+		$this->controller = $this->getMockBuilder(ControllerExtensionPaymentWirecardPGSofortbanking::class)
+			->setConstructorArgs($constructorArgs)
+			->setMethods(array('getSepaController'))
+			->getMock();
+
+		$this->controller->method('getSepaController')->willReturn($this->subController);
 		$this->controller->setOperation(Operation::CREDIT);
 
 		$currency = [
@@ -238,27 +243,6 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 
 		$paymentMethodConfigs = $prop->getValue($creditConfig);
 		$this->assertArrayHasKey('sepa', $paymentMethodConfigs);
-	}
-
-	public function testGetSepaController()
-	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(
-			$this->registry,
-			$this->config,
-			$this->loader,
-			$this->session,
-			$this->response,
-			$this->modelOrder,
-			$this->url,
-			$this->modelSofort,
-			$this->language,
-			$this->cart,
-			$this->subController
-		);
-
-		$actual = $this->controller->getSepaController();
-
-		$this->assertInstanceOf(ControllerExtensionPaymentWirecardPGSepaCT::class, $actual);
 	}
 
 	public function testGetModel()
@@ -368,7 +352,7 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 
 	public function testCreateCreditTransaction()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(
+		$constructorArgs = array(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -380,6 +364,13 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 			$this->language,
 			$this->cart
 		);
+
+		$this->controller = $this->getMockBuilder(ControllerExtensionPaymentWirecardPGSofortbanking::class)
+			->setConstructorArgs($constructorArgs)
+			->setMethods(array('getSepaController'))
+			->getMock();
+
+		$this->controller->method('getSepaController')->willReturn($this->subController);
 
 		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSofortbanking::class);
 		$prop = $reflector->getProperty('transaction');

@@ -88,6 +88,30 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaym
 	}
 
 	/**
+	 * Get payment action
+	 *
+	 * @param string $action
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function getPaymentAction($action) {
+		return 'debit';
+	}
+
+	/**
+	 * Create payment method specific transaction.
+	 *
+	 * @param array $parentTransaction
+	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
+	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
+	 */
+	public function createTransaction($parentTransaction, $amount) {
+		$this->transaction = new SepaTransaction();
+
+		return parent::createTransaction($parentTransaction, $amount);
+	}
+
+	/**
 	 * Get new instance of payment specific transaction
 	 *
 	 * @return SepaTransaction

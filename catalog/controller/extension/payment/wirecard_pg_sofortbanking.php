@@ -79,7 +79,7 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	 * @return ControllerExtensionPaymentWirecardPGSepaCT
 	 */
 	public function getSepaController() {
-		$this->load->controller('extension/payment/wirecard_pg_sepact');
+		$this->controller_extension_payment_wirecard_pg_sepact = new ControllerExtensionPaymentWirecardPGSepaCT($this->registry);
 
 		return $this->controller_extension_payment_wirecard_pg_sepact;
 	}

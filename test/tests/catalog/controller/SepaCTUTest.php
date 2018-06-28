@@ -240,7 +240,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelSepaCT,
+			null,
 			$this->language,
 			$this->cart
 		);
@@ -259,7 +259,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelSepaCT,
+			null,
 			$this->language,
 			$this->cart
 		);
