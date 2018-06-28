@@ -33,6 +33,8 @@ require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wireca
 require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_sofortbanking.php';
 
 use Wirecard\PaymentSdk\Transaction\SofortTransaction;
+use Wirecard\PaymentSdk\Transaction\SepaTransaction;
+use Wirecard\PaymentSdk\Transaction\Operation;
 
 /**
  * @runTestsInSeparateProcesses
@@ -52,6 +54,7 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 	private $modelSofort;
 	private $language;
 	private $cart;
+	private $subController;
 
 	const SHOP = 'OpenCart';
 	const PLUGIN = 'Wirecard_PaymentGateway';
@@ -123,7 +126,7 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 
 		$this->loader = $this->getMockBuilder(Loader::class)
 			->disableOriginalConstructor()
-			->setMethods(['model', 'language', 'view'])
+			->setMethods(['model', 'language', 'view', 'controller'])
 			->getMock();
 
 		$this->language = $this->getMockBuilder(Language::class)->disableOriginalConstructor()->getMock();
@@ -135,6 +138,19 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 		];
 
 		$this->cart->method('getProducts')->willReturn($items);
+
+		$this->subController = new ControllerExtensionPaymentWirecardPGSepaCT(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelSofort,
+			$this->language,
+			$this->cart
+		);
 
 		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(
 			$this->registry,
@@ -188,6 +204,61 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 		$actual = $this->controller->getConfig($currency);
 
 		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetCreditConfig()
+	{
+		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelSofort,
+			$this->language,
+			$this->cart,
+			$this->subController
+		);
+
+		$this->controller->setOperation(Operation::CREDIT);
+
+		$currency = [
+			'currency_code' => 'EUR',
+			'currency_value' => 1
+		];
+
+		$creditConfig = $this->controller->getConfig($currency);
+
+		$reflector = new ReflectionClass(\Wirecard\PaymentSdk\Config\Config::class);
+
+		$prop = $reflector->getProperty('paymentMethodConfigs');
+		$prop->setAccessible(true);
+
+		$paymentMethodConfigs = $prop->getValue($creditConfig);
+		$this->assertArrayHasKey('sepa', $paymentMethodConfigs);
+	}
+
+	public function testGetSepaController()
+	{
+		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelSofort,
+			$this->language,
+			$this->cart,
+			$this->subController
+		);
+
+		$actual = $this->controller->getSepaController();
+
+		$this->assertInstanceOf(ControllerExtensionPaymentWirecardPGSepaCT::class, $actual);
 	}
 
 	public function testGetModel()
@@ -290,6 +361,39 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 		$expected = new SofortTransaction();
 		$expected->setParentTransactionId('1234');
 
+		$actual = $this->controller->createTransaction($transaction, null);
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testCreateCreditTransaction()
+	{
+		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelSofort,
+			$this->language,
+			$this->cart
+		);
+
+		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSofortbanking::class);
+		$prop = $reflector->getProperty('transaction');
+		$prop->setAccessible(true);
+
+		$transaction = array(
+			'transaction_id' => '1234',
+			'amount' => '10'
+		);
+
+		$expected = new SepaTransaction();
+		$expected->setParentTransactionId('1234');
+
+		$this->controller->setOperation(Operation::CREDIT);
 		$actual = $this->controller->createTransaction($transaction, null);
 
 		$this->assertEquals($expected, $actual);

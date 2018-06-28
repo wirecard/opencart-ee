@@ -74,6 +74,17 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	}
 
 	/**
+	 * Provides a SEPA Credit Transfer controller for refunding payments.
+	 *
+	 * @return ControllerExtensionPaymentWirecardPGSepaCT
+	 */
+	public function getSepaController() {
+		$this->load->controller('extension/payment/wirecard_pg_sepact');
+
+		return $this->controller_extension_payment_wirecard_pg_sepact;
+	}
+
+	/**
 	 * Create payment specific config
 	 *
 	 * @param array $currency
@@ -82,7 +93,7 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	 */
 	public function getConfig($currency = null) {
 		if ($this->operation == Operation::CREDIT) {
-			$sepaController = new ControllerExtensionPaymentWirecardPGSepaCT($this->registry);
+			$sepaController = $this->getSepaController();
 			return $sepaController->getConfig($currency);
 		}
 
