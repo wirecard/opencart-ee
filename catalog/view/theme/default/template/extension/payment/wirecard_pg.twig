@@ -10,12 +10,18 @@
 {% if credit_card %}
     {{ credit_card }}
 {% endif %}
-<form id="wirecard-pg-form" action="{{ action }}" method="post" class="form form-horizontal">
+
+<form id="wirecard-pg-form" action="{{ action }}" enctype="multipart/form-data" method="post"  class="form form-horizontal">
 <div class="buttons">
     <div class="pull-right">
         {% if session_id %}
         <input type="hidden" value="{{ session_id }}" id="input-fingerprint-session" name="fingerprint-session"/>
         {%  endif %}
+
+        {% if ideal %}
+            {{ ideal }}
+        {% endif %}
+
         <input type="button" value="{{ button_confirm }}" id="button-confirm" data-loading-text="{{ text_loading }}" class="btn btn-primary" />
     </div>
 </div>
@@ -23,11 +29,15 @@
 {% if credit_card is null %}
 <script type="text/javascript"><!--
     $('#button-confirm').on('click', function() {
+        var formData = new FormData(document.querySelector('#wirecard-pg-form'));
+
         $.ajax({
             url: 'index.php?route=extension/payment/wirecard_pg_{{ type }}/confirm',
             type: 'post',
             dataType: 'json',
-            data: $('#input-fingerprint-session'),
+            data: formData,
+            processData: false,
+            contentType: false,
             beforeSend: function() {
                 $('#button-confirm').button('loading');
             },

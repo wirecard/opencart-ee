@@ -74,7 +74,11 @@
     </div>
 </div>
 
-{% if type != 'sepact' %}
+{%
+    if type != 'sepact'
+    and type != 'ideal'
+    and type != 'sofortbanking'
+%}
 <div class="form-group required">
     <label class="col-sm-2 control-label" for="input-status">{{ config_payment_action }}</label>
     <div class="col-sm-10">
