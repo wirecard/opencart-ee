@@ -104,7 +104,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 			/* @var \Wirecard\PaymentSdk\Response\Response $response */
 			$response = $transactionService->process($transaction, $paymetAction);
 		} catch (Exception $exception) {
-			$logger->error($exception->getMessage());
+			$logger->error(get_class($exception) . ': ' . $exception->getMessage() . " $paymetAction");
 			$this->session->data['error'] = $this->language->get('order_error');
 
 			$redirect = $this->url->link('checkout/checkout', '', true);

@@ -138,11 +138,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		if ($this->session->data['payment_method']['code'] == 'wirecard_pg_' . $this->type) {
 			$this->prepareTransaction();
 			$model = $this->getModel();
+			$paymentAction = $this->getPaymentAction($this->getShopConfigVal('payment_action'));
 
 			if (!$this->cart->hasStock()) {
 				$json['redirect'] = $this->url->link('checkout/checkout');
 			} else {
-				$result = $model->sendRequest($this->paymentConfig, $this->transaction, $this->getShopConfigVal('payment_action'));
+				$result = $model->sendRequest($this->paymentConfig, $this->transaction, $paymentAction);
 				if (!isset($this->session->data['error'])) {
 					//Save pending order
 					$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
@@ -417,6 +418,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	public function getTransactionInstance() {
 		return null;
+	}
+
+	/**
+	 * Get payment action
+	 *
+	 * @param string $action
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function getPaymentAction($action) {
+		return $action;
 	}
 
 

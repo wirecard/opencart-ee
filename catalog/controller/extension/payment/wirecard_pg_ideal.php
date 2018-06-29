@@ -180,7 +180,7 @@ class ControllerExtensionPaymentWirecardPGIdeal extends ControllerExtensionPayme
 	 * @since 1.0.0
 	 */
 	public function getPaymentAction($action) {
-		return 'debit';
+		return 'pay';
 	}
 
 	/**

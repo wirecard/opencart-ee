@@ -30,7 +30,7 @@
  */
 
 // Page Title
-$_['heading_title'] = 'Wirecard iDEAL.';
+$_['heading_title'] = 'Wirecard iDEAL';
 $_['text_wirecard_pg_ideal'] = '<img src="./view/image/wirecard_pg/ideal.png" width="45"/>';
 
 // Payment specific configuration

@@ -60,7 +60,7 @@ class ControllerExtensionPaymentWirecardPGIdeal extends \ControllerExtensionPaym
 		'base_url' => 'https://api-test.wirecard.com',
 		'http_password' => '3!3013=D3fD8X7',
 		'http_user' => 'Testing-ideal-EE',
-		'payment_action' => 'debit',
+		'payment_action' => 'pay',
 		'descriptor' => 1,
 		'descriptor_required' => 0,
 		'additional_info' => 0,
