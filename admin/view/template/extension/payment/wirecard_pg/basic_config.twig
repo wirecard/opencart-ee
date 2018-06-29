@@ -18,25 +18,27 @@
         </div>
     </div>
 </div>
-{% for key, lang_title in title %}
-    <div class="form-group required">
-        <label class="col-sm-2 control-label" for="input-{{ title_lang }}">{{ config_title ~ '-' ~ key|upper }}</label>
-        <div class="col-sm-10">
-            <input
-                    name="{{ prefix ~ 'title'}}[{{ key }}]"
-                    id="input-title"
-                    class="form-control"
-                    type="text"
-                    value="{{ lang_title }}">
-        </div>
-        <div class="form-group">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-10 description">
-                <i>{{ config_title_desc }}</i>
+{% if type != 'sepact' %}
+    {% for key, lang_title in title %}
+        <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-{{ title_lang }}">{{ config_title ~ '-' ~ key|upper }}</label>
+            <div class="col-sm-10">
+                <input
+                        name="{{ prefix ~ 'title'}}[{{ key }}]"
+                        id="input-title"
+                        class="form-control"
+                        type="text"
+                        value="{{ lang_title }}">
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10 description">
+                    <i>{{ config_title_desc }}</i>
+                </div>
             </div>
         </div>
-    </div>
-{% endfor %}
+    {% endfor %}
+{% endif %}
 <div class="form-group required">
     <label class="col-sm-2 control-label" for="input-sort-order">{{ config_sort_order }}</label>
     <div class="col-sm-10">
@@ -54,6 +56,8 @@
         </div>
     </div>
 </div>
+{% endif %}
+
 <div class="form-group required">
     <label class="col-sm-2 control-label" for="input-merchant-account-id">{{ config_merchant_account_id }}</label>
     <div class="col-sm-10">
@@ -96,6 +100,8 @@
         </div>
     </div>
 </div>
+
+{% if type != 'sepact' %}
 <div class="form-group required">
     <label class="col-sm-2 control-label" for="input-status">{{ config_payment_action }}</label>
     <div class="col-sm-10">
@@ -116,4 +122,5 @@
         </div>
     </div>
 </div>
+{% endif %}
 <hr>

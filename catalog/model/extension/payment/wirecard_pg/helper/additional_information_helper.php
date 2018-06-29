@@ -40,7 +40,8 @@ use Wirecard\PaymentSdk\Transaction\Transaction;
  * @since 1.0.0
  */
 class AdditionalInformationHelper extends Model {
-
+	const OPENCART_GATEWAY_WIRECARD_VERSION = '1.0.0';
+	const OPENCART_GATEWAY_WIRECARD_NAME = 'Wirecard OpenCart Extension';
 	/**
 	 * @var string
 	 * @since 1.0.0
@@ -92,6 +93,10 @@ class AdditionalInformationHelper extends Model {
 	public function setIdentificationData($transaction, $order) {
 		$customFields = new \Wirecard\PaymentSdk\Entity\CustomFieldCollection();
 		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('orderId', $order['order_id']));
+		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('shopName', 'OpenCart'));
+		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('shopVersion', VERSION));
+		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('pluginName', self::OPENCART_GATEWAY_WIRECARD_NAME));
+		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('pluginVersion', self::OPENCART_GATEWAY_WIRECARD_VERSION));
 		$transaction->setCustomFields($customFields);
 		$transaction->setLocale(substr($order['language_code'], 0, 2));
 
