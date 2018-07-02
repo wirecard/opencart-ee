@@ -88,17 +88,6 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaym
 	}
 
 	/**
-	 * Get payment action
-	 *
-	 * @param string $action
-	 * @return string
-	 * @since 1.0.0
-	 */
-	public function getPaymentAction($action) {
-		return 'debit';
-	}
-
-	/**
 	 * Create payment method specific transaction.
 	 *
 	 * @param array $parentTransaction

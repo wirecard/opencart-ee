@@ -62,7 +62,6 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends \ControllerExtensionPay
 		'http_user' => '16390-testing',
 		'payment_action' => 'pay',
 		'descriptor' => 0,
-		'descriptor_required' => 0,
 		'additional_info' => 0,
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0

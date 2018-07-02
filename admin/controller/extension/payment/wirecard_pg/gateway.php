@@ -83,7 +83,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		'http_password',
 		'payment_action',
 		'descriptor',
-		'descriptor_required',
 		'additional_info',
 		'delete_cancel_order',
 		'delete_failure_order',

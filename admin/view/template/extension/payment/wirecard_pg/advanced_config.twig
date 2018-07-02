@@ -24,8 +24,8 @@
 </div>
 {% endif %}
 
-{% if descriptor_required %}
-    <input class="form-group" name="{{ prefix ~ 'descriptor' }}" value="1" type="hidden" />
+{% if type == 'sofortbanking' %}
+    <input name="{{ prefix ~ 'descriptor' }}" value="1" type="hidden" />
 {% else %}
     <div class="form-group">
         <label class="col-sm-2 control-label" for="input-descriptor">{{ config_descriptor }}</label>
