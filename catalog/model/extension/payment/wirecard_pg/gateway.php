@@ -70,7 +70,12 @@ abstract class ModelExtensionPaymentGateway extends Model {
 		$prefix = $this->prefix . $this->type;
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
 		$logo = '<img src="./image/catalog/wirecard_pg_'. $this->type .'.png" width="100"/>';
-		$title = $logo . ' ' . $this->config->get($prefix . '_title' )[$this->language->get('code')];
+		$code = $this->language->get('code');
+		if (isset($code) && isset($this->config->get($prefix . '_title' )[$code])) {
+            $title = $logo . ' ' . $this->config->get($prefix . '_title' )[$code];
+        } else {
+            $title = $logo . ' ' . $this->config->get($prefix . '_title' );
+        }
 
 		$method_data = array(
 			'code'       => 'wirecard_pg_' . $this->type,
