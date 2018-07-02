@@ -32,6 +32,7 @@
 include_once(DIR_SYSTEM . 'library/autoload.php');
 
 use Wirecard\PaymentSdk\Config\Config;
+use Wirecard\PaymentSdk\Transaction\Operation;
 use Wirecard\PaymentSdk\Exception\MalformedResponseException;
 
 /**
@@ -138,11 +139,15 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		if ($this->session->data['payment_method']['code'] == 'wirecard_pg_' . $this->type) {
 			$this->prepareTransaction();
 			$model = $this->getModel();
-			$paymentAction = $this->getPaymentAction($this->getShopConfigVal('payment_action'));
+
+			// This may be somewhat non-obvious. We're using the shop defined payment action if available
+			// If that is not available we default to 'pay'. This is done via a so-called Elvis operator.
+			$paymentAction = $this->getShopConfigVal('payment_action') ?: Operation::PAY;
 
 			if (!$this->cart->hasStock()) {
 				$json['redirect'] = $this->url->link('checkout/checkout');
 			} else {
+
 				$result = $model->sendRequest($this->paymentConfig, $this->transaction, $paymentAction);
 				if (!isset($this->session->data['error'])) {
 					//Save pending order

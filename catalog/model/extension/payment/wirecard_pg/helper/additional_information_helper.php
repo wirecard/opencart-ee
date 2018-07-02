@@ -108,7 +108,9 @@ class AdditionalInformationHelper extends Model {
 	 */
 	public function setAdditionalInformation($transaction, $order) {
 		if (!$transaction instanceof \Wirecard\PaymentSdk\Transaction\CreditCardTransaction
-		 && !$transaction instanceof \Wirecard\PaymentSdk\Transaction\SofortTransaction) {
+		 && !$transaction instanceof \Wirecard\PaymentSdk\Transaction\SofortTransaction
+		 && !$transaction instanceof \Wirecard\PaymentSdk\Transaction\IdealTransaction
+		 && !$transaction instanceof \Wirecard\PaymentSdk\Transaction\SepaTransaction) {
 			$transaction->setOrderDetail(sprintf(
 				'%s %s %s',
 				$order['email'],
