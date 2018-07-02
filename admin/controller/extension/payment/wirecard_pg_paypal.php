@@ -63,7 +63,6 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 		'payment_action' => 'pay',
 		'shopping_basket' => '1',
 		'descriptor' => '1',
-		'descriptor_required' => '0',
 		'additional_info' => '0',
 		'delete_cancel_order' => '0',
 		'delete_failure_order' => '0'

@@ -62,7 +62,6 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExten
 		'http_user' => '16390-testing',
 		'payment_action' => 'pay',
 		'descriptor' => 1,
-		'descriptor_required' => 1,
 		'additional_info' => 1,
 		'shopping_basket' => 1,
 		'delete_cancel_order' => 0,

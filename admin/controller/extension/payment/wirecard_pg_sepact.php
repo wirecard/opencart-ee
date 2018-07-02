@@ -60,7 +60,7 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends \ControllerExtensionPay
 		'base_url' => 'https://api-test.wirecard.com',
 		'http_password' => '3!3013=D3fD8X7',
 		'http_user' => '16390-testing',
-		'payment_action' => 'pay',
+		'payment_action' => 'credit',
 		'descriptor' => 0,
 		'additional_info' => 0,
 		'delete_cancel_order' => 0,
