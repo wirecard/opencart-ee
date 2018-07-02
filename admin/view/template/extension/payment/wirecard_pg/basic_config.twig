@@ -99,7 +99,10 @@
         </div>
     </div>
 </div>
-{% else %}
-
 {% endif %}
+
+{% if type == 'sofortbanking' %}
+    <input type="hidden" name="{{ prefix ~ 'payment_action' }}" value="pay" />
+{% endif %}
+
 <hr>

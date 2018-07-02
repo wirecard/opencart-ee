@@ -120,17 +120,6 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	}
 
 	/**
-	 * Get payment action
-	 *
-	 * @param string $action
-	 * @return string
-	 * @since 1.0.0
-	 */
-	public function getPaymentAction($action) {
-		return 'debit';
-	}
-
-	/**
 	 * Create Sofort. transaction
 	 *
 	 * @param array $parentTransaction

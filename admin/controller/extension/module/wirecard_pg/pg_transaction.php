@@ -201,10 +201,17 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		if (!empty($backOperations)) {
 			$operations = array();
 			foreach ($backOperations as $key => $value) {
+				if ($transaction instanceof \Wirecard\PaymentSdk\Transaction\SofortTransaction) {
+					$isSepaCreditActive = $this->config->get('payment_wirecard_pg_sepact_status');
+
+					if (!$isSepaCreditActive) continue;
+				}
+
 				$op = array(
 					'action' => $key,
 					'text' => $value
 				);
+
 				array_push($operations, $op);
 			}
 

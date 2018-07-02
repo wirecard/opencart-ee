@@ -230,25 +230,6 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 		$this->assertNotNull($actual);
 	}
 
-	public function testPaymentAction()
-	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
-			$this->registry,
-			$this->config,
-			$this->loader,
-			$this->session,
-			$this->response,
-			$this->modelOrder,
-			$this->url,
-			null,
-			$this->language,
-			$this->cart
-		);
-
-		$actual = $this->controller->getPaymentAction('pay');
-		$this->assertEquals('debit', $actual);
-	}
-
 	public function testCreateTransaction()
 	{
 		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(

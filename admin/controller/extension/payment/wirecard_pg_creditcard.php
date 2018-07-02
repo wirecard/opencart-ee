@@ -66,7 +66,6 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 		'http_user' => '70000-APITEST-AP',
 		'payment_action' => 'pay',
 		'descriptor' => '0',
-		'descriptor_required' => '0',
 		'additional_info' => '1',
 		'delete_cancel_order' => '0',
 		'delete_failure_order' => '0'

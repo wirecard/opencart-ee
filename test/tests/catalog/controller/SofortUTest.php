@@ -299,25 +299,6 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceof(SofortTransaction::class, $prop->getValue($this->controller));
 	}
 
-	public function testPaymentAction()
-	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(
-			$this->registry,
-			$this->config,
-			$this->loader,
-			$this->session,
-			$this->response,
-			$this->modelOrder,
-			$this->url,
-			$this->modelSofort,
-			$this->language,
-			$this->cart
-		);
-
-		$actual = $this->controller->getPaymentAction('pay');
-		$this->assertEquals('debit', $actual);
-	}
-
 	public function testCreateTransaction()
 	{
 		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(

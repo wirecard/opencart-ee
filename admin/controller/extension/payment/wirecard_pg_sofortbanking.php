@@ -60,10 +60,9 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExten
 		'base_url' => 'https://api-test.wirecard.com',
 		'http_password' => '3!3013=D3fD8X7',
 		'http_user' => '16390-testing',
-		'payment_action' => 'debit',
+		'payment_action' => 'pay',
 		'descriptor' => 1,
-		'descriptor_required' => 1,
-		'additional_info' => 0,
+		'additional_info' => 1,
 		'shopping_basket' => 1,
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0
