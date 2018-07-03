@@ -74,7 +74,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	protected $configFields = array(
-		'title',
 		'status',
 		'merchant_account_id',
 		'merchant_secret',
@@ -86,6 +85,14 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		'additional_info',
 		'delete_cancel_order',
 		'delete_failure_order',
+	);
+
+	/**
+	 * @var array
+	 * @since 1.0.0
+	 */
+	protected $multiLangConfigFields = array(
+		'title'
 	);
 
 	/**
@@ -121,14 +128,16 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true);
 		$data['user_token'] = $this->session->data['user_token'];
 
-		$data = array_merge($data, $this->createBreadcrumbs());
-
-		$data = array_merge($data, $this->getConfigText());
-
-		$data = array_merge($data, $this->getRequestData());
-
-		$data = array_merge($data, $this->loadConfigBlocks($data));
-		$data = array_merge($data, $this->loadLiveChat($data));
+		$data = array_merge(
+			$data,
+			$this->createBreadcrumbs(),
+			$this->getConfigText(),
+			$this->getRequestData()
+		);
+		$data = array_merge(
+			$this->loadConfigBlocks($data),
+			$this->loadLiveChat($data)
+		);
 
 		$this->response->setOutput($this->load->view('extension/payment/wirecard_pg', $data));
 	}
@@ -136,44 +145,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	/**
 	 * Get text for config fields
 	 *
+	 * @param array $fields
 	 * @return mixed
 	 * @since 1.0.0
 	 */
-	protected function getConfigText() {
-		$data['text_enabled'] = $this->language->get('text_enabled');
-		$data['text_disabled'] = $this->language->get('text_disabled');
-		$data['config_status'] = $this->language->get('config_status');
-		$data['config_title'] = $this->language->get('config_title');
-		$data['config_title_desc'] = $this->language->get('config_title_desc');
-		$data['config_status_desc'] = $this->language->get('config_status_desc');
-		$data['config_merchant_account_id'] = $this->language->get('config_merchant_account_id');
-		$data['config_merchant_account_id_desc'] = $this->language->get('config_merchant_account_id_desc');
-		$data['config_merchant_secret'] = $this->language->get('config_merchant_secret');
-		$data['config_merchant_secret_desc'] = $this->language->get('config_merchant_secret_desc');
-		$data['config_base_url'] = $this->language->get('config_base_url');
-		$data['config_base_url_desc'] = $this->language->get('config_base_url_desc');
-		$data['config_http_user'] = $this->language->get('config_http_user');
-		$data['config_http_user_desc'] = $this->language->get('config_http_user_desc');
-		$data['config_http_password'] = $this->language->get('config_http_password');
-		$data['config_http_password_desc'] = $this->language->get('config_http_password_desc');
-		$data['text_advanced'] = $this->language->get('text_advanced');
-		$data['text_credentials'] = $this->language->get('text_credentials');
-		$data['test_credentials'] = $this->language->get('test_credentials');
-		$data['config_descriptor'] = $this->language->get('config_descriptor');
-		$data['config_descriptor_desc'] = $this->language->get('config_descriptor_desc');
-		$data['config_additional_info'] = $this->language->get('config_additional_info');
-		$data['config_additional_info_desc'] = $this->language->get('config_additional_info_desc');
-		$data['config_payment_action'] = $this->language->get('config_payment_action');
-		$data['text_payment_action_pay'] = $this->language->get('text_payment_action_pay');
-		$data['text_payment_action_reserve'] = $this->language->get('text_payment_action_reserve');
-		$data['config_payment_action_desc'] = $this->language->get('config_payment_action_desc');
-		$data['config_session_string_desc'] = $this->language->get('config_session_string_desc');
-		$data['config_delete_cancel_order'] = $this->language->get('config_delete_cancel_order');
-		$data['config_delete_cancel_order_desc'] = $this->language->get('config_delete_cancel_order_desc');
-		$data['config_delete_failure_order'] = $this->language->get('config_delete_failure_order');
-		$data['config_delete_failure_order_desc'] = $this->language->get('config_delete_failure_order_desc');
-
-		return $data;
+	protected function getConfigText($fields = []) {
+		return $this->getLanguageFields(array_merge($this->getDefaultLanguageFields(), $fields));
 	}
 
 	/**
@@ -273,8 +250,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	public function loadConfigBlocks($data) {
+		$languageHelper = new ControllerExtensionPaymentWirecardPGLanguageHelper($this->registry);
+
 		$data['payment_header'] = $this->load->view('extension/payment/wirecard_pg/header', $data);
-		$data['basic_config'] = $this->load->view('extension/payment/wirecard_pg/basic_config', $data);
+		$data['basic_config'] = $this->load->view('extension/payment/wirecard_pg/basic_config',
+			array_merge($data, $languageHelper->getConfigFields($this->multiLangConfigFields, $this->prefix, $this->type, $this->default)));
 		$data['credentials_config'] = $this->load->view('extension/payment/wirecard_pg/credentials_config', $data);
 		$data['advanced_config'] = $this->load->view('extension/payment/wirecard_pg/advanced_config', $data);
 
@@ -309,5 +289,64 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		} else {
 			return strlen($this->config->get($prefix . $key)) ? $this->config->get($prefix . $key) : $this->default[$key];
 		}
+	}
+
+	/**
+	 * Return language fields
+	 *
+	 * @param array $configFieldTexts
+	 * @return array
+	 * @since 1.0.0
+	 */
+	private function getLanguageFields($configFieldTexts) {
+		foreach ($configFieldTexts as $fieldText) {
+			$data[$fieldText] = $this->language->get($fieldText);
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Return language codes
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	private function getDefaultLanguageFields() {
+		return array(
+			'text_enabled',
+			'text_disabled',
+			'config_status',
+			'config_title',
+			'config_title_desc',
+			'config_status_desc',
+			'config_merchant_account_id',
+			'config_merchant_account_id_desc',
+			'config_merchant_secret',
+			'config_merchant_secret_desc',
+			'config_base_url',
+			'config_base_url_desc',
+			'config_http_user',
+			'config_http_user_desc',
+			'config_http_password',
+			'config_http_password_desc',
+			'text_advanced',
+			'text_credentials',
+			'test_credentials',
+			'config_descriptor',
+			'config_descriptor_desc',
+			'config_additional_info',
+			'config_additional_info_desc',
+			'config_payment_action',
+			'text_payment_action_pay',
+			'text_payment_action_reserve',
+			'config_payment_action_desc',
+			'config_session_string_desc',
+			'config_sort_order',
+			'config_sort_order_desc',
+			'config_delete_cancel_order_desc',
+			'config_delete_failure_order',
+			'config_delete_failure_order_desc'
+		);
 	}
 }

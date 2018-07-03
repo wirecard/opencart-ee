@@ -64,7 +64,7 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends \ControllerExtensionPay
 		'descriptor' => 0,
 		'additional_info' => 0,
 		'delete_cancel_order' => 0,
-		'delete_failure_order' => 0
+		'delete_failure_order' => 0,
 	);
 
 	/**
@@ -74,18 +74,6 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends \ControllerExtensionPay
 	 */
 	public function index() {
 		parent::index();
-	}
-
-	/**
-	 * Get text for config fields
-	 *
-	 * @return mixed
-	 * @since 1.0.0
-	 */
-	protected function getConfigText() {
-		$data = parent::getConfigText();
-
-		return $data;
 	}
 
 	/**

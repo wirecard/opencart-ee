@@ -30,4 +30,8 @@ class Loader {
     {
         return $this->model;
     }
+
+    public function controller($type) {
+		return $type;
+    }
 }
