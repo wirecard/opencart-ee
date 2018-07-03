@@ -202,9 +202,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->transaction = $additionalHelper->setAdditionalInformation($this->transaction, $order);
 		}
 
-		if (isset($this->request->post['fingerprint'])) {
+		if (isset($this->request->post['fingerprint-session'])) {
 			$device = new \Wirecard\PaymentSdk\Entity\Device();
-			$device->setFingerprint($this->request->post['fingerprint']);
+			$device->setFingerprint($this->request->post['fingerprint-session']);
 			$this->transaction->setDevice($device);
 		}
 	}
@@ -424,18 +424,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	public function getTransactionInstance() {
 		return null;
 	}
-
-	/**
-	 * Get payment action
-	 *
-	 * @param string $action
-	 * @return string
-	 * @since 1.0.0
-	 */
-	public function getPaymentAction($action) {
-		return $action;
-	}
-
 
 	/**
 	 * Get payment controller
