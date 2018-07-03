@@ -12,11 +12,12 @@
 {% endif %}
 
 <form id="wirecard-pg-form" action="{{ action }}" enctype="multipart/form-data" method="post"  class="form form-horizontal">
+{% if ideal %}
+    {{ ideal }}
+{% endif %}
+
 <div class="buttons clearfix">
     <div class="pull-right">
-        {% if ideal %}
-            {{ ideal }}
-        {% endif %}
 
         {% if session_id %}
         <input type="hidden" value="{{ session_id }}" id="input-fingerprint-session" name="fingerprint-session"/>

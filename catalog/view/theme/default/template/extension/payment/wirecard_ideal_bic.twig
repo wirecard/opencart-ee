@@ -1,17 +1,14 @@
-<style>
-        #ideal-bic-selection {
-            margin-right: 1rem;
-            position: relative;
-            top: 0.75rem;
-        }
-</style>
+<fieldset id="payment">
+    <legend>{{ ideal_legend }}</legend>
 
-<label id="ideal-bic-selection">
-    <strong>{{ ideal_label }}</strong><br>
-
-    <select name="ideal-bic" id="ideal-bic">
-        {% for bank in ideal_bics %}
-            <option value="{{ bank.key }}">{{ bank.label }}</option>
-        {% endfor %}
-    </select>
-</label>
+    <div class="form-group row required">
+        <label class="col-sm-2 control-label col-form-label text-right" for="ideal-bic">{{ bank_label }}</label>
+        <div class="col-sm-10">
+            <select name="ideal-bic" id="ideal-bic" class="form-control">
+                {% for bank in ideal_bics %}
+                    <option value="{{ bank.key }}">{{ bank.label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</fieldset>

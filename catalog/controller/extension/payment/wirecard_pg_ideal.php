@@ -63,7 +63,8 @@ class ControllerExtensionPaymentWirecardPGIdeal extends ControllerExtensionPayme
 
 		$model = $this->getModel();
 
-		$data['ideal_label'] = $this->language->get('bank');
+		$data['bank_label'] = $this->language->get('bank_label');
+		$data['ideal_legend'] = $this->language->get('legend');
 		$data['ideal_bics'] = $model->getIdealBics();
 		$data['ideal'] = $this->load->view('extension/payment/wirecard_ideal_bic', $data);
 

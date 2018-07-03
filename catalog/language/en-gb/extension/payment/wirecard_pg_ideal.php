@@ -29,4 +29,5 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-$_['bank'] = "Select your bank:";
+$_['legend'] = "Select your bank";
+$_['bank_label'] = "Bank";
