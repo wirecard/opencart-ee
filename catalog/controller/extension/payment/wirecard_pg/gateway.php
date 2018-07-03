@@ -83,6 +83,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	protected $transaction;
 
 	/**
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $operation;
+
+
+	public function setOperation($operation) {
+		$this->operation = $operation;
+	}
+
+	/**
 	 * Get a logger instance
 	 *
 	 * @return PGLogger
@@ -425,6 +436,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 *
 	 * @param array $parentTransaction
 	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
+	 * @param string $operation
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
 	 * @since 1.0.0
 	 */

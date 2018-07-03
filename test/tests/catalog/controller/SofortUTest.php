@@ -29,17 +29,18 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-use Mockery as m;
+require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_sofortbanking.php';
+require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_sofortbanking.php';
 
-require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_sepact.php';
-
+use Wirecard\PaymentSdk\Transaction\SofortTransaction;
 use Wirecard\PaymentSdk\Transaction\SepaTransaction;
+use Wirecard\PaymentSdk\Transaction\Operation;
 
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-class SepaCTUTest extends \PHPUnit_Framework_TestCase
+class SofortUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
 	private $pluginVersion = '1.0.0';
@@ -50,8 +51,10 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 	private $response;
 	private $modelOrder;
 	private $url;
+	private $modelSofort;
 	private $language;
 	private $cart;
+	private $subController;
 
 	const SHOP = 'OpenCart';
 	const PLUGIN = 'Wirecard_PaymentGateway';
@@ -116,9 +119,14 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 		$this->url = $this->getMockBuilder(Url::class)->disableOriginalConstructor()->getMock();
 
+		$this->modelSofort = $this->getMockBuilder(ModelExtensionPaymentWirecardPGSofortbanking::class)
+			->disableOriginalConstructor()
+			->setMethods(['sendRequest'])
+			->getMock();
+
 		$this->loader = $this->getMockBuilder(Loader::class)
 			->disableOriginalConstructor()
-			->setMethods(['model', 'language', 'view'])
+			->setMethods(['model', 'language', 'view', 'controller'])
 			->getMock();
 
 		$this->language = $this->getMockBuilder(Language::class)->disableOriginalConstructor()->getMock();
@@ -131,7 +139,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 		$this->cart->method('getProducts')->willReturn($items);
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->subController = new ControllerExtensionPaymentWirecardPGSepaCT(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -139,7 +147,20 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			null,
+			$this->modelSofort,
+			$this->language,
+			$this->cart
+		);
+
+		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelSofort,
 			$this->language,
 			$this->cart
 		);
@@ -154,7 +175,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 		$config->expects($this->at(3))->method('get')->willReturn('user');
 		$config->expects($this->at(4))->method('get')->willReturn('password');
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(
 			$this->registry,
 			$config,
 			$this->loader,
@@ -162,13 +183,14 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			null,
+			$this->modelSofort,
 			$this->language,
 			$this->cart
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
-		$expected->add(new \Wirecard\PaymentSdk\Config\SepaConfig(
+		$expected->add(new \Wirecard\PaymentSdk\Config\PaymentMethodConfig(
+			\Wirecard\PaymentSdk\Transaction\SofortTransaction::NAME,
 			'account123',
 			'secret123'
 		));
@@ -184,9 +206,9 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $actual);
 	}
 
-	public function testConfirm()
+	public function testGetCreditConfig()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$constructorArgs = array(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -194,25 +216,48 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			null,
+			$this->modelSofort,
 			$this->language,
 			$this->cart
 		);
 
-		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSepaCT::class);
-		$prop = $reflector->getProperty('transaction');
+		$this->controller = $this->getMockBuilder(ControllerExtensionPaymentWirecardPGSofortbanking::class)
+			->setConstructorArgs($constructorArgs)
+			->setMethods(array('getSepaController'))
+			->getMock();
+
+		$this->controller->method('getSepaController')->willReturn($this->subController);
+		$this->controller->setOperation(Operation::CREDIT);
+
+		$currency = [
+			'currency_code' => 'EUR',
+			'currency_value' => 1
+		];
+
+		$creditConfig = $this->controller->getConfig($currency);
+
+		$reflector = new ReflectionClass(\Wirecard\PaymentSdk\Config\Config::class);
+
+		$prop = $reflector->getProperty('paymentMethodConfigs');
 		$prop->setAccessible(true);
 
-		$this->controller->confirm();
-
-		$this->assertInstanceof(SepaTransaction::class, $prop->getValue($this->controller));
+		$paymentMethodConfigs = $prop->getValue($creditConfig);
+		$this->assertArrayHasKey('sepa', $paymentMethodConfigs);
 	}
+
+	public function testGetModel()
+	{
+		$actual = $this->controller->getModel();
+
+		$this->assertInstanceOf(get_class($this->modelSofort), $actual);
+	}
+
 
 	public function testIndexActive()
 	{
 		$this->config->expects($this->at(0))->method('get')->willReturn(1);
 		$this->loader->method('view')->willReturn('active');
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -220,7 +265,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			null,
+			$this->modelSofort,
 			$this->language,
 			$this->cart
 		);
@@ -230,9 +275,9 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 		$this->assertNotNull($actual);
 	}
 
-	public function testCreateTransaction()
+	public function testConfirm()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -240,12 +285,75 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			null,
+			$this->modelSofort,
 			$this->language,
 			$this->cart
 		);
 
-		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSepaCT::class);
+		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSofortbanking::class);
+		$prop = $reflector->getProperty('transaction');
+		$prop->setAccessible(true);
+
+		$this->controller->confirm();
+
+		$this->assertInstanceof(SofortTransaction::class, $prop->getValue($this->controller));
+	}
+
+	public function testCreateTransaction()
+	{
+		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelSofort,
+			$this->language,
+			$this->cart
+		);
+
+		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSofortbanking::class);
+		$prop = $reflector->getProperty('transaction');
+		$prop->setAccessible(true);
+
+		$transaction = array(
+			'transaction_id' => '1234',
+			'amount' => '10'
+		);
+
+		$expected = new SofortTransaction();
+		$expected->setParentTransactionId('1234');
+
+		$actual = $this->controller->createTransaction($transaction, null);
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testCreateCreditTransaction()
+	{
+		$constructorArgs = array(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelSofort,
+			$this->language,
+			$this->cart
+		);
+
+		$this->controller = $this->getMockBuilder(ControllerExtensionPaymentWirecardPGSofortbanking::class)
+			->setConstructorArgs($constructorArgs)
+			->setMethods(array('getSepaController'))
+			->getMock();
+
+		$this->controller->method('getSepaController')->willReturn($this->subController);
+
+		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSofortbanking::class);
 		$prop = $reflector->getProperty('transaction');
 		$prop->setAccessible(true);
 
@@ -257,6 +365,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 		$expected = new SepaTransaction();
 		$expected->setParentTransactionId('1234');
 
+		$this->controller->setOperation(Operation::CREDIT);
 		$actual = $this->controller->createTransaction($transaction, null);
 
 		$this->assertEquals($expected, $actual);
@@ -264,7 +373,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetType()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -272,20 +381,20 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			null,
+			$this->modelSofort,
 			$this->language,
 			$this->cart
 		);
 
 		$actual = $this->controller->getType();
-		$expected = 'sepact';
+		$expected = 'sofortbanking';
 
 		$this->assertEquals($expected, $actual);
 	}
 
 	public function testGetInstance()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -293,12 +402,12 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			null,
+			$this->modelSofort,
 			$this->language,
 			$this->cart
 		);
 
-		$expected = new \Wirecard\PaymentSdk\Transaction\SepaTransaction();
+		$expected = new \Wirecard\PaymentSdk\Transaction\SofortTransaction();
 
 		$actual = $this->controller->getTransactionInstance();
 
