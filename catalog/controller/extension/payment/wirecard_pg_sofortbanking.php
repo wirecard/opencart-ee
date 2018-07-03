@@ -30,24 +30,27 @@
  */
 
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
+require_once(dirname(__FILE__) . '/wirecard_pg_sepact.php');
 
+use Wirecard\PaymentSdk\Transaction\SofortTransaction;
 use Wirecard\PaymentSdk\Transaction\SepaTransaction;
-use Wirecard\PaymentSdk\Config\SepaConfig;
+use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
+use Wirecard\PaymentSdk\Transaction\Operation;
 
 /**
- * Class ControllerExtensionPaymentWirecardPGSepaCT
+ * Class ControllerExtensionPaymentWirecardPGSofortbanking
  *
- * SEPA Credit Transfer Transaction controller
+ * Sofort. Transaction controller
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'sepact';
+	protected $type = 'sofortbanking';
 
 	/**
 	 * Basic index method
@@ -59,14 +62,26 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaym
 	}
 
 	/**
-	 * Create SEPA Credit Transfer transaction
+	 * Create Sofort. transaction
 	 *
 	 * @since 1.0.0
 	 */
 	public function confirm() {
-		$this->transaction = new SepaTransaction();
+		$this->transaction = new SofortTransaction();
+		$this->prepareTransaction();
 
 		parent::confirm();
+	}
+
+	/**
+	 * Provides a SEPA Credit Transfer controller for refunding payments.
+	 *
+	 * @return ControllerExtensionPaymentWirecardPGSepaCT
+	 */
+	public function getSepaController() {
+		$this->controller_extension_payment_wirecard_pg_sepact = new ControllerExtensionPaymentWirecardPGSepaCT($this->registry);
+
+		return $this->controller_extension_payment_wirecard_pg_sepact;
 	}
 
 	/**
@@ -77,25 +92,47 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaym
 	 * @since 1.0.0
 	 */
 	public function getConfig($currency = null) {
+		if ($this->operation == Operation::CREDIT) {
+			$sepaController = $this->getSepaController();
+			return $sepaController->getConfig($currency);
+		}
+
 		$merchant_account_id = $this->getShopConfigVal('merchant_account_id');
 		$merchant_secret = $this->getShopConfigVal('merchant_secret');
 
 		$config = parent::getConfig($currency);
-		$paymentConfig = new SepaConfig($merchant_account_id, $merchant_secret);
+		$paymentConfig = new PaymentMethodConfig(SofortTransaction::NAME, $merchant_account_id, $merchant_secret);
 		$config->add($paymentConfig);
 
 		return $config;
 	}
 
 	/**
-	 * Create payment method specific transaction.
+	 * Payment specific model getter
+	 *
+	 * @return Model
+	 * @since 1.0.0
+	 */
+	public function getModel() {
+		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
+
+		return $this->model_extension_payment_wirecard_pg_sofortbanking;
+	}
+
+	/**
+	 * Create Sofort. transaction
 	 *
 	 * @param array $parentTransaction
 	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
+	 * @since 1.0.0
 	 */
 	public function createTransaction($parentTransaction, $amount) {
-		$this->transaction = new SepaTransaction();
+		if ($this->operation == Operation::CREDIT) {
+			$this->transaction = new SepaTransaction();
+		} else {
+			$this->transaction = new SofortTransaction();
+		}
 
 		return parent::createTransaction($parentTransaction, $amount);
 	}
@@ -103,11 +140,11 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaym
 	/**
 	 * Get new instance of payment specific transaction
 	 *
-	 * @return SepaTransaction
+	 * @return SofortTransaction
 	 * @since 1.0.0
 	 */
 	public function getTransactionInstance() {
-		return new SepaTransaction();
+		return new SofortTransaction();
 	}
 }
 

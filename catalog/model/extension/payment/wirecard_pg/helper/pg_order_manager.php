@@ -132,6 +132,7 @@ class PGOrderManager extends Model {
 			'<pre>' . htmlentities($response->getRawData()) . '</pre>',
 			true
 		);
+
 		if ($backendService->isFinal($response->getTransactionType())) {
 			$transactionModel->updateTransactionState($response, 'closed');
 		} else {

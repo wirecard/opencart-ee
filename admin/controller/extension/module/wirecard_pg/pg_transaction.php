@@ -32,6 +32,8 @@
 require_once __DIR__ . '/../wirecard_pg.php';
 require_once __DIR__ . '/../../payment/wirecard_pg/transaction_handler.php';
 
+use Wirecard\PaymentSdk\Transaction\Operation;
+
 /**
  * Class ControllerExtensionModuleWirecardPGPGTransaction
  *
@@ -201,10 +203,15 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		if (!empty($backOperations)) {
 			$operations = array();
 			foreach ($backOperations as $key => $value) {
+				if (Operation::CREDIT == $key && !$this->config->get('payment_wirecard_pg_sepact_status')) {
+					continue;
+				}
+
 				$op = array(
 					'action' => $key,
 					'text' => $value
 				);
+
 				array_push($operations, $op);
 			}
 

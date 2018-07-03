@@ -114,6 +114,7 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 	 *
 	 * @param array $parentTransaction
 	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
+	 * @param string $operation
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
 	 * @since 1.0.0
 	 */

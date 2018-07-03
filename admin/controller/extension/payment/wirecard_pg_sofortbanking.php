@@ -32,37 +32,37 @@
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ControllerExtensionPaymentWirecardPGSEPACT
+ * Class ControllerExtensionPaymentWirecardPGSofortbanking
  *
- * SEPA Credit Transfer payment transaction controller
+ * Sofort. payment transaction controller
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGSepaCT extends \ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'sepact';
+	protected $type = 'sofortbanking';
 
 	/**
-	 * SEPA Credit Transfer default configuration settings
+	 * Sofort. default configuration settings
 	 *
 	 * @var array
 	 * @since 1.0.0
 	 */
 	protected $default = array (
 		'status' => 0,
-		'title' => 'Wirecard SEPA Credit Transfer',
-		'merchant_account_id' => '59a01668-693b-49f0-8a1f-f3c1ba025d45',
-		'merchant_secret' => 'ecdf5990-0372-47cd-a55d-037dccfe9d25',
+		'title' => 'Wirecard Sofort.',
+		'merchant_account_id' => '6c0e7efd-ee58-40f7-9bbd-5e7337a052cd',
+		'merchant_secret' => 'dbc5a498-9a66-43b9-bf1d-a618dd399684',
 		'base_url' => 'https://api-test.wirecard.com',
 		'http_password' => '3!3013=D3fD8X7',
 		'http_user' => '16390-testing',
-		'payment_action' => 'credit',
-		'descriptor' => 0,
-		'additional_info' => 0,
+		'payment_action' => 'pay',
+		'descriptor' => 1,
+		'additional_info' => 1,
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0
 	);
@@ -74,44 +74,5 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends \ControllerExtensionPay
 	 */
 	public function index() {
 		parent::index();
-	}
-
-	/**
-	 * Get text for config fields
-	 *
-	 * @return mixed
-	 * @since 1.0.0
-	 */
-	protected function getConfigText() {
-		$data = parent::getConfigText();
-
-		return $data;
-	}
-
-	/**
-	 * Set data fields or load config
-	 *
-	 * @return array
-	 * @since 1.0.0
-	 */
-	protected function getRequestData() {
-		$this->configFields = array_merge($this->configFields);
-
-		return parent::getRequestData();
-	}
-
-	/**
-	 * Load the required config blocks for this payment method.
-	 *
-	 * @param array $data
-	 * @return array
-	 */
-	public function loadConfigBlocks($data) {
-		$data = parent::loadConfigBlocks($data);
-
-		// The advanced configuration is not relevant for SEPA Credit Transfer
-		unset($data['advanced_config']);
-
-		return $data;
 	}
 }
