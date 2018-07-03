@@ -304,25 +304,6 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceof(IdealTransaction::class, $prop->getValue($this->controller));
 	}
 
-	public function testPaymentAction()
-	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGIdeal(
-			$this->registry,
-			$this->config,
-			$this->loader,
-			$this->session,
-			$this->response,
-			$this->modelOrder,
-			$this->url,
-			$this->modelIdeal,
-			$this->language,
-			$this->cart
-		);
-
-		$actual = $this->controller->getPaymentAction('pay');
-		$this->assertEquals('debit', $actual);
-	}
-
 	public function testCreateTransaction()
 	{
 		$this->controller = new ControllerExtensionPaymentWirecardPGIdeal(
