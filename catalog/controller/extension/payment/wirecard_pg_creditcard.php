@@ -75,6 +75,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
 
 		$transactionService = new TransactionService($this->getConfig(), $this->getLogger());
+		$this->getLogger()->debug(print_r($_POST, true));
 		$response = $transactionService->processJsResponse($_POST,
 			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
 
@@ -151,7 +152,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		$this->prepareTransaction();
 		$this->transaction->setConfig($this->paymentConfig->get(CreditCardTransaction::NAME));
 		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
-
+		$this->getLogger()->debug('transaction: ' . print_r($this->transaction, true));
 		$transactionService = new TransactionService($this->paymentConfig, $this->getLogger());
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(($transactionService->getCreditCardUiWithData(
