@@ -266,4 +266,9 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($expected, $actual);
     }
+
+    public function testGetController() {
+		$expected = $this->controller->getController('creditcard');
+		$this->assertNotNull($expected);
+    }
 }

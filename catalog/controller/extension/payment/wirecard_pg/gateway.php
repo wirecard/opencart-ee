@@ -89,6 +89,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	protected $operation;
 
 
+	/**
+	 * Sets the operation that is currently being executed.
+	 *
+	 * @param $operation
+	 * @since 1.0.0
+	 */
 	public function setOperation($operation) {
 		$this->operation = $operation;
 	}
@@ -170,7 +176,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			'currency_value' => $order['currency_value']
 		];
 
-		$amount = new \Wirecard\PaymentSdk\Entity\Amount( $order['total'], $order['currency_code']);
+		$amount = new \Wirecard\PaymentSdk\Entity\Amount($order['total'] * $order['currency_value'], $order['currency_code']);
 		$this->paymentConfig = $this->getConfig($currency);
 		$this->transaction->setRedirect($this->getRedirects($this->session->data['order_id']));
 		$this->transaction->setNotificationUrl($this->getNotificationUrl());
@@ -194,6 +200,13 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		if ($this->getShopConfigVal('additional_info')) {
 			$this->transaction = $additionalHelper->setAdditionalInformation($this->transaction, $order);
+			$this->transaction = $additionalHelper->addBasket(
+				$this->transaction,
+				$this->cart->getProducts(),
+				$this->session->data['shipping_method'],
+				$currency,
+				$order['total']
+			);
 		}
 
 		if (isset($this->request->post['fingerprint-session'])) {

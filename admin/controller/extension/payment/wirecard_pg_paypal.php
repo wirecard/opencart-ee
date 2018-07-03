@@ -47,6 +47,12 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	protected $type = 'paypal';
 
 	/**
+	 * @var bool
+	 * @since 1.0.0
+	 */
+	protected $hasPaymentActions = true;
+
+	/**
 	 * PayPal default configuration settings
 	 *
 	 * @var array
@@ -64,6 +70,7 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 		'shopping_basket' => '1',
 		'descriptor' => '1',
 		'additional_info' => '0',
+		'sort_order' => '7',
 		'delete_cancel_order' => '0',
 		'delete_failure_order' => '0'
 	);
@@ -80,16 +87,17 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	/**
 	 * Get text for config fields
 	 *
+	 * @param array $fields
 	 * @return mixed
 	 * @since 1.0.0
 	 */
-	protected function getConfigText() {
-		$data = parent::getConfigText();
+	protected function getConfigText($fields = []) {
+		$configFieldTexts = array(
+			'config_shopping_basket',
+			'config_shopping_basket_desc',
+		);
 
-		$data['config_shopping_basket'] = $this->language->get('config_shopping_basket');
-		$data['config_shopping_basket_desc'] = $this->language->get('config_shopping_basket_desc');
-
-		return $data;
+		return parent::getConfigText($configFieldTexts);
 	}
 
 	/**
@@ -99,7 +107,10 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	 * @since 1.0.0
 	 */
 	protected function getRequestData() {
-		$this->configFields = array_merge($this->configFields, array('shopping_basket'));
+		$this->configFields = array_merge($this->configFields, array(
+			'shopping_basket',
+			'sort_order',
+		));
 
 		return parent::getRequestData();
 	}

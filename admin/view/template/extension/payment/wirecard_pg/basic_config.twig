@@ -18,27 +18,46 @@
         </div>
     </div>
 </div>
-
 {% if type != 'sepact' %}
-<div class="form-group required">
-    <label class="col-sm-2 control-label" for="input-title">{{ config_title }}</label>
-    <div class="col-sm-10">
-        <input
-                name="{{ prefix ~ 'title' }}"
-                id="input-title"
-                class="form-control"
-                type="text"
-                value="{{ title }}">
-    </div>
-    <div class="form-group">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-10 description">
-            <i>{{ config_title_desc }}</i>
+    {% for key, lang_title in title %}
+        <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-{{ title_lang }}">{{ config_title ~ '-' ~ key|upper }}</label>
+            <div class="col-sm-10">
+                <input
+                        name="{{ prefix ~ 'title'}}[{{ key }}]"
+                        id="input-title"
+                        class="form-control"
+                        type="text"
+                        value="{{ lang_title }}">
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10 description">
+                    <i>{{ config_title_desc }}</i>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+{% if type != 'sepact' %}
+    <div class="form-group required">
+        <label class="col-sm-2 control-label" for="input-sort-order">{{ config_sort_order }}</label>
+        <div class="col-sm-10">
+            <input
+                    name="{{ prefix ~ 'sort_order' }}"
+                    id="input-sort-order"
+                    class="form-control"
+                    type="text"
+                    value="{{ sort_order }}">
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10 description">
+                <i>{{ config_sort_order_desc }}</i>
+            </div>
         </div>
     </div>
-</div>
 {% endif %}
-
 <div class="form-group required">
     <label class="col-sm-2 control-label" for="input-merchant-account-id">{{ config_merchant_account_id }}</label>
     <div class="col-sm-10">
@@ -52,7 +71,11 @@
     <div class="form-group">
         <div class="col-sm-2"></div>
         <div class="col-sm-10 description">
-            <i>{{ config_merchant_account_id_desc }}</i>
+            {% if type != 'creditcard' %}
+                <i>{{ config_merchant_account_id_desc }}</i>
+            {% else %}
+                <i>{{ config_merchant_account_id_cc_desc }}</i>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -69,12 +92,16 @@
     <div class="form-group">
         <div class="col-sm-2"></div>
         <div class="col-sm-10 description">
-            <i>{{ config_merchant_secret_desc }}</i>
+            {% if type != 'creditcard' %}
+                <i>{{ config_merchant_secret_desc }}</i>
+            {% else %}
+                <i>{{ config_merchant_secret_cc_desc }}</i>
+            {% endif %}
         </div>
     </div>
 </div>
 
-{% if type != 'sepact' and type != 'sofortbanking' %}
+{% if has_payment_actions %}
 <div class="form-group required">
     <label class="col-sm-2 control-label" for="input-status">{{ config_payment_action }}</label>
     <div class="col-sm-10">
@@ -95,9 +122,7 @@
         </div>
     </div>
 </div>
-{% endif %}
-
-{% if type == 'sofortbanking' %}
+{% else %}
     <input type="hidden" name="{{ prefix ~ 'payment_action' }}" value="pay" />
 {% endif %}
 

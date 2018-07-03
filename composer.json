@@ -27,6 +27,7 @@
   },
   "autoload": {
       "classmap": [
+        "admin/controller/extension/payment/wirecard_pg/",
         "catalog/model/extension/payment/wirecard_pg/helper/",
         "catalog/model/extension/payment/wirecard_pg/handler/"
       ]

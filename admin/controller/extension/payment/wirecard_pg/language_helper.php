@@ -29,63 +29,52 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
-
 /**
- * Class ControllerExtensionPaymentWirecardPGSofortbanking
+ * Class ControllerExtensionPaymentWirecardPGLanguageHelper
  *
- * Sofort. payment transaction controller
+ * LanguageHelper controller
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGLanguageHelper extends Controller {
 
 	/**
-	 * @var string
-	 * @since 1.0.0
-	 */
-	protected $type = 'sofortbanking';
-
-	/**
-	 * Sofort. default configuration settings
+	 * Get config fields depending on the lang in the shop if no config is set the def value will be taken
 	 *
-	 * @var array
-	 * @since 1.0.0
+	 * @param array $fields
+	 * @param string $prefix
+	 * @param string $type
+	 * @param array $default
+	 * @return array
 	 */
-	protected $default = array (
-		'status' => 0,
-		'title' => 'Wirecard Sofort.',
-		'merchant_account_id' => '6c0e7efd-ee58-40f7-9bbd-5e7337a052cd',
-		'merchant_secret' => 'dbc5a498-9a66-43b9-bf1d-a618dd399684',
-		'base_url' => 'https://api-test.wirecard.com',
-		'http_password' => '3!3013=D3fD8X7',
-		'http_user' => '16390-testing',
-		'payment_action' => 'pay',
-		'descriptor' => 1,
-		'additional_info' => 1,
-		'delete_cancel_order' => 0,
-		'delete_failure_order' => 0,
-		'sort_order' => '9',
-	);
-
-	/**
-	 * Basic index method
-	 *
-	 * @since 1.0.0
-	 */
-	public function index() {
-		parent::index();
+	public function getConfigFields($fields, $prefix, $type, $default) {
+		$prefix = $prefix . $type . '_';
+		$keys = [];
+		foreach ($fields as $field) {
+			foreach ($this->getAllLanguagesCodes() as $code) {
+				if (is_array($this->config->get($prefix . $field)) &&
+					array_key_exists($code, $this->config->get($prefix . $field))) {
+					$keys[$field][$code] = $this->config->get($prefix . $field)[$code];
+				} else {
+					$keys[$field][$code] = $default[$field];
+				}
+			}
+		}
+		return $keys;
 	}
 
 	/**
-	 * Set data fields or load config
+	 * Get shop language codes
 	 *
 	 * @return array
-	 * @since 1.0.0
 	 */
-	protected function getRequestData() {
-		$this->configFields = array_merge($this->configFields, array('sort_order'));
+	private function getAllLanguagesCodes() {
+		$this->load->model('localisation/language');
 
-		return parent::getRequestData();
+		$data = [];
+		foreach ($this->model_localisation_language->getLanguages() as $language) {
+			array_push($data, preg_split('/[-_]/', $language['code'])[0]);
+		}
+		return $data;
 	}
 }

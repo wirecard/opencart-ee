@@ -39,7 +39,7 @@ class NotificationHandler {
 	 */
 	public function handleNotification($config, $logger, $payload) {
 		try {
-			$transactionService = new \Wirecard\PaymentSdk\TransactionService($config);
+			$transactionService = new \Wirecard\PaymentSdk\TransactionService($config, $logger);
 			$response = $transactionService->handleNotification($payload);
 		} catch (\InvalidArgumentException $exception) {
 			$logger->error($exception->getMessage());
@@ -51,6 +51,7 @@ class NotificationHandler {
 
 		// Return the response or log errors if any happen.
 		if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
+			$logger->debug('Notify Response: ' . print_r($response, true));
 			return $response;
 		} else {
 			foreach ($response->getStatusCollection()->getIterator() as $item) {

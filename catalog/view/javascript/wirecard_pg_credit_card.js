@@ -92,22 +92,32 @@ function logError(error) {
  * @since 1.0.0
  */
 function getCreditCardRequestData() {
-	$.ajax({
-		url: 'index.php?route=extension/payment/wirecard_pg_creditcard/getCreditCardUiRequestData',
-		type: 'post',
-		dataType: 'json',
-		success: function(data) {
-			if (data != null) {
-				WirecardPaymentPage.seamlessRenderForm({
-					requestData: data,
-					wrappingDivId: "creditcard-form-div",
-					onSuccess: callback,
-					onError: logError
-				});
-			}
-		},
-		error: function (error) {
-			console.log(error);
+	var maxWait = 5000, waitStep = 250, WPPavailableInterval = setInterval( function () {
+		maxWait -= waitStep;
+		if ( typeof WirecardPaymentPage !== "undefined" ) {
+			$.ajax( {
+				url: 'index.php?route=extension/payment/wirecard_pg_creditcard/getCreditCardUiRequestData',
+				type: 'post',
+				dataType: 'json',
+				success: function ( data ) {
+					if ( data != null ) {
+						WirecardPaymentPage.seamlessRenderForm( {
+							requestData: data,
+							wrappingDivId: "creditcard-form-div",
+							onSuccess: callback,
+							onError: logError
+						} );
+					}
+				},
+				error: function ( error ) {
+					console.error( error );
+				}
+			} );
+			clearInterval( WPPavailableInterval );
 		}
-	});
+		if ( maxWait <= 0 ) {
+			console.error('WPP did not respond in ' + Integer.valueOf(maxWait/1000) + 'seconds');
+			clearInterval(WPPavailableInterval);
+		}
+	}, waitStep );
 }
