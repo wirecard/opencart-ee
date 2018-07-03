@@ -203,7 +203,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		if (!empty($backOperations)) {
 			$operations = array();
 			foreach ($backOperations as $key => $value) {
-				if (Operation::CREDIT == $key && $this->config->get('payment_wirecard_pg_sepact_status')) {
+				if (Operation::CREDIT == $key && !$this->config->get('payment_wirecard_pg_sepact_status')) {
 					continue;
 				}
 
