@@ -73,6 +73,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 		'payment_action' => 'pay',
 		'descriptor' => '0',
 		'additional_info' => '1',
+		'sort_order' => '1',
 		'delete_cancel_order' => '0',
 		'delete_failure_order' => '0'
 	);
@@ -89,23 +90,23 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 	/**
 	 * Get text for config fields
 	 *
+	 * @param array $fields
 	 * @return mixed
 	 * @since 1.0.0
 	 */
-	protected function getConfigText() {
-		$data = parent::getConfigText();
-
-		$data['config_merchant_account_id_desc'] = $this->language->get('config_merchant_account_id_cc_desc');
-		$data['config_merchant_secret_desc'] = $this->language->get('config_merchant_secret_cc_desc');
-		$data['config_three_d_merchant_account_id'] = $this->language->get('config_three_d_merchant_account_id');
-		$data['config_three_d_merchant_account_id_desc'] = $this->language->get('config_three_d_merchant_account_id_desc');
-		$data['config_three_d_merchant_secret'] = $this->language->get('config_three_d_merchant_secret');
-		$data['config_three_d_merchant_secret_desc'] = $this->language->get('config_three_d_merchant_secret_desc');
-		$data['config_ssl_max_limit'] = $this->language->get('config_ssl_max_limit');
-		$data['config_three_d_min_limit'] = $this->language->get('config_three_d_min_limit');
-		$data['config_limit_desc'] = $this->language->get('config_limit_desc');
-
-		return $data;
+	protected function getConfigText($fields = []) {
+		$configFieldTexts = array(
+			'config_merchant_account_id_cc_desc',
+			'config_merchant_secret_cc_desc',
+			'config_three_d_merchant_account_id',
+			'config_three_d_merchant_account_id_desc',
+			'config_three_d_merchant_secret',
+			'config_three_d_merchant_secret_desc',
+			'config_ssl_max_limit',
+			'config_three_d_min_limit',
+			'config_limit_desc',
+		);
+		return parent::getConfigText($configFieldTexts);
 	}
 
 	/**
@@ -119,7 +120,8 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 			'three_d_merchant_account_id',
 			'three_d_merchant_secret',
 			'ssl_max_limit',
-			'three_d_min_limit')
+			'three_d_min_limit',
+			'sort_order',)
 		);
 
 		return parent::getRequestData();
