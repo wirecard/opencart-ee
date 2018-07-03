@@ -75,19 +75,4 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExten
 	public function index() {
 		parent::index();
 	}
-
-	/**
-	 * Get text for config fields
-	 *
-	 * @return mixed
-	 * @since 1.0.0
-	 */
-	protected function getConfigText() {
-		$data = parent::getConfigText();
-
-		$data['config_shopping_basket'] = $this->language->get('config_shopping_basket');
-		$data['config_shopping_basket_desc'] = $this->language->get('config_shopping_basket_desc');
-
-		return $data;
-	}
 }
