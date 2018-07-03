@@ -65,7 +65,6 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends \ControllerExtensionPay
 		'additional_info' => 0,
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0,
-		'sort_order' => '4',
 	);
 
 	/**
