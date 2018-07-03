@@ -63,7 +63,6 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExten
 		'payment_action' => 'pay',
 		'descriptor' => 1,
 		'additional_info' => 1,
-		'shopping_basket' => 1,
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0
 	);
@@ -75,32 +74,5 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExten
 	 */
 	public function index() {
 		parent::index();
-	}
-
-	/**
-	 * Get text for config fields
-	 *
-	 * @return mixed
-	 * @since 1.0.0
-	 */
-	protected function getConfigText() {
-		$data = parent::getConfigText();
-
-		$data['config_shopping_basket'] = $this->language->get('config_shopping_basket');
-		$data['config_shopping_basket_desc'] = $this->language->get('config_shopping_basket_desc');
-
-		return $data;
-	}
-
-	/**
-	 * Set data fields or load config
-	 *
-	 * @return array
-	 * @since 1.0.0
-	 */
-	protected function getRequestData() {
-		$this->configFields = array_merge($this->configFields, array('shopping_basket'));
-
-		return parent::getRequestData();
 	}
 }
