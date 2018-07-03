@@ -74,7 +74,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 		if (isset($code) && isset($this->config->get($prefix . '_title' )[$code])) {
 			$title = $logo . ' ' . $this->config->get($prefix . '_title' )[$code];
 		} else {
-			$title = $logo . ' ' . $this->config->get($prefix . '_title' );
+			$title = $logo . ' ' . $this->config->get($prefix . '_title' )['en'];
 		}
 
 		$method_data = array(
