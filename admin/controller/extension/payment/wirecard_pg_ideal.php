@@ -59,11 +59,10 @@ class ControllerExtensionPaymentWirecardPGIdeal extends \ControllerExtensionPaym
 		'merchant_secret' => 'dbc5a498-9a66-43b9-bf1d-a618dd399684',
 		'base_url' => 'https://api-test.wirecard.com',
 		'http_password' => '3!3013=D3fD8X7',
-		'http_user' => 'Testing-ideal-EE',
+		'http_user' => '16390-testing',
 		'payment_action' => 'pay',
 		'descriptor' => 1,
 		'additional_info' => 1,
-		'shopping_basket' => 1,
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0
 	);
@@ -75,32 +74,5 @@ class ControllerExtensionPaymentWirecardPGIdeal extends \ControllerExtensionPaym
 	 */
 	public function index() {
 		parent::index();
-	}
-
-	/**
-	 * Get text for config fields
-	 *
-	 * @return mixed
-	 * @since 1.0.0
-	 */
-	protected function getConfigText() {
-		$data = parent::getConfigText();
-
-		$data['config_shopping_basket'] = $this->language->get('config_shopping_basket');
-		$data['config_shopping_basket_desc'] = $this->language->get('config_shopping_basket_desc');
-
-		return $data;
-	}
-
-	/**
-	 * Set data fields or load config
-	 *
-	 * @return array
-	 * @since 1.0.0
-	 */
-	protected function getRequestData() {
-		$this->configFields = array_merge($this->configFields, array('shopping_basket'));
-
-		return parent::getRequestData();
 	}
 }
