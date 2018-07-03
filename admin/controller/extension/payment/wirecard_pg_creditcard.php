@@ -47,6 +47,12 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 	protected $type = 'creditcard';
 
 	/**
+	 * @var bool
+	 * @since 1.0.0
+	 */
+	protected $hasPaymentActions = true;
+
+	/**
 	 * Credit Card default configuration settings
 	 *
 	 * @var array

@@ -47,6 +47,12 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	protected $type = 'paypal';
 
 	/**
+	 * @var bool
+	 * @since 1.0.0
+	 */
+	protected $hasPaymentActions = true;
+
+	/**
 	 * PayPal default configuration settings
 	 *
 	 * @var array

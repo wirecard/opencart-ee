@@ -148,7 +148,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			if (!$this->cart->hasStock()) {
 				$json['redirect'] = $this->url->link('checkout/checkout');
 			} else {
-
 				$result = $model->sendRequest($this->paymentConfig, $this->transaction, $this->getShopConfigVal('payment_action'));
 				if (!isset($this->session->data['error'])) {
 					//Save pending order

@@ -74,11 +74,7 @@
     </div>
 </div>
 
-{%
-    if type != 'sepact'
-    and type != 'ideal'
-    and type != 'sofortbanking'
-%}
+{% if has_payment_actions %}
 <div class="form-group required">
     <label class="col-sm-2 control-label" for="input-status">{{ config_payment_action }}</label>
     <div class="col-sm-10">
@@ -99,12 +95,7 @@
         </div>
     </div>
 </div>
-{% endif %}
-
-{%
-    if type == 'sofortbanking'
-    or type == 'ideal'
-%}
+{% else %}
     <input type="hidden" name="{{ prefix ~ 'payment_action' }}" value="pay" />
 {% endif %}
 

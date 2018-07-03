@@ -1,5 +1,17 @@
-<select name="ideal-bic" id="ideal-bic">
-    {% for bank in ideal_bics %}
-        <option value="{{ bank.key }}">{{ bank.label }}</option>
-    {% endfor %}
-</select>
+<style>
+        #ideal-bic-selection {
+            margin-right: 1rem;
+            position: relative;
+            top: 0.75rem;
+        }
+</style>
+
+<label id="ideal-bic-selection">
+    <strong>{{ ideal_label }}</strong><br>
+
+    <select name="ideal-bic" id="ideal-bic">
+        {% for bank in ideal_bics %}
+            <option value="{{ bank.key }}">{{ bank.label }}</option>
+        {% endfor %}
+    </select>
+</label>
