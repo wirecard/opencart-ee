@@ -62,8 +62,7 @@ class ControllerExtensionPaymentWirecardPGIdeal extends \ControllerExtensionPaym
 		'http_user' => 'Testing-ideal-EE',
 		'payment_action' => 'pay',
 		'descriptor' => 1,
-		'descriptor_required' => 0,
-		'additional_info' => 0,
+		'additional_info' => 1,
 		'shopping_basket' => 1,
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0

@@ -101,7 +101,10 @@
 </div>
 {% endif %}
 
-{% if type == 'sofortbanking' %}
+{%
+    if type == 'sofortbanking'
+    or type == 'ideal'
+%}
     <input type="hidden" name="{{ prefix ~ 'payment_action' }}" value="pay" />
 {% endif %}
 
