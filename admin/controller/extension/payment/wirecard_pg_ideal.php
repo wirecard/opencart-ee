@@ -32,50 +32,40 @@
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ControllerExtensionPaymentWirecardPGCreditCard
+ * Class ControllerExtensionPaymentWirecardPGIdeal
  *
- * CreditCard payment transaction controller
+ * iDEAL payment transaction controller
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGIdeal extends \ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'creditcard';
+	protected $type = 'ideal';
 
 	/**
-	 * @var bool
-	 * @since 1.0.0
-	 */
-	protected $hasPaymentActions = true;
-
-	/**
-	 * Credit Card default configuration settings
+	 * iDEAL default configuration settings
 	 *
 	 * @var array
 	 * @since 1.0.0
 	 */
 	protected $default = array (
 		'status' => 0,
-		'title' => 'Wirecard Credit Card',
-		'merchant_account_id' => '53f2895a-e4de-4e82-a813-0d87a10e55e6',
+		'title' => 'Wirecard iDEAL',
+		'merchant_account_id' => '4aeccf39-0d47-47f6-a399-c05c1f2fc819',
 		'merchant_secret' => 'dbc5a498-9a66-43b9-bf1d-a618dd399684',
-		'three_d_merchant_account_id' => '508b8896-b37d-4614-845c-26bf8bf2c948',
-		'three_d_merchant_secret' => 'dbc5a498-9a66-43b9-bf1d-a618dd399684',
-		'ssl_max_limit' => 300,
-		'three_d_min_limit' => 100,
 		'base_url' => 'https://api-test.wirecard.com',
-		'http_password' => 'qD2wzQ_hrc!8',
-		'http_user' => '70000-APITEST-AP',
+		'http_password' => '3!3013=D3fD8X7',
+		'http_user' => '16390-testing',
 		'payment_action' => 'pay',
-		'descriptor' => '0',
-		'additional_info' => '1',
-		'sort_order' => '1',
-		'delete_cancel_order' => '0',
-		'delete_failure_order' => '0'
+		'descriptor' => 0,
+		'additional_info' => 1,
+		'delete_cancel_order' => 0,
+		'delete_failure_order' => 0,
+		'sort_order' => '4'
 	);
 
 	/**
@@ -88,56 +78,14 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 	}
 
 	/**
-	 * Get text for config fields
-	 *
-	 * @param array $fields
-	 * @return mixed
-	 * @since 1.0.0
-	 */
-	protected function getConfigText($fields = []) {
-		$configFieldTexts = array(
-			'config_merchant_account_id_cc_desc',
-			'config_merchant_secret_cc_desc',
-			'config_three_d_merchant_account_id',
-			'config_three_d_merchant_account_id_desc',
-			'config_three_d_merchant_secret',
-			'config_three_d_merchant_secret_desc',
-			'config_ssl_max_limit',
-			'config_three_d_min_limit',
-			'config_limit_desc',
-		);
-		return parent::getConfigText($configFieldTexts);
-	}
-
-	/**
 	 * Set data fields or load config
 	 *
 	 * @return array
 	 * @since 1.0.0
 	 */
 	protected function getRequestData() {
-		$this->configFields = array_merge($this->configFields, array(
-			'three_d_merchant_account_id',
-			'three_d_merchant_secret',
-			'ssl_max_limit',
-			'three_d_min_limit',
-			'sort_order',)
-		);
+		$this->configFields = array_merge($this->configFields, array('sort_order'));
 
 		return parent::getRequestData();
-	}
-
-	/**
-	 * Load required blocks for configuration view.
-	 *
-	 * @param array $data
-	 * @return array
-	 */
-	public function loadConfigBlocks($data) {
-		$data = parent::loadConfigBlocks($data);
-
-		$data['three_d_config'] = $this->load->view('extension/payment/wirecard_pg/three_d_config', $data);
-
-		return $data;
 	}
 }

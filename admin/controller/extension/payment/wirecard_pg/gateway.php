@@ -31,6 +31,7 @@
 
 include_once(DIR_SYSTEM . 'library/autoload.php');
 include_once(__DIR__ . '/../../../../../catalog/model/extension/payment/wirecard_pg/helper/pg_logger.php');
+require_once(__DIR__ . '/language_helper.php');
 
 /**
  * Class ControllerExtensionPaymentGateway
@@ -46,6 +47,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	protected $type;
+
+	/**
+	 * @var bool
+	 * @since 1.0.0
+	 */
+	protected $hasPaymentActions = false;
 
 	/**
 	 * @var string
@@ -119,6 +126,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		// prefix for payment type
 		$data['prefix'] = $this->prefix . $this->type . '_';
 		$data['type'] = $this->type;
+		$data['has_payment_actions'] = $this->hasPaymentActions;
 
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');

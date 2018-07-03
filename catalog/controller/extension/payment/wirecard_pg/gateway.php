@@ -89,6 +89,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	protected $operation;
 
 
+	/**
+	 * Sets the operation that is currently being executed.
+	 *
+	 * @param $operation
+	 * @since 1.0.0
+	 */
 	public function setOperation($operation) {
 		$this->operation = $operation;
 	}
