@@ -61,7 +61,12 @@ class ModelExtensionPaymentWirecardPGIdeal extends ModelExtensionPaymentGateway 
 
 		$prefix = $this->prefix . $this->type;
 		$logo = '<img src="./image/catalog/wirecard_pg_'. $this->type .'.png" width="45" style="margin: 0 22px" />';
-		$title = $logo . ' ' . $this->config->get($prefix . '_title');
+		$code = $this->language->get('code');
+		if (isset($code) && isset($this->config->get($prefix . '_title' )[$code])) {
+			$title = $logo . ' ' . $this->config->get($prefix . '_title' )[$code];
+		} else {
+			$title = $logo . ' ' . $this->config->get($prefix . '_title' )['en'];
+		}
 
 		$methodData['title'] = $title;
 
