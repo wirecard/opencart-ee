@@ -31,6 +31,7 @@
 
 include_once(DIR_SYSTEM . 'library/autoload.php');
 include_once(__DIR__ . '/../../../../../catalog/model/extension/payment/wirecard_pg/helper/pg_logger.php');
+require_once(__DIR__ . '/language_helper.php');
 
 /**
  * Class ControllerExtensionPaymentGateway

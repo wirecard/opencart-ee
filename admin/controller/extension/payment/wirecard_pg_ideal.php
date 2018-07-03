@@ -64,7 +64,8 @@ class ControllerExtensionPaymentWirecardPGIdeal extends \ControllerExtensionPaym
 		'descriptor' => 0,
 		'additional_info' => 1,
 		'delete_cancel_order' => 0,
-		'delete_failure_order' => 0
+		'delete_failure_order' => 0,
+		'sort_order' => '4'
 	);
 
 	/**
@@ -74,5 +75,17 @@ class ControllerExtensionPaymentWirecardPGIdeal extends \ControllerExtensionPaym
 	 */
 	public function index() {
 		parent::index();
+	}
+
+	/**
+	 * Set data fields or load config
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	protected function getRequestData() {
+		$this->configFields = array_merge($this->configFields, array('sort_order'));
+
+		return parent::getRequestData();
 	}
 }

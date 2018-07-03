@@ -65,7 +65,7 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExten
 		'additional_info' => 1,
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0,
-		'sort_order' => '3',
+		'sort_order' => '9',
 	);
 
 	/**
@@ -78,17 +78,14 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExten
 	}
 
 	/**
-	 * Get text for config fields
+	 * Set data fields or load config
 	 *
-	 * @param array $fields
-	 * @return mixed
+	 * @return array
 	 * @since 1.0.0
 	 */
-	protected function getConfigText($fields = []) {
-		$configFieldTexts = array(
-			'sort_order',
-		);
+	protected function getRequestData() {
+		$this->configFields = array_merge($this->configFields, array('sort_order'));
 
-		return parent::getConfigText($configFieldTexts);
+		return parent::getRequestData();
 	}
 }
