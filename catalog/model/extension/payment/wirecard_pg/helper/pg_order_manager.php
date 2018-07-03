@@ -133,8 +133,6 @@ class PGOrderManager extends Model {
 			true
 		);
 
-		$logger->debug(__METHOD__ . ': ' . print_r($response));
-
 		if ($backendService->isFinal($response->getTransactionType())) {
 			$transactionModel->updateTransactionState($response, 'closed');
 		} else {
