@@ -76,4 +76,19 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExten
 	public function index() {
 		parent::index();
 	}
+
+	/**
+	 * Get text for config fields
+	 *
+	 * @param array $fields
+	 * @return mixed
+	 * @since 1.0.0
+	 */
+	protected function getConfigText($fields = []) {
+		$configFieldTexts = array(
+			'sort_order',
+		);
+
+		return parent::getConfigText($configFieldTexts);
+	}
 }

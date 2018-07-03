@@ -89,6 +89,7 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 		$configFieldTexts = array(
 			'config_shopping_basket',
 			'config_shopping_basket_desc',
+			'sort_order',
 		);
 
 		return parent::getConfigText($configFieldTexts);

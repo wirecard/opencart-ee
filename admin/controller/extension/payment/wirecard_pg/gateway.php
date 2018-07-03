@@ -85,8 +85,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		'additional_info',
 		'delete_cancel_order',
 		'delete_failure_order',
-		'delete_failure_order',
-		'sort_order',
 	);
 
 	/**

@@ -114,7 +114,8 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 			'three_d_merchant_account_id',
 			'three_d_merchant_secret',
 			'ssl_max_limit',
-			'three_d_min_limit')
+			'three_d_min_limit',
+			'sort_order',)
 		);
 
 		return parent::getRequestData();
