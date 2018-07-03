@@ -151,7 +151,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return mixed
 	 * @since 1.0.0
 	 */
-	protected function getConfigText($fields = null) {
+	protected function getConfigText($fields = []) {
 		return $this->getLanguageFields(array_merge($this->getDefaultLanguageFields(), $fields));
 	}
 
