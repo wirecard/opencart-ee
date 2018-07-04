@@ -106,6 +106,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 				'order_id' => $transaction['order_id'],
 				'transaction_id' => $transaction['transaction_id'],
 				'parent_transaction_id' => $transaction['parent_transaction_id'],
+				'parent_transaction_href' => $transaction['parent_transaction_id'] ? $this->url->link('extension/module/wirecard_pg/pg_transaction', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['parent_transaction_id'], true) : '',
 				'action' => $transaction['transaction_type'],
 				'payment_method' => $transaction['payment_method'],
 				'transaction_state' => $transaction['transaction_state'],
