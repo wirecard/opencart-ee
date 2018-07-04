@@ -38,6 +38,12 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 
 	const ROUTE = 'extension/payment/wirecard_pg';
 
+    /**
+     * @var string
+     * @since 1.0.0
+     */
+    protected $prefix = 'payment_wirecard_pg_';
+
 	private $error;
 
 	/**
@@ -101,6 +107,8 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 
 		$transactions = array();
 		foreach ($table as $transaction) {
+            $this->load->language('extension/payment/wirecard_pg_' . $transaction['payment_method']);
+            $title = $this->language->get('heading_title');
 			$transactions[] = array(
 				'tx_id' => $transaction['tx_id'],
 				'order_id' => $transaction['order_id'],
@@ -108,7 +116,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 				'parent_transaction_id' => $transaction['parent_transaction_id'],
 				'parent_transaction_href' => $transaction['parent_transaction_id'] ? $this->url->link('extension/module/wirecard_pg/pg_transaction', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['parent_transaction_id'], true) : '',
 				'action' => $transaction['transaction_type'],
-				'payment_method' => $transaction['payment_method'],
+				'payment_method' => $title,
 				'transaction_state' => $transaction['transaction_state'],
 				'amount' => $transaction['amount'],
 				'currency' => $transaction['currency'],
