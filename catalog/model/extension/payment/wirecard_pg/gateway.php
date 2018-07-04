@@ -119,6 +119,16 @@ abstract class ModelExtensionPaymentGateway extends Model {
 
 		if ($response instanceof \Wirecard\PaymentSdk\Response\InteractionResponse) {
 			$redirect = $response->getRedirectUrl();
+		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FormInteractionResponse) {
+			$formFields = $response->getFormFields();
+			$responseQuery = array();
+
+			foreach($formFields->getIterator() as $key => $value) {
+				$responseQuery[$key] = $value;
+			}
+
+			$query = http_build_query($responseQuery);
+			$redirect = $response->getUrl() . '&' . $query;
 		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			$errors = '';
 
