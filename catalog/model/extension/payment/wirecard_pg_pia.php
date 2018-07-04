@@ -31,19 +31,19 @@
 require_once(dirname( __FILE__ ) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ModelExtensionPaymentWirecardPGPoi
+ * Class ModelExtensionPaymentWirecardPGPia
  *
- * Payment on Invoice Transaction model
+ * Payment In Advance Transaction model
  *
  * @since 1.0.0
  */
-class ModelExtensionPaymentWirecardPGPoi extends ModelExtensionPaymentGateway {
+class ModelExtensionPaymentWirecardPGPia extends ModelExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'poi';
+	protected $type = 'pia';
 
 	/**
 	 * Basic getMethod method
