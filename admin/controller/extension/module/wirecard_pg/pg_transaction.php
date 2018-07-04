@@ -53,6 +53,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 	 * @since 1.0.0
 	 */
 	public function index() {
+		$basicInfo = new ExtensionModuleWirecardPGPluginData();
 		$this->load->language(self::ROUTE);
 		$panel = new ControllerExtensionModuleWirecardPG($this->registry);
 
@@ -62,7 +63,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 
 		$data['breadcrumbs'] = $panel->getBreadcrumbs();
 
-		$data = array_merge($data, $panel->getCommons());
+		$data = array_merge($data, $panel->getCommons(), $basicInfo->getTemplateData());
 
 		$data['text_transaction'] = $this->language->get('text_transaction');
 		$data['text_response_data'] = $this->language->get('text_response_data');

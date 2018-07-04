@@ -29,6 +29,8 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
+include_once(DIR_SYSTEM . 'library/autoload.php');
+
 /**
  * Class ControllerExtensionModuleWirecardPG
  *
@@ -52,6 +54,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 	 * @since 1.0.0
 	 */
 	public function index() {
+		$basicInfo = new ExtensionModuleWirecardPGPluginData();
 		$this->load->language(self::ROUTE);
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -65,7 +68,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 		$data['heading_title'] = $this->language->get('heading_title');
 		$data['breadcrumbs'] = $this->getBreadcrumbs();
 
-		$data = array_merge($data, $this->getCommons());
+		$data = array_merge($data, $this->getCommons(), $basicInfo->getTemplateData());
 
 		$data['transactions'] = $this->loadTransactionData();
 

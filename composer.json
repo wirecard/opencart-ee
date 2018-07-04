@@ -29,7 +29,8 @@
       "classmap": [
         "admin/controller/extension/payment/wirecard_pg/",
         "catalog/model/extension/payment/wirecard_pg/helper/",
-        "catalog/model/extension/payment/wirecard_pg/handler/"
+        "catalog/model/extension/payment/wirecard_pg/handler/",
+        "admin/controller/extension/module/wirecard_pg/"
       ]
   },
   "config": {

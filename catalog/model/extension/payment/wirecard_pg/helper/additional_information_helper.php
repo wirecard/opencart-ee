@@ -31,6 +31,7 @@
 
 require_once(dirname(__FILE__) . '/pg_basket.php');
 require_once(dirname(__FILE__) . '/pg_account_holder.php');
+include_once(DIR_SYSTEM . 'library/autoload.php');
 
 use Wirecard\PaymentSdk\Transaction\Transaction;
 
@@ -91,12 +92,13 @@ class AdditionalInformationHelper extends Model {
 	 * @since 1.0.0
 	 */
 	public function setIdentificationData($transaction, $order) {
+		$basicInfo = new ExtensionModuleWirecardPGPluginData();
 		$customFields = new \Wirecard\PaymentSdk\Entity\CustomFieldCollection();
 		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('orderId', $order['order_id']));
 		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('shopName', 'OpenCart'));
 		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('shopVersion', VERSION));
-		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('pluginName', self::OPENCART_GATEWAY_WIRECARD_NAME));
-		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('pluginVersion', self::OPENCART_GATEWAY_WIRECARD_VERSION));
+		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('pluginName', $basicInfo->getName()));
+		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('pluginVersion', $basicInfo->getVersion()));
 		$transaction->setCustomFields($customFields);
 		$transaction->setLocale(substr($order['language_code'], 0, 2));
 

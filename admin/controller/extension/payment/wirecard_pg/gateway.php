@@ -123,6 +123,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
 		}
 
+		$basicData = new ExtensionModuleWirecardPGPluginData();
 		// prefix for payment type
 		$data['prefix'] = $this->prefix . $this->type . '_';
 		$data['type'] = $this->type;
@@ -140,7 +141,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$data,
 			$this->createBreadcrumbs(),
 			$this->getConfigText(),
-			$this->getRequestData()
+			$this->getRequestData(),
+			$basicData->getTemplateData()
 		);
 		$data = array_merge(
 			$this->loadConfigBlocks($data),
@@ -237,7 +239,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$transactionService = new \Wirecard\PaymentSdk\TransactionService($testConfig, $logger);
 		try {
 			$result = $transactionService->checkCredentials();
-			if($result) {
+			if ($result) {
 				$json['configMessage'] = $this->language->get('success_credentials');
 			} else {
 				$json['configMessage'] =$this->language->get('error_credentials');
