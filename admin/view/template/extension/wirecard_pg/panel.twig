@@ -42,8 +42,16 @@
                             <tr>
                                 <td>{{ transaction.tx_id }}</td>
                                 <td>{{ transaction.order_id }}</td>
-                                <td>{{ transaction.transaction_id }}</td>
-                                <td>{{ transaction.parent_transaction_id }}</td>
+                                <td>
+                                    <a href="{{ transaction.href }}" data-toggle="tooltip">
+                                        {{ transaction.transaction_id }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ transaction.parent_transaction_href }}" data-toggle="tooltip">
+                                        {{ transaction.parent_transaction_id }}
+                                    </a>
+                                </td>
                                 <td>{{ transaction.action }}</td>
                                 <td>{{ transaction.payment_method }}</td>
                                 <td>{{ transaction.transaction_state }}</td>
