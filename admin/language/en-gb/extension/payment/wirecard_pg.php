@@ -40,9 +40,10 @@ $_['text_list'] = 'Transactions';
 $_['text_transaction'] = 'Transaction';
 $_['heading_transaction_details'] = 'Transactiondetails';
 $_['text_response_data'] = 'Response Data';
-$_['text_backend_operations'] = 'Possible Back-end Operations';
+$_['text_backend_operations'] = 'Possible Post-Processing Operations';
 $_['text_request_amount'] = 'Amount';
 $_['error_no_transaction'] = 'No transaction available.';
+$_['success_new_transaction'] = 'The post processing operation was successful. A new transaction was created';
 
 // Configuration
 $_['text_enabled'] = 'Enabled';
