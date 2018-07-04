@@ -332,4 +332,31 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertInstanceOf(get_class($this->modelPoi), $actual);
 	}
+
+	public function testCancelResponse()
+	{
+		$orderManager = m::mock('overload:PGOrderManager');
+		$orderManager->shouldReceive('updateCancelFailureOrder');
+
+		$_REQUEST = [
+			'cancelled' => 1,
+			'orderId' => 123
+		];
+
+		$this->controller = new ControllerExtensionPaymentWirecardPGPoi(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelPoi,
+			$this->language,
+			$this->cart
+		);
+
+		$actual = $this->controller->response();
+		$this->assertNull($actual);
+	}
 }
