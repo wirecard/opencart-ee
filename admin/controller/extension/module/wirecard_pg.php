@@ -67,6 +67,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 
 		$data['heading_title'] = $this->language->get('heading_title');
 		$data['breadcrumbs'] = $this->getBreadcrumbs();
+		$data['support_link'] = $this->url->link('extension/module/wirecard_pg/pg_support_email', 'user_token=' . $this->session->data['user_token'], true);
 
 		$data = array_merge($data, $this->getCommons(), $basicInfo->getTemplateData());
 
@@ -77,7 +78,9 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 		$this->load->model('user/user_group');
 
 		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'extension/module/wirecard_pg/pg_transaction');
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'extension/module/wirecard_pg/pg_support_email');
 		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'extension/module/wirecard_pg/pg_transaction');
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'extension/module/wirecard_pg/pg_support_email');
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/panel', $data));
 	}

@@ -84,3 +84,6 @@ $_['config_delete_failure_order_desc'] = 'Automatically delete order after faile
 $_['text_success'] = 'Your modifications are saved!';
 $_['success_credentials'] = 'Merchant configuration was successfully tested.';
 $_['error_credentials'] = 'Test failed, please check your credentials.';
+
+$_['config_email'] = 'Your Email address:';
+$_['config_message'] = 'Your message:';

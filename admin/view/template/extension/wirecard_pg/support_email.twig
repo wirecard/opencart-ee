@@ -1,0 +1,55 @@
+{{ header }}{{ column_left }}
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <h1>{{ title }}</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {{ plugin_name }}&nbsp;{{ plugin_version }}
+            </div>
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-envelope-o"></i> Support Email
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="wrap">
+                    <hr class="wp-header-end">
+                    <img src="">
+                    <br/>
+                    <br/>
+                    <form>
+                        <input type="hidden" name="page" value="wirecardsendsupport" />
+                        <table class="form-table">
+                            <tr class="top">
+                                <th class="titledesc">
+                                    <label for="email_to">{{ config_email }}</label>
+                                </th>
+                                <td class="forminp forminp-text">
+                                    <input id="email_to" type="email" name="email" style="width: 300px; max-width: 100%;"/>
+                                </td>
+                            </tr>
+                            <tr class="top">
+                                <th class="titledesc">
+                                    <label for="support_message">{{ config_message }}</label>
+                                </th>
+                                <td class="forminp forminp-text">
+                                    <textarea id="support_message" name="message" rows="12" style="width: 300px; max-width: 100%;"></textarea>
+                                </td>
+                            </tr>
+                        </table>
+                        <input type="submit" class="button-primary" value="Submit" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
