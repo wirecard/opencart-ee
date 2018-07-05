@@ -62,7 +62,7 @@ class PGOrderManager extends Model {
 		/** @var ModelExtensionPaymentGateway $transactionModel */
 		$transactionModel = $paymentController->getModel();
 
-		if (self::PROCESSING != $order['order_status_id'] && !is_array($transactionModel->getTransaction($response->getTransactionId()))) {
+		if (!is_array($transactionModel->getTransaction($response->getTransactionId()))) {
 			$this->model_checkout_order->addOrderHistory(
 				$orderId,
 				self::PENDING,
@@ -96,11 +96,19 @@ class PGOrderManager extends Model {
 		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig(), $logger);
 		$state = $this->getOrderState($backendService->getOrderState($response->getTransactionType()));
 		if (self::PENDING == $order['order_status_id'] || 0 == $order['order_status_id']) {
+			//Send notification mail -without- comments
+			$this->model_checkout_order->addOrderHistory(
+				$orderId,
+				$state,
+				'',
+				true
+			);
+			//Update order history with comments and do -not- send confirmation for customer
 			$this->model_checkout_order->addOrderHistory(
 				$orderId,
 				$state,
 				'<pre>' . htmlentities($response->getRawData()) . '</pre>',
-				true
+				false
 			);
 			if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse && $transactionModel->getTransaction($response->getTransactionId())) {
 				$transactionModel->updateTransactionState($response, 'success');
@@ -126,11 +134,19 @@ class PGOrderManager extends Model {
 		$logger = $paymentController->getLogger();
 		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig(), $logger);
 		$state = $this->getOrderState($backendService->getOrderState($response->getTransactionType()));
+		//Send notification mail -without- comments
+		$this->model_checkout_order->addOrderHistory(
+			$response->getCustomFields()->get('orderId'),
+			$state,
+			'',
+			true
+		);
+		//Update order history with comments and do -not- send confirmation for customer
 		$this->model_checkout_order->addOrderHistory(
 			$response->getCustomFields()->get('orderId'),
 			$state,
 			'<pre>' . htmlentities($response->getRawData()) . '</pre>',
-			true
+			false
 		);
 
 		if ($backendService->isFinal($response->getTransactionType())) {
