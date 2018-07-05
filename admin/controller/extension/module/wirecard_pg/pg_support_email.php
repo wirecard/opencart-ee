@@ -33,6 +33,8 @@ include_once(DIR_SYSTEM . 'library/autoload.php');
 
 class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 	const ROUTE = 'extension/payment/wirecard_pg';
+	const PREFIX = 'payment_wirecard_pg_';
+
 
 	public function index() {
 		$basicInfo = new ExtensionModuleWirecardPGPluginData();
@@ -43,6 +45,7 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
+		$data['user_token'] = $this->session->data['user_token'];
 		$data = array_merge( $data, $basicInfo->getTemplateData(), $this->getBreadcrumbs());
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/support_email', $data));
@@ -73,5 +76,96 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 		);
 
 		return ['breadcrumbs' => $breadcrumbs];
+	}
+
+	/**
+	 * Send email to support
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public function sendEmail() {
+		$basicInfo = new ExtensionModuleWirecardPGPluginData();
+		$this->load->model('setting/extension');
+		$this->load->model('setting/setting');
+
+		$pluginList = array();
+		foreach ($this->getPluginTypes() as $type) {
+			$pluginList[$type] =  $this->model_setting_extension->getInstalled($type);
+		}
+
+		$pluginConfig = array();
+		foreach ($this->getPaymentOptions() as $option) {
+			$pluginConfig[$option] = $this->model_setting_setting->getSetting(self::PREFIX . $option);
+		}
+
+		$info = array(
+			'plugin_name' => $basicInfo->getName(),
+			'plugin_version' => $basicInfo->getVersion(),
+			'OpenCart_version' => VERSION,
+			'installed_plugins' => $pluginList,
+			'plugin_config' => $pluginConfig,
+			'php_version' => phpversion(),
+			'contact_email' => $this->request->post['email'],
+			'massage' => $this->request->post['massage']
+
+		);
+
+		$email_content = print_r($info, true);
+		if ($this->sendMail($email_content, $this->request->post['email'])) {
+			$this->response->setOutput(json_encode(['success' => true]));
+		} else {
+			$this->response->setOutput(json_encode(['success' => false]));
+		}
+	}
+
+	/**
+	 * Return plugin types to send in support email
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	private function getPluginTypes() {
+		return array(
+			'payment',
+			'shipping',
+			'total',
+			'module',
+			'fraud'
+		);
+	}
+
+	/**
+	 * Return payment options
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	private function getPaymentOptions() {
+		return array(
+			'creditcard',
+			'ideal',
+			'paypal',
+			'sepact',
+			'sofortbanking',
+			'poi',
+			'pia'
+		);
+	}
+
+	/**
+	 * @param string $email_content
+	 * @param string $sender
+	 * @return bool
+	 */
+	private function sendMail($email_content, $sender) {
+		return mail(
+			'shop-systems-support@wirecard.com',
+			'OpenCart support request',
+			$email_content,
+			array(
+			'From' => $sender
+			)
+		);
 	}
 }
