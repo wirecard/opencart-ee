@@ -419,7 +419,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller
 
 				$data = array_merge($this->getCommonBlocks(), $data);
 				$this->response->setOutput($this->load->view('extension/payment/wirecard_wiretransfer_success', $data));
-				return true;
+				return $data;
 			}
 
 			$this->response->redirect($this->url->link('checkout/success'));
