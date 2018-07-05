@@ -41,7 +41,8 @@ use Wirecard\PaymentSdk\Exception\MalformedResponseException;
  *
  * @since 1.0.0
  */
-abstract class ControllerExtensionPaymentGateway extends Controller {
+abstract class ControllerExtensionPaymentGateway extends Controller
+{
 
 	const ROUTE = 'extension/payment/wirecard_pg_';
 	const PATH = 'extension/payment/wirecard_pg';
@@ -303,7 +304,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 				return;
 			}
 
-			$logger->error( __METHOD__ . ':' . 'Response is malformed: ' . $exception->getMessage());
+			$logger->error(__METHOD__ . ':' . 'Response is malformed: ' . $exception->getMessage());
 			$this->session->data['error'] = $exception->getMessage();
 
 			$this->response->redirect($this->url->link('checkout/checkout'));
@@ -332,8 +333,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	protected function getRedirects($orderId) {
 		return new \Wirecard\PaymentSdk\Entity\Redirect(
 			$this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL'),
-			$this->url->link(self::ROUTE . $this->type . '/response&cancelled=1&orderId='. $orderId, '', 'SSL'),
-			$this->url->link(self::ROUTE. $this->type . '/response', '', 'SSL')
+			$this->url->link(self::ROUTE . $this->type . '/response&cancelled=1&orderId=' . $orderId, '', 'SSL'),
+			$this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL')
 		);
 	}
 
@@ -387,19 +388,53 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
 			$orderManager->createResponseOrder($result, $this);
-			$this->response->redirect($this->url->link('checkout/success'));
 
+			if ('pia' == $this->type && isset($this->session->data['order_id'])) {
+				$this->load->language('checkout/success');
+				$this->load->language('extension/payment/wirecard_pg_poipia');
+
+				$this->cart->clear();
+				$this->document->setTitle($this->language->get('heading_title'));
+
+				$responseData = $result->getData();
+				$data = [
+					'breadcrumbs' => $this->getCheckoutSuccessBreadcrumbs(),
+					'pia' => [
+						'transaction' => [
+							'amount' => $this->currency->format($responseData['requested-amount'], $responseData['currency']),
+							'iban' => $responseData['merchant-bank-account.0.iban'],
+							'bic' => $responseData['merchant-bank-account.0.bic'],
+							'ptrid' => $responseData['provider-transaction-reference-id'],
+						],
+
+						'texts' => [
+							'transfer_notice' => $this->language->get('transfer_notice'),
+							'amount' => $this->language->get('amount'),
+							'iban' => $this->language->get('iban'),
+							'bic' => $this->language->get('bic'),
+							'ptrid' => $this->language->get('ptrid'),
+						]
+					]
+				];
+
+				$data = array_merge($this->getCommonBlocks(), $data);
+				$this->response->setOutput($this->load->view('extension/payment/wirecard_wiretransfer_success', $data));
+				return true;
+			}
+
+			$this->response->redirect($this->url->link('checkout/success'));
 			return true;
 		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FormInteractionResponse) {
 			$this->load->language('information/static');
 
-			$data['url'] = $result->getUrl();
-			$data['method'] = $result->getMethod();
-			$data['form_fields'] = $result->getFormFields();
+			$data = [
+				'url' => $result->getUrl(),
+				'method' => $result->getMethod(),
+				'form_fields' => $result->getFormFields(),
+				'redirect_text' => $this->language->get('redirect_text'),
+			];
 
-			$data['footer'] = $this->load->controller('common/footer');
-			$data['header'] = $this->load->controller('common/header');
-			$data['redirect_text'] = $this->language->get('redirect_text');
+			$data = array_merge($this->getCommonBlocks(), $data);
 			$this->response->setOutput($this->load->view('extension/payment/wirecard_interaction_response', $data));
 		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			$errors = '';
@@ -458,5 +493,67 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->transaction->setAmount($amount);
 
 		return $this->transaction;
+	}
+
+	/**
+	 * Get common blocks for building a template
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public function getCommonBlocks() {
+		$data = [
+			'continue' => $this->url->link('common/home'),
+			'column_left' => $this->load->controller('common/column_left'),
+			'column_right' => $this->load->controller('common/column_right'),
+			'content_top' => $this->load->controller('common/content_top'),
+			'content_bottom' => $this->load->controller('common/content_bottom'),
+			'footer' => $this->load->controller('common/footer'),
+			'header' => $this->load->controller('common/header'),
+		];
+
+		if ($this->customer->isLogged()) {
+			$data['text_message'] = sprintf(
+				$this->language->get('text_customer'),
+				$this->url->link('account/account', '', true),
+				$this->url->link('account/order', '', true),
+				$this->url->link('account/download', '', true),
+				$this->url->link('information/contact')
+			);
+		} else {
+			$data['text_message'] = sprintf(
+				$this->language->get('text_guest'),
+				$this->url->link('information/contact')
+			);
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Get required breadcrumbs for checkout success
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public function getCheckoutSuccessBreadcrumbs() {
+		return [
+			[
+				'text' => $this->language->get('text_home'),
+				'href' => $this->url->link('common/home')
+			],
+			[
+				'text' => $this->language->get('text_basket'),
+				'href' => $this->url->link('checkout/cart')
+			],
+			[
+				'text' => $this->language->get('text_checkout'),
+				'href' => $this->url->link('checkout/checkout', '', true)
+			],
+			[
+				'text' => $this->language->get('text_success'),
+				'href' => $this->url->link('checkout/success')
+			],
+		];
 	}
 }

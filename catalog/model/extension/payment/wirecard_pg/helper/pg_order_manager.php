@@ -70,7 +70,8 @@ class PGOrderManager extends Model {
 				false
 			);
 
-			$transactionStatus = 'poi' == $paymentController->getType() ? 'success' : 'awaiting';
+			$successMethods = ['poi', 'pia'];
+			$transactionStatus = in_array($paymentController->getType(), $successMethods) ? 'success' : 'awaiting';
 			$transactionModel->createTransaction($response, $order, $transactionStatus, $paymentController);
 		}
 	}
