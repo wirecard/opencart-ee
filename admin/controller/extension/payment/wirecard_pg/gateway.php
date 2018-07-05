@@ -127,7 +127,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$data['prefix'] = $this->prefix . $this->type . '_';
 		$data['type'] = $this->type;
 		$data['has_payment_actions'] = $this->hasPaymentActions;
-		$data['default_payment_action'] = $this->default['payment_action'];
 
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
