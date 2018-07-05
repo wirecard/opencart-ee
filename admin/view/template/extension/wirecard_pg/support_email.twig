@@ -21,32 +21,21 @@
                 </h3>
             </div>
             <div class="panel-body">
-                <div class="wrap">
-                    <hr class="wp-header-end">
-                    <img src="">
-                    <br/>
-                    <br/>
-                    <form>
-                        <input type="hidden" name="page" value="wirecardsendsupport" />
-                        <table class="form-table">
-                            <tr class="top">
-                                <th class="titledesc">
-                                    <label for="email_to">{{ config_email }}</label>
-                                </th>
-                                <td class="forminp forminp-text">
-                                    <input id="email_to" type="email" name="email" style="width: 300px; max-width: 100%;"/>
-                                </td>
-                            </tr>
-                            <tr class="top">
-                                <th class="titledesc">
-                                    <label for="support_message">{{ config_message }}</label>
-                                </th>
-                                <td class="forminp forminp-text">
-                                    <textarea id="support_message" name="message" rows="12" style="width: 300px; max-width: 100%;"></textarea>
-                                </td>
-                            </tr>
-                        </table>
-                        <input type="submit" class="button-primary" value="Submit" />
+                <div class="panel-group">
+                    <form class="form-horizontal">
+                        <div class="form-group required">
+                            <label class="col-sm-2 control-label" for="email_to">{{ config_email }}</label>
+                            <div class="col-sm-10">
+                                <input id="email_to" type="email" class="form-control" name="email" />
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label class="col-sm-2 control-label" for="support_message">{{ config_message }}</label>
+                            <div class="col-sm-10">
+                                <textarea id="support_message" name="message" rows="12"  class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <input type="submit" class="btn btn-primary" value="Submit" />
                     </form>
                 </div>
             </div>
