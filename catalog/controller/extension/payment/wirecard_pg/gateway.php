@@ -183,7 +183,13 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->transaction->setAmount($amount);
 
 		$additionalHelper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
+
 		$this->transaction = $additionalHelper->setIdentificationData($this->transaction, $order);
+
+		if ('poi' === $this->type) {
+			$this->transaction = $additionalHelper->addAccountHolder($this->transaction, $order);
+		}
+
 		if ($this->getShopConfigVal('descriptor')) {
 			$this->transaction->setDescriptor($additionalHelper->createDescriptor($order));
 		}
@@ -207,6 +213,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 				$currency,
 				$order['total']
 			);
+
+			$this->transaction = $additionalHelper->addAccountHolder($this->transaction, $order);
 		}
 
 		if (isset($this->request->post['fingerprint-session'])) {
