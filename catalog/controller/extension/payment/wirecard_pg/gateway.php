@@ -187,7 +187,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller
 
 		$this->transaction = $additionalHelper->setIdentificationData($this->transaction, $order);
 
-		if ('poi' === $this->type) {
+		$methodsRequiringAccountHolder = ['poi', 'pia'];
+		if (in_array($this->type, $methodsRequiringAccountHolder)) {
 			$this->transaction = $additionalHelper->addAccountHolder($this->transaction, $order);
 		}
 
