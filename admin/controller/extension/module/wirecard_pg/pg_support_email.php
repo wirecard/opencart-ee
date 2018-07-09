@@ -38,15 +38,14 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 
 	public function index() {
 		$basicInfo = new ExtensionModuleWirecardPGPluginData();
-		$this->load->language(self::ROUTE);
 
-		$data['config_email'] = $this->language->get('config_email');
-		$data['config_message'] = $this->language->get('config_message');
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['user_token'] = $this->session->data['user_token'];
-		$data = array_merge( $data, $basicInfo->getTemplateData(), $this->getBreadcrumbs());
+		$data['transaction_overview_link'] = $this->url->link('extension/module/wirecard_pg', 'user_token=' . $this->session->data['user_token'], true);
+
+		$data = array_merge( $data, $basicInfo->getTemplateData(), $this->getBreadcrumbs(), $this->loadText());
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/support_email', $data));
 	}
@@ -112,6 +111,7 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 		);
 
 		$email_content = print_r($info, true);
+
 		if ($this->sendMail($email_content, $this->request->post['email'])) {
 			$this->response->setOutput(json_encode(['success' => true]));
 		} else {
@@ -163,9 +163,27 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 			'shop-systems-support@wirecard.com',
 			'OpenCart support request',
 			$email_content,
-			array(
-			'From' => $sender
-			)
+			"From: " . $sender
 		);
+	}
+
+
+	/**
+	 * Get lang lines
+	 *
+	 * @return array
+	 */
+	private function loadText() {
+		$this->load->language(self::ROUTE);
+
+		$data['config_email'] = $this->language->get('config_email');
+		$data['config_message'] = $this->language->get('config_message');
+		$data['success_email'] = $this->language->get('success_email');
+		$data['error_email'] = $this->language->get('error_email');
+		$data['back_button'] = $this->language->get('back_button');
+		$data['send_email'] = $this->language->get('send_email');
+		$data['support_email_title'] = $this->language->get('support_email_title');
+
+		return $data;
 	}
 }

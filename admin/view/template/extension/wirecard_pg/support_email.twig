@@ -17,8 +17,16 @@
             </div>
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    <i class="fa fa-envelope-o"></i> Support Email
+                    <i class="fa fa-envelope-o"></i> {{ support_email_title }}
                 </h3>
+            </div>
+            <div id="email-success" class="alert alert-success alert-dismissible hidden">
+                <i class="fa fa-check-circle"></i>
+                {{ success_email }}
+                <button type="button" class="close" data-dismiss="alert">x</button>
+            </div>
+            <div id="email_error" class="alert alert-danger alert-dismissible hidden"><i class="fa fa-exclamation-circle"></i> {{ error_email }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
             </div>
             <div class="panel-body">
                 <div class="panel-group">
@@ -35,7 +43,8 @@
                                 <textarea id="support_massage" name="message" rows="12"  class="form-control"></textarea>
                             </div>
                         </div>
-                        <button id="support-email-button" class="btn btn-primary">Send Mail</button>
+                        <a href="{{ transaction_overview_link }}" class="btn btn-primary">{{ back_button }}</a>
+                        <button id="support-email-button" class="btn btn-primary">{{ send_email }}</button>
                     </form>
                 </div>
             </div>
@@ -52,7 +61,12 @@
                 data: { 'email': $('#email_from').val(), 'massage': $('#support_massage').val() },
                 dataType: 'json',
                 success: function (json) {
-                    alert(json.configMessage);
+                    if (json.success) {
+                        $('#email-success').removeClass('hidden');
+                        $('#support-email-button').prop("disabled",true);
+                    } else {
+                        $('#email-error').removeClass('hidden');
+                    }
                 }
             }
         );
