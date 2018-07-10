@@ -40,7 +40,7 @@
                         <div class="form-group required">
                             <label class="col-sm-2 control-label" for="support_message">{{ config_message }}</label>
                             <div class="col-sm-10">
-                                <textarea id="support_massage" name="message" rows="12"  class="form-control"></textarea>
+                                <textarea id="support_message" name="message" rows="12"  class="form-control"></textarea>
                             </div>
                         </div>
                         <a href="{{ transaction_overview_link }}" class="btn btn-primary">{{ back_button }}</a>
@@ -58,7 +58,7 @@
             {
                 type: 'POST',
                 url: 'index.php?route=extension/module/wirecard_pg/pg_support_email/sendEmail&user_token={{ user_token }}',
-                data: { 'email': $('#email_from').val(), 'massage': $('#support_massage').val() },
+                data: { 'email': $('#email_from').val(), 'message': $('#support_message').val() },
                 dataType: 'json',
                 success: function (json) {
                     if (json.success) {

@@ -106,7 +106,7 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 			'plugin_config' => $pluginConfig,
 			'php_version' => phpversion(),
 			'contact_email' => $this->request->post['email'],
-			'massage' => $this->request->post['massage']
+			'message' => $this->request->post['message']
 
 		);
 
