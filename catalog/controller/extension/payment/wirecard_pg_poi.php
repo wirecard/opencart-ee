@@ -67,7 +67,7 @@ class ControllerExtensionPaymentWirecardPGPoi extends ControllerExtensionPayment
 	 * @since 1.0.0
 	 */
 	public function confirm() {
-		$this->transaction = new PoiPiaTransaction();
+		$this->transaction = $this->getTransactionInstance();
 
 		parent::confirm();
 	}
@@ -98,7 +98,7 @@ class ControllerExtensionPaymentWirecardPGPoi extends ControllerExtensionPayment
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
 	 */
 	public function createTransaction($parentTransaction, $amount) {
-		$this->transaction = new PoiPiaTransaction();
+		$this->transaction = $this->getTransactionInstance();
 
 		return parent::createTransaction($parentTransaction, $amount);
 	}
