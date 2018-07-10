@@ -66,25 +66,25 @@ class ModelExtensionPaymentWirecardPG extends Model {
 	 *
 	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
 	 * @param array $order
-	 * @param string $transactionState
-	 * @param ControllerExtensionPaymentGateway $paymentController
+	 * @param string $transaction_state
+	 * @param ControllerExtensionPaymentGateway $payment_controller
 	 * @since 1.0.0
 	 */
-	public function createTransaction($response, $order, $transactionState, $paymentController) {
+	public function createTransaction($response, $order, $transaction_state, $payment_controller) {
 		$amount = $response->getData()['requested-amount'];
-		$orderId = $response->getCustomFields()->get('orderId');
+		$order_id = $response->getCustomFields()->get('orderId');
 		$currency = $order['currency_code'];
 
-		$parentTransactionId = $this->checkParentTransaction($response, $amount);
+		$parent_transaction_id = $this->checkParentTransaction($response, $amount);
 
 		$this->db->query("
             INSERT INTO `" . DB_PREFIX . "wirecard_ee_transactions` SET 
-            `order_id` = '" . (int)$orderId . "', 
+            `order_id` = '" . (int)$order_id . "', 
             `transaction_id` = '" . $this->db->escape($response->getTransactionId()) . "', 
-            `parent_transaction_id` = '" . $this->db->escape($parentTransactionId) . "', 
+            `parent_transaction_id` = '" . $this->db->escape($parent_transaction_id) . "', 
             `transaction_type` = '" . $this->db->escape($response->getTransactionType()) . "',
-            `payment_method` = '" . $this->db->escape($paymentController->getType()) . "', 
-            `transaction_state` = '" . $this->db->escape($transactionState) . "',
+            `payment_method` = '" . $this->db->escape($payment_controller->getType()) . "', 
+            `transaction_state` = '" . $this->db->escape($transaction_state) . "',
             `amount` = '" . (float)$amount . "',
             `currency` = '" . $this->db->escape($currency) . "',
             `response` = '" . $this->db->escape(json_encode($response->getData())) . "',
@@ -109,13 +109,13 @@ class ModelExtensionPaymentWirecardPG extends Model {
 	/**
 	 * Get transaction via transaction id
 	 *
-	 * @param string $transactionId
+	 * @param string $transaction_id
 	 * @return bool|array
 	 * @since 1.0.0
 	 */
-	public function getTransaction($transactionId) {
+	public function getTransaction($transaction_id) {
 		$query = $this->db->query("
-	        SELECT * FROM `" . DB_PREFIX . "wirecard_ee_transactions` WHERE `transaction_id` = '" . $this->db->escape($transactionId) . "'
+	        SELECT * FROM `" . DB_PREFIX . "wirecard_ee_transactions` WHERE `transaction_id` = '" . $this->db->escape($transaction_id) . "'
 	    ");
 
 		if ($query->num_rows) {
@@ -128,26 +128,26 @@ class ModelExtensionPaymentWirecardPG extends Model {
 	/**
 	 * Get all follow up transactions and calculate rest amount
 	 *
-	 * @param string $transactionId
+	 * @param string $transaction_id
 	 * @param float $amount
 	 * @return float
 	 * @since 1.0.0
 	 */
-	public function getTransactionMaxAmount($transactionId, $amount = 0) {
-		$baseAmount = $this->db->query("
-	    SELECT amount FROM `" . DB_PREFIX ."wirecard_ee_transactions` WHERE `transaction_id` = '" . $this->db->escape($transactionId) . "'
+	public function getTransactionMaxAmount($transaction_id, $amount = 0) {
+		$base_amount = $this->db->query("
+	    SELECT amount FROM `" . DB_PREFIX ."wirecard_ee_transactions` WHERE `transaction_id` = '" . $this->db->escape($transaction_id) . "'
 	    ")->row['amount'];
 
-		$followAmounts = $this->db->query("
-	    SELECT amount FROM `" . DB_PREFIX . "wirecard_ee_transactions` WHERE `parent_transaction_id` = '" . $this->db->escape($transactionId) . "'
+		$follow_amounts = $this->db->query("
+	    SELECT amount FROM `" . DB_PREFIX . "wirecard_ee_transactions` WHERE `parent_transaction_id` = '" . $this->db->escape($transaction_id) . "'
 	    ")->rows;
 
-		foreach ($followAmounts as $value) {
-			$baseAmount -= $value['amount'];
+		foreach ($follow_amounts as $value) {
+			$base_amount -= $value['amount'];
 		}
-		$baseAmount -= $amount;
+		$base_amount -= $amount;
 
-		return $baseAmount;
+		return $base_amount;
 	}
 
 	/**
@@ -158,33 +158,33 @@ class ModelExtensionPaymentWirecardPG extends Model {
 	 * @since 1.0.0
 	 */
 	public function checkParentTransaction($response, $amount) {
-		$parentTransactionId = null;
-		$parentTransaction = $this->getTransaction($response->getParentTransactionId());
+		$parent_transaction_id = null;
+		$parent_transaction = $this->getTransaction($response->getParentTransactionId());
 
-		if ($parentTransaction) {
-			$parentTransactionId = $response->getParentTransactionId();
-			$restAmount = $this->getTransactionMaxAmount($parentTransactionId, $amount);
-			if ($restAmount <= 0) {
-				$this->updateTransactionState($parentTransactionId, 'closed');
+		if ($parent_transaction) {
+			$parent_transaction_id = $response->getParentTransactionId();
+			$rest_amount = $this->getTransactionMaxAmount($parent_transaction_id, $amount);
+			if ($rest_amount <= 0) {
+				$this->updateTransactionState($parent_transaction_id, 'closed');
 			}
 		}
 
-		return $parentTransactionId;
+		return $parent_transaction_id;
 	}
 
 	/**
 	 * Update transaction with specific transactionstate
 	 *
-	 * @param string $transactionId
-	 * @param $transactionState
+	 * @param string $transaction_id
+	 * @param $transaction_state
 	 * @since 1.0.0
 	 */
-	public function updateTransactionState($transactionId, $transactionState) {
+	public function updateTransactionState($transaction_id, $transaction_state) {
 		$this->db->query("
         UPDATE `" . DB_PREFIX . "wirecard_ee_transactions` SET 
-            `transaction_state` = '" . $this->db->escape($transactionState) . "', 
+            `transaction_state` = '" . $this->db->escape($transaction_state) . "', 
             `date_modified` = NOW() WHERE 
-            `transaction_id` = '" . $this->db->escape($transactionId) . "'
+            `transaction_id` = '" . $this->db->escape($transaction_id) . "'
         ");
 	}
 }
