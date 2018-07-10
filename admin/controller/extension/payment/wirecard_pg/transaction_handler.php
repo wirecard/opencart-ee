@@ -43,36 +43,36 @@ class ControllerExtensionPaymentWirecardPGTransactionHandler extends Controller 
 	/**
 	 * Send request with specific transaction and operation
 	 *
-	 * @param ControllerExtensionPaymentGateway $paymentController
-	 * @param array $parentTransaction
+	 * @param ControllerExtensionPaymentGateway $payment_controller
+	 * @param array $parent_transaction
 	 * @param Config $config
 	 * @param \Wirecard\PaymentSdk\Transaction\Operation $operation
 	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
 	 * @return string
 	 * @since 1.0.0
 	 */
-	public function processTransaction($paymentController, $parentTransaction, $config, $operation, $amount) {
+	public function processTransaction($payment_controller, $parent_transaction, $config, $operation, $amount) {
 		$logger = new PGLogger($config);
 
 		// This allows us to return the proper config/transactions if there are different types depending on the operation
 		// E.g. Sofort uses a SofortTransaction to debit and a SepaTransaction to credit a bank account.
-		$paymentController->setOperation($operation);
+		$payment_controller->setOperation($operation);
 
-		$backendTransactionService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig(), $logger);
-		$transaction = $paymentController->createTransaction($parentTransaction, $amount);
+		$backend_transaction_service = new \Wirecard\PaymentSdk\BackendService($payment_controller->getConfig(), $logger);
+		$transaction = $payment_controller->createTransaction($parent_transaction, $amount);
 		try {
 			/* @var \Wirecard\PaymentSdk\Response\Response $response */
-			$response = $backendTransactionService->process($transaction, $operation);
+			$response = $backend_transaction_service->process($transaction, $operation);
 		} catch ( \Exception $exception ) {
 			$logger->error(__METHOD__ . ': ' . get_class($exception) . ' ' . $exception->getMessage());
 		}
 
 		if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
-			$responseData = $response->getData();
+			$response_data = $response->getData();
 			$order = array(
 				'orderId' => $response->getCustomFields()->get('orderId'),
-				'amount' => $responseData['requested-amount'],
-				'currency_code' => $responseData['currency']
+				'amount' => $response_data['requested-amount'],
+				'currency_code' => $response_data['currency']
 			);
 
 			$this->load->model('extension/payment/wirecard_pg');
@@ -80,7 +80,7 @@ class ControllerExtensionPaymentWirecardPGTransactionHandler extends Controller 
 				$response,
 				$order,
 				'awaiting',
-				$paymentController
+				$payment_controller
 			);
 
 			return $response->getTransactionId();

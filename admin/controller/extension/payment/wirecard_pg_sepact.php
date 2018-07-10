@@ -83,7 +83,7 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends \ControllerExtensionPay
 	 * @since 1.0.0
 	 */
 	protected function getRequestData() {
-		$this->configFields = array_merge($this->configFields);
+		$this->config_fields = array_merge($this->config_fields);
 
 		return parent::getRequestData();
 	}

@@ -88,11 +88,11 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 		$this->load->model('extension/payment/wirecard_pg');
 		$this->load->model('localisation/order_status');
 
-		$orderStatus['order_status'][1] = array(
+		$order_status['order_status'][1] = array(
 			'name' => 'Authorized'
 		);
 
-		$this->model_localisation_order_status->addOrderStatus($orderStatus);
+		$this->model_localisation_order_status->addOrderStatus($order_status);
 
 		$this->model_extension_payment_wirecard_pg->install();
 	}
