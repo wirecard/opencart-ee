@@ -42,6 +42,8 @@ require_once(__DIR__ . '/language_helper.php');
  */
 abstract class ControllerExtensionPaymentGateway extends Controller {
 
+    const HEADING_TITLE = 'heading_title';
+
 	/**
 	 * @var string
 	 * @since 1.0.0
@@ -113,7 +115,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		$this->load->model('setting/setting');
 
-		$this->document->setTitle($this->language->get('heading_title'));
+		$this->document->setTitle($this->language->get(self::HEADING_TITLE));
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 			$this->model_setting_setting->editSetting($this->prefix . $this->type, $this->request->post);
@@ -181,7 +183,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		);
 
 		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('heading_title'),
+			'text' => $this->language->get(self::HEADING_TITLE),
 			'href' => $this->url->link('extension/payment/wirecard_pg_' . $this->type, 'user_token=' . $this->session->data['user_token'], true)
 		);
 
