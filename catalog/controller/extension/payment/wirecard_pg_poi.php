@@ -50,15 +50,6 @@ class ControllerExtensionPaymentWirecardPGPoi extends ControllerExtensionPayment
 	protected $type = 'poi';
 
 	/**
-	 * Basic index method
-	 *
-	 * @since 1.0.0
-	 */
-	public function index($data = null) {
-		return parent::index();
-	}
-
-	/**
 	 * Payment specific model getter
 	 *
 	 * @return Model
