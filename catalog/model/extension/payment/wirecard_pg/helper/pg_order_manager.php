@@ -40,7 +40,7 @@ class PGOrderManager extends Model {
 	const PROCESSING = 2;
 	const CHECK_PAYER_RESPONSE = 'check-payer-response';
 
-	private $orderStates = array(
+	private $order_states = array(
 		'Authorized' => 'authorized',
 		'Processing' => 'processing',
 		'Canceled' => 'cancelled',
@@ -52,24 +52,24 @@ class PGOrderManager extends Model {
 	 * Create new order with specific orderstate
 	 *
 	 * @param \Wirecard\PaymentSdk\Response\Response $response
-	 * @param ControllerExtensionPaymentGateway $paymentController
+	 * @param ControllerExtensionPaymentGateway $payment_controller
 	 * @since 1.0.0
 	 */
-	public function createResponseOrder($response, $paymentController) {
+	public function createResponseOrder($response, $payment_controller) {
 		$this->load->model('checkout/order');
-		$orderId = $response->getCustomFields()->get('orderId');
-		$order = $this->model_checkout_order->getOrder($orderId);
-		/** @var ModelExtensionPaymentGateway $transactionModel */
-		$transactionModel = $paymentController->getModel();
+		$order_id = $response->getCustomFields()->get('orderId');
+		$order = $this->model_checkout_order->getOrder($order_id);
+		/** @var ModelExtensionPaymentGateway $transaction_model */
+		$transaction_model = $payment_controller->getModel();
 
-		if (!is_array($transactionModel->getTransaction($response->getTransactionId()))) {
+		if (!is_array($transaction_model->getTransaction($response->getTransactionId()))) {
 			$this->model_checkout_order->addOrderHistory(
-				$orderId,
+				$order_id,
 				self::PENDING,
 				'<pre>' . htmlentities($response->getRawData()) . '</pre>',
 				false
 			);
-			$transactionModel->createTransaction($response, $order, 'awaiting', $paymentController);
+			$transaction_model->createTransaction($response, $order, 'awaiting', $payment_controller);
 		}
 	}
 
@@ -77,47 +77,47 @@ class PGOrderManager extends Model {
 	 * Create new order with specific orderstate
 	 *
 	 * @param \Wirecard\PaymentSdk\Response\Response $response
-	 * @param ControllerExtensionPaymentGateway $paymentController
+	 * @param ControllerExtensionPaymentGateway $payment_controller
 	 * @since 1.0.0
 	 */
-	public function createNotifyOrder($response, $paymentController) {
+	public function createNotifyOrder($response, $payment_controller) {
 		//credit card special case for 3d transactions
 		if (self::CHECK_PAYER_RESPONSE == $response->getTransactionType()) {
 			return;
 		}
-		$orderId = $response->getCustomFields()->get('orderId');
+		$order_id = $response->getCustomFields()->get('orderId');
 		$this->load->model('checkout/order');
 		$this->load->language('extension/payment/wirecard_pg');
-		$order = $this->model_checkout_order->getOrder($orderId);
-		/** @var ModelExtensionPaymentGateway $transactionModel */
-		$transactionModel = $paymentController->getModel();
+		$order = $this->model_checkout_order->getOrder($order_id);
+		/** @var ModelExtensionPaymentGateway $transaction_model */
+		$transaction_model = $payment_controller->getModel();
 
-		$logger = $paymentController->getLogger();
-		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig(), $logger);
-		$state = $this->getOrderState($backendService->getOrderState($response->getTransactionType()));
+		$logger = $payment_controller->getLogger();
+		$backend_service = new \Wirecard\PaymentSdk\BackendService($payment_controller->getConfig(), $logger);
+		$state = $this->getOrderState($backend_service->getOrderState($response->getTransactionType()));
 		if (self::PENDING == $order['order_status_id'] || 0 == $order['order_status_id']) {
 			//Send notification mail -without- comments
 			$this->model_checkout_order->addOrderHistory(
-				$orderId,
+				$order_id,
 				$state,
 				'',
 				true
 			);
 			//Update order history with comments and do -not- send confirmation for customer
 			$this->model_checkout_order->addOrderHistory(
-				$orderId,
+				$order_id,
 				$state,
 				'<pre>' . htmlentities($response->getRawData()) . '</pre>',
 				false
 			);
-			if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse && $transactionModel->getTransaction($response->getTransactionId())) {
-				$transactionModel->updateTransactionState($response, 'success');
+			if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse && $transaction_model->getTransaction($response->getTransactionId())) {
+				$transaction_model->updateTransactionState($response, 'success');
 			} else {
-				$transactionModel->createTransaction($response, $order, 'success', $paymentController);
+				$transaction_model->createTransaction($response, $order, 'success', $payment_controller);
 			}
 		} else {
 			if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
-				$this->updateNotifyOrder($response, $transactionModel, $paymentController);
+				$this->updateNotifyOrder($response, $transaction_model, $payment_controller);
 			}
 		}
 	}
@@ -126,14 +126,14 @@ class PGOrderManager extends Model {
 	 * Update order state and transaction table
 	 *
 	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
-	 * @param ModelExtensionPaymentGateway $transactionModel
-	 * @param ControllerExtensionPaymentGateway $paymentController
+	 * @param ModelExtensionPaymentGateway $transaction_model
+	 * @param ControllerExtensionPaymentGateway $payment_controller
 	 * @since 1.0.0
 	 */
-	public function updateNotifyOrder($response, $transactionModel, $paymentController) {
-		$logger = $paymentController->getLogger();
-		$backendService = new \Wirecard\PaymentSdk\BackendService($paymentController->getConfig(), $logger);
-		$state = $this->getOrderState($backendService->getOrderState($response->getTransactionType()));
+	public function updateNotifyOrder($response, $transaction_model, $payment_controller) {
+		$logger = $payment_controller->getLogger();
+		$backend_service = new \Wirecard\PaymentSdk\BackendService($payment_controller->getConfig(), $logger);
+		$state = $this->getOrderState($backend_service->getOrderState($response->getTransactionType()));
 		//Send notification mail -without- comments
 		$this->model_checkout_order->addOrderHistory(
 			$response->getCustomFields()->get('orderId'),
@@ -149,29 +149,29 @@ class PGOrderManager extends Model {
 			false
 		);
 
-		if ($backendService->isFinal($response->getTransactionType())) {
-			$transactionModel->updateTransactionState($response, 'closed');
+		if ($backend_service->isFinal($response->getTransactionType())) {
+			$transaction_model->updateTransactionState($response, 'closed');
 		} else {
-			$transactionModel->updateTransactionState($response, 'success');
+			$transaction_model->updateTransactionState($response, 'success');
 		}
 	}
 
 	/**
 	 * Update/Delete order history after cancel or failure
 	 *
-	 * @param int $orderId
+	 * @param int $order_id
 	 * @param string $state
 	 * @param int $delete
 	 * @since 1.0.0
 	 */
-	public function updateCancelFailureOrder($orderId, $state, $delete) {
+	public function updateCancelFailureOrder($order_id, $state, $delete) {
 		$this->load->model('checkout/order');
 
 		if ($delete) {
-			$this->model_checkout_order->deleteOrder($orderId);
+			$this->model_checkout_order->deleteOrder($order_id);
 		} else {
 			$this->model_checkout_order->addOrderHistory(
-				$orderId,
+				$order_id,
 				$this->getOrderState($state),
 				'',
 				false
@@ -189,9 +189,9 @@ class PGOrderManager extends Model {
 	public function getOrderState($state) {
 		$this->load->model('localisation/order_status');
 
-		$orderStatus = $this->model_localisation_order_status->getOrderStatuses();
-		foreach ($orderStatus as $status) {
-			if (isset($this->orderStates[$status['name']]) && ($state == $this->orderStates[$status['name']])) {
+		$order_status = $this->model_localisation_order_status->getOrderStatuses();
+		foreach ($order_status as $status) {
+			if (isset($this->order_states[$status['name']]) && ($state == $this->order_states[$status['name']])) {
 				return $status['order_status_id'];
 			}
 		}

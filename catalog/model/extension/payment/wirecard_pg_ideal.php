@@ -56,7 +56,7 @@ class ModelExtensionPaymentWirecardPGIdeal extends ModelExtensionPaymentGateway 
 	 * @since 1.0.0
 	 */
 	public function getMethod($address, $total) {
-		$methodData = parent::getMethod($address, $total);
+		$method_data = parent::getMethod($address, $total);
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
 
 		$prefix = $this->prefix . $this->type;
@@ -68,9 +68,9 @@ class ModelExtensionPaymentWirecardPGIdeal extends ModelExtensionPaymentGateway 
 			$title = $logo . ' ' . $this->config->get($prefix . '_title' )['en'];
 		}
 
-		$methodData['title'] = $title;
+		$method_data['title'] = $title;
 
-		return $methodData;
+		return $method_data;
 	}
 
 	/**

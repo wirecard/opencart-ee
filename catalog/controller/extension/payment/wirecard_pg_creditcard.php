@@ -150,10 +150,10 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	public function getCreditCardUiRequestData() {
 		$this->transaction = new CreditCardTransaction();
 		$this->prepareTransaction();
-		$this->transaction->setConfig($this->paymentConfig->get(CreditCardTransaction::NAME));
+		$this->transaction->setConfig($this->payment_config->get(CreditCardTransaction::NAME));
 		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
 		$this->getLogger()->debug('transaction: ' . print_r($this->transaction, true));
-		$transaction_service = new TransactionService($this->paymentConfig, $this->getLogger());
+		$transaction_service = new TransactionService($this->payment_config, $this->getLogger());
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(($transaction_service->getCreditCardUiWithData(
 			$this->transaction,
