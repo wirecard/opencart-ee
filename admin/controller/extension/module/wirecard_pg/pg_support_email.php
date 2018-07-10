@@ -38,6 +38,7 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 
 	public function index() {
 		$basicInfo = new ExtensionModuleWirecardPGPluginData();
+		$this->load->language(self::ROUTE);
 
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
@@ -60,11 +61,6 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 		$breadcrumbs = array();
 
 		$breadcrumbs[] = array(
-			'text' => $this->language->get('text_home'),
-			'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
-		);
-
-		$breadcrumbs[] = array(
 			'text' => $this->language->get('text_extension'),
 			'href' => $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true)
 		);
@@ -74,6 +70,11 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 			'href' => $this->url->link('extension/module/wirecard_pg', 'user_token=' . $this->session->data['user_token'], true)
 		);
 
+
+		$breadcrumbs[] = array(
+			'text' => $this->language->get('support_email_title'),
+			'href' => $this->url->link('extension/module/wirecard_pg/pg_support_email', 'user_token=' . $this->session->data['user_token'], true)
+		);
 		return ['breadcrumbs' => $breadcrumbs];
 	}
 
@@ -96,12 +97,16 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 		$pluginConfig = array();
 		foreach ($this->getPaymentOptions() as $option) {
 			$pluginConfig[$option] = $this->model_setting_setting->getSetting(self::PREFIX . $option);
+			unset(
+				$pluginConfig[$option][self::PREFIX . $option . '_merchant_secret'],
+				$pluginConfig[$option][self::PREFIX . $option . '_http_password']
+			);
 		}
 
 		$info = array(
 			'plugin_name' => $basicInfo->getName(),
 			'plugin_version' => $basicInfo->getVersion(),
-			'OpenCart_version' => VERSION,
+			'opencart_version' => VERSION,
 			'installed_plugins' => $pluginList,
 			'plugin_config' => $pluginConfig,
 			'php_version' => phpversion(),
@@ -110,7 +115,7 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 
 		);
 
-		$email_content = print_r($info, true);
+		$email_content = $this->load->view('extension/wirecard_pg/email_template', $info);
 
 		if ($this->sendMail($email_content, $this->request->post['email'])) {
 			$this->response->setOutput(json_encode(['success' => true]));
@@ -163,7 +168,7 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 			'shop-systems-support@wirecard.com',
 			'OpenCart support request',
 			$email_content,
-			"From: " . $sender
+			"From: " . $sender . "\r\n" . "Content-type: text/html; charset=utf-8\r\n"
 		);
 	}
 
@@ -174,8 +179,6 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 	 * @return array
 	 */
 	private function loadText() {
-		$this->load->language(self::ROUTE);
-
 		$data['config_email'] = $this->language->get('config_email');
 		$data['config_message'] = $this->language->get('config_message');
 		$data['success_email'] = $this->language->get('success_email');

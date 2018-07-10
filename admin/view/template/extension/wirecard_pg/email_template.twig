@@ -1,0 +1,84 @@
+<html>
+    <head>
+        <title>Support Email</title>
+    </head>
+    <body>
+        <div>
+            <h2>Reporter: {{ contact_email }}</h2>
+            <p>Massage: {{ message }}</p>
+        </div>
+        <h3>Basic Data:</h3>
+        <table>
+            <tbody>
+                <tr>
+                    <td>Plugin name:</td>
+                    <td>{{ plugin_name }}</td>
+                </tr>
+                <tr>
+                    <td>Plugin version:</td>
+                    <td>{{ plugin_version }}</td>
+                </tr>
+                <tr>
+                    <td>OpenCart version:</td>
+                    <td>{{ opencart_version }}</td>
+                </tr>
+                <tr>
+                    <td>PHP version:</td>
+                    <td>{{ php_version }}</td>
+                </tr>
+                <tr>
+                    <td>From:</td>
+                    <td>{{ contact_email }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>Shop plugins:</h3>
+        <table>
+            <thead>
+            <tr>
+                <td>Type</td>
+                <td>Plugin name</td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for key, plugin in installed_plugins if plugin %}
+                {% for plugin_name in plugin %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td>{{ plugin_name }}</td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+            </tbody>
+        </table>
+        <h3>Shop config:</h3>
+        {% for payment_method, config in plugin_config %}
+            <h4>{{ payment_method }}</h4>
+            <table>
+                <thead>
+                <tr>
+                    <td>Key</td>
+                    <td>Value</td>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for key, value in config %}
+                        {% if value is iterable %}
+                            {% for x in value %}
+                                <tr>
+                                    <td>{{ key }}</td>
+                                    <td>{{ x }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>{{ key }}</td>
+                                <td>{{ value }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    </body>
+</html>
