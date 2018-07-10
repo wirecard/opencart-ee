@@ -186,10 +186,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		$this->transaction = $additionalHelper->setIdentificationData($this->transaction, $order);
 
-		if ('poi' === $this->type) {
-			$this->transaction = $additionalHelper->addAccountHolder($this->transaction, $order);
-		}
-
 		if ($this->getShopConfigVal('descriptor')) {
 			$this->transaction->setDescriptor($additionalHelper->createDescriptor($order));
 		}

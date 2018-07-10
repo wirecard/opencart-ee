@@ -67,7 +67,13 @@ class ControllerExtensionPaymentWirecardPGPoi extends ControllerExtensionPayment
 	 * @since 1.0.0
 	 */
 	public function confirm() {
+		$this->load->model('checkout/order');
 		$this->transaction = $this->getTransactionInstance();
+
+		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+		$additionalHelper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
+
+		$additionalHelper->addAccountHolder($this->transaction, $order);
 
 		parent::confirm();
 	}
