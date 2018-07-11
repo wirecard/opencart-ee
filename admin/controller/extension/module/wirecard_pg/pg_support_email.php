@@ -98,7 +98,8 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 			$pluginConfig[$option] = $this->model_setting_setting->getSetting(self::PREFIX . $option);
 			unset(
 				$pluginConfig[$option][self::PREFIX . $option . '_merchant_secret'],
-				$pluginConfig[$option][self::PREFIX . $option . '_http_password']
+				$pluginConfig[$option][self::PREFIX . $option . '_merchant_secret'],
+				$pluginConfig[$option][self::PREFIX . $option . '_three_d_merchant_secret']
 			);
 		}
 
