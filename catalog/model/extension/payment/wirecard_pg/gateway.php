@@ -92,12 +92,12 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 *
 	 * @param $config
 	 * @param $transaction
-	 * @param string $paymetAction
+	 * @param string $paymentAction
 	 * @return \Wirecard\PaymentSdk\Response\Response
 	 * @throws Exception
 	 * @since 1.0.0
 	 */
-	public function sendRequest($config, $transaction, $paymetAction) {
+	public function sendRequest($config, $transaction, $paymentAction) {
 		$this->load->language('extension/payment/wirecard_pg');
 
 		$logger = $this->getLogger();
@@ -107,7 +107,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 
 		try {
 			/* @var \Wirecard\PaymentSdk\Response\Response $response */
-			$response = $transactionService->process($transaction, $paymetAction);
+			$response = $transactionService->process($transaction, $paymentAction);
 		} catch (Exception $exception) {
 			$logger->error(get_class($exception) . ' ' . $exception->getMessage());
 			$this->session->data['error'] = $this->language->get('order_error');

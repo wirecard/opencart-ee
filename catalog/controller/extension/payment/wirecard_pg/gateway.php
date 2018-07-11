@@ -41,8 +41,7 @@ use Wirecard\PaymentSdk\Exception\MalformedResponseException;
  *
  * @since 1.0.0
  */
-abstract class ControllerExtensionPaymentGateway extends Controller
-{
+abstract class ControllerExtensionPaymentGateway extends Controller {
 
 	const ROUTE = 'extension/payment/wirecard_pg_';
 	const PATH = 'extension/payment/wirecard_pg';
@@ -187,11 +186,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller
 
 		$this->transaction = $additionalHelper->setIdentificationData($this->transaction, $order);
 
-		$methodsRequiringAccountHolder = ['poi', 'pia'];
-		if (in_array($this->type, $methodsRequiringAccountHolder)) {
-			$this->transaction = $additionalHelper->addAccountHolder($this->transaction, $order);
-		}
-
 		if ($this->getShopConfigVal('descriptor')) {
 			$this->transaction->setDescriptor($additionalHelper->createDescriptor($order));
 		}
@@ -313,7 +307,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller
 				return;
 			}
 
-			$logger->error(__METHOD__ . ':' . 'Response is malformed: ' . $exception->getMessage());
+			$logger->error( __METHOD__ . ':' . 'Response is malformed: ' . $exception->getMessage());
 			$this->session->data['error'] = $exception->getMessage();
 
 			$this->response->redirect($this->url->link('checkout/checkout'));
@@ -432,6 +426,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller
 			}
 
 			$this->response->redirect($this->url->link('checkout/success'));
+
 			return true;
 		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FormInteractionResponse) {
 			$this->load->language('information/static');
