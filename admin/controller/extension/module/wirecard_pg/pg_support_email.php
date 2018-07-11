@@ -70,7 +70,6 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 			'href' => $this->url->link('extension/module/wirecard_pg', 'user_token=' . $this->session->data['user_token'], true)
 		);
 
-
 		$breadcrumbs[] = array(
 			'text' => $this->language->get('support_email_title'),
 			'href' => $this->url->link('extension/module/wirecard_pg/pg_support_email', 'user_token=' . $this->session->data['user_token'], true)
