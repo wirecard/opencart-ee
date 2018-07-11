@@ -69,27 +69,6 @@ class ControllerExtensionPaymentWirecardPGPia extends \ControllerExtensionPaymen
 	);
 
 	/**
-	 * Basic index method
-	 *
-	 * @since 1.0.0
-	 */
-	public function index() {
-		parent::index();
-	}
-
-	/**
-	 * Get text for config fields
-	 *
-	 * @return mixed
-	 * @since 1.0.0
-	 */
-	protected function getConfigText($fields = []) {
-		$data = parent::getConfigText();
-
-		return $data;
-	}
-
-	/**
 	 * Set data fields or load config
 	 *
 	 * @return array
@@ -99,17 +78,5 @@ class ControllerExtensionPaymentWirecardPGPia extends \ControllerExtensionPaymen
 		$this->configFields = array_merge($this->configFields, array('sort_order'));
 
 		return parent::getRequestData();
-	}
-
-	/**
-	 * Load the required config blocks for this payment method.
-	 *
-	 * @param array $data
-	 * @return array
-	 */
-	public function loadConfigBlocks($data) {
-		$data = parent::loadConfigBlocks($data);
-
-		return $data;
 	}
 }

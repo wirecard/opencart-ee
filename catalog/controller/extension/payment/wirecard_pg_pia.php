@@ -50,15 +50,6 @@ class ControllerExtensionPaymentWirecardPGPia extends ControllerExtensionPayment
 	protected $type = 'pia';
 
 	/**
-	 * Basic index method
-	 *
-	 * @since 1.0.0
-	 */
-	public function index($data = null) {
-		return parent::index();
-	}
-
-	/**
 	 * Payment specific model getter
 	 *
 	 * @return Model
@@ -71,12 +62,18 @@ class ControllerExtensionPaymentWirecardPGPia extends ControllerExtensionPayment
 	}
 
 	/**
-	 * Create Payment On Invoice transaction
+	 * Create Payment In Advance transaction
 	 *
 	 * @since 1.0.0
 	 */
 	public function confirm() {
-		$this->transaction = new PoiPiaTransaction();
+		$this->load->model('checkout/order');
+		$this->transaction = $this->getTransactionInstance();
+
+		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+		$additionalHelper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
+
+		$additionalHelper->addAccountHolder($this->transaction, $order);
 
 		parent::confirm();
 	}
@@ -107,7 +104,7 @@ class ControllerExtensionPaymentWirecardPGPia extends ControllerExtensionPayment
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
 	 */
 	public function createTransaction($parentTransaction, $amount) {
-		$this->transaction = new PoiPiaTransaction();
+		$this->transaction = $this->getTransactionInstance();
 
 		return parent::createTransaction($parentTransaction, $amount);
 	}
