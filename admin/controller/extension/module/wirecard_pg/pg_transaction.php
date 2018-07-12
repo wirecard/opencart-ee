@@ -67,7 +67,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		$data['text_transaction'] = $this->language->get('text_transaction');
 		$data['text_response_data'] = $this->language->get('text_response_data');
 		$data['text_backend_operations'] = $this->language->get('text_backend_operations');
-		$date['text_request_amount'] = $this->language->get('text_request_amount');
+		$data['text_request_amount'] = $this->language->get('text_request_amount');
 		$data['route_href'] = $this->url->link(self::TRANSACTION . '/');
 
 		if (isset($this->session->data['wirecard_info']['admin_error'])) {
@@ -91,18 +91,18 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 	/**
 	 * Get transaction detail data via id
 	 *
-	 * @param string $id
+	 * @param string $transaction_id
 	 * @return bool|array
 	 * @since 1.0.0
 	 */
-	public function getTransactionDetails($id) {
+	public function getTransactionDetails($transaction_id) {
 		$this->load->model(self::ROUTE);
-		$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($id);
+		$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($transaction_id);
 		$data = false;
 
 		if ($transaction) {
 			$operations = $this->getBackendOperations($transaction);
-			$amount = $this->model_extension_payment_wirecard_pg->getTransactionMaxAmount($id);
+			$amount = $this->model_extension_payment_wirecard_pg->getTransactionMaxAmount($transaction_id);
 			$data = array(
 				'transaction_id' => $transaction['transaction_id'],
 				'response' => json_decode($transaction['response'], true),

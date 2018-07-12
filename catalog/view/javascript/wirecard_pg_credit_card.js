@@ -28,6 +28,8 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
+var WirecardPaymentPage;
+
 /**
  * Set the paren transaction id to the form and submit it
  *
