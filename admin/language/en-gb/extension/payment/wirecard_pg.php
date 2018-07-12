@@ -92,3 +92,5 @@ $_['error_email'] = 'There was an error sending you E-Mail!';
 $_['send_email'] = 'Send';
 $_['back_button'] = 'Back';
 $_['support_email_title'] = 'Support Email';
+
+$_['terms_of_use'] = 'Terms of Use';

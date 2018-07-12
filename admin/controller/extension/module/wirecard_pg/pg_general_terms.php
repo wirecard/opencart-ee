@@ -49,6 +49,7 @@ class ControllerExtensionModuleWirecardPGPGGeneralTerms extends Controller {
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['user_token'] = $this->session->data['user_token'];
+        $data['title'] = $this->language->get('terms_of_use');
 		$data['transaction_overview_link'] = $this->url->link('extension/module/wirecard_pg', 'user_token=' . $this->session->data['user_token'], true);
 
 		$data = array_merge( $data, $basic_info->getTemplateData(), $this->getBreadcrumbs());
@@ -76,7 +77,7 @@ class ControllerExtensionModuleWirecardPGPGGeneralTerms extends Controller {
 		);
 
 		$breadcrumbs[] = array(
-			'text' => $this->language->get('support_email_title'),
+			'text' => $this->language->get('terms_of_use'),
 			'href' => $this->url->link('extension/module/wirecard_pg/pg_general_terms', 'user_token=' . $this->session->data['user_token'], true)
 		);
 		return ['breadcrumbs' => $breadcrumbs];
