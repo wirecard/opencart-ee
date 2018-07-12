@@ -123,7 +123,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 			$formFields = $response->getFormFields();
 			$responseQuery = array();
 
-			foreach($formFields->getIterator() as $key => $value) {
+			foreach ($formFields->getIterator() as $key => $value) {
 				$responseQuery[$key] = $value;
 			}
 
