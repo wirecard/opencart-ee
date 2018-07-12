@@ -156,8 +156,8 @@ class PGLogger implements LoggerInterface
 	 * @since 1.0.0
 	 */
 	public function log($level, $message, array $context = array()) {
-		$levelName = strtoupper($level);
-		$this->logger->write("$levelName: $message");
+		$level_name = strtoupper($level);
+		$this->logger->write("$level_name: $message");
 	}
 
 }

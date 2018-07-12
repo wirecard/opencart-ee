@@ -50,7 +50,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @var string
 	 * @since 1.0.0
 	 */
-	private $pluginVersion = '1.0.0';
+	private $plugin_version = '1.0.0';
 
 	/**
 	 * @var string
@@ -68,7 +68,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @var Config
 	 * @since 1.0.0
 	 */
-	protected $paymentConfig;
+	protected $payment_config;
 
 	/**
 	 * @var Model
@@ -126,8 +126,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$data['button_confirm'] = $this->language->get('button_confirm');
 		$data['additional_info'] = $this->getShopConfigVal('additional_info');
 		$data['action'] = $this->url->link(self::ROUTE . $this->type . '/confirm', '', true);
-		$sessionId = $this->getShopConfigVal('merchant_account_id') . '_' . $this->createSessionString($order);
-		$data['session_id'] = substr($sessionId, 0, 127);
+		$session_id = $this->getShopConfigVal('merchant_account_id') . '_' . $this->createSessionString($order);
+		$data['session_id'] = substr($session_id, 0, 127);
 		$data['type'] = $this->type;
 
 		return $this->load->view(self::PATH, $data);
@@ -144,11 +144,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		if ($this->session->data['payment_method']['code'] == 'wirecard_pg_' . $this->type) {
 			$this->prepareTransaction();
 			$model = $this->getModel();
+			$json['redirect'] = $this->url->link('checkout/checkout');
 
-			if (!$this->cart->hasStock()) {
-				$json['redirect'] = $this->url->link('checkout/checkout');
-			} else {
-				$result = $model->sendRequest($this->paymentConfig, $this->transaction, $this->getShopConfigVal('payment_action'));
+			if ($this->cart->hasStock()) {
+				$result = $model->sendRequest($this->payment_config, $this->transaction, $this->getShopConfigVal('payment_action'));
 				if (!isset($this->session->data['error'])) {
 					//Save pending order
 					$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
@@ -177,19 +176,19 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		];
 
 		$amount = new \Wirecard\PaymentSdk\Entity\Amount($order['total'] * $order['currency_value'], $order['currency_code']);
-		$this->paymentConfig = $this->getConfig($currency);
+		$this->payment_config = $this->getConfig($currency);
 		$this->transaction->setRedirect($this->getRedirects($this->session->data['order_id']));
 		$this->transaction->setNotificationUrl($this->getNotificationUrl());
 		$this->transaction->setAmount($amount);
 
-		$additionalHelper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
-		$this->transaction = $additionalHelper->setIdentificationData($this->transaction, $order);
+		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
+		$this->transaction = $additional_helper->setIdentificationData($this->transaction, $order);
 		if ($this->getShopConfigVal('descriptor')) {
-			$this->transaction->setDescriptor($additionalHelper->createDescriptor($order));
+			$this->transaction->setDescriptor($additional_helper->createDescriptor($order));
 		}
 
 		if ($this->getShopConfigVal('shopping_basket')) {
-			$this->transaction = $additionalHelper->addBasket(
+			$this->transaction = $additional_helper->addBasket(
 				$this->transaction,
 				$this->cart->getProducts(),
 				$this->session->data['shipping_method'],
@@ -199,8 +198,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		}
 
 		if ($this->getShopConfigVal('additional_info')) {
-			$this->transaction = $additionalHelper->setAdditionalInformation($this->transaction, $order);
-			$this->transaction = $additionalHelper->addBasket(
+			$this->transaction = $additional_helper->setAdditionalInformation($this->transaction, $order);
+			$this->transaction = $additional_helper->addBasket(
 				$this->transaction,
 				$this->cart->getProducts(),
 				$this->session->data['shipping_method'],
@@ -224,13 +223,13 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	public function getConfig($currency = null) {
-		$baseUrl = $this->getShopConfigVal('base_url');
-		$httpUser = $this->getShopConfigVal('http_user');
-		$httpPassword = $this->getShopConfigVal('http_password');
+		$base_url = $this->getShopConfigVal('base_url');
+		$http_user = $this->getShopConfigVal('http_user');
+		$http_password = $this->getShopConfigVal('http_password');
 
-		$config = new Config($baseUrl, $httpUser, $httpPassword);
+		$config = new Config($base_url, $http_user, $http_password);
 		$config->setShopInfo('OpenCart', VERSION);
-		$config->setPluginInfo('Wirecard_PaymentGateway', $this->pluginVersion);
+		$config->setPluginInfo('Wirecard_PaymentGateway', $this->plugin_version);
 
 		return $config;
 	}
@@ -243,14 +242,14 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	public function notify() {
 		$payload = file_get_contents('php://input');
 
-		$notificationHandler = new NotificationHandler();
-		$response = $notificationHandler->handleNotification($this->getConfig(), $this->getLogger(), $payload);
+		$notification_handler = new NotificationHandler();
+		$response = $notification_handler->handleNotification($this->getConfig(), $this->getLogger(), $payload);
 
 		// All errors are already caught and handled in handleNotification.
 		// So there's no need to check for an else here.
 		if ($response) {
-			$orderManager = new PGOrderManager($this->registry);
-			$orderManager->createNotifyOrder($response, $this);
+			$order_manager = new PGOrderManager($this->registry);
+			$order_manager->createNotifyOrder($response, $this);
 		}
 	}
 
@@ -273,15 +272,15 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	public function response() {
-		$orderManager = new PGOrderManager($this->registry);
-		$deleteCancel = $this->getShopConfigVal('delete_cancel_order');
+		$order_manager = new PGOrderManager($this->registry);
+		$delete_cancel = $this->getShopConfigVal('delete_cancel_order');
 		$this->load->language('extension/payment/wirecard_pg');
 
 		$logger = $this->getLogger();
 
 		try {
-			$transactionService = new \Wirecard\PaymentSdk\TransactionService($this->getConfig(), $logger);
-			$result = $transactionService->handleResponse($_REQUEST);
+			$transaction_service = new \Wirecard\PaymentSdk\TransactionService($this->getConfig(), $logger);
+			$result = $transaction_service->handleResponse($_REQUEST);
 
 			return $this->processResponse($result, $logger);
 
@@ -292,12 +291,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 			return;
 		} catch (MalformedResponseException $exception) {
-			$wasCancelled = isset($_REQUEST['cancelled']);
+			$was_cancelled = isset($_REQUEST['cancelled']);
 
-			if ($wasCancelled) {
+			if ($was_cancelled) {
 				$this->session->data['error'] = $this->language->get('order_cancelled');
 				$logger->warning('Order was cancelled');
-				$orderManager->updateCancelFailureOrder($_REQUEST['orderId'], 'cancelled', $deleteCancel);
+				$order_manager->updateCancelFailureOrder($_REQUEST['orderId'], 'cancelled', $delete_cancel);
 				$this->response->redirect($this->url->link('checkout/checkout'));
 
 				return;
@@ -382,11 +381,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return bool | array
 	 */
 	public function processResponse($result, $logger) {
-		$orderManager = new PGOrderManager($this->registry);
-		$deleteFailure = $this->getShopConfigVal('delete_failure_order');
+		$order_manager = new PGOrderManager($this->registry);
+		$delete_failure = $this->getShopConfigVal('delete_failure_order');
 
 		if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
-			$orderManager->createResponseOrder($result, $this);
+			$order_manager->createResponseOrder($result, $this);
 			$this->response->redirect($this->url->link('checkout/success'));
 
 			return true;
@@ -410,7 +409,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			}
 
 			$this->session->data['error'] = $errors;
-			$orderManager->updateCancelFailureOrder($result->getCustomFields()->get('orderId'), 'failed', $deleteFailure);
+			$order_manager->updateCancelFailureOrder($result->getCustomFields()->get('orderId'), 'failed', $delete_failure);
 			$this->response->redirect($this->url->link('checkout/checkout'));
 
 			return false;
