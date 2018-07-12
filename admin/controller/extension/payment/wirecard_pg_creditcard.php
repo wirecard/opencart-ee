@@ -79,15 +79,6 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 	);
 
 	/**
-	 * Basic index method
-	 *
-	 * @since 1.0.0
-	 */
-	public function index() {
-		parent::index();
-	}
-
-	/**
 	 * Get text for config fields
 	 *
 	 * @param array $fields
@@ -95,7 +86,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 	 * @since 1.0.0
 	 */
 	protected function getConfigText($fields = []) {
-		$config_field_texts = array(
+		$fields = array(
 			'config_merchant_account_id_cc_desc',
 			'config_merchant_secret_cc_desc',
 			'config_three_d_merchant_account_id',
@@ -106,7 +97,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 			'config_three_d_min_limit',
 			'config_limit_desc',
 		);
-		return parent::getConfigText($config_field_texts);
+		return parent::getConfigText($fields);
 	}
 
 	/**

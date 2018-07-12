@@ -69,15 +69,6 @@ class ControllerExtensionPaymentWirecardPGIdeal extends \ControllerExtensionPaym
 	);
 
 	/**
-	 * Basic index method
-	 *
-	 * @since 1.0.0
-	 */
-	public function index() {
-		parent::index();
-	}
-
-	/**
 	 * Set data fields or load config
 	 *
 	 * @return array

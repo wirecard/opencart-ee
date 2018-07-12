@@ -52,11 +52,10 @@ class ControllerExtensionPaymentWirecardPGLanguageHelper extends Controller {
 		$keys = [];
 		foreach ($fields as $field) {
 			foreach ($this->getAllLanguagesCodes() as $code) {
+				$keys[$field][$code] = $default[$field];
 				if (is_array($this->config->get($prefix . $field)) &&
 					array_key_exists($code, $this->config->get($prefix . $field))) {
 					$keys[$field][$code] = $this->config->get($prefix . $field)[$code];
-				} else {
-					$keys[$field][$code] = $default[$field];
 				}
 			}
 		}
