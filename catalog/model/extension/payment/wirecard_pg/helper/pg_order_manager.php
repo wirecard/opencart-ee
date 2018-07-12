@@ -69,7 +69,9 @@ class PGOrderManager extends Model {
 				'<pre>' . htmlentities($response->getRawData()) . '</pre>',
 				false
 			);
-			$transactionModel->createTransaction($response, $order, 'awaiting', $paymentController);
+
+			$transactionStatus = 'poi' == $paymentController->getType() ? 'success' : 'awaiting';
+			$transactionModel->createTransaction($response, $order, $transactionStatus, $paymentController);
 		}
 	}
 
