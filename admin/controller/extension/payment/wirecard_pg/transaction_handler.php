@@ -58,11 +58,11 @@ class ControllerExtensionPaymentWirecardPGTransactionHandler extends Controller 
 		// E.g. Sofort uses a SofortTransaction to debit and a SepaTransaction to credit a bank account.
 		$payment_controller->setOperation($operation);
 
-		$backend_transaction_service = new \Wirecard\PaymentSdk\BackendService($payment_controller->getConfig(), $logger);
+		$backend_service = new \Wirecard\PaymentSdk\BackendService($payment_controller->getConfig(), $logger);
 		$transaction = $payment_controller->createTransaction($parent_transaction, $amount);
 		try {
 			/* @var \Wirecard\PaymentSdk\Response\Response $response */
-			$response = $backend_transaction_service->process($transaction, $operation);
+			$response = $backend_service->process($transaction, $operation);
 		} catch ( \Exception $exception ) {
 			$logger->error(__METHOD__ . ': ' . get_class($exception) . ' ' . $exception->getMessage());
 		}

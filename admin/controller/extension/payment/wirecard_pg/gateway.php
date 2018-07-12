@@ -100,7 +100,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @var array
 	 * @since 1.0.0
 	 */
-	protected $multi_lang_config_fields = array(
+	protected $multi_lang_fields = array(
 		'title'
 	);
 
@@ -239,10 +239,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$transaction_service = new \Wirecard\PaymentSdk\TransactionService($test_config, $logger);
 		try {
 			$result = $transaction_service->checkCredentials();
+			$json['configMessage'] =$this->language->get('error_credentials');
 			if($result) {
 				$json['configMessage'] = $this->language->get('success_credentials');
-			} else {
-				$json['configMessage'] =$this->language->get('error_credentials');
 			}
 		} catch (\Exception $exception) {
 			$json['configMessage'] = $this->language->get('error_credentials');
@@ -264,7 +263,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		$data['payment_header'] = $this->load->view('extension/payment/wirecard_pg/header', $data);
 		$data['basic_config'] = $this->load->view('extension/payment/wirecard_pg/basic_config',
-			array_merge($data, $language_helper->getConfigFields($this->multi_lang_config_fields, $this->prefix, $this->type, $this->default)));
+			array_merge($data, $language_helper->getConfigFields($this->multi_lang_fields, $this->prefix, $this->type, $this->default)));
 		$data['credentials_config'] = $this->load->view('extension/payment/wirecard_pg/credentials_config', $data);
 		$data['advanced_config'] = $this->load->view('extension/payment/wirecard_pg/advanced_config', $data);
 

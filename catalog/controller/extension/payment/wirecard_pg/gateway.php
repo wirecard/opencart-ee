@@ -144,10 +144,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		if ($this->session->data['payment_method']['code'] == 'wirecard_pg_' . $this->type) {
 			$this->prepareTransaction();
 			$model = $this->getModel();
+			$json['redirect'] = $this->url->link('checkout/checkout');
 
-			if (!$this->cart->hasStock()) {
-				$json['redirect'] = $this->url->link('checkout/checkout');
-			} else {
+			if ($this->cart->hasStock()) {
 				$result = $model->sendRequest($this->payment_config, $this->transaction, $this->getShopConfigVal('payment_action'));
 				if (!isset($this->session->data['error'])) {
 					//Save pending order
