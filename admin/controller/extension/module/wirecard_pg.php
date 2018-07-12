@@ -29,6 +29,8 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
+include_once(DIR_SYSTEM . 'library/autoload.php');
+
 /**
  * Class ControllerExtensionModuleWirecardPG
  *
@@ -38,6 +40,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 
 	const ROUTE = 'extension/payment/wirecard_pg';
 	const PG_TRANSACTION = 'extension/module/wirecard_pg/pg_transaction';
+	const PG_SUPPORT_MAIL = 'extension/module/wirecard_pg/pg_support_email';
 	const HEADING_TITLE = 'heading_title';
 	const TRANSACTION_ID = 'transaction_id';
 	const PARENT_TRANSACTION_ID = 'parent_transaction_id';
@@ -57,6 +60,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 	 * @since 1.0.0
 	 */
 	public function index() {
+		$basic_info = new ExtensionModuleWirecardPGPluginData();
 		$this->load->language(self::ROUTE);
 
 		$this->document->setTitle($this->language->get(self::HEADING_TITLE));
@@ -69,8 +73,9 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 
 		$data[self::HEADING_TITLE] = $this->language->get(self::HEADING_TITLE);
 		$data['breadcrumbs'] = $this->getBreadcrumbs();
+		$data['support_link'] = $this->url->link('extension/module/wirecard_pg/pg_support_email', 'user_token=' . $this->session->data['user_token'], true);
 
-		$data = array_merge($data, $this->getCommons());
+		$data = array_merge($data, $this->getCommons(), $basic_info->getTemplateData());
 
 		$data['transactions'] = $this->loadTransactionData();
 
@@ -80,6 +85,8 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 
 		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', self::PG_TRANSACTION);
 		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', self::PG_TRANSACTION);
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', self::PG_SUPPORT_MAIL);
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', self::PG_SUPPORT_MAIL);
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/panel', $data));
 	}

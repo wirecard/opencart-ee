@@ -76,15 +76,6 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	);
 
 	/**
-	 * Basic index method
-	 *
-	 * @since 1.0.0
-	 */
-	public function index() {
-		parent::index();
-	}
-
-	/**
 	 * Get text for config fields
 	 *
 	 * @param array $fields
@@ -92,12 +83,12 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	 * @since 1.0.0
 	 */
 	protected function getConfigText($fields = []) {
-		$config_field_texts = array(
+		$fields = array(
 			'config_shopping_basket',
 			'config_shopping_basket_desc',
 		);
 
-		return parent::getConfigText($config_field_texts);
+		return parent::getConfigText($fields);
 	}
 
 	/**

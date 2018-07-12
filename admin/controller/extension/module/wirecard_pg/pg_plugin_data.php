@@ -30,50 +30,44 @@
  */
 
 /**
- * Class ControllerExtensionPaymentWirecardPGLanguageHelper
- *
- * LanguageHelper controller
+ * Class ExtensionModuleWirecardPGPluginData
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGLanguageHelper extends Controller {
+class ExtensionModuleWirecardPGPluginData {
+	const OPENCART_GATEWAY_WIRECARD_VERSION = '1.0.0';
+	const OPENCART_GATEWAY_WIRECARD_NAME = 'Wirecard OpenCart Extension';
 
 	/**
-	 * Get config fields depending on the lang in the shop if no config is set the def value will be taken
+	 * Return plugin version
 	 *
-	 * @param array $fields
-	 * @param string $prefix
-	 * @param string $type
-	 * @param array $default
-	 * @return array
+	 * @return string
+	 * @since 1.0.0
 	 */
-	public function getConfigFields($fields, $prefix, $type, $default) {
-		$prefix = $prefix . $type . '_';
-		$keys = [];
-		foreach ($fields as $field) {
-			foreach ($this->getAllLanguagesCodes() as $code) {
-				$keys[$field][$code] = $default[$field];
-				if (is_array($this->config->get($prefix . $field)) &&
-					array_key_exists($code, $this->config->get($prefix . $field))) {
-					$keys[$field][$code] = $this->config->get($prefix . $field)[$code];
-				}
-			}
-		}
-		return $keys;
+	public function getVersion() {
+		return self::OPENCART_GATEWAY_WIRECARD_VERSION;
 	}
 
 	/**
-	 * Get shop language codes
+	 * Return plugin name
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function getName() {
+		return self::OPENCART_GATEWAY_WIRECARD_NAME;
+	}
+
+	/**
+	 * Return plugin data to be used in templates
 	 *
 	 * @return array
+	 * @since 1.0.0
 	 */
-	private function getAllLanguagesCodes() {
-		$this->load->model('localisation/language');
-
-		$data = [];
-		foreach ($this->model_localisation_language->getLanguages() as $language) {
-			array_push($data, preg_split('/[-_]/', $language['code'])[0]);
-		}
-		return $data;
+	public function getTemplateData() {
+		return array(
+			'plugin_name' => self::getName(),
+			'plugin_version' => self::getVersion()
+		);
 	}
 }
