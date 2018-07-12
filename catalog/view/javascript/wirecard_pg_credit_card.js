@@ -28,28 +28,7 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-/**
- * When document loads get the data for the credit card form
- *
- * @since 1.0.0
- */
-$(document).ready(function() {
-	$('#button-confirm').prop('disabled', true);
-	$('#creditcard-form-div').hide();
-	getCreditCardRequestData();
-});
-
-/**
- * On confirm button submit the form
- *
- * @since 1.0.0
- */
-$('#button-confirm').on('click', function() {
-	WirecardPaymentPage.seamlessSubmitForm({
-		onSuccess: setParentTransactionId,
-		onError: logError
-	})
-});
+var WirecardPaymentPage;
 
 /**
  * Set the paren transaction id to the form and submit it
@@ -58,7 +37,7 @@ $('#button-confirm').on('click', function() {
  * @since 1.0.0
  */
 function setParentTransactionId(response) {
-	var form = $('#wirecard-pg-form');
+	var form = $("#wirecard-pg-form");
 	for (var key in response) {
 		if (response.hasOwnProperty(key)) {
 			form.append("<input type='hidden' name='" + key + "' value='" + response[key] + "'>");
@@ -72,9 +51,9 @@ function setParentTransactionId(response) {
  * @since 1.0.0
  */
 function callback() {
-	$('#pg-spinner').fadeOut();
-	$('#creditcard-form-div').height(500).fadeIn();
-	$('#button-confirm').prop('disabled', false);
+	$("#pg-spinner").fadeOut();
+	$("#creditcard-form-div").height(500).fadeIn();
+	$("#button-confirm").prop("disabled", false);
 }
 
 /**
@@ -96,9 +75,9 @@ function getCreditCardRequestData() {
 		maxWait -= waitStep;
 		if ( typeof WirecardPaymentPage !== "undefined" ) {
 			$.ajax( {
-				url: 'index.php?route=extension/payment/wirecard_pg_creditcard/getCreditCardUiRequestData',
-				type: 'post',
-				dataType: 'json',
+				url: "index.php?route=extension/payment/wirecard_pg_creditcard/getCreditCardUiRequestData",
+				type: "post",
+				dataType: "json",
 				success: function ( data ) {
 					if ( data != null ) {
 						WirecardPaymentPage.seamlessRenderForm( {
@@ -116,8 +95,31 @@ function getCreditCardRequestData() {
 			clearInterval( WPPavailableInterval );
 		}
 		if ( maxWait <= 0 ) {
-			console.error('WPP did not respond in ' + Integer.valueOf(maxWait/1000) + 'seconds');
+			console.error("WPP did not respond in " + Integer.valueOf(maxWait/1000) + "seconds");
 			clearInterval(WPPavailableInterval);
 		}
 	}, waitStep );
 }
+
+/**
+ * When document loads get the data for the credit card form
+ *
+ * @since 1.0.0
+ */
+$(document).ready(function() {
+	$("#button-confirm").prop("disabled", true);
+	$("#creditcard-form-div").hide();
+	getCreditCardRequestData();
+});
+
+/**
+ * On confirm button submit the form
+ *
+ * @since 1.0.0
+ */
+$("#button-confirm").on("click", function() {
+	WirecardPaymentPage.seamlessSubmitForm({
+		onSuccess: setParentTransactionId,
+		onError: logError
+	});
+});

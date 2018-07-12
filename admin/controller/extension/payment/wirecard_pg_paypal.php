@@ -50,7 +50,7 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	 * @var bool
 	 * @since 1.0.0
 	 */
-	protected $hasPaymentActions = true;
+	protected $has_payment_actions = true;
 
 	/**
 	 * PayPal default configuration settings
@@ -92,12 +92,12 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	 * @since 1.0.0
 	 */
 	protected function getConfigText($fields = []) {
-		$configFieldTexts = array(
+		$config_field_texts = array(
 			'config_shopping_basket',
 			'config_shopping_basket_desc',
 		);
 
-		return parent::getConfigText($configFieldTexts);
+		return parent::getConfigText($config_field_texts);
 	}
 
 	/**
@@ -107,7 +107,7 @@ class ControllerExtensionPaymentWirecardPGPayPal extends \ControllerExtensionPay
 	 * @since 1.0.0
 	 */
 	protected function getRequestData() {
-		$this->configFields = array_merge($this->configFields, array(
+		$this->config_fields = array_merge($this->config_fields, array(
 			'shopping_basket',
 			'sort_order',
 		));

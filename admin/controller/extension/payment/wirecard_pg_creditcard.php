@@ -50,7 +50,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 	 * @var bool
 	 * @since 1.0.0
 	 */
-	protected $hasPaymentActions = true;
+	protected $has_payment_actions = true;
 
 	/**
 	 * Credit Card default configuration settings
@@ -95,7 +95,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 	 * @since 1.0.0
 	 */
 	protected function getConfigText($fields = []) {
-		$configFieldTexts = array(
+		$config_field_texts = array(
 			'config_merchant_account_id_cc_desc',
 			'config_merchant_secret_cc_desc',
 			'config_three_d_merchant_account_id',
@@ -106,7 +106,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 			'config_three_d_min_limit',
 			'config_limit_desc',
 		);
-		return parent::getConfigText($configFieldTexts);
+		return parent::getConfigText($config_field_texts);
 	}
 
 	/**
@@ -116,7 +116,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 	 * @since 1.0.0
 	 */
 	protected function getRequestData() {
-		$this->configFields = array_merge($this->configFields, array(
+		$this->config_fields = array_merge($this->config_fields, array(
 			'three_d_merchant_account_id',
 			'three_d_merchant_secret',
 			'ssl_max_limit',

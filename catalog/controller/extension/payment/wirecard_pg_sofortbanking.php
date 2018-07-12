@@ -93,16 +93,16 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	 */
 	public function getConfig($currency = null) {
 		if ($this->operation == Operation::CREDIT) {
-			$sepaController = $this->getSepaController();
-			return $sepaController->getConfig($currency);
+			$sepa_controller = $this->getSepaController();
+			return $sepa_controller->getConfig($currency);
 		}
 
 		$merchant_account_id = $this->getShopConfigVal('merchant_account_id');
 		$merchant_secret = $this->getShopConfigVal('merchant_secret');
 
 		$config = parent::getConfig($currency);
-		$paymentConfig = new PaymentMethodConfig(SofortTransaction::NAME, $merchant_account_id, $merchant_secret);
-		$config->add($paymentConfig);
+		$payment_config = new PaymentMethodConfig(SofortTransaction::NAME, $merchant_account_id, $merchant_secret);
+		$config->add($payment_config);
 
 		return $config;
 	}

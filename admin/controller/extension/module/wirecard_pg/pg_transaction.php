@@ -68,7 +68,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		$data['text_transaction'] = $this->language->get('text_transaction');
 		$data['text_response_data'] = $this->language->get('text_response_data');
 		$data['text_backend_operations'] = $this->language->get('text_backend_operations');
-		$date['text_request_amount'] = $this->language->get('text_request_amount');
+		$data['text_request_amount'] = $this->language->get('text_request_amount');
 		$data['route_href'] = $this->url->link(self::TRANSACTION . '/');
 
 		if (isset($this->session->data['wirecard_info']['admin_error'])) {
@@ -92,18 +92,18 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 	/**
 	 * Get transaction detail data via id
 	 *
-	 * @param string $id
+	 * @param string $transaction_id
 	 * @return bool|array
 	 * @since 1.0.0
 	 */
-	public function getTransactionDetails($id) {
+	public function getTransactionDetails($transaction_id) {
 		$this->load->model(self::ROUTE);
-		$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($id);
+		$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($transaction_id);
 		$data = false;
 
 		if ($transaction) {
 			$operations = $this->getBackendOperations($transaction);
-			$amount = $this->model_extension_payment_wirecard_pg->getTransactionMaxAmount($id);
+			$amount = $this->model_extension_payment_wirecard_pg->getTransactionMaxAmount($transaction_id);
 			$data = array(
 				'transaction_id' => $transaction['transaction_id'],
 				'response' => json_decode($transaction['response'], true),
@@ -137,7 +137,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 
 		$data = array_merge($data, $panel->getCommons());
 
-		$transactionHandler = new ControllerExtensionPaymentWirecardPGTransactionHandler($this->registry);
+		$transaction_handler = new ControllerExtensionPaymentWirecardPGTransactionHandler($this->registry);
 
 		if (isset($this->request->get['id']) && isset($this->request->post['operation'])) {
 			$this->load->model(self::ROUTE);
@@ -146,11 +146,11 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$amount = new \Wirecard\PaymentSdk\Entity\Amount($this->request->post['amount'], $this->request->post['currency']);
 
 			$controller = $this->getPaymentController($transaction['payment_method']);
-			$transactionId = $transactionHandler->processTransaction($controller, $transaction, $this->config, $operation, $amount);
-			if ($transactionId) {
+			$transaction_id = $transaction_handler->processTransaction($controller, $transaction, $this->config, $operation, $amount);
+			if ($transaction_id) {
 				$this->session->data['wirecard_info']['success_message'] = $this->language->get('success_new_transaction');
-				$this->session->data['wirecard_info']['child_transaction_id'] = $transactionId;
-				$this->session->data['wirecard_info']['child_transaction_href'] = $this->url->link(self::TRANSACTION, 'user_token=' . $this->session->data['user_token'] . '&id=' . $transactionId, true);
+				$this->session->data['wirecard_info']['child_transaction_id'] = $transaction_id;
+				$this->session->data['wirecard_info']['child_transaction_href'] = $this->url->link(self::TRANSACTION, 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction_id, true);
 				$this->response->redirect($this->url->link(self::TRANSACTION, 'user_token=' . $this->session->data['user_token'] . '&id=' . $this->request->get['id'], true));
 			} else {
 				$data['error_warning'] = $this->session->data['admin_error'];
@@ -206,12 +206,12 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		$transaction = $controller->getTransactionInstance();
 		$transaction->setParentTransactionId($parentTransaction['transaction_id']);
 
-		$backendService = new \Wirecard\PaymentSdk\BackendService($controller->getConfig());
-		$backOperations = $backendService->retrieveBackendOperations($transaction, true);
+		$backend_service = new \Wirecard\PaymentSdk\BackendService($controller->getConfig());
+		$backend_operations = $backend_service->retrieveBackendOperations($transaction, true);
 
-		if (!empty($backOperations)) {
+		if (!empty($backend_operations)) {
 			$operations = array();
-			foreach ($backOperations as $key => $value) {
+			foreach ($backend_operations as $key => $value) {
 				if (Operation::CREDIT == $key && !$this->config->get('payment_wirecard_pg_sepact_status')) {
 					continue;
 				}

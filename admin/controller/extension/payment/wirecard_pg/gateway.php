@@ -42,6 +42,8 @@ require_once(__DIR__ . '/language_helper.php');
  */
 abstract class ControllerExtensionPaymentGateway extends Controller {
 
+	const HEADING_TITLE = 'heading_title';
+
 	/**
 	 * @var string
 	 * @since 1.0.0
@@ -52,7 +54,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @var bool
 	 * @since 1.0.0
 	 */
-	protected $hasPaymentActions = false;
+	protected $has_payment_actions = false;
 
 	/**
 	 * @var string
@@ -80,7 +82,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @var array
 	 * @since 1.0.0
 	 */
-	protected $configFields = array(
+	protected $config_fields = array(
 		'status',
 		'merchant_account_id',
 		'merchant_secret',
@@ -98,7 +100,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @var array
 	 * @since 1.0.0
 	 */
-	protected $multiLangConfigFields = array(
+	protected $multi_lang_fields = array(
 		'title'
 	);
 
@@ -113,7 +115,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		$this->load->model('setting/setting');
 
-		$this->document->setTitle($this->language->get('heading_title'));
+		$this->document->setTitle($this->language->get(self::HEADING_TITLE));
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 			$this->model_setting_setting->editSetting($this->prefix . $this->type, $this->request->post);
@@ -123,11 +125,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
 		}
 
-		$basicData = new ExtensionModuleWirecardPGPluginData();
+		$basic_data = new ExtensionModuleWirecardPGPluginData();
 		// prefix for payment type
 		$data['prefix'] = $this->prefix . $this->type . '_';
 		$data['type'] = $this->type;
-		$data['has_payment_actions'] = $this->hasPaymentActions;
+		$data['has_payment_actions'] = $this->has_payment_actions;
 
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
@@ -142,7 +144,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->createBreadcrumbs(),
 			$this->getConfigText(),
 			$this->getRequestData(),
-			$basicData->getTemplateData()
+			$basic_data->getTemplateData()
 		);
 		$data = array_merge(
 			$this->loadConfigBlocks($data),
@@ -183,7 +185,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		);
 
 		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('heading_title'),
+			'text' => $this->language->get(self::HEADING_TITLE),
 			'href' => $this->url->link('extension/payment/wirecard_pg_' . $this->type, 'user_token=' . $this->session->data['user_token'], true)
 		);
 
@@ -199,8 +201,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	protected function getRequestData() {
 		$data = array();
 
-		foreach ($this->configFields as $configField) {
-			$data[$configField] = $this->getConfigVal($configField);
+		foreach ($this->config_fields as $config_field) {
+			$data[$config_field] = $this->getConfigVal($config_field);
 		}
 
 		return $data;
@@ -231,18 +233,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$logger = $this->getLogger();
 		$json = array();
 
-		$baseUrl = $this->request->post['base_url'];
-		$httpUser = $this->request->post['http_user'];
-		$httpPass = $this->request->post['http_pass'];
+		$base_url = $this->request->post['base_url'];
+		$http_user = $this->request->post['http_user'];
+		$http_pass = $this->request->post['http_pass'];
 
-		$testConfig = new \Wirecard\PaymentSdk\Config\Config($baseUrl, $httpUser, $httpPass);
-		$transactionService = new \Wirecard\PaymentSdk\TransactionService($testConfig, $logger);
+		$test_config = new \Wirecard\PaymentSdk\Config\Config($base_url, $http_user, $http_pass);
+		$transaction_service = new \Wirecard\PaymentSdk\TransactionService($test_config, $logger);
 		try {
-			$result = $transactionService->checkCredentials();
-			if ($result) {
+			$result = $transaction_service->checkCredentials();
+			$json['configMessage'] =$this->language->get('error_credentials');
+			if($result) {
 				$json['configMessage'] = $this->language->get('success_credentials');
-			} else {
-				$json['configMessage'] =$this->language->get('error_credentials');
 			}
 		} catch (\Exception $exception) {
 			$json['configMessage'] = $this->language->get('error_credentials');
@@ -260,11 +261,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	public function loadConfigBlocks($data) {
-		$languageHelper = new ControllerExtensionPaymentWirecardPGLanguageHelper($this->registry);
+		$language_helper = new ControllerExtensionPaymentWirecardPGLanguageHelper($this->registry);
 
 		$data['payment_header'] = $this->load->view('extension/payment/wirecard_pg/header', $data);
 		$data['basic_config'] = $this->load->view('extension/payment/wirecard_pg/basic_config',
-			array_merge($data, $languageHelper->getConfigFields($this->multiLangConfigFields, $this->prefix, $this->type, $this->default)));
+			array_merge($data, $language_helper->getConfigFields($this->multi_lang_fields, $this->prefix, $this->type, $this->default)));
 		$data['credentials_config'] = $this->load->view('extension/payment/wirecard_pg/credentials_config', $data);
 		$data['advanced_config'] = $this->load->view('extension/payment/wirecard_pg/advanced_config', $data);
 
@@ -304,13 +305,13 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	/**
 	 * Return language fields
 	 *
-	 * @param array $configFieldTexts
+	 * @param array $config_field_texts
 	 * @return array
 	 * @since 1.0.0
 	 */
-	private function getLanguageFields($configFieldTexts) {
-		foreach ($configFieldTexts as $fieldText) {
-			$data[$fieldText] = $this->language->get($fieldText);
+	private function getLanguageFields($config_field_texts) {
+		foreach ($config_field_texts as $field_text) {
+			$data[$field_text] = $this->language->get($field_text);
 		}
 
 		return $data;
