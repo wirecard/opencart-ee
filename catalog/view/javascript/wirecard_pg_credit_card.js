@@ -35,13 +35,13 @@
  * @since 1.0.0
  */
 function setParentTransactionId(response) {
-    var form = $('#wirecard-pg-form');
-    for (var key in response) {
-        if (response.hasOwnProperty(key)) {
-            form.append("<input type='hidden' name='" + key + "' value='" + response[key] + "'>");
-        }
-    }
-    form.submit();
+	var form = $('#wirecard-pg-form');
+	for (var key in response) {
+		if (response.hasOwnProperty(key)) {
+			form.append("<input type='hidden' name='" + key + "' value='" + response[key] + "'>");
+		}
+	}
+	form.submit();
 }
 
 /**
@@ -49,9 +49,9 @@ function setParentTransactionId(response) {
  * @since 1.0.0
  */
 function callback() {
-    $('#pg-spinner').fadeOut();
-    $('#creditcard-form-div').height(500).fadeIn();
-    $('#button-confirm').prop('disabled', false);
+	$('#pg-spinner').fadeOut();
+	$('#creditcard-form-div').height(500).fadeIn();
+	$('#button-confirm').prop('disabled', false);
 }
 
 /**
@@ -61,7 +61,7 @@ function callback() {
  * @since 1.0.0
  */
 function logError(error) {
-    console.log(error);
+	console.log(error);
 }
 
 /**
@@ -69,34 +69,34 @@ function logError(error) {
  * @since 1.0.0
  */
 function getCreditCardRequestData() {
-    var maxWait = 5000, waitStep = 250, WPPavailableInterval = setInterval( function () {
-        maxWait -= waitStep;
-        if ( typeof WirecardPaymentPage !== "undefined" ) {
-            $.ajax( {
-                url: 'index.php?route=extension/payment/wirecard_pg_creditcard/getCreditCardUiRequestData',
-                type: 'post',
-                dataType: 'json',
-                success: function ( data ) {
-                    if ( data != null ) {
-                        WirecardPaymentPage.seamlessRenderForm( {
-                            requestData: data,
-                            wrappingDivId: "creditcard-form-div",
-                            onSuccess: callback,
-                            onError: logError
-                        } );
-                    }
-                },
-                error: function ( error ) {
-                    console.error( error );
-                }
-            } );
-            clearInterval( WPPavailableInterval );
-        }
-        if ( maxWait <= 0 ) {
-            console.error('WPP did not respond in ' + Integer.valueOf(maxWait/1000) + 'seconds');
-            clearInterval(WPPavailableInterval);
-        }
-    }, waitStep );
+	var maxWait = 5000, waitStep = 250, WPPavailableInterval = setInterval( function () {
+		maxWait -= waitStep;
+		if ( typeof WirecardPaymentPage !== "undefined" ) {
+			$.ajax( {
+				url: 'index.php?route=extension/payment/wirecard_pg_creditcard/getCreditCardUiRequestData',
+				type: 'post',
+				dataType: 'json',
+				success: function ( data ) {
+					if ( data != null ) {
+						WirecardPaymentPage.seamlessRenderForm( {
+							requestData: data,
+							wrappingDivId: "creditcard-form-div",
+							onSuccess: callback,
+							onError: logError
+						} );
+					}
+				},
+				error: function ( error ) {
+					console.error( error );
+				}
+			} );
+			clearInterval( WPPavailableInterval );
+		}
+		if ( maxWait <= 0 ) {
+			console.error('WPP did not respond in ' + Integer.valueOf(maxWait/1000) + 'seconds');
+			clearInterval(WPPavailableInterval);
+		}
+	}, waitStep );
 }
 
 /**
@@ -121,4 +121,3 @@ $('#button-confirm').on('click', function() {
 		onError: logError
 	})
 });
-

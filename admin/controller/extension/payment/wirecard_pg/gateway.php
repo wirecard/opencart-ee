@@ -42,7 +42,7 @@ require_once(__DIR__ . '/language_helper.php');
  */
 abstract class ControllerExtensionPaymentGateway extends Controller {
 
-    const HEADING_TITLE = 'heading_title';
+	const HEADING_TITLE = 'heading_title';
 
 	/**
 	 * @var string
