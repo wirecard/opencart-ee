@@ -41,6 +41,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 	const ROUTE = 'extension/payment/wirecard_pg';
 	const PG_TRANSACTION = 'extension/module/wirecard_pg/pg_transaction';
 	const PG_SUPPORT_MAIL = 'extension/module/wirecard_pg/pg_support_email';
+	const PG_GENERAL_TERMS = 'extension/module/wirecard_pg/pg_general_terms';
 	const HEADING_TITLE = 'heading_title';
 	const TRANSACTION_ID = 'transaction_id';
 	const PARENT_TRANSACTION_ID = 'parent_transaction_id';
@@ -74,6 +75,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 		$data[self::HEADING_TITLE] = $this->language->get(self::HEADING_TITLE);
 		$data['breadcrumbs'] = $this->getBreadcrumbs();
 		$data['support_link'] = $this->url->link('extension/module/wirecard_pg/pg_support_email', 'user_token=' . $this->session->data['user_token'], true);
+		$data['general_terms'] = $this->url->link('extension/module/wirecard_pg/pg_general_terms', 'user_token=' . $this->session->data['user_token'], true);
 
 		$data = array_merge($data, $this->getCommons(), $basic_info->getTemplateData());
 
@@ -87,6 +89,8 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', self::PG_TRANSACTION);
 		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', self::PG_SUPPORT_MAIL);
 		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', self::PG_SUPPORT_MAIL);
+        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', self::PG_GENERAL_TERMS);
+        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', self::PG_GENERAL_TERMS);
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/panel', $data));
 	}
