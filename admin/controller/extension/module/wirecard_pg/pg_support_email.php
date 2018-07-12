@@ -37,7 +37,7 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 
 
 	public function index() {
-		$basicInfo = new ExtensionModuleWirecardPGPluginData();
+		$basic_info = new ExtensionModuleWirecardPGPluginData();
 		$this->load->language(self::ROUTE);
 
 		$data['header'] = $this->load->controller('common/header');
@@ -46,7 +46,7 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 		$data['user_token'] = $this->session->data['user_token'];
 		$data['transaction_overview_link'] = $this->url->link('extension/module/wirecard_pg', 'user_token=' . $this->session->data['user_token'], true);
 
-		$data = array_merge( $data, $basicInfo->getTemplateData(), $this->getBreadcrumbs(), $this->loadText());
+		$data = array_merge( $data, $basic_info->getTemplateData(), $this->getBreadcrumbs(), $this->loadText());
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/support_email', $data));
 	}
@@ -84,31 +84,31 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 	 * @since 1.0.0
 	 */
 	public function sendEmail() {
-		$basicInfo = new ExtensionModuleWirecardPGPluginData();
+		$basic_info = new ExtensionModuleWirecardPGPluginData();
 		$this->load->model('setting/extension');
 		$this->load->model('setting/setting');
 
-		$pluginList = array();
+		$plugin_list = array();
 		foreach ($this->getPluginTypes() as $type) {
-			$pluginList[$type] =  $this->model_setting_extension->getInstalled($type);
+			$plugin_list[$type] =  $this->model_setting_extension->getInstalled($type);
 		}
 
-		$pluginConfig = array();
+		$plugin_config = array();
 		foreach ($this->getPaymentOptions() as $option) {
-			$pluginConfig[$option] = $this->model_setting_setting->getSetting(self::PREFIX . $option);
+			$plugin_config[$option] = $this->model_setting_setting->getSetting(self::PREFIX . $option);
 			unset(
-				$pluginConfig[$option][self::PREFIX . $option . '_merchant_secret'],
-				$pluginConfig[$option][self::PREFIX . $option . '_merchant_secret'],
-				$pluginConfig[$option][self::PREFIX . $option . '_three_d_merchant_secret']
+				$plugin_config[$option][self::PREFIX . $option . '_merchant_secret'],
+				$plugin_config[$option][self::PREFIX . $option . '_merchant_secret'],
+				$plugin_config[$option][self::PREFIX . $option . '_three_d_merchant_secret']
 			);
 		}
 
 		$info = array(
-			'plugin_name' => $basicInfo->getName(),
-			'plugin_version' => $basicInfo->getVersion(),
+			'plugin_name' => $basic_info->getName(),
+			'plugin_version' => $basic_info->getVersion(),
 			'opencart_version' => VERSION,
-			'installed_plugins' => $pluginList,
-			'plugin_config' => $pluginConfig,
+			'installed_plugins' => $plugin_list,
+			'plugin_config' => $plugin_config,
 			'php_version' => phpversion(),
 			'contact_email' => $this->request->post['email'],
 			'message' => $this->request->post['message']
