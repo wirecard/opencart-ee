@@ -83,23 +83,6 @@ class AdditionalInformationHelper extends Model {
 	}
 
 	/**
-	 * Add account holder to transaction.
-	 *
-	 * @param Transaction $transaction
-	 * @param $order
-	 * @return Transaction
-	 * @since 1.0.0
-	 */
-	public function addAccountHolder($transaction, $order) {
-		$accountHolder = new PGAccountHolder();
-
-		$transaction->setAccountHolder($accountHolder->createAccountHolder($order, $accountHolder::BILLING));
-		$transaction->setShipping($accountHolder->createAccountHolder($order, $accountHolder::SHIPPING));
-
-		return $transaction;
-	}
-
-	/**
 	 * Create identification data
 	 *
 	 * @param Transaction $transaction
@@ -149,6 +132,10 @@ class AdditionalInformationHelper extends Model {
 			}
 			$transaction->setOrderNumber($order['order_id']);
 			$transaction->setDescriptor($this->createDescriptor($order));
+
+			$accountHolder = new PGAccountHolder();
+			$transaction->setAccountHolder($accountHolder->createAccountHolder($order, $accountHolder::BILLING));
+			$transaction->setShipping($accountHolder->createAccountHolder($order, $accountHolder::SHIPPING));
 
 			return $transaction;
 	}
