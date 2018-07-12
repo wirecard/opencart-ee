@@ -40,6 +40,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 
 	const ROUTE = 'extension/payment/wirecard_pg';
 	const PG_TRANSACTION = 'extension/module/wirecard_pg/pg_transaction';
+	const PG_SUPPORT_MAIL = 'extension/module/wirecard_pg/pg_support_email';
 	const HEADING_TITLE = 'heading_title';
 	const TRANSACTION_ID = 'transaction_id';
 	const PARENT_TRANSACTION_ID = 'parent_transaction_id';
@@ -84,8 +85,8 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 
 		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', self::PG_TRANSACTION);
 		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', self::PG_TRANSACTION);
-		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'extension/module/wirecard_pg/pg_support_email');
-		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'extension/module/wirecard_pg/pg_support_email');
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', self::PG_SUPPORT_MAIL);
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', self::PG_SUPPORT_MAIL);
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/panel', $data));
 	}
