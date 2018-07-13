@@ -117,22 +117,22 @@ class PGBasket {
 	 * @since 1.0.0
 	 */
 	private function setBasketItem($basket, $item, $currency) {
-		$grossAmount = $this->convertWithTax(
+		$gross_amount = $this->convertWithTax(
 			$item[self::PRICE],
 			$currency,
 			$item[self::TAXCLASSID]
 		);
-		$taxAmount = $grossAmount - $this->convert($item[self::PRICE], $currency);
-		$taxRate = $this->convert($taxAmount / $grossAmount * 100, $currency);
+		$tax_amount = $gross_amount - $this->convert($item[self::PRICE], $currency);
+		$tax_rate = $this->convert($tax_amount / $gross_amount * 100, $currency);
 
-		$this->sum += $grossAmount * $item[self::QUANTITY];
-		$amount = new Amount($grossAmount, $currency[self::CURRENCYCODE]);
-		$basketItem = new Item($item[self::NAME], $amount, $item[self::QUANTITY]);
-		$basketItem->setDescription($item[self::NAME]);
-		$basketItem->setArticleNumber($item[self::ID]);
-		$basketItem->setTaxRate($taxRate);
-		$basketItem->setTaxAmount(new Amount($taxAmount, $currency[self::CURRENCYCODE]));
-		$basket->add($basketItem);
+		$this->sum += $gross_amount * $item[self::QUANTITY];
+		$amount = new Amount($gross_amount, $currency[self::CURRENCYCODE]);
+		$basket_item = new Item($item[self::NAME], $amount, $item[self::QUANTITY]);
+		$basket_item->setDescription($item[self::NAME]);
+		$basket_item->setArticleNumber($item[self::ID]);
+		$basket_item->setTaxRate($tax_rate);
+		$basket_item->setTaxAmount(new Amount($tax_amount, $currency[self::CURRENCYCODE]));
+		$basket->add($basket_item);
 
 		return $basket;
 	}
@@ -147,19 +147,19 @@ class PGBasket {
 	 * @since 1.0.0
 	 */
 	private function setShippingItem($basket, $shipping, $currency) {
-		$grossAmount = $this->convertWithTax(
+		$gross_amount = $this->convertWithTax(
 			$shipping[self::COST],
 			$currency,
 			$shipping[self::TAXCLASSID]
 		);
-		$taxAmount = $this->model->tax->getTax($shipping[self::COST], $shipping[self::TAXCLASSID]);
-		$taxRate = $this->convert($taxAmount / $grossAmount * 100, $currency);
+		$tax_amount = $this->model->tax->getTax($shipping[self::COST], $shipping[self::TAXCLASSID]);
+		$tax_rate = $this->convert($tax_amount / $gross_amount * 100, $currency);
 
-		$this->sum += $grossAmount;
-		$item = new Item('Shipping', new Amount($grossAmount, $currency[self::CURRENCYCODE]), 1);
+		$this->sum += $gross_amount;
+		$item = new Item('Shipping', new Amount($gross_amount, $currency[self::CURRENCYCODE]), 1);
 		$item->setDescription('Shipping');
 		$item->setArticleNumber('Shipping');
-		$item->setTaxRate($taxRate);
+		$item->setTaxRate($tax_rate);
 		$basket->add($item);
 
 		return $basket;

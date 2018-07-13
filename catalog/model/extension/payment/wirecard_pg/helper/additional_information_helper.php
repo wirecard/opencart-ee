@@ -31,6 +31,7 @@
 
 require_once(dirname(__FILE__) . '/pg_basket.php');
 require_once(dirname(__FILE__) . '/pg_account_holder.php');
+include_once(DIR_SYSTEM . 'library/autoload.php');
 
 use Wirecard\PaymentSdk\Transaction\Transaction;
 
@@ -40,8 +41,6 @@ use Wirecard\PaymentSdk\Transaction\Transaction;
  * @since 1.0.0
  */
 class AdditionalInformationHelper extends Model {
-	const OPENCART_GATEWAY_WIRECARD_VERSION = '1.0.0';
-	const OPENCART_GATEWAY_WIRECARD_NAME = 'Wirecard OpenCart Extension';
 	/**
 	 * @var string
 	 * @since 1.0.0
@@ -76,8 +75,8 @@ class AdditionalInformationHelper extends Model {
 	 * @since 1.0.0
 	 */
 	public function addBasket($transaction, $items, $shipping, $currency, $total) {
-		$basketFactory = new PGBasket($this);
-		$transaction->setBasket($basketFactory->getBasket($transaction, $items, $shipping, $currency, $total));
+		$basket_factory = new PGBasket($this);
+		$transaction->setBasket($basket_factory->getBasket($transaction, $items, $shipping, $currency, $total));
 
 		return $transaction;
 	}
@@ -91,13 +90,14 @@ class AdditionalInformationHelper extends Model {
 	 * @since 1.0.0
 	 */
 	public function setIdentificationData($transaction, $order) {
-		$customFields = new \Wirecard\PaymentSdk\Entity\CustomFieldCollection();
-		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('orderId', $order['order_id']));
-		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('shopName', 'OpenCart'));
-		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('shopVersion', VERSION));
-		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('pluginName', self::OPENCART_GATEWAY_WIRECARD_NAME));
-		$customFields->add(new \Wirecard\PaymentSdk\Entity\CustomField('pluginVersion', self::OPENCART_GATEWAY_WIRECARD_VERSION));
-		$transaction->setCustomFields($customFields);
+		$basic_info = new ExtensionModuleWirecardPGPluginData();
+		$custom_fields = new \Wirecard\PaymentSdk\Entity\CustomFieldCollection();
+		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('orderId', $order['order_id']));
+		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('shopName', 'OpenCart'));
+		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('shopVersion', VERSION));
+		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('pluginName', $basic_info->getName()));
+		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('pluginVersion', $basic_info->getVersion()));
+		$transaction->setCustomFields($custom_fields);
 		$transaction->setLocale(substr($order['language_code'], 0, 2));
 
 		return $transaction;
@@ -133,9 +133,9 @@ class AdditionalInformationHelper extends Model {
 			$transaction->setOrderNumber($order['order_id']);
 			$transaction->setDescriptor($this->createDescriptor($order));
 
-			$accountHolder = new PGAccountHolder();
-			$transaction->setAccountHolder($accountHolder->createAccountHolder($order, $accountHolder::BILLING));
-			$transaction->setShipping($accountHolder->createAccountHolder($order, $accountHolder::SHIPPING));
+			$account_holder = new PGAccountHolder();
+			$transaction->setAccountHolder($account_holder->createAccountHolder($order, $account_holder::BILLING));
+			$transaction->setShipping($account_holder->createAccountHolder($order, $account_holder::SHIPPING));
 
 			return $transaction;
 	}

@@ -26,6 +26,9 @@
         {% endif %}
         <div class="panel panel-default">
             <div class="panel-heading">
+                {{ plugin_name }}&nbsp;{{ plugin_version }}
+            </div>
+            <div class="panel-heading">
                 <h3 class="panel-title">
                     <i class="fa fa-puzzle-piece"></i> {{ text_transaction }} {% if transaction %}{{ transaction.transaction_id }}{% endif %}
                 </h3>

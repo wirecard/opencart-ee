@@ -68,27 +68,6 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends \ControllerExtensionPay
 	);
 
 	/**
-	 * Basic index method
-	 *
-	 * @since 1.0.0
-	 */
-	public function index() {
-		parent::index();
-	}
-
-	/**
-	 * Set data fields or load config
-	 *
-	 * @return array
-	 * @since 1.0.0
-	 */
-	protected function getRequestData() {
-		$this->configFields = array_merge($this->configFields);
-
-		return parent::getRequestData();
-	}
-
-	/**
 	 * Load the required config blocks for this payment method.
 	 *
 	 * @param array $data
