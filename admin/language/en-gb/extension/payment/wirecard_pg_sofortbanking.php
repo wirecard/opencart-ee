@@ -31,7 +31,7 @@
 
 // Page Title
 $_['heading_title'] = 'Wirecard Sofort.';
-$_['text_wirecard_pg_sofortbanking'] = '<img src="./view/image/wirecard_pg/sofortbanking.png" width="100"/>';
+$_['text_wirecard_pg_sofortbanking'] = '<img src="./view/image/wirecard_pg/sofortbanking.png" />';
 
 // Payment specific configuration
 $_['text_edit'] = 'Edit Sofort.';

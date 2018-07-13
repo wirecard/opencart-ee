@@ -48,32 +48,6 @@ class ModelExtensionPaymentWirecardPGIdeal extends ModelExtensionPaymentGateway 
 	protected $type = 'ideal';
 
 	/**
-	 * Basic getMethod method
-	 *
-	 * @param $address
-	 * @param $total
-	 * @return array
-	 * @since 1.0.0
-	 */
-	public function getMethod($address, $total) {
-		$method_data = parent::getMethod($address, $total);
-		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
-
-		$prefix = $this->prefix . $this->type;
-		$logo = '<img src="./image/catalog/wirecard_pg_'. $this->type .'.png" width="45" style="margin: 0 22px" />';
-		$code = $this->language->get('code');
-		if (isset($code) && isset($this->config->get($prefix . '_title' )[$code])) {
-			$title = $logo . ' ' . $this->config->get($prefix . '_title' )[$code];
-		} else {
-			$title = $logo . ' ' . $this->config->get($prefix . '_title' )['en'];
-		}
-
-		$method_data['title'] = $title;
-
-		return $method_data;
-	}
-
-	/**
 	 * Get all valid iDEAL BICs.
 	 *
 	 * @return array

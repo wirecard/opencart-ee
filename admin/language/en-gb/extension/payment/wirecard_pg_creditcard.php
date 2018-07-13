@@ -31,7 +31,7 @@
 
 // Page Title
 $_['heading_title'] = 'Wirecard Credit Card';
-$_['text_wirecard_pg_creditcard'] = '<img src="./view/image/wirecard_pg/creditcard.png" width="100"/>';
+$_['text_wirecard_pg_creditcard'] = '<img src="./view/image/wirecard_pg/creditcard.png" />';
 
 // Payment specific configuration
 $_['text_edit'] = 'Edit Credit Card';
