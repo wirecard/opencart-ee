@@ -89,8 +89,8 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', self::PG_TRANSACTION);
 		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', self::PG_SUPPORT_MAIL);
 		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', self::PG_SUPPORT_MAIL);
-        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', self::PG_GENERAL_TERMS);
-        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', self::PG_GENERAL_TERMS);
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', self::PG_GENERAL_TERMS);
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', self::PG_GENERAL_TERMS);
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/panel', $data));
 	}

@@ -36,11 +36,11 @@ class ControllerExtensionModuleWirecardPGPGGeneralTerms extends Controller {
 	const ROUTE = 'extension/payment/wirecard_pg';
 	const PREFIX = 'payment_wirecard_pg_';
 
-    /**
-     * Basic index method
-     *
-     * @since 1.0.0
-     */
+	/**
+	* Basic index method
+	*
+	* @since 1.0.0
+	*/
 	public function index() {
 		$basic_info = new ExtensionModuleWirecardPGPluginData();
 		$this->load->language(self::ROUTE);
@@ -49,7 +49,7 @@ class ControllerExtensionModuleWirecardPGPGGeneralTerms extends Controller {
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['user_token'] = $this->session->data['user_token'];
-        $data['title'] = $this->language->get('terms_of_use');
+		$data['title'] = $this->language->get('terms_of_use');
 		$data['transaction_overview_link'] = $this->url->link('extension/module/wirecard_pg', 'user_token=' . $this->session->data['user_token'], true);
 
 		$data = array_merge( $data, $basic_info->getTemplateData(), $this->getBreadcrumbs());
