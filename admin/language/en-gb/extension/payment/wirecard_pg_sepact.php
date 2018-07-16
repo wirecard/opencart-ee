@@ -9,7 +9,7 @@
 
 // Page Title
 $_['heading_title'] = 'Wirecard SEPA Credit Transfer';
-$_['text_wirecard_pg_sepact'] = '<img src="./view/image/wirecard_pg/sepa.png" width="100"/>';
+$_['text_wirecard_pg_sepact'] = '<img src="./view/image/wirecard_pg/sepa.png" />';
 
 // Payment specific configuration
 $_['text_edit'] = 'Edit SEPA Credit Transfer';
