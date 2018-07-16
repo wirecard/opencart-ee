@@ -75,7 +75,7 @@ class ControllerExtensionPaymentWirecardPGPia extends \ControllerExtensionPaymen
 	 * @since 1.0.0
 	 */
 	protected function getRequestData() {
-		$this->configFields = array_merge($this->configFields, array('sort_order'));
+		$this->config_fields = array_merge($this->config_fields, array('sort_order'));
 
 		return parent::getRequestData();
 	}

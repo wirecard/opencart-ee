@@ -71,9 +71,9 @@ class ControllerExtensionPaymentWirecardPGPia extends ControllerExtensionPayment
 		$this->transaction = $this->getTransactionInstance();
 
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-		$additionalHelper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
+		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
 
-		$additionalHelper->addAccountHolder($this->transaction, $order);
+		$additional_helper->addAccountHolder($this->transaction, $order);
 
 		parent::confirm();
 	}
@@ -90,8 +90,8 @@ class ControllerExtensionPaymentWirecardPGPia extends ControllerExtensionPayment
 		$merchant_secret = $this->getShopConfigVal('merchant_secret');
 
 		$config = parent::getConfig($currency);
-		$paymentConfig = new PaymentMethodConfig(PoiPiaTransaction::NAME, $merchant_account_id, $merchant_secret);
-		$config->add($paymentConfig);
+		$payment_config = new PaymentMethodConfig(PoiPiaTransaction::NAME, $merchant_account_id, $merchant_secret);
+		$config->add($payment_config);
 
 		return $config;
 	}
