@@ -92,22 +92,22 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 *
 	 * @param $config
 	 * @param $transaction
-	 * @param string $paymentAction
+	 * @param string $paymetAction
 	 * @return \Wirecard\PaymentSdk\Response\Response
 	 * @throws Exception
 	 * @since 1.0.0
 	 */
-	public function sendRequest($config, $transaction, $paymentAction) {
+	public function sendRequest($config, $transaction, $paymetAction) {
 		$this->load->language('extension/payment/wirecard_pg');
 
 		$logger = $this->getLogger();
-		$transactionService = new \Wirecard\PaymentSdk\TransactionService($config, $logger);
+		$transaction_service = new \Wirecard\PaymentSdk\TransactionService($config, $logger);
 
 		$redirect = $this->url->link('checkout/checkout', '', true);
 
 		try {
 			/* @var \Wirecard\PaymentSdk\Response\Response $response */
-			$response = $transactionService->process($transaction, $paymentAction);
+			$response = $transaction_service->process($transaction, $paymetAction);
 		} catch (Exception $exception) {
 			$logger->error(get_class($exception) . ' ' . $exception->getMessage());
 			$this->session->data['error'] = $this->language->get('order_error');
@@ -119,16 +119,6 @@ abstract class ModelExtensionPaymentGateway extends Model {
 
 		if ($response instanceof \Wirecard\PaymentSdk\Response\InteractionResponse) {
 			$redirect = $response->getRedirectUrl();
-		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FormInteractionResponse) {
-			$formFields = $response->getFormFields();
-			$responseQuery = array();
-
-			foreach ($formFields->getIterator() as $key => $value) {
-				$responseQuery[$key] = $value;
-			}
-
-			$query = http_build_query($responseQuery);
-			$redirect = $response->getUrl() . '&' . $query;
 		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			$errors = '';
 
@@ -151,23 +141,23 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 *
 	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
 	 * @param array $order
-	 * @param string $transactionState
-	 * @param ControllerExtensionPaymentGateway $paymentController
+	 * @param string $transaction_state
+	 * @param ControllerExtensionPaymentGateway $payment_controller
 	 * @since 1.0.0
 	 */
-	public function createTransaction($response, $order, $transactionState, $paymentController) {
+	public function createTransaction($response, $order, $transaction_state, $payment_controller) {
 		$amount = $response->getData()['requested-amount'];
-		$orderId = $response->getCustomFields()->get('orderId');
+		$order_id = $response->getCustomFields()->get('orderId');
 		$currency = $order['currency_code'];
 
 		$this->db->query("
             INSERT INTO `" . DB_PREFIX . "wirecard_ee_transactions` SET 
-            `order_id` = '" . (int)$orderId . "', 
+            `order_id` = '" . (int)$order_id . "', 
             `transaction_id` = '" . $this->db->escape($response->getTransactionId()) . "', 
             `parent_transaction_id` = '', 
             `transaction_type` = '" . $this->db->escape($response->getTransactionType()) . "',
-            `payment_method` = '" . $this->db->escape($paymentController->getType()) . "', 
-            `transaction_state` = '" . $this->db->escape($transactionState) . "',
+            `payment_method` = '" . $this->db->escape($payment_controller->getType()) . "', 
+            `transaction_state` = '" . $this->db->escape($transaction_state) . "',
             `amount` = '" . (float)$amount . "',
             `currency` = '" . $this->db->escape($currency) . "',
             `response` = '" . $this->db->escape(json_encode($response->getData())) . "',
@@ -179,13 +169,13 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 * Update transaction with specific transactionstate
 	 *
 	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
-	 * @param $transactionState
+	 * @param $transaction_state
 	 * @since 1.0.0
 	 */
-	public function updateTransactionState($response, $transactionState) {
+	public function updateTransactionState($response, $transaction_state) {
 		$this->db->query("
         UPDATE `" . DB_PREFIX . "wirecard_ee_transactions` SET 
-            `transaction_state` = '" . $this->db->escape($transactionState) . "', 
+            `transaction_state` = '" . $this->db->escape($transaction_state) . "', 
             `response` = '" . $this->db->escape(json_encode($response->getData())) . "',
             `transaction_type` = '" . $this->db->escape($response->getTransactionType()) . "',
             `date_modified` = NOW() WHERE 
@@ -196,13 +186,13 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	/**
 	 * Get transaction via transaction id
 	 *
-	 * @param $transactionId
+	 * @param $transaction_id
 	 * @return bool|array
 	 * @since 1.0.0
 	 */
-	public function getTransaction($transactionId) {
+	public function getTransaction($transaction_id) {
 		$query = $this->db->query("
-	        SELECT * FROM `" . DB_PREFIX . "wirecard_ee_transactions` WHERE `transaction_id` = '" . $this->db->escape($transactionId) . "'
+	        SELECT * FROM `" . DB_PREFIX . "wirecard_ee_transactions` WHERE `transaction_id` = '" . $this->db->escape($transaction_id) . "'
 	    ");
 
 		if ($query->num_rows) {

@@ -81,8 +81,8 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 		$merchant_secret = $this->getShopConfigVal('merchant_secret');
 
 		$config = parent::getConfig($currency);
-		$paymentConfig = new PaymentMethodConfig(PayPalTransaction::NAME, $merchant_account_id, $merchant_secret);
-		$config->add($paymentConfig);
+		$payment_config = new PaymentMethodConfig(PayPalTransaction::NAME, $merchant_account_id, $merchant_secret);
+		$config->add($payment_config);
 
 		return $config;
 	}

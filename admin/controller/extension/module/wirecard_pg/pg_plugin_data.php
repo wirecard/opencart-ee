@@ -28,29 +28,46 @@
  * By installing the plugin into the shop system the customer agrees to these terms of use.
  * Please do not use the plugin if you do not agree to these terms of use!
  */
-require_once(dirname( __FILE__ ) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ModelExtensionPaymentWirecardPGPoi
- *
- * Payment on Invoice Transaction model
+ * Class ExtensionModuleWirecardPGPluginData
  *
  * @since 1.0.0
  */
-class ModelExtensionPaymentWirecardPGPoi extends ModelExtensionPaymentGateway {
+class ExtensionModuleWirecardPGPluginData {
+	const OPENCART_GATEWAY_WIRECARD_VERSION = '1.0.0';
+	const OPENCART_GATEWAY_WIRECARD_NAME = 'Wirecard OpenCart Extension';
 
 	/**
-	 * @var string
-	 * @since 1.0.0
-	 */
-	protected $type = 'poi';
-
-	/**
-	 * Basic getMethod method
+	 * Return plugin version
 	 *
+	 * @return string
 	 * @since 1.0.0
 	 */
-	public function getMethod($address, $total) {
-		return parent::getMethod($address, $total);
+	public function getVersion() {
+		return self::OPENCART_GATEWAY_WIRECARD_VERSION;
+	}
+
+	/**
+	 * Return plugin name
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function getName() {
+		return self::OPENCART_GATEWAY_WIRECARD_NAME;
+	}
+
+	/**
+	 * Return plugin data to be used in templates
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public function getTemplateData() {
+		return array(
+			'plugin_name' => self::getName(),
+			'plugin_version' => self::getVersion()
+		);
 	}
 }

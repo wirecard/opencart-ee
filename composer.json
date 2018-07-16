@@ -15,21 +15,22 @@
     "phpunit/phpunit": "5.3.5",
     "opencart/opencart": "3.0.2.0",
     "squizlabs/php_codesniffer": "^2.7",
-    "mockery/mockery": "^1.1"
+    "mockery/mockery": "^1.1",
+    "codacy/coverage": "dev-master"
   },
   "type": "opencart-plugin",
   "scripts": {
-    "upload-coverage": "coveralls -v",
+    "upload-coverage": "codacycoverage clover build/coverage/xml",
     "cs-check": "phpcs --standard=phpcs.xml",
     "cs-fix": "phpcbf --standard=phpcs.xml",
-    "test-coverage-text": "phpunit --colors=always --coverage-text",
-    "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
+    "test-coverage": "phpunit --coverage-clover build/coverage/xml"
   },
   "autoload": {
       "classmap": [
         "admin/controller/extension/payment/wirecard_pg/",
         "catalog/model/extension/payment/wirecard_pg/helper/",
-        "catalog/model/extension/payment/wirecard_pg/handler/"
+        "catalog/model/extension/payment/wirecard_pg/handler/",
+        "admin/controller/extension/module/wirecard_pg/"
       ]
   },
   "config": {
