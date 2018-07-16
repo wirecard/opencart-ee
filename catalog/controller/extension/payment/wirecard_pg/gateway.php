@@ -387,7 +387,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$delete_failure = $this->getShopConfigVal('delete_failure_order');
 
 		if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
-			$orderManager->createResponseOrder($result, $this);
+			$order_manager->createResponseOrder($result, $this);
 
 			if ('pia' == $this->type && isset($this->session->data['order_id'])) {
 				$this->load->language('checkout/success');
@@ -396,15 +396,15 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 				$this->cart->clear();
 				$this->document->setTitle($this->language->get('heading_title'));
 
-				$responseData = $result->getData();
+				$response_data = $result->getData();
 				$data = [
 					'breadcrumbs' => $this->getCheckoutSuccessBreadcrumbs(),
 					'pia' => [
 						'transaction' => [
-							'amount' => $this->currency->format($responseData['requested-amount'], $responseData['currency']),
-							'iban' => $responseData['merchant-bank-account.0.iban'],
-							'bic' => $responseData['merchant-bank-account.0.bic'],
-							'ptrid' => $responseData['provider-transaction-reference-id'],
+							'amount' => $this->currency->format($response_data['requested-amount'], $response_data['currency']),
+							'iban' => $response_data['merchant-bank-account.0.iban'],
+							'bic' => $response_data['merchant-bank-account.0.bic'],
+							'ptrid' => $response_data['provider-transaction-reference-id'],
 						],
 
 						'texts' => [

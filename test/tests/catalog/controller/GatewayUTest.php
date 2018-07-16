@@ -135,24 +135,6 @@ class GatewayUTest extends \PHPUnit_Framework_TestCase
 		];
 
 		$this->cart->method('getProducts')->willReturn($items);
-
-//		$this->modelPia = $this->getMockBuilder(ModelExtensionPaymentWirecardPGPoi::class)
-//			->disableOriginalConstructor()
-//			->setMethods(['sendRequest'])
-//			->getMock();
-//
-//		$this->controller = new ControllerExtensionPaymentWirecardPGPia(
-//			$this->registry,
-//			$this->config,
-//			$this->loader,
-//			$this->session,
-//			$this->response,
-//			$this->modelOrder,
-//			$this->url,
-//			$this->modelPia,
-//			$this->language,
-//			$this->cart
-//		);
 	}
 
 	public function testSuccessResponse()
