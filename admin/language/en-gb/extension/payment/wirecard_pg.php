@@ -36,6 +36,18 @@ $_['text_extension'] = 'Extensions';
 $_['heading_title'] = 'Wirecard Transactions';
 $_['text_list'] = 'Transactions';
 
+// Transaction Table
+$_['panel_transaction'] = 'Transaction';
+$_['panel_order_number'] = 'Order number';
+$_['panel_transcation_id'] = 'Transaction ID';
+$_['panel_parent_transaction_id'] = 'Parent transaction ID';
+$_['panel_action'] = 'Action';
+$_['panel_payment_method'] = 'Payment method';
+$_['panel_transaction_state'] = 'Transaction state';
+$_['panel_amount'] = 'Amount';
+$_['panel_currency'] = 'Currency';
+$_['panel_details'] = 'Details';
+
 // Transaction Details
 $_['text_transaction'] = 'Transaction';
 $_['heading_transaction_details'] = 'Transactiondetails';

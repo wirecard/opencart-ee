@@ -78,6 +78,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 		$data = array_merge($data, $this->getCommons(), $basic_info->getTemplateData());
 
 		$data['transactions'] = $this->loadTransactionData();
+		$data['texts'] = $this->getTableTexts();
 
 		$this->load->model('setting/setting');
 		$this->load->model('setting/extension');
@@ -138,6 +139,27 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 		}
 
 		return $transactions;
+	}
+
+	/**
+	 * Get all the texts required to localize the transcation table.
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public function getTableTexts() {
+		return [
+			'panel_transaction' => $this->language->get('panel_transaction'),
+			'panel_order_number' => $this->language->get('panel_order_number'),
+			'panel_transcation_id' => $this->language->get('panel_transcation_id'),
+			'panel_parent_transaction_id' => $this->language->get('panel_parent_transaction_id'),
+			'panel_action' => $this->language->get('panel_action'),
+			'panel_payment_method' => $this->language->get('panel_payment_method'),
+			'panel_transaction_state' => $this->language->get('panel_transaction_state'),
+			'panel_amount' => $this->language->get('panel_amount'),
+			'panel_currency' => $this->language->get('panel_currency'),
+			'panel_details' => $this->language->get('panel_details'),
+		];
 	}
 
 	/**
