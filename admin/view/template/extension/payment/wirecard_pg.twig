@@ -33,6 +33,12 @@
         var http_user = $( '#input-http-user' ).val();
         var http_pass = $( '#input-http-password' ).val();
 
+        url = new RegExp("^https?://([^/]+?\.[a-zA-Z]{2,4})/?$", "gm");
+        if (!url.test(base_url)) {
+            alert('{{ wrong_url_format }}');
+            return;
+        }
+
         $.ajax(
             {
                 type: 'POST',

@@ -36,7 +36,7 @@ $_['config_merchant_account_id'] = 'Merchant Account ID';
 $_['config_merchant_account_id_desc'] = 'Unique identifier assigned to your merchant account.';
 $_['config_merchant_secret'] = 'Secret Key';
 $_['config_merchant_secret_desc'] = 'Secret Key is mandatory to calculate the Digital Signature for payments.';
-$_['config_base_url'] = 'Base URL';
+$_['config_base_url'] = 'Wirecard Server Address';
 $_['config_base_url_desc'] = 'The Wirecard base URL. (e.g. https://api.wirecard.com)';
 $_['config_http_user'] = 'HTTP User';
 $_['config_http_user_desc'] = 'HTTP User as provided in your Wirecard contract.';
@@ -62,6 +62,7 @@ $_['config_delete_failure_order_desc'] = 'Automatically delete order after faile
 $_['text_success'] = 'Your modifications are saved!';
 $_['success_credentials'] = 'Merchant configuration was successfully tested.';
 $_['error_credentials'] = 'Test failed, please check your credentials.';
+$_['wrong_url_format'] = 'Test failed, the address is not in correct format. (e.g. https://api.wirecard.com)';
 
 $_['config_email'] = 'Your Email address:';
 $_['config_message'] = 'Your message:';

@@ -335,7 +335,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			'config_sort_order_desc',
 			'config_delete_cancel_order_desc',
 			'config_delete_failure_order',
-			'config_delete_failure_order_desc'
+			'config_delete_failure_order_desc',
+			'wrong_url_format',
 		);
 	}
 }
