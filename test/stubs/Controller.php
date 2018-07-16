@@ -48,21 +48,20 @@ abstract class Controller
         $this->document = $document;
         $this->customer = $customer;
 
-	    $this->request = new stdClass();
-	    $this->request->post = [
-	    	'fingerprint-session' => '123',
+		$this->request = new stdClass();
+		$this->request->post = [
+			'fingerprint-session' => '123',
 			'ideal-bic' => \Wirecard\PaymentSdk\Entity\IdealBic::INGBNL2A
 		];
+	}
 
-    }
+	public function get($key)
+	{
+		return $this->registry->get($key);
+	}
 
-    public function get($key)
-    {
-        return $this->registry->get($key);
-    }
-
-    public function set($key, $value)
-    {
-        $this->registry->set($key, $value);
-    }
+	public function set($key, $value)
+	{
+		$this->registry->set($key, $value);
+	}
 }
