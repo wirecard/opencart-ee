@@ -29,7 +29,7 @@ class NotificationHandler {
 
 		// Return the response or log errors if any happen.
 		if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
-			$logger->debug('Notify Response: ' . print_r($response, true));
+			$logger->debug('Notify Response: ' . $response->getRawData());
 			return $response;
 		} else {
 			foreach ($response->getStatusCollection()->getIterator() as $item) {
