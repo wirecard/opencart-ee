@@ -111,7 +111,6 @@ class PGBasket {
 		$basket_item->setTaxRate($tax_rate);
 		$basket_item->setTaxAmount(new Amount($tax_amount, $currency[self::CURRENCYCODE]));
 		$basket->add($basket_item);
-
 		return $basket;
 	}
 
@@ -170,7 +169,7 @@ class PGBasket {
 	 * @since 1.0.0
 	 */
 	private function convert($amount, $currency) {
-		return $this->model->currency->format($amount, $currency[self::CURRENCYCODE], $currency[self::CURRENCYVALUE], false);
+		return number_format($this->model->currency->format($amount, $currency[self::CURRENCYCODE], $currency[self::CURRENCYVALUE], false), 3);
 	}
 
 	/**
@@ -183,6 +182,6 @@ class PGBasket {
 	 * @since 1.0.0
 	 */
 	private function convertWithTax($amount, $currency, $taxClassId) {
-		return $this->model->tax->calculate($this->convert($amount, $currency), $taxClassId, 'P');
+		return number_format($this->model->tax->calculate($this->convert($amount, $currency), $taxClassId, 'P'), 3);
 	}
 }
