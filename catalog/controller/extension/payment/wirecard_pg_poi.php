@@ -35,19 +35,19 @@ use Wirecard\PaymentSdk\Transaction\PoiPiaTransaction;
 use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
 
 /**
- * Class ControllerExtensionPaymentWirecardPGPia
+ * Class ControllerExtensionPaymentWirecardPGPoi
  *
- * Payment In Advance Transaction controller
+ * Payment On Invoice Transaction controller
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGPia extends ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGPoi extends ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'pia';
+	protected $type = 'poi';
 
 	/**
 	 * Payment specific model getter
@@ -58,11 +58,11 @@ class ControllerExtensionPaymentWirecardPGPia extends ControllerExtensionPayment
 	public function getModel() {
 		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
 
-		return $this->model_extension_payment_wirecard_pg_pia;
+		return $this->model_extension_payment_wirecard_pg_poi;
 	}
 
 	/**
-	 * Create Payment In Advance transaction
+	 * Create Payment On Invoice transaction
 	 *
 	 * @since 1.0.0
 	 */
