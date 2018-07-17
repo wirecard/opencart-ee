@@ -104,13 +104,14 @@ class PGBasket {
 		$tax_rate = $this->convert($tax_amount / $gross_amount * 100, $currency);
 
 		$this->sum += $gross_amount * $item[self::QUANTITY];
-		$amount = new Amount($gross_amount, $currency[self::CURRENCYCODE]);
+		$amount = new Amount(number_format($gross_amount, 2), $currency[self::CURRENCYCODE]);
 		$basket_item = new Item($item[self::NAME], $amount, $item[self::QUANTITY]);
 		$basket_item->setDescription($item[self::NAME]);
 		$basket_item->setArticleNumber($item[self::ID]);
 		$basket_item->setTaxRate($tax_rate);
-		$basket_item->setTaxAmount(new Amount($tax_amount, $currency[self::CURRENCYCODE]));
+		$basket_item->setTaxAmount(new Amount(number_format($tax_amount, 2), $currency[self::CURRENCYCODE]));
 		$basket->add($basket_item);
+
 		return $basket;
 	}
 
@@ -133,10 +134,10 @@ class PGBasket {
 		$tax_rate = $this->convert($tax_amount / $gross_amount * 100, $currency);
 
 		$this->sum += $gross_amount;
-		$item = new Item('Shipping', new Amount($gross_amount, $currency[self::CURRENCYCODE]), 1);
+		$item = new Item('Shipping', new Amount(number_format($gross_amount, 2), $currency[self::CURRENCYCODE]), 1);
 		$item->setDescription('Shipping');
 		$item->setArticleNumber('Shipping');
-		$item->setTaxRate($tax_rate);
+		$item->setTaxRate(number_format($tax_rate, 2));
 		$basket->add($item);
 
 		return $basket;
@@ -152,7 +153,7 @@ class PGBasket {
 	 * @since 1.0.0
 	 */
 	private function setCouponItem($basket, $amount, $currency) {
-		$item = new Item('Coupon', new Amount($amount * -1, $currency[self::CURRENCYCODE]), 1);
+		$item = new Item('Coupon', new Amount(number_format($amount * -1, 2), $currency[self::CURRENCYCODE]), 1);
 		$item->setDescription('Coupon');
 		$item->setArticleNumber('Coupon');
 		$basket->add($item);
