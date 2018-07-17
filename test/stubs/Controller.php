@@ -45,6 +45,12 @@ abstract class Controller
 	    	'fingerprint-session' => '123',
 			'ideal-bic' => \Wirecard\PaymentSdk\Entity\IdealBic::INGBNL2A
 		];
+
+	    $this->currency = new class{
+	    	public function format($total, $currency, $value, $code) {
+			    return $total;
+		    }
+	    };
     }
 
     public function get($key)
