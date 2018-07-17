@@ -29,5 +29,5 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-$_['legend'] = "Select your bank";
+$_['legend'] = "Wählen Sie Ihre Bank aus:";
 $_['bank_label'] = "Bank";

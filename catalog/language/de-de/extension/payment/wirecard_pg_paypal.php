@@ -31,4 +31,4 @@
 
 // Method Title
 $_['text_title'] = 'Wirecard PayPal';
-$_['button_confirm'] = '';
+$_['button_confirm'] = 'Bestellung bestätigen';

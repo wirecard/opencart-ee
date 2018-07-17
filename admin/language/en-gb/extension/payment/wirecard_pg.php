@@ -66,9 +66,9 @@ $_['text_payment_action_reserve'] = 'Authorization';
 $_['config_payment_action_desc'] = 'Select between "Purchase" to capture/invoice your order automatically or "Authorization" to capture/invoice manually.';
 $_['config_sort_order'] = 'Sort Order';
 $_['config_sort_order_desc'] = 'Order of the payment method on the checkout page';
-$_['config_delete_cancel_order'] = 'Delete canceled order';
+$_['config_delete_cancel_order'] = 'Delete Canceled Order';
 $_['config_delete_cancel_order_desc'] = 'Automatically delete order after canceled payment process.';
-$_['config_delete_failure_order'] = 'Delete failed order';
+$_['config_delete_failure_order'] = 'Delete Failed Order';
 $_['config_delete_failure_order_desc'] = 'Automatically delete order after failed payment process.';
 
 $_['text_success'] = 'Your modifications are saved!';
@@ -76,12 +76,12 @@ $_['success_credentials'] = 'Merchant configuration was successfully tested.';
 $_['error_credentials'] = 'Test failed, please check your credentials.';
 $_['wrong_url_format'] = 'Test failed, the address is not in correct format. (e.g. https://api.wirecard.com)';
 
-$_['config_email'] = 'Your Email address:';
+$_['config_email'] = 'Your e-mail address:';
 $_['config_message'] = 'Your message:';
-$_['success_email'] = 'Your E-Mail was succesfully send!';
-$_['error_email'] = 'There was an error sending you E-Mail!';
-$_['send_email'] = 'Send';
+$_['success_email'] = 'E-mail sent successfully.';
+$_['error_email'] = 'E-mail delivery error.';
+$_['send_email'] = 'Submit';
 $_['back_button'] = 'Back';
-$_['support_email_title'] = 'Support Email';
+$_['support_email_title'] = 'E-Mail to Support';
 
 $_['terms_of_use'] = 'Terms of Use';

@@ -34,5 +34,5 @@ $_['heading_title'] = 'Wirecard Sofort.';
 $_['text_wirecard_pg_sofortbanking'] = '<img src="./view/image/wirecard_pg/sofortbanking.png" width="100"/>';
 
 // Payment specific configuration
-$_['text_edit'] = '';
+$_['text_edit'] = 'Zahlungsmittel Sofort. bearbeiten';
 $_['config_status_desc'] = 'Zahlungsmittel Sofort. aktivieren und dem Endkunden beim Checkout anbieten.';

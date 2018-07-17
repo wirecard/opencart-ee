@@ -31,8 +31,8 @@
 
 // Page Title
 $_['heading_title'] = 'Wirecard iDEAL';
-$_['text_wirecard_pg_ideal'] = '<img src="./view/image/wirecard_pg/ideal.png" width="45"/>';
+$_['text_wirecard_pg_ideal'] = '<img src="./view/image/wirecard_pg/ideal.png" />';
 
 // Payment specific configuration
-$_['text_edit'] = '';
+$_['text_edit'] = 'Zahlungsmittel iDEAL bearbeiten';
 $_['config_status_desc'] = 'Zahlungsmittel iDEAL aktivieren und dem Endkunden beim Checkout anbieten.';

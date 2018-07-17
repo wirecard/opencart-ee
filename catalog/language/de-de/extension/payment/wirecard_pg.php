@@ -29,8 +29,8 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-$_['order_cancelled'] = '';
-$_['order_error'] = '';
+$_['order_cancelled'] = 'Bestellung wurde abgebrochen.';
+$_['order_error'] = 'Während des Zahlungsprozesses ist ein Fehler aufgetreten.';
 
 $_['redirect_text'] = 'Sie werden weitergeleitet. Bitte warten.';
-$_['loading_text'] = '';
+$_['loading_text'] = 'Eingabemaske für Kreditkarte wird geladen.';

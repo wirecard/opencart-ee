@@ -30,9 +30,9 @@
  */
 
 // Page Title
-$_['heading_title'] = '';
+$_['heading_title'] = 'Wirecard SEPA-Überweisung';
 $_['text_wirecard_pg_sepact'] = '<img src="./view/image/wirecard_pg/sepa.png" width="100"/>';
 
 // Payment specific configuration
-$_['text_edit'] = '';
-$_['config_status_desc'] = '';
+$_['text_edit'] = 'Zahlungsmittel SEPA-Überweisung bearbeiten';
+$_['config_status_desc'] = 'Zahlungsmittel SEPA-Überweisung aktivieren.';
