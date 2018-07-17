@@ -148,12 +148,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->load->model('checkout/order');
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 		$this->load->model('checkout/order');
+
+		$number = explode('.', $order['currency_value']);
+		$precision = $this->getPrecision($number[1]);
+
 		$currency = [
 			'currency_code' => $order['currency_code'],
-			'currency_value' => number_format($order['currency_value'], 2)
+			'currency_value' => number_format($order['currency_value'], $precision),
+			'precision' => $precision
 		];
 
-		$sum = number_format($this->currency->format($order['total'], $currency['currency_code'], $currency['currency_value'], false), 2);
+		$sum = number_format($this->currency->format($order['total'], $currency['currency_code'], $currency['currency_value'], false), $precision);
 		$amount = new \Wirecard\PaymentSdk\Entity\Amount($sum, $order['currency_code']);
 		$this->payment_config = $this->getConfig($currency);
 		$this->transaction->setRedirect($this->getRedirects($this->session->data['order_id']));
@@ -436,5 +441,20 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->transaction->setAmount($amount);
 
 		return $this->transaction;
+	}
+
+	/**
+	 * @param string $number
+	 * @return int $precision
+	 */
+	private function getPrecision($number) {
+		$precision = 0;
+		for ($i = 0; $i < strlen($number); $i++) {
+			if ($number[$i] == '0') {
+				return $precision;
+			} else {
+				$precision++;
+			}
+		}
 	}
 }
