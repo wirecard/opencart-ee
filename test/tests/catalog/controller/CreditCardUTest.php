@@ -30,6 +30,7 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 	private $modelCreditCard;
 	private $language;
 	private $cart;
+	private $currency;
 
 	const SHOP = 'OpenCart';
 	const PLUGIN = 'Wirecard_PaymentGateway';
@@ -100,6 +101,8 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 
 		$this->language = $this->getMockBuilder(Language::class)->disableOriginalConstructor()->getMock();
 
+		$this->currency = $this->getMockBuilder(Currency::class)->disableOriginalConstructor()->getMock();
+
 		$items = [
 			["price" => 10.465, "name" => "Produkt1", "quantity" => 2, "product_id" => 2, "tax_class_id" => 2],
 			["price" => 20.241, "name" => "Produkt2", "quantity" => 3, "product_id" => 1, "tax_class_id" => 1],
@@ -117,7 +120,8 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelCreditCard,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 	}
 
@@ -134,7 +138,8 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelCreditCard,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$actual = $this->controller->index();
@@ -192,7 +197,8 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelCreditCard,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');

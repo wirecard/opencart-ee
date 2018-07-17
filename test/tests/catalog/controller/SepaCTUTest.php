@@ -30,6 +30,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 	private $url;
 	private $language;
 	private $cart;
+	private $currency;
 
 	const SHOP = 'OpenCart';
 	const PLUGIN = 'Wirecard_PaymentGateway';
@@ -94,6 +95,8 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 		$this->url = $this->getMockBuilder(Url::class)->disableOriginalConstructor()->getMock();
 
+		$this->currency = $this->getMockBuilder(Currency::class)->disableOriginalConstructor()->getMock();
+
 		$this->loader = $this->getMockBuilder(Loader::class)
 			->disableOriginalConstructor()
 			->setMethods(['model', 'language', 'view'])
@@ -119,7 +122,8 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			null,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 	}
 
@@ -142,7 +146,8 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			null,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
@@ -174,7 +179,8 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			null,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSepaCT::class);
@@ -200,7 +206,8 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			null,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$actual = $this->controller->index();
@@ -220,7 +227,8 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			null,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSepaCT::class);
@@ -252,7 +260,8 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			null,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$actual = $this->controller->getType();
@@ -273,7 +282,8 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			null,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Transaction\SepaTransaction();
