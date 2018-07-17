@@ -444,8 +444,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	}
 
 	/**
+	 * Return the precision of calculations
+	 *
 	 * @param string $number
 	 * @return int $precision
+	 * @since 1.0.0
 	 */
 	private function getPrecision($number) {
 		$precision = 0;
