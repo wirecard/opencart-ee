@@ -10,11 +10,18 @@
                 $data['menus'][] = array(
 					'id'       => 'menu-wirecard',
 					'icon'	   => 'fa-money',
-					'name'	   => 'Wirecard Transactions',
+					'name'	   => $this->language->get('heading_title'),
 					'href'     => $this->url->link('extension/module/wirecard_pg', 'user_token=' . $this->session->data['user_token'], 'SSL'),
 					'children' => array()
 				);
                 ]]></add>
+        </operation>
+
+        <operation>
+            <search><![CDATA[$this->load->language('common/column_left');]]></search>
+            <add position="before"><![CDATA[
+                $this->load->language('extension/payment/wirecard_pg');
+            ]]></add>
         </operation>
     </file>
 </modification>
