@@ -212,7 +212,7 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 
 		$currency = [
 			'currency_code' => 'EUR',
-			'currency_value' => 1.12
+			'currency_value' => 1
 		];
 		$actual = $this->controller->getConfig($currency);
 		$this->assertEquals($expected, $actual);

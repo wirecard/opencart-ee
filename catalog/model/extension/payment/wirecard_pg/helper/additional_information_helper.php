@@ -20,8 +20,8 @@ use Wirecard\PaymentSdk\Transaction\Transaction;
  */
 class AdditionalInformationHelper extends Model {
 
-    const CURRENCYCODE = 'currency_code';
-    const CURRENCYVALUE = 'currency_value';
+	const CURRENCYCODE = 'currency_code';
+	const CURRENCYVALUE = 'currency_value';
 
 	/**
 	 * @var string
@@ -137,29 +137,29 @@ class AdditionalInformationHelper extends Model {
 		);
 	}
 
-    /**
-     * Convert amount with currency format
-     *
-     * @param float $amount
-     * @param array $currency
-     * @return float
-     * @since 1.0.0
-     */
-    public function convert($amount, $currency) {
-        $converted_amount = $currency[self::CURRENCYVALUE] ? (float)$amount * $currency[self::CURRENCYVALUE] : (float)$amount;
-        return $converted_amount;
-    }
+	/**
+	 * Convert amount with currency format
+	 *
+	 * @param float $amount
+	 * @param array $currency
+	 * @return float
+	 * @since 1.0.0
+	 */
+	public function convert($amount, $currency) {
+		$converted_amount = $currency[self::CURRENCYVALUE] ? (float)$amount * $currency[self::CURRENCYVALUE] : (float)$amount;
+		return $converted_amount;
+	}
 
-    /**
-     * Convert amount with currency format including tax
-     *
-     * @param float $amount
-     * @param array $currency
-     * @param int $taxClassId
-     * @return float
-     * @since 1.0.0
-     */
-    public function convertWithTax($amount, $currency, $taxClassId) {
-        return $this->tax->calculate($this->convert($amount, $currency), $taxClassId, 'P');
-    }
+	/**
+	 * Convert amount with currency format including tax
+	 *
+	 * @param float $amount
+	 * @param array $currency
+	 * @param int $taxClassId
+	 * @return float
+	 * @since 1.0.0
+	 */
+	public function convertWithTax($amount, $currency, $taxClassId) {
+		return $this->tax->calculate($this->convert($amount, $currency), $taxClassId, 'P');
+	}
 }
