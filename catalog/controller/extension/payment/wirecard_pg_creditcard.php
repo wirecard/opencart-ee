@@ -39,6 +39,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		$this->load->language('extension/payment/wirecard_pg');
 		$data['base_url'] = $this->getShopConfigVal('base_url');
 		$data['loading_text'] = $this->language->get('loading_text');
+		$data['type'] = $this->type;
 		$data['credit_card'] = $this->load->view('extension/payment/wirecard_credit_card_ui', $data);
 		return parent::index($data);
 	}

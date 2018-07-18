@@ -49,7 +49,7 @@ class ControllerExtensionPaymentWirecardPGUPI extends \ControllerExtensionPaymen
 		'additional_info' => 1,
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0,
-		'sort_order' => 6,
+		'sort_order' => 10,
 	);
 
 	/**

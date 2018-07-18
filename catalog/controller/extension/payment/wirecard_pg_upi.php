@@ -39,6 +39,7 @@ class ControllerExtensionPaymentWirecardPGUPI extends ControllerExtensionPayment
 		$this->load->language('extension/payment/wirecard_pg');
 		$data['base_url'] = $this->getShopConfigVal('base_url');
 		$data['loading_text'] = $this->language->get('loading_text');
+		$data['type'] = $this->type;
 		$data['credit_card'] = $this->load->view('extension/payment/wirecard_credit_card_ui', $data);
 		return parent::index($data);
 	}
@@ -97,18 +98,18 @@ class ControllerExtensionPaymentWirecardPGUPI extends ControllerExtensionPayment
 	 * @return array
 	 * @since 1.0.0
 	 */
-	public function getUpiRequestData() {
+	public function getCreditCardUiRequestData() {
 		$this->transaction = $this->getTransactionInstance();
 		$this->prepareTransaction();
 		$this->transaction->setConfig($this->payment_config->get(UpiTransaction::NAME));
+		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
 
 		$transaction_service = new TransactionService($this->payment_config, $this->getLogger());
-
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(($transaction_service->getCreditCardUiWithData(
 			$this->transaction,
 			$this->getPaymentAction($this->getShopConfigVal('payment_action')),
-			'en'
+			$this->language->get('code')
 		)));
 	}
 

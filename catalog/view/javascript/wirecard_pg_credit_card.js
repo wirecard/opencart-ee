@@ -53,7 +53,7 @@ function getCreditCardRequestData() {
 		maxWait -= waitStep;
 		if ( typeof WirecardPaymentPage !== "undefined" ) {
 			$.ajax( {
-				url: "index.php?route=extension/payment/wirecard_pg_creditcard/getCreditCardUiRequestData",
+				url: "index.php?route=extension/payment/wirecard_pg_" + WirecardPaymentMethod + "/getCreditCardUiRequestData",
 				type: "post",
 				dataType: "json",
 				success: function ( data ) {
@@ -64,7 +64,7 @@ function getCreditCardRequestData() {
 							onSuccess: callback,
 							onError: logError
 						} );
-					}
+					}c
 				},
 				error: function ( error ) {
 					console.error( error );
