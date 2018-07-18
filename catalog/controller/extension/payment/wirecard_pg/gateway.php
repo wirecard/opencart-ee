@@ -147,24 +147,20 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->load->language(self::PATH);
 		$this->load->model('checkout/order');
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-
-		$number = explode('.', floatval($order['currency_value']));
-		$precision = mb_strlen($number[1]);
-
+        $additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
+        $precision = $this->getPrecision($order);
 		$currency = [
 			'currency_code' => $order['currency_code'],
-			'currency_value' => number_format($order['currency_value'], $precision),
-			'precision' => $precision
+			'currency_value' => $order['currency_value'],
+            'precision' => $precision
 		];
-
-		$sum = number_format($this->currency->format($order['total'], $currency['currency_code'], $currency['currency_value'], false), $precision);
-		$amount = new \Wirecard\PaymentSdk\Entity\Amount($sum, $order['currency_code']);
+		$total = $additional_helper->convert($order['total'], $currency);
+		$amount = new \Wirecard\PaymentSdk\Entity\Amount(number_format($total, $precision), $order['currency_code']);
 		$this->payment_config = $this->getConfig($currency);
 		$this->transaction->setRedirect($this->getRedirects($this->session->data['order_id']));
 		$this->transaction->setNotificationUrl($this->getNotificationUrl());
 		$this->transaction->setAmount($amount);
 
-		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
 		$this->transaction = $additional_helper->setIdentificationData($this->transaction, $order);
 		if ($this->getShopConfigVal('descriptor')) {
 			$this->transaction->setDescriptor($additional_helper->createDescriptor($order));
@@ -197,6 +193,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->transaction->setDevice($device);
 		}
 	}
+
+	public function getPrecision( $order ) {
+	    $currency_value = floatval( $order['currency_value'] );
+	    $precision = strlen(substr(strrchr($currency_value, "."), 1));
+	    return $precision;
+    }
 
 	/**
 	 * Create payment specific config

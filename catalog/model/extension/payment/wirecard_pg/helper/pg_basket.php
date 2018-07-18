@@ -95,13 +95,13 @@ class PGBasket {
 	 * @since 1.0.0
 	 */
 	private function setBasketItem($basket, $item, $currency) {
-		$gross_amount = $this->convertWithTax(
+		$gross_amount = $this->model->convertWithTax(
 			$item[self::PRICE],
 			$currency,
 			$item[self::TAXCLASSID]
 		);
-		$tax_amount = $gross_amount - $this->convert($item[self::PRICE], $currency);
-		$tax_rate = $this->convert($tax_amount / $gross_amount * 100, $currency);
+		$tax_amount = $gross_amount - $this->model->convert($item[self::PRICE], $currency);
+		$tax_rate = $this->model->convert($tax_amount / $gross_amount * 100, $currency);
 
 		$this->sum += $gross_amount * $item[self::QUANTITY];
 		$amount = new Amount(number_format($gross_amount, $currency['precision']), $currency[self::CURRENCYCODE]);
@@ -125,13 +125,13 @@ class PGBasket {
 	 * @since 1.0.0
 	 */
 	private function setShippingItem($basket, $shipping, $currency) {
-		$gross_amount = $this->convertWithTax(
+		$gross_amount = $this->model->convertWithTax(
 			$shipping[self::COST],
 			$currency,
 			$shipping[self::TAXCLASSID]
 		);
 		$tax_amount = $this->model->tax->getTax($shipping[self::COST], $shipping[self::TAXCLASSID]);
-		$tax_rate = $this->convert($tax_amount / $gross_amount * 100, $currency);
+		$tax_rate = $this->model->convert($tax_amount / $gross_amount * 100, $currency);
 
 		$this->sum += $gross_amount;
 		$item = new Item('Shipping', new Amount(number_format($gross_amount, $currency['precision']), $currency[self::CURRENCYCODE]), 1);
@@ -159,30 +159,5 @@ class PGBasket {
 		$basket->add($item);
 
 		return $basket;
-	}
-
-	/**
-	 * Convert amount with currency format
-	 *
-	 * @param float $amount
-	 * @param array $currency
-	 * @return float
-	 * @since 1.0.0
-	 */
-	private function convert($amount, $currency) {
-		return number_format($this->model->currency->format($amount, $currency[self::CURRENCYCODE], $currency[self::CURRENCYVALUE], false), $currency['precision']);
-	}
-
-	/**
-	 * Convert amount with currency format including tax
-	 *
-	 * @param float $amount
-	 * @param array $currency
-	 * @param int $taxClassId
-	 * @return float
-	 * @since 1.0.0
-	 */
-	private function convertWithTax($amount, $currency, $taxClassId) {
-		return number_format($this->model->tax->calculate($this->convert($amount, $currency), $taxClassId, 'P'), $currency['precision']);
 	}
 }

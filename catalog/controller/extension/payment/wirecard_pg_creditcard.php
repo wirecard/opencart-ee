@@ -69,6 +69,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	public function getConfig($currency = null) {
 		$config = parent::getConfig($currency);
 		$payment_config = new CreditCardConfig();
+        $additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
 
 		if ($this->getShopConfigVal('merchant_account_id') !== 'null') {
 			$payment_config->setSSLCredentials(
@@ -85,34 +86,23 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		}
 
 		if ($this->getShopConfigVal('ssl_max_limit') !== '') {
+		    $ssl_max_limit = floatval($this->getShopConfigVal('ssl_max_limit'));
 			$payment_config->addSslMaxLimit(
 				new Amount(
-					number_format(
-						$this->currency->format(
-							$this->getShopConfigVal('ssl_max_limit'),
-							$currency['currency_code'],
-							$currency['currency_value'],
-							false
-						),
-				2
-					),
+				    $additional_helper->convert($ssl_max_limit, $currency),
 					$currency['currency_code']
 				)
 			);
 		}
 
 		if ($this->getShopConfigVal('three_d_min_limit') !== '') {
+		    $three_d_min_limit = floatval($this->getShopConfigVal('three_d_min_limit'));
 			$payment_config->addThreeDMinLimit(
 				new Amount(
-					number_format(
-						$this->currency->format(
-							$this->getShopConfigVal('three_d_min_limit'),
-							$currency['currency_code'],
-							$currency['currency_value'],
-							false
-						),
-						2
-					),
+					$additional_helper->convert(
+					    $three_d_min_limit,
+                        $currency
+                    ),
 					$currency['currency_code']
 				)
 			);
