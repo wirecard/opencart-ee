@@ -76,6 +76,8 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 	 */
 	public function getTransactionDetails($transaction_id) {
 		$this->load->model(self::ROUTE);
+		$this->load->language(self::ROUTE);
+
 		$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($transaction_id);
 		$data = false;
 
@@ -196,7 +198,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 
 				$op = array(
 					'action' => $key,
-					'text' => $value
+					'text' => $this->language->get($key),
 				);
 
 				array_push($operations, $op);
