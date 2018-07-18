@@ -194,6 +194,13 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		}
 	}
 
+    /**
+     * Get precision for current currency from order
+     *
+     * @param array $order
+     * @return int
+     * @since 1.0.0
+     */
 	public function getPrecision( $order ) {
 	    $currency_value = floatval( $order['currency_value'] );
 	    $precision = strlen(substr(strrchr($currency_value, "."), 1));
