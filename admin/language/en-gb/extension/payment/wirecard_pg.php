@@ -85,3 +85,8 @@ $_['back_button'] = 'Back';
 $_['support_email_title'] = 'E-Mail to Support';
 
 $_['terms_of_use'] = 'Terms of Use';
+
+$_['credit'] = "Credit";
+$_['pay'] = "Capture";
+$_['refund'] = "Refund";
+$_['cancel'] = "Cancel";

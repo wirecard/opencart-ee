@@ -17,7 +17,7 @@ $_['text_list'] = 'Transaktionen';
 // Transaction Table
 $_['panel_transaction'] = 'Transaktion';
 $_['panel_order_number'] = 'Bestellnummer';
-$_['panel_transcation_id'] = 'Transaktions-ID';
+$_['panel_transcation_id'] = 'Transaction ID';
 $_['panel_parent_transaction_id'] = 'Parent Transaction ID';
 $_['panel_action'] = 'Aktion';
 $_['panel_payment_method'] = 'Zahlungsmittel';
@@ -85,3 +85,8 @@ $_['back_button'] = 'Zurück';
 $_['support_email_title'] = 'E-Mail an Support';
 
 $_['terms_of_use'] = 'Nutzungsbedingungen';
+
+$_['credit'] = "Kreditieren";
+$_['pay'] = "Buchen";
+$_['refund'] = "Refundieren";
+$_['cancel'] = "Stornieren";
