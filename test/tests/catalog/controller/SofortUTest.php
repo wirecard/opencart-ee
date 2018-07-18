@@ -183,7 +183,7 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 
 		$currency = [
 			'currency_code' => 'EUR',
-			'currency_value' => 1
+			'currency_value' => 1.12
 		];
 		$actual = $this->controller->getConfig($currency);
 
@@ -216,7 +216,7 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 
 		$currency = [
 			'currency_code' => 'EUR',
-			'currency_value' => 1
+			'currency_value' => 1.12
 		];
 
 		$creditConfig = $this->controller->getConfig($currency);

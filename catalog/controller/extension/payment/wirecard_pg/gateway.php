@@ -147,10 +147,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->load->language(self::PATH);
 		$this->load->model('checkout/order');
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-		$this->load->model('checkout/order');
 
-		$number = explode('.', $order['currency_value']);
-		$precision = $this->getPrecision($number[1]);
+		$number = explode('.', floatval($order['currency_value']));
+		$precision = mb_strlen($number[1]);
 
 		$currency = [
 			'currency_code' => $order['currency_code'],
@@ -441,23 +440,5 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->transaction->setAmount($amount);
 
 		return $this->transaction;
-	}
-
-	/**
-	 * Return the precision of calculations
-	 *
-	 * @param string $number
-	 * @return int $precision
-	 * @since 1.0.0
-	 */
-	private function getPrecision($number) {
-		$precision = 0;
-		for ($i = 0; $i < strlen($number); $i++) {
-			if ($number[$i] == '0') {
-				return $precision;
-			} else {
-				$precision++;
-			}
-		}
 	}
 }

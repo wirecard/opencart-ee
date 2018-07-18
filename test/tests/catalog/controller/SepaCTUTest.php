@@ -73,7 +73,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			'lastname' => 'Doe',
 			'ip' => '1',
 			'store_name' => 'Demoshop',
-			'currency_value' => 1,
+			'currency_value' => 1.12,
 			'customer_id' => 1,
 			'payment_iso_code_2' => 'AT',
 			'payment_city' => 'BillingCity',
