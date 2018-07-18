@@ -150,7 +150,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		$this->response->setOutput(($transaction_service->getCreditCardUiWithData(
 			$this->transaction,
 			$this->getPaymentAction($this->getShopConfigVal('payment_action')),
-			'en'
+			$this->language->get('code')
 		)));
 	}
 
