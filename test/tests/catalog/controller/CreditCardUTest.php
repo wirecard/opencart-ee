@@ -204,8 +204,8 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
 		$creditCardConfig = new \Wirecard\PaymentSdk\Config\CreditCardConfig('account123', 'secret123');
 		$creditCardConfig->setThreeDCredentials('account123three_d','secret_three_d');
-		$creditCardConfig->addSslMaxLimit(new \Wirecard\PaymentSdk\Entity\Amount(0, 'EUR'));
-		$creditCardConfig->addThreeDMinLimit(new \Wirecard\PaymentSdk\Entity\Amount(0, 'EUR'));
+		$creditCardConfig->addSslMaxLimit(new \Wirecard\PaymentSdk\Entity\Amount(10, 'EUR'));
+		$creditCardConfig->addThreeDMinLimit(new \Wirecard\PaymentSdk\Entity\Amount(20, 'EUR'));
 		$expected->add($creditCardConfig);
 		$expected->setShopInfo(self::SHOP, VERSION);
 		$expected->setPluginInfo(self::PLUGIN, $this->pluginVersion);
