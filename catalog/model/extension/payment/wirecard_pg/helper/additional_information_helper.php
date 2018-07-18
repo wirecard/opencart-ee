@@ -146,8 +146,7 @@ class AdditionalInformationHelper extends Model {
 	 * @since 1.0.0
 	 */
 	public function convert($amount, $currency) {
-		$converted_amount = $currency[self::CURRENCYVALUE] ? (float)$amount * $currency[self::CURRENCYVALUE] : (float)$amount;
-		return $converted_amount;
+		return ($currency[self::CURRENCYVALUE]) ? (float)$amount * $currency[self::CURRENCYVALUE] : (float)$amount;
 	}
 
 	/**
