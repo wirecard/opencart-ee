@@ -18,8 +18,7 @@ if [[ $TRAVIS_BRANCH == 'master' ]]; then
         git config --global user.name "Travis CI"
         git config --global user.email "wirecard@travis-ci.org"
 
-        git remote add origin ${GITHUB_TOKEN}@github.com:wirecard/opencart-ee.git
         git tag -a ${VERSION} -m "Pre-release version"
-        git push origin master ${VERSION}
+        git push --quiet https://$GITHUB_TOKEN@github.com/wirecard/opencart-ee $VERSION > /dev/null 2>&1
     fi
 fi
