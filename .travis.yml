@@ -24,7 +24,7 @@ script:
 
 after_script:
   - travis_retry composer upload-coverage
-  - sh .bin/generate-tag.sh
+  - bash .bin/generate-tag.sh
 
 before_deploy:
   - mkdir upload
