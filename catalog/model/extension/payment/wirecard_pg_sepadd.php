@@ -10,17 +10,17 @@
 require_once(dirname( __FILE__ ) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ModelExtensionPaymentWirecardPGCreditCard
+ * Class ModelExtensionPaymentWirecardPGSepaDD
  *
- * CreditCard Transaction model
+ * SepaDirectDebit Transaction model
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
-class ModelExtensionPaymentWirecardPGCreditCard extends ModelExtensionPaymentGateway {
+class ModelExtensionPaymentWirecardPGSepaDD extends ModelExtensionPaymentGateway {
 
 	/**
 	 * @var string
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
-	protected $type = 'creditcard';
+	protected $type = 'sepadd';
 }

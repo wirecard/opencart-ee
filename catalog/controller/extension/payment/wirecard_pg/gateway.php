@@ -28,12 +28,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @var string
 	 * @since 1.0.0
 	 */
-	private $plugin_version = '1.0.0';
-
-	/**
-	 * @var string
-	 * @since 1.0.0
-	 */
 	protected $prefix = 'payment_wirecard_pg_';
 
 	/**
@@ -90,6 +84,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	/**
 	 * Basic index method
 	 *
+	 * @param array $data
 	 * @return mixed
 	 * @since 1.0.0
 	 */
@@ -215,13 +210,14 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	public function getConfig($currency = null) {
+		$basic_info = new ExtensionModuleWirecardPGPluginData();
 		$base_url = $this->getShopConfigVal('base_url');
 		$http_user = $this->getShopConfigVal('http_user');
 		$http_password = $this->getShopConfigVal('http_password');
 
 		$config = new Config($base_url, $http_user, $http_password);
 		$config->setShopInfo('OpenCart', VERSION);
-		$config->setPluginInfo('Wirecard_PaymentGateway', $this->plugin_version);
+		$config->setPluginInfo('Wirecard_PaymentGateway', $basic_info->getVersion());
 
 		return $config;
 	}
