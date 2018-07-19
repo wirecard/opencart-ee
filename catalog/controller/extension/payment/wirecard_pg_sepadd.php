@@ -53,11 +53,15 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	 * @since 1.1.0
 	 */
 	public function confirm() {
-		$this->transaction = $this->getTransactionInstance();
+		if ($this->request->post['mandate_confirmed'] == false) {
 
-		$json = ['popup' => 'yes'];
-		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($json));
+			$json = ['popup' => $this->generateMandateTemplate($this->request->post)];
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+		} else {
+			$this->transaction = $this->getTransactionInstance();
+			parent::confirm();
+		}
 	}
 
 	/**
@@ -121,6 +125,42 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	 */
 	public function getTransactionInstance() {
 		return new SepaTransaction();
+	}
+
+	/**
+	 * Generate ID for SEPA
+	 * @return string
+	 * @since 1.1.0
+	 */
+	private function generateID() {
+		return $this->getShopConfigVal('creditor_id') . strtotime(date('Y-m-d H:i:s'));
+	}
+
+	/**
+	 * Generate template for SEPA mandate
+	 * @param array $formData
+	 * @return array
+	 * @since 1.1.0
+	 */
+	private function generateMandateTemplate($formData) {
+		$this->load->model('checkout/order');
+		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+
+		$data['consumer_firstname'] = $formData['first_name'];
+		$data['consumer_lastname'] = $formData['last_name'];
+		$data['consumer_address'] = $order['payment_address_1'];
+		$data['consumer_city'] = $order['payment_city'];
+		$data['consumer_post'] = $order['payment_postcode'];
+		$data['consumer_country'] = $order['payment_country'];
+		$data['consumer_iban'] = $formData['iban'];
+		$data['consumer_bic'] = $formData['bic'];
+
+		$data['creditor_id'] = $this->getShopConfigVal('creditor_id');
+		$data['creditor_name'] = $this->getShopConfigVal('creditor_name');
+		$data['creditor_city'] = $this->getShopConfigVal('creditor_city');
+
+		var_dump($order);die();
+		return $this->load->view('extension/payment/wirecard_pg_sepa_mandate', $data);
 	}
 }
 
