@@ -1,8 +1,11 @@
 BRANCH="master"
 
-if [ "$TRAVIS_BRANCH" == "BRANCH" ]; then
-    if [ "$TRAVIS_PULL_REQUEST" == false ]; then
+echo "Create tag for branch master";
 
+if [ "$TRAVIS_BRANCH" == "BRANCH" ]; then
+    echo "if it is no pull request";
+    if [ "$TRAVIS_PULL_REQUEST" == false ]; then
+        echo "cat Version for tag";
         VERSION=`cat VERSION`
         STATUS=`curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/repos/wirecard/opencart-ee/git/refs/tags/${VERSION}`
 
@@ -21,6 +24,6 @@ if [ "$TRAVIS_BRANCH" == "BRANCH" ]; then
 
         git tag -a ${VERSION} -m "Pre-release version"
         git push origin --tags
-        git fetch origin
+        git fetch --tags
     fi
 fi
