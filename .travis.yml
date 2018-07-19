@@ -30,7 +30,6 @@ before_deploy:
   - mkdir upload
   - cp -r admin,catalog,image,system upload/
   - zip -r opencart-ee.ocmod.zip upload/ install.xml
-  - bash .bin/generate-release-package.sh $TRAVIS_TAG
 
 deploy:
   provider: releases
