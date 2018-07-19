@@ -25,7 +25,7 @@ abstract class Controller
     public $model_checkout_order;
     public $controller_extension_payment_wirecard_pg_sepact;
 
-    public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPayment, $language, $cart, $currency, $subController = null, $currency = null, $document = null, $customer = null)
+    public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPayment, $language, $cart, $subController = null, $currency = null, $document = null, $customer = null)
     {
         $this->registry = $registry;
         $this->config = $config;
