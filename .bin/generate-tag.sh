@@ -14,9 +14,6 @@ if [[ $TRAVIS_BRANCH == 'master' ]]; then
             echo "Version is updated, creating tag ${VERSION}"
         fi
 
-        git config --global user.name "Travis CI"
-        git config --global user.email "wirecard@travis-ci.org"
-
         git tag -a ${VERSION} -m "Pre-release version"
         git push origin --tags
         git fetch --tags
