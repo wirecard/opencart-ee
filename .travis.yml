@@ -24,7 +24,7 @@ script:
 
 after_script:
   - travis_retry composer upload-coverage
-  - if [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then bash .bin/generate-tag.sh ; fi
+  - sh .bin/generate-tag.sh
 
 before_deploy:
   - mkdir upload
