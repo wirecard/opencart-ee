@@ -1,0 +1,17 @@
+#collapse-payment-method label {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+#collapse-payment-method label img {
+    margin: 0 8px 0 0;
+}
+
+#collapse-payment-method input[type=radio]{
+    margin-top: 0;
+    margin-right: 8px;
+}

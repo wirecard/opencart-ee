@@ -20,6 +20,7 @@
             <div class="panel-heading">
                 {{ plugin_name }}&nbsp;{{ plugin_version }}
                 <a href="{{ support_link }}" style="margin-left: 20px;" class="btn btn-primary">Support</a>
+                <a href="{{ general_terms }}" style="margin-left: 20px;" class="btn btn-primary">{{ terms_of_use }}</a>
             </div>
             <div class="panel-heading">
                 <h3 class="panel-title"><i class="fa fa-puzzle-piece"></i> {{ text_list }}</h3>
@@ -29,16 +30,16 @@
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <td class="text-left">Transaction</td>
-                                <td class="text-left">Order number</td>
-                                <td class="text-left">Transaction ID</td>
-                                <td class="text-left">Parent transaction ID</td>
-                                <td class="text-left">Action</td>
-                                <td class="text-left">Payment method</td>
-                                <td class="text-left">Transaction state</td>
-                                <td class="text-left">Amount</td>
-                                <td class="text-left">Currency</td>
-                                <td class="text-right">Details</td>
+                                <td class="text-left">{{ panel_transaction }}</td>
+                                <td class="text-left">{{ panel_order_number }}</td>
+                                <td class="text-left">{{ panel_transcation_id }}</td>
+                                <td class="text-left">{{ panel_parent_transaction_id }}</td>
+                                <td class="text-left">{{ panel_action }}</td>
+                                <td class="text-left">{{ panel_payment_method }}</td>
+                                <td class="text-left">{{ panel_transaction_state }}</td>
+                                <td class="text-left">{{ panel_amount }}</td>
+                                <td class="text-left">{{ panel_currency }}</td>
+                                <td class="text-right">{{ panel_details }}</td>
                             </tr>
                         </thead>
                         <tbody>

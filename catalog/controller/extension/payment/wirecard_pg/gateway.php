@@ -1,32 +1,10 @@
 <?php
 /**
- * Shop System Plugins - Terms of Use
- *
- * The plugins offered are provided free of charge by Wirecard AG and are explicitly not part
- * of the Wirecard AG range of products and services.
- *
- * They have been tested and approved for full functionality in the standard configuration
- * (status on delivery) of the corresponding shop system. They are under General Public
- * License version 3 (GPLv3) and can be used, developed and passed on to third parties under
- * the same terms.
- *
- * However, Wirecard AG does not provide any guarantee or accept any liability for any errors
- * occurring when used in an enhanced, customized shop system configuration.
- *
- * Operation in an enhanced, customized configuration is at your own risk and requires a
- * comprehensive test phase by the user of the plugin.
- *
- * Customers use the plugins at their own risk. Wirecard AG does not guarantee their full
- * functionality neither does Wirecard AG assume liability for any disadvantages related to
- * the use of the plugins. Additionally, Wirecard AG does not guarantee the full functionality
- * for customized shop systems or installed plugins of other vendors of plugins within the same
- * shop system.
- *
- * Customers are responsible for testing the plugin's functionality before starting productive
- * operation.
- *
- * By installing the plugin into the shop system the customer agrees to these terms of use.
- * Please do not use the plugin if you do not agree to these terms of use!
+ * Shop System Plugins:
+ * - Terms of Use can be found under:
+ * https://github.com/wirecard/opencart-ee/blob/master/_TERMS_OF_USE
+ * - License can be found under:
+ * https://github.com/wirecard/opencart-ee/blob/master/LICENSE
  */
 
 include_once(DIR_SYSTEM . 'library/autoload.php');
@@ -169,19 +147,20 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->load->language(self::PATH);
 		$this->load->model('checkout/order');
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-		$this->load->model('checkout/order');
+		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
+		$precision = $this->getPrecision($order);
 		$currency = [
 			'currency_code' => $order['currency_code'],
-			'currency_value' => $order['currency_value']
+			'currency_value' => $order['currency_value'],
+			'precision' => $precision
 		];
-
-		$amount = new \Wirecard\PaymentSdk\Entity\Amount($order['total'] * $order['currency_value'], $order['currency_code']);
+		$total = $additional_helper->convert($order['total'], $currency);
+		$amount = new \Wirecard\PaymentSdk\Entity\Amount(number_format($total, $precision), $order['currency_code']);
 		$this->payment_config = $this->getConfig($currency);
 		$this->transaction->setRedirect($this->getRedirects($this->session->data['order_id']));
 		$this->transaction->setNotificationUrl($this->getNotificationUrl());
 		$this->transaction->setAmount($amount);
 
-		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
 		$this->transaction = $additional_helper->setIdentificationData($this->transaction, $order);
 		if ($this->getShopConfigVal('descriptor')) {
 			$this->transaction->setDescriptor($additional_helper->createDescriptor($order));
@@ -215,6 +194,19 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$device->setFingerprint($this->request->post['fingerprint-session']);
 			$this->transaction->setDevice($device);
 		}
+	}
+
+	/**
+	 * Get precision for current currency from order
+	 *
+	 * @param array $order
+	 * @return int
+	 * @since 1.0.0
+	 */
+	public function getPrecision( $order ) {
+		$currency_value = floatval( $order['currency_value'] );
+		$precision = strlen(substr(strrchr($currency_value, "."), 1));
+		return $precision;
 	}
 
 	/**
