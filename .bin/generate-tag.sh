@@ -14,8 +14,12 @@ if [[ $TRAVIS_BRANCH == 'master' ]]; then
             echo "Version is updated, creating tag ${VERSION}"
         fi
 
+        git config --global user.email "travis@travis-ci.org"
+        git config --global user.name "Travis CI"
+
         git tag -a ${VERSION} -m "Pre-release version"
-        git push origin --tags
+        git remote add origin https://${GITHUB_TOKEN}@github.com/wirecard/opencart-ee.git
+        git push --set-upstream origin --tags
         git fetch --tags
     fi
 fi
