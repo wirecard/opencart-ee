@@ -25,6 +25,7 @@ class ModuleUTest extends \PHPUnit_Framework_TestCase
 	private $url;
 	private $language;
 	private $cart;
+	private $currency;
 
 	const SHOP = 'OpenCart';
 	const PLUGIN = 'Wirecard_PaymentGateway';
@@ -80,6 +81,8 @@ class ModuleUTest extends \PHPUnit_Framework_TestCase
 
 		$this->cart->method('getProducts')->willReturn($items);
 
+		$this->currency = $this->getMockBuilder(Currency::class)->disableOriginalConstructor()->getMock();
+
 		$this->controller = new ControllerExtensionModuleWirecardPG(
 			$this->registry,
 			$this->config,
@@ -90,7 +93,8 @@ class ModuleUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			null,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 	}
 
@@ -106,7 +110,8 @@ class ModuleUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			null,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$commonsData = $this->controller->getCommons();
@@ -133,7 +138,8 @@ class ModuleUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			null,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$liveChatBlock = $this->controller->loadLiveChat(array());
