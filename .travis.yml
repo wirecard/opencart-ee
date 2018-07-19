@@ -40,4 +40,5 @@ deploy:
   skip_cleanup: ture
   draft: true
   on:
+    repo: wirecard/opencart-ee
     tags: true
