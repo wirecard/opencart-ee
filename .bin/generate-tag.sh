@@ -1,5 +1,4 @@
-REPO=`git config remote.origin.url`
-SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
+#!/bin/bash
 
 if [[ $TRAVIS_BRANCH == 'master' ]]; then
     if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then
@@ -16,10 +15,11 @@ if [[ $TRAVIS_BRANCH == 'master' ]]; then
             echo "Version is updated, creating tag ${VERSION}"
         fi
 
-        git config user.name "Travis CI"
-        git config user.email "wirecard@travis-ci.org"
+        git config --global user.name "Travis CI"
+        git config --global user.email "wirecard@travis-ci.org"
 
+        git remote add origin ${GITHUB_TOKEN}@github.com:wirecard/opencart-ee.git
         git tag -a ${VERSION} -m "Pre-release version"
-        git push ${SSH_REPO} master ${VERSION}
+        git push origin master ${VERSION}
     fi
 fi
