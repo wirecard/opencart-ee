@@ -131,11 +131,11 @@ class AdditionalInformationHelper extends Model {
 		$transaction->setOrderNumber($order['order_id']);
 		$transaction->setDescriptor($this->createDescriptor($order));
 
-        $account_holder = new PGAccountHolder();
-        $transaction->setAccountHolder($account_holder->createAccountHolder($order, $account_holder::BILLING));
-        $transaction->setShipping($account_holder->createAccountHolder($order, $account_holder::SHIPPING));
+		$account_holder = new PGAccountHolder();
+		$transaction->setAccountHolder($account_holder->createAccountHolder($order, $account_holder::BILLING));
+		$transaction->setShipping($account_holder->createAccountHolder($order, $account_holder::SHIPPING));
 
-        return $transaction;
+		return $transaction;
 	}
 
 	/**
