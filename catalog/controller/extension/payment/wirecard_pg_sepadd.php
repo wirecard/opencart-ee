@@ -36,7 +36,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	 */
 	public function index($data = null) {
 		$this->load->language('extension/payment/wirecard_pg_sepadd');
-		//needed lang files
+
 		$data['iban_input'] = $this->language->get('iban_input');
 		$data['first_name_input'] = $this->language->get('first_name_input');
 		$data['last_name_input'] = $this->language->get('last_name_input');
@@ -44,6 +44,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 		$data['show_bic'] = false;
 		if ($this->getShopConfigVal('enable_bic')) {
 			$data['show_bic'] = true;
+			$data['bic_input'] = $this->language->get('bic_input');
 		}
 
 		$data['sepa'] = $this->load->view('extension/payment/wirecard_pg_sepadd', $data);
@@ -139,8 +140,8 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 		$data['creditor_id'] = $this->getShopConfigVal('creditor_id');
 		$data['creditor_name'] = $this->getShopConfigVal('creditor_name');
 		$data['creditor_city'] = $this->getShopConfigVal('creditor_city');
+		$data['creditor_date'] = date( 'd.m.Y' );
 
-		var_dump($data);die();
 		return $this->load->view('extension/payment/wirecard_pg_sepa_mandate', $data);
 	}
 }

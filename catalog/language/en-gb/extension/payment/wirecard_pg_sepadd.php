@@ -11,6 +11,7 @@
 $_['text_title'] = 'Wirecard SEPA Direct Debit';
 $_['button_confirm'] = 'Confirm Order';
 $_['iban_input'] = 'IBAN';
+$_['bic_input'] = 'BIC';
 $_['first_name_input'] = 'First name';
-$_['last_name_name_input'] = 'Last name';
+$_['last_name_input'] = 'Last name';
 $_['sepa_legend'] = 'Please enter your data:';
