@@ -57,7 +57,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	 * @since 1.1.0
 	 */
 	public function confirm() {
-		if ($this->request->post['mandate_confirmed'] == false) {
+		if ((bool)$this->request->post['mandate_confirmed'] == false) {
 
 			$json = ['popup' => $this->generateMandateTemplate($this->request->post)];
 			$this->response->addHeader('Content-Type: application/json');
@@ -135,14 +135,52 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 		$data['consumer_post'] = $order['payment_postcode'];
 		$data['consumer_country'] = $order['payment_country'];
 		$data['consumer_iban'] = $formData['iban'];
-		$data['consumer_bic'] = $formData['bic'];
+		$data['customer_bic'] = null;
+		if ($this->getShopConfigVal('enable_bic')) {
+			$data['consumer_bic'] = $formData['bic'];
+		}
 
 		$data['creditor_id'] = $this->getShopConfigVal('creditor_id');
 		$data['creditor_name'] = $this->getShopConfigVal('creditor_name');
 		$data['creditor_city'] = $this->getShopConfigVal('creditor_city');
 		$data['creditor_date'] = date( 'd.m.Y' );
 
+		array_merge(
+			$this->loadLangLines(
+				array(
+					'creditor',
+					'creditor_id',
+					'debtor',
+					'debtor_acc_owner',
+					'sepa_text_1',
+					'sepa_text_2',
+					'sepa_text_3',
+					'sepa_text_4',
+					'sepa_text_5',
+					'sepa_text_6',
+					'sepa_cancel'
+				)
+			),
+			$data
+		);
+
 		return $this->load->view('extension/payment/wirecard_pg_sepa_mandate', $data);
+	}
+
+	/**
+	 * Load lang lines
+	 *
+	 * @param array $lines
+	 * @return array
+	 */
+	private function loadLangLines($lines) {
+		$this->load->language('extension/payment/wirecard_pg_sepadd');
+		$data = [];
+		foreach ($lines as $line) {
+			$data[$line] = $this->language->get($line);
+		}
+
+		return $data;
 	}
 }
 

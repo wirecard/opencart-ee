@@ -4,8 +4,8 @@
         <table border="0" width="100%">
             <tr>
                 <td class="text11justify">
-                    <i>Creditor</i><br />{{ creditor_name }}<br />' .
-                    Creditor ID: {{ creditor_id }}<br />
+                    <i>{{ creditor }}</i><br />{{ creditor_name }}<br />
+                    {{ creditor_id }}: {{ creditor_id }}<br />
                 </td>
                 <td width="10%">&nbsp;</td>
             </tr>
@@ -17,11 +17,11 @@
         <table border="0" width="100%">
             <tr>
                 <td class="text11">
-                    <i>Debtor</i><br />' .
-                    Account owner: <span class="first_last_name">{{ customer_first_name }}{{ customer_last_name }}</span><br />' .
-                    IBAN:<span class="bank_iban">{{ customer_iban }}</span><br />
+                    <i>{{ debtor }}</i><br />
+                    {{ debtor_acc_owner }}: <span class="first_last_name">{{ customer_first_name }}{{ customer_last_name }}</span><br />
+                    {{ iban_input }}: <span class="bank_iban">{{ customer_iban }}</span><br />
                     {% if customer_bic  %}
-                        BIC:<span class="bank_bic">{{ customer_bic }}</span><br />';
+                        {{ bic_input }}: <span class="bank_bic">{{ customer_bic }}</span><br />
                     {% endif %}
                     </td>
                 <td width="10%">&nbsp;</td>
@@ -33,24 +33,17 @@
     <td class="text11justify">
         <table border="0" width="100%">
             <tr>
-                <td class="text11justify">' .
-                    I authorize the creditor {{ creditor_name }}
-                    to send instructions to my bank to collect one single direct debit from my account. At the same time I instruct my bank to debit my account in accordance with the instructions from the creditor {{ creditor_name }} {{ additional_text }}
+                <td class="text11justify">
+                    {{ sepa_text_1 }} {{ creditor_name }} {{ sepa_text_2 }} {{ creditor_name }} {{ additional_text }}
                 </td>
                 <td width="10%">&nbsp;</td>
             </tr>
             <tr>
-                <td class="text11justify">' .
-                    Note: As part of my rights, I am entitled to a refund under the terms and conditions of my agreement with my bank. A refund must be claimed within 8 weeks starting from the date on which my account was debited.
-                </td>
+                <td class="text11justify">{{ sepa_text_3 }}</td>
                 <td width="10%">&nbsp;</td>
             </tr>
             <tr>
-                <td class="text11justify">' .
-                    I irrevocably agree that, in the event that the direct debit is not honored, or objection against the direct debit exists, my bank will disclose to the creditor
-                    {{ creditor_name }}
-                     my full name, address and date of birth.
-                </td>
+                <td class="text11justify">{{ sepa_text_4 }} {{ creditor_name }} {{ sepa_text_5 }}</td>
                 <td width="10%">&nbsp;</td>
             </tr>
         </table>
@@ -60,7 +53,7 @@
     <td class="text11justify">
         <table border="0" width="100%">
             <tr>
-                <td class="text11justify">' .
+                <td class="text11justify">
                     {{ creditor_name }}
                     {{ creditor_date }}
                 </td>
@@ -68,11 +61,11 @@
             </tr>
             <tr>
                 <td>
-                    <input type="checkbox" id="sepa-check">&nbsp;<label for="sepa-check">I have read and accepted the SEPA Direct Debit Mandate information.</label>
+                    <input type="checkbox" id="sepa-check">&nbsp;<label for="sepa-check">{{ sepa_text_6 }}</label>
                 </td>
             </tr>
             <tr>
-                <td style="text-align: right;"><button id="sepa-button">Cancel</button></td>
+                <td style="text-align: right;"><button id="sepa-button">{{ sepa_cancel }}</button></td>
             </tr>
         </table>
     </td>

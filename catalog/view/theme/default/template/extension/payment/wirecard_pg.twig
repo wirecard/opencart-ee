@@ -55,6 +55,8 @@
                     location = json['redirect'];
                 }
                 if (json['popup']) {
+                    var popup = $('#mandate-popup');
+                    popup.html(json['popup']);
                    /* $('#mandate-popup').dialog({
                         modal: true
                         /*buttons: [
