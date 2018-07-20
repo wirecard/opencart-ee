@@ -10,8 +10,7 @@
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
 use Wirecard\PaymentSdk\Transaction\SepaTransaction;
-use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
-use Wirecard\PaymentSdk\Transaction\Operation;
+use Wirecard\PaymentSdk\Config\SepaConfig;
 
 /**
  * Class ControllerExtensionPaymentWirecardPGSepaDD
@@ -42,6 +41,10 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 		$data['first_name_input'] = $this->language->get('first_name_input');
 		$data['last_name_input'] = $this->language->get('last_name_input');
 		$data['sepa_legend'] = $this->language->get('sepa_legend');
+		$data['show_bic'] = false;
+		if ($this->getShopConfigVal('enable_bic')) {
+			$data['show_bic'] = true;
+		}
 
 		$data['sepa'] = $this->load->view('extension/payment/wirecard_pg_sepadd', $data);
 		return parent::index($data);
@@ -69,19 +72,15 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	 *
 	 * @param array $currency
 	 * @return \Wirecard\PaymentSdk\Config\Config
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function getConfig($currency = null) {
-		if ($this->operation == Operation::CREDIT) {
-			$sepa_controller = $this->getSepaController();
-			return $sepa_controller->getConfig($currency);
-		}
-
 		$merchant_account_id = $this->getShopConfigVal('merchant_account_id');
 		$merchant_secret = $this->getShopConfigVal('merchant_secret');
 
 		$config = parent::getConfig($currency);
-		$payment_config = new PaymentMethodConfig(SepaTransaction::NAME, $merchant_account_id, $merchant_secret);
+		$payment_config = new SepaConfig($merchant_account_id, $merchant_secret);
+		$payment_config->setCreditorId($this->getShopConfigVal('creditor_id'));
 		$config->add($payment_config);
 
 		return $config;
@@ -91,7 +90,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	 * Payment specific model getter
 	 *
 	 * @return Model
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function getModel() {
 		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
@@ -100,28 +99,10 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	}
 
 	/**
-	 * Create Sofort. transaction
-	 *
-	 * @param array $parentTransaction
-	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
-	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
-	 * @since 1.0.0
-	 */
-	public function createTransaction($parentTransaction, $amount) {
-		if ($this->operation == Operation::CREDIT) {
-			$this->transaction = new SepaTransaction();
-		} else {
-			$this->transaction = new SofortTransaction();
-		}
-
-		return parent::createTransaction($parentTransaction, $amount);
-	}
-
-	/**
 	 * Get new instance of payment specific transaction
 	 *
 	 * @return SepaTransaction
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function getTransactionInstance() {
 		return new SepaTransaction();
@@ -159,7 +140,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 		$data['creditor_name'] = $this->getShopConfigVal('creditor_name');
 		$data['creditor_city'] = $this->getShopConfigVal('creditor_city');
 
-		var_dump($order);die();
+		var_dump($data);die();
 		return $this->load->view('extension/payment/wirecard_pg_sepa_mandate', $data);
 	}
 }
