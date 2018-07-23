@@ -14,15 +14,21 @@ require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
  *
  * SEPA Direct Debit payment transaction controller
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
 class ControllerExtensionPaymentWirecardPGSepaDD extends \ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected $type = 'sepadd';
+
+	/**
+	 * @var bool
+	 * @since 1.1.0
+	 */
+	protected $has_payment_actions = true;
 
 	/**
 	 * SEPA Direct Debit default configuration settings

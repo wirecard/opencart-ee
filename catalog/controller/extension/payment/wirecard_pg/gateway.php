@@ -129,6 +129,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			}
 		}
 
+		var_dump($json);die();
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
@@ -197,6 +198,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	public function getPrecision( $order ) {
+		if ($this->type == 'sepadd') {
+			return 2;
+		}
+
 		$currency_value = floatval( $order['currency_value'] );
 		$precision = strlen(substr(strrchr($currency_value, "."), 1));
 		return $precision;

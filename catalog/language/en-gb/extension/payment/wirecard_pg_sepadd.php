@@ -17,7 +17,8 @@ $_['last_name_input'] = 'Last name';
 $_['sepa_legend'] = 'Please enter your data:';
 
 $_['creditor'] = 'Creditor';
-$_['creditor_id'] = 'Creditor ID';
+$_['creditor_id_input'] = 'Creditor ID';
+$_['sepa_mandate'] = 'SEPA Mandate';
 $_['debtor'] = 'Debtor';
 $_['debtor_acc_owner'] = 'Account owner';
 $_['sepa_text_1'] = 'I authorize the creditor';

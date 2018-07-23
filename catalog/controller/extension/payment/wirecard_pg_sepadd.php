@@ -64,6 +64,20 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 			$this->response->setOutput(json_encode($json));
 		} else {
 			$this->transaction = $this->getTransactionInstance();
+
+			$account_holder = new \Wirecard\PaymentSdk\Entity\AccountHolder();
+			$account_holder->setFirstName($this->request->post['first_name']);
+			$account_holder->setLastName($this->request->post['last_name']);
+			$this->transaction->setAccountHolder($account_holder);
+
+			$this->transaction->setIban($this->request->post['iban']);
+			if ($this->getShopConfigVal('enable_bic')) {
+				$this->transaction->setBic($this->request->post['bic']);
+			}
+
+			$mandate = new \Wirecard\PaymentSdk\Entity\Mandate($this->generateID());
+			$this->transaction->setMandate($mandate);
+
 			parent::confirm();
 		}
 	}
@@ -128,12 +142,9 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 		$this->load->model('checkout/order');
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
-		$data['consumer_firstname'] = $formData['first_name'];
-		$data['consumer_lastname'] = $formData['last_name'];
+		$data['consumer_first_name'] = $formData['first_name'];
+		$data['consumer_last_name'] = $formData['last_name'];
 		$data['consumer_address'] = $order['payment_address_1'];
-		$data['consumer_city'] = $order['payment_city'];
-		$data['consumer_post'] = $order['payment_postcode'];
-		$data['consumer_country'] = $order['payment_country'];
 		$data['consumer_iban'] = $formData['iban'];
 		$data['customer_bic'] = null;
 		if ($this->getShopConfigVal('enable_bic')) {
@@ -158,7 +169,8 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 					'sepa_text_4',
 					'sepa_text_5',
 					'sepa_text_6',
-					'sepa_cancel'
+					'sepa_cancel',
+					'sepa_mandate'
 				)
 			),
 			$data

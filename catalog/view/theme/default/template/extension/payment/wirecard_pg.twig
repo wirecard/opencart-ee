@@ -56,18 +56,8 @@
                 }
                 if (json['popup']) {
                     var popup = $('#mandate-popup');
-                    popup.html(json['popup']);
-                   /* $('#mandate-popup').dialog({
-                        modal: true
-                        /*buttons: [
-                            {
-                                text: "Ok",
-                                click: function() {
-                                    $(this).dialog('close');
-                                }
-                            }
-                        ]*/
-                    /*}).html('<h1>TEST</h1>');*/
+                    popup.html(json['popup']).show();
+                    $('#payment').hide();
                 }
             },
             error: function(xhr, ajaxOptions, thrownError) {

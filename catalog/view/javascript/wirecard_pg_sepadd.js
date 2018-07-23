@@ -5,11 +5,20 @@
  * - License can be found under:
  * https://github.com/wirecard/opencart-ee/blob/master/LICENSE
  */
-/*
-$(document).ready(function() {
-    console.log('script for sepa loaded');
-    $('#wirecard-pg-form').on('submit', function (e) {
-        e.preventDefault();
-        console.log('you shall not pass');
-    });
-});*/
+
+function hideSepaMandate() {
+	$('#payment').show();
+	$('#mandate-popup').hide();
+	$('#mandate_confirmed').val('0');
+	$('#button-confirm').prop("disabled",false);
+}
+
+function checkSepaMandate(checkbox) {
+	if (checkbox.is(":checked")) {
+		$('#button-confirm').prop("disabled",false);
+		$('#mandate_confirmed').val('1');
+	} else {
+		$('#button-confirm').prop("disabled",true);
+		$('#mandate_confirmed').val('0');
+	}
+}
