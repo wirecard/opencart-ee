@@ -19,7 +19,8 @@ use Wirecard\PaymentSdk\Transaction\Transaction;
  * @since 1.0.0
  */
 class AdditionalInformationHelper extends Model {
-
+	const OPENCART_GATEWAY_WIRECARD_VERSION = '1.0.0';
+	const OPENCART_GATEWAY_WIRECARD_NAME = 'Wirecard OpenCart Extension';
 	const CURRENCYCODE = 'currency_code';
 	const CURRENCYVALUE = 'currency_value';
 
@@ -64,6 +65,23 @@ class AdditionalInformationHelper extends Model {
 	}
 
 	/**
+	 * Add account holder to transaction.
+	 *
+	 * @param Transaction $transaction
+	 * @param $order
+	 * @return Transaction
+	 * @since 1.0.0
+	 */
+	public function addAccountHolder($transaction, $order) {
+		$account_holder = new PGAccountHolder();
+
+		$transaction->setAccountHolder($account_holder->createAccountHolder($order, $account_holder::BILLING));
+		$transaction->setShipping($account_holder->createAccountHolder($order, $account_holder::SHIPPING));
+
+		return $transaction;
+	}
+
+	/**
 	 * Create identification data
 	 *
 	 * @param Transaction $transaction
@@ -77,8 +95,8 @@ class AdditionalInformationHelper extends Model {
 		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('orderId', $order['order_id']));
 		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('shopName', 'OpenCart'));
 		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('shopVersion', VERSION));
-		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('pluginName', $basic_info->getName()));
-		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('pluginVersion', $basic_info->getVersion()));
+		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('pluginName', self::OPENCART_GATEWAY_WIRECARD_NAME));
+		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('pluginVersion', self::OPENCART_GATEWAY_WIRECARD_VERSION));
 		$transaction->setCustomFields($custom_fields);
 		$transaction->setLocale(substr($order['language_code'], 0, 2));
 
@@ -103,23 +121,19 @@ class AdditionalInformationHelper extends Model {
 			));
 		}
 
-			if ($order['ip']) {
-				$transaction->setIpAddress($order['ip']);
-			} else {
-				$transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
-			}
+		if ($order['ip']) {
+			$transaction->setIpAddress($order['ip']);
+		} else {
+			$transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
+		}
 
-			if (strlen($order['customer_id'])) {
-				$transaction->setConsumerId($order['customer_id']);
-			}
-			$transaction->setOrderNumber($order['order_id']);
-			$transaction->setDescriptor($this->createDescriptor($order));
+		if (strlen($order['customer_id'])) {
+			$transaction->setConsumerId($order['customer_id']);
+		}
+		$transaction->setOrderNumber($order['order_id']);
+		$transaction->setDescriptor($this->createDescriptor($order));
 
-			$account_holder = new PGAccountHolder();
-			$transaction->setAccountHolder($account_holder->createAccountHolder($order, $account_holder::BILLING));
-			$transaction->setShipping($account_holder->createAccountHolder($order, $account_holder::SHIPPING));
-
-			return $transaction;
+		return $transaction;
 	}
 
 	/**

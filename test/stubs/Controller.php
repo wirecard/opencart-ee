@@ -19,6 +19,7 @@ abstract class Controller
 	public $model_extension_payment_wirecard_pg_sepact;
 	public $model_extension_payment_wirecard_pg_sofortbanking;
 	public $model_extension_payment_wirecard_pg_ideal;
+	public $model_extension_payment_wirecard_pg_alipay_crossborder;
     public $model_checkout_order;
     public $controller_extension_payment_wirecard_pg_sepact;
 
@@ -36,7 +37,8 @@ abstract class Controller
 		$this->model_extension_payment_wirecard_pg_sepact = $modelPayment;
 		$this->model_extension_payment_wirecard_pg_sofortbanking = $modelPayment;
 		$this->model_extension_payment_wirecard_pg_ideal = $modelPayment;
-        $this->language = $language;
+        $this->model_extension_payment_wirecard_pg_alipay_crossborder = $modelPayment;
+		$this->language = $language;
         $this->cart = $cart;
         $this->controller_extension_payment_wirecard_pg_sepact = $subController;
 
