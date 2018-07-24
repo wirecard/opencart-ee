@@ -63,7 +63,7 @@ class ModelExtensionPaymentWirecardPG extends Model {
             `transaction_type` = '" . $this->db->escape($response->getTransactionType()) . "',
             `payment_method` = '" . $this->db->escape($payment_controller->getType()) . "', 
             `transaction_state` = '" . $this->db->escape($transaction_state) . "',
-            `amount` = '" . $amount . "',
+            `amount` = '" . (float)$amount . "',
             `currency` = '" . $this->db->escape($currency) . "',
             `response` = '" . $this->db->escape(json_encode($response->getData())) . "',
             `date_added` = NOW()
