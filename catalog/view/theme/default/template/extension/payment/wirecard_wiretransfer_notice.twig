@@ -1,0 +1,28 @@
+<div>
+    <table class="table table-bordered table-responsive">
+        <thead>
+            <tr>
+                <th colspan="2"><h3>{{ texts.merchant_notice }}</h3></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <th scope="row" width="25%">{{ texts.amount }}</th>
+                <td>{{ transaction.amount }}</td>
+            </tr>
+            <tr>
+                <th scope="row" width="25%">{{ texts.iban }}</th>
+                <td>{{ transaction.iban }}</td>
+            </tr>
+            <tr>
+                <th scope="row" width="25%">{{ texts.bic }}</th>
+                <td>{{ transaction.bic }}</td>
+            </tr>
+            <tr>
+                <th scope="row" width="25%">{{ texts.ptrid }}</th>
+                <td>{{ transaction.ptrid }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
