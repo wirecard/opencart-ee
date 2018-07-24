@@ -34,7 +34,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends \ControllerExtensionPay
 	 * SEPA Direct Debit default configuration settings
 	 *
 	 * @var array
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected $default = array (
 		'status' => 0,
@@ -49,7 +49,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends \ControllerExtensionPay
 		'creditor_name' => '',
 		'creditor_city' => '',
 		'mandate_text' => '',
-		'sort_order' => '8',
+		'sort_order' => 8,
 		'enable_bic' => 0,
 		'descriptor' => 0,
 		'additional_info' => 1,
@@ -61,7 +61,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends \ControllerExtensionPay
 	 * Set data fields or load config
 	 *
 	 * @return array
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected function getRequestData() {
 		$this->config_fields = array_merge(
@@ -83,6 +83,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends \ControllerExtensionPay
 	 *
 	 * @param array $data
 	 * @return array
+	 * @since 1.1.0
 	 */
 	public function loadConfigBlocks($data) {
 		$data = parent::loadConfigBlocks($data);
