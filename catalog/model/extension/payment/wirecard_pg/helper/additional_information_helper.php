@@ -19,7 +19,6 @@ use Wirecard\PaymentSdk\Transaction\Transaction;
  * @since 1.0.0
  */
 class AdditionalInformationHelper extends Model {
-
 	const CURRENCYCODE = 'currency_code';
 	const CURRENCYVALUE = 'currency_value';
 
@@ -64,6 +63,27 @@ class AdditionalInformationHelper extends Model {
 	}
 
 	/**
+	 * Add account holder to transaction.
+	 *
+	 * @param Transaction $transaction
+	 * @param $order
+	 * @param $includeShipping
+	 * @return Transaction
+	 * @since 1.0.0
+	 */
+	public function addAccountHolder($transaction, $order, $includeShipping = true) {
+		$account_holder = new PGAccountHolder();
+
+		$transaction->setAccountHolder($account_holder->createAccountHolder($order, $account_holder::BILLING));
+
+		if ($includeShipping) {
+			$transaction->setShipping($account_holder->createAccountHolder($order, $account_holder::SHIPPING));
+		}
+
+		return $transaction;
+	}
+
+	/**
 	 * Create identification data
 	 *
 	 * @param Transaction $transaction
@@ -88,6 +108,9 @@ class AdditionalInformationHelper extends Model {
 	/**
 	 * Create additional information data
 	 *
+	 * The AccountHolder is being set along with the basket and shipping in
+	 * ControllerExtensionPaymentGateway::prepareTransaction().
+	 *
 	 * @param Transaction $transaction
 	 * @param array $order
 	 * @return Transaction
@@ -103,23 +126,20 @@ class AdditionalInformationHelper extends Model {
 			));
 		}
 
-			if ($order['ip']) {
-				$transaction->setIpAddress($order['ip']);
-			} else {
-				$transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
-			}
+		if ($order['ip']) {
+			$transaction->setIpAddress($order['ip']);
+		} else {
+			$transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
+		}
 
-			if (strlen($order['customer_id'])) {
-				$transaction->setConsumerId($order['customer_id']);
-			}
-			$transaction->setOrderNumber($order['order_id']);
-			$transaction->setDescriptor($this->createDescriptor($order));
+		if (strlen($order['customer_id'])) {
+			$transaction->setConsumerId($order['customer_id']);
+		}
 
-			$account_holder = new PGAccountHolder();
-			$transaction->setAccountHolder($account_holder->createAccountHolder($order, $account_holder::BILLING));
-			$transaction->setShipping($account_holder->createAccountHolder($order, $account_holder::SHIPPING));
+		$transaction->setOrderNumber($order['order_id']);
+		$transaction->setDescriptor($this->createDescriptor($order));
 
-			return $transaction;
+		return $transaction;
 	}
 
 	/**
