@@ -64,7 +64,7 @@ function getCreditCardRequestData() {
 							onSuccess: callback,
 							onError: logError
 						} );
-					}c
+					}
 				},
 				error: function ( error ) {
 					console.error( error );

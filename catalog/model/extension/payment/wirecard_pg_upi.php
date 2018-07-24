@@ -14,13 +14,13 @@ require_once(dirname( __FILE__ ) . '/wirecard_pg/gateway.php');
  *
  * Unionpay International Transaction model
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
 class ModelExtensionPaymentWirecardPGUPI extends ModelExtensionPaymentGateway {
 
 	/**
 	 * @var string
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected $type = 'upi';
 }

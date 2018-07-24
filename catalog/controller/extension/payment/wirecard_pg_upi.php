@@ -20,20 +20,20 @@ use Wirecard\PaymentSdk\Exception\MalformedResponseException;
  *
  * UnionPay Interational Transaction controller
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
 class ControllerExtensionPaymentWirecardPGUPI extends ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected $type = 'upi';
 
 	/**
 	 * Basic index method
 	 *
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function index($data = null) {
 		$this->load->language('extension/payment/wirecard_pg');
@@ -47,7 +47,7 @@ class ControllerExtensionPaymentWirecardPGUPI extends ControllerExtensionPayment
 	/**
 	 * After the order is confirmed in frontend
 	 *
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function confirm() {
 		$this->load->model('checkout/order');
@@ -67,7 +67,7 @@ class ControllerExtensionPaymentWirecardPGUPI extends ControllerExtensionPayment
 	 *
 	 * @param array $currency
 	 * @return \Wirecard\PaymentSdk\Config\Config
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function getConfig($currency = null) {
 		$merchant_account_id = $this->getShopConfigVal('merchant_account_id');
@@ -84,7 +84,7 @@ class ControllerExtensionPaymentWirecardPGUPI extends ControllerExtensionPayment
 	 * Payment specific model getter
 	 *
 	 * @return Model
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function getModel() {
 		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
@@ -96,7 +96,7 @@ class ControllerExtensionPaymentWirecardPGUPI extends ControllerExtensionPayment
 	 * Return data via ajax call for the seamless form renderer
 	 *
 	 * @return array
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function getCreditCardUiRequestData() {
 		$this->transaction = $this->getTransactionInstance();
@@ -118,7 +118,7 @@ class ControllerExtensionPaymentWirecardPGUPI extends ControllerExtensionPayment
 	 *
 	 * @param string $action
 	 * @return string
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function getPaymentAction($action) {
 		if ($action == 'pay') {
@@ -132,7 +132,7 @@ class ControllerExtensionPaymentWirecardPGUPI extends ControllerExtensionPayment
 	 * Get new instance of payment specific transaction
 	 *
 	 * @return UpiTransaction
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function getTransactionInstance() {
 		return new UpiTransaction();
@@ -144,7 +144,7 @@ class ControllerExtensionPaymentWirecardPGUPI extends ControllerExtensionPayment
 	 * @param array $parent_transaction
 	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function createTransaction($parent_transaction, $amount) {
 		$this->transaction = $this->getTransactionInstance();

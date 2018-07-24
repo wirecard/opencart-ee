@@ -109,10 +109,7 @@ class AdditionalInformationHelper extends Model {
 				$transaction->setConsumerId($order['customer_id']);
 			}
 
-			if ($order['order_id']) {
-				$transaction->setOrderNumber($order['order_id']);
-			}
-
+			$transaction->setOrderNumber($order['order_id']);
 			$transaction->setDescriptor($this->createDescriptor($order));
 
 			$account_holder = new PGAccountHolder();

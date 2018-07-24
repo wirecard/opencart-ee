@@ -14,19 +14,19 @@ require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
  *
  * Unionpay International payment transaction controller
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
 class ControllerExtensionPaymentWirecardPGUPI extends \ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected $type = 'upi';
 
 	/**
 	 * @var bool
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected $has_payment_actions = true;
 
@@ -34,7 +34,7 @@ class ControllerExtensionPaymentWirecardPGUPI extends \ControllerExtensionPaymen
 	 * UnionPay International default configuration settings
 	 *
 	 * @var array
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected $default = array(
 		'status' => 0,
@@ -56,7 +56,7 @@ class ControllerExtensionPaymentWirecardPGUPI extends \ControllerExtensionPaymen
 	 * Set data fields or load config
 	 *
 	 * @return array
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected function getRequestData() {
 		$this->config_fields = array_merge($this->config_fields, array('sort_order'));

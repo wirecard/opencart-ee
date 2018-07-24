@@ -29,7 +29,7 @@ class ModelExtensionPaymentWirecardPG extends Model {
             `transaction_type` VARCHAR(32) NOT NULL,
             `payment_method` VARCHAR(32) NOT NULL,
             `transaction_state` VARCHAR(32) NOT NULL,
-            `amount` DECIMAL(10, 2) NOT NULL,
+            `amount` DECIMAL(10, 6) NOT NULL,
             `currency` VARCHAR(3) NOT NULL,
             `response` TEXT default NULL,
             `transaction_link` VARCHAR(255) default NULL,
@@ -63,7 +63,7 @@ class ModelExtensionPaymentWirecardPG extends Model {
             `transaction_type` = '" . $this->db->escape($response->getTransactionType()) . "',
             `payment_method` = '" . $this->db->escape($payment_controller->getType()) . "', 
             `transaction_state` = '" . $this->db->escape($transaction_state) . "',
-            `amount` = '" . (float)$amount . "',
+            `amount` = '" . $amount . "',
             `currency` = '" . $this->db->escape($currency) . "',
             `response` = '" . $this->db->escape(json_encode($response->getData())) . "',
             `date_added` = NOW()
