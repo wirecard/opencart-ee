@@ -37,6 +37,15 @@ class ModelExtensionPaymentWirecardPG extends Model {
 			`date_modified` DATETIME NOT NULL,
             PRIMARY KEY (`tx_id`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+
+		// This is added for those who have already installed the existing version of the extension.
+		// It just changes the column type to a 6-digit decimal. Doing this right after the creation
+		// of a table causes no harm since it just updates to the same type anyways.
+
+		$this->db->query("
+			ALTER TABLE `" . DB_PREFIX . "wirecard_ee_transactions`
+			MODIFY COLUMN `amount` DECIMAL(10, 6) NOT NULL;
+		");
 	}
 
 	/**
