@@ -19,6 +19,10 @@ use Wirecard\PaymentSdk\Transaction\Transaction;
  * @since 1.0.0
  */
 class AdditionalInformationHelper extends Model {
+
+	const CURRENCYCODE = 'currency_code';
+	const CURRENCYVALUE = 'currency_value';
+
 	/**
 	 * @var string
 	 * @since 1.0.0
@@ -132,5 +136,30 @@ class AdditionalInformationHelper extends Model {
 			substr( $order['store_name'], 0, 9),
 			$order['order_id']
 		);
+	}
+
+	/**
+	 * Convert amount with currency format
+	 *
+	 * @param float $amount
+	 * @param array $currency
+	 * @return float
+	 * @since 1.0.0
+	 */
+	public function convert($amount, $currency) {
+		return ($currency[self::CURRENCYVALUE]) ? (float)$amount * $currency[self::CURRENCYVALUE] : (float)$amount;
+	}
+
+	/**
+	 * Convert amount with currency format including tax
+	 *
+	 * @param float $amount
+	 * @param array $currency
+	 * @param int $taxClassId
+	 * @return float
+	 * @since 1.0.0
+	 */
+	public function convertWithTax($amount, $currency, $taxClassId) {
+		return $this->tax->calculate($this->convert($amount, $currency), $taxClassId, 'P');
 	}
 }
