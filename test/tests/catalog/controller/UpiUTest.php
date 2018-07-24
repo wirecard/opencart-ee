@@ -60,6 +60,8 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 			->setMethods(['getProducts'])
 			->getMock();
 
+		$this->currency = $this->getMockBuilder(Currency::class)->disableOriginalConstructor()->getMock();
+
 		$orderDetails = array(
 			'order_id' => '1',
 			'total' => '20',
@@ -121,7 +123,8 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelUpi,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 	}
 
@@ -138,7 +141,8 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelUpi,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$actual = $this->controller->index();
@@ -187,7 +191,8 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelUpi,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
