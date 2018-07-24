@@ -28,15 +28,6 @@ class ControllerExtensionPaymentWirecardPGMasterpass extends ControllerExtension
 	protected $type = 'masterpass';
 
 	/**
-	 * Basic index method
-	 *
-	 * @since 1.1.0
-	 */
-	public function index($data = null) {
-		return parent::index();
-	}
-
-	/**
 	 * Create Masterpass transaction
 	 *
 	 * @since 1.1.0
@@ -48,7 +39,7 @@ class ControllerExtensionPaymentWirecardPGMasterpass extends ControllerExtension
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
 
-		$additional_helper->addAccountHolder($this->transaction, $order);
+		$this->transaction = $additional_helper->addAccountHolder($this->transaction, $order, false);
 
 		parent::confirm();
 	}

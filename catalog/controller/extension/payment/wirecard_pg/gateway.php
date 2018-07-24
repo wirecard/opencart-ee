@@ -185,6 +185,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 				$currency,
 				$order['total']
 			);
+
+			$this->transaction = $additional_helper->addAccountHolder($this->transaction, $order);
 		}
 
 		if (isset($this->request->post['fingerprint-session'])) {

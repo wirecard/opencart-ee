@@ -23,13 +23,4 @@ class ModelExtensionPaymentWirecardPGMasterpass extends ModelExtensionPaymentGat
 	 * @since 1.1.0
 	 */
 	protected $type = 'masterpass';
-
-	/**
-	 * Basic getMethod method
-	 *
-	 * @since 1.1.0
-	 */
-	public function getMethod($address, $total) {
-		return parent::getMethod($address, $total);
-	}
 }
