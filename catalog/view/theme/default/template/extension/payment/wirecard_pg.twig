@@ -31,6 +31,7 @@
 </form>
 {% if credit_card is null %}
 <script type="text/javascript"><!--
+    var disableButton = false;
     $('#button-confirm').on('click', function() {
         var formData = new FormData(document.querySelector('#wirecard-pg-form'));
 
@@ -45,7 +46,13 @@
                 $('#button-confirm').button('loading');
             },
             complete: function() {
-                $('#button-confirm').button('reset');
+                var button = $('#button-confirm');
+                button.button('reset');
+                button.bind('DOMSubtreeModified', function(){
+                    if (disableButton) {
+                        button.prop('disabled', true);
+                    }
+                });
             },
             success: function(json) {
                 if (json['response']) {
@@ -58,6 +65,10 @@
                     var popup = $('#mandate-popup');
                     popup.html(json['popup']).show();
                     $('#payment').hide();
+                    disableButton = true;
+                }
+                if (json['error']) {
+                    $('#error-text-sepa', '#payment').html(json['error']).parent().removeClass('hidden');
                 }
             },
             error: function(xhr, ajaxOptions, thrownError) {

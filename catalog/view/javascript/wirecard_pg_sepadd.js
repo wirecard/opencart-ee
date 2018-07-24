@@ -9,16 +9,18 @@
 function hideSepaMandate() {
 	$('#payment').show();
 	$('#mandate-popup').hide();
-	$('#mandate_confirmed').val('0');
+	$('#mandate_confirmed').val(0);
 	$('#button-confirm').prop("disabled",false);
 }
 
 function checkSepaMandate(checkbox) {
+	var button = $('#button-confirm');
+	button.unbind('DOMSubtreeModified');
 	if (checkbox.is(":checked")) {
-		$('#button-confirm').prop("disabled",false);
-		$('#mandate_confirmed').val('1');
+		button.prop("disabled",false);
+		$('#mandate_confirmed').val(1);
 	} else {
-		$('#button-confirm').prop("disabled",true);
-		$('#mandate_confirmed').val('0');
+		button.prop("disabled",true);
+		$('#mandate_confirmed').val(0);
 	}
 }

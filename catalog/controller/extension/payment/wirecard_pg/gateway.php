@@ -129,7 +129,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			}
 		}
 
-		var_dump($json);die();
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}

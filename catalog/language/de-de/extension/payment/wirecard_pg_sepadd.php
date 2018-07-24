@@ -17,3 +17,4 @@ $_['sepa_mandate'] = 'SEPA Mandate';
 $_['first_name_input'] = 'First name';
 $_['last_name_input'] = 'Last name';
 $_['sepa_legend'] = 'Geben sie ihre daten ein:';
+$_['sepa_fields_error'] = 'Please fill in the SEPA Direct Debit fields and try again.';

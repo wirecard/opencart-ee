@@ -28,3 +28,4 @@ $_['sepa_text_4'] = 'I irrevocably agree that, in the event that the direct debi
 $_['sepa_text_5'] = 'my full name, address and date of birth.';
 $_['sepa_text_6'] = 'I have read and accepted the SEPA Direct Debit Mandate information.';
 $_['sepa_cancel'] = 'Cancel';
+$_['sepa_fields_error'] = 'Please fill in the SEPA Direct Debit fields and try again.';

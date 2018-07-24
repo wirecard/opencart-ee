@@ -58,28 +58,42 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	 */
 	public function confirm() {
 		if ((bool)$this->request->post['mandate_confirmed'] == false) {
+			$json = [];
+			if ($this->validateMadnatoryFields($this->request->post, $this->getShopConfigVal('enable_bic'))) {
+				$json = ['popup' => $this->generateMandateTemplate($this->request->post)];
+			} else {
+				$this->load->language('extension/payment/wirecard_pg_sepadd');
+				$json = ['error' => $this->language->get('sepa_fields_error')];
+			}
 
-			$json = ['popup' => $this->generateMandateTemplate($this->request->post)];
 			$this->response->addHeader('Content-Type: application/json');
 			$this->response->setOutput(json_encode($json));
 		} else {
 			$this->transaction = $this->getTransactionInstance();
-
-			$account_holder = new \Wirecard\PaymentSdk\Entity\AccountHolder();
-			$account_holder->setFirstName($this->request->post['first_name']);
-			$account_holder->setLastName($this->request->post['last_name']);
-			$this->transaction->setAccountHolder($account_holder);
-
-			$this->transaction->setIban($this->request->post['iban']);
-			if ($this->getShopConfigVal('enable_bic')) {
-				$this->transaction->setBic($this->request->post['bic']);
-			}
-
-			$mandate = new \Wirecard\PaymentSdk\Entity\Mandate($this->generateID());
-			$this->transaction->setMandate($mandate);
-
 			parent::confirm();
 		}
+	}
+
+	/**
+	 * Set additional data needed for SEPA
+	 *
+	 * @since 1.1.0
+	 */
+	public function prepareTransaction() {
+		parent::prepareTransaction();
+
+		$account_holder = new \Wirecard\PaymentSdk\Entity\AccountHolder();
+		$account_holder->setFirstName($this->request->post['first_name']);
+		$account_holder->setLastName($this->request->post['last_name']);
+		$this->transaction->setAccountHolder($account_holder);
+
+		$this->transaction->setIban($this->request->post['iban']);
+		if ($this->getShopConfigVal('enable_bic')) {
+			$this->transaction->setBic($this->request->post['bic']);
+		}
+
+		$mandate = new \Wirecard\PaymentSdk\Entity\Mandate($this->generateID());
+		$this->transaction->setMandate($mandate);
 	}
 
 	/**
@@ -184,6 +198,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	 *
 	 * @param array $lines
 	 * @return array
+	 * @since 1.1.0
 	 */
 	private function loadLangLines($lines) {
 		$this->load->language('extension/payment/wirecard_pg_sepadd');
@@ -193,6 +208,32 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 		}
 
 		return $data;
+	}
+
+	/**
+	 * @param array $formFields
+	 * @param bool $bic_enabled
+	 * @return boolean
+	 * @since 1.1.0
+	 */
+	private function validateMadnatoryFields($formFields, $bic_enabled) {
+		$mandatoryFields = array(
+			'iban',
+			'first_name',
+			'last_name',
+		);
+		if ($bic_enabled) {
+			array_push($mandatoryFields, 'bic');
+		}
+
+		foreach ($mandatoryFields as $field) {
+			if (!array_key_exists($field, $formFields) ||
+				$formFields[$field] === '') {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
 

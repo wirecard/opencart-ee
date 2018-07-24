@@ -52,7 +52,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends \ControllerExtensionPay
 		'sort_order' => '8',
 		'enable_bic' => 0,
 		'descriptor' => 0,
-		'additional_info' => 0,
+		'additional_info' => 1,
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0,
 	);
