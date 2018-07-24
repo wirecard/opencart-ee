@@ -43,7 +43,7 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExten
 		'additional_info' => 1,
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0,
-		'sort_order' => '9',
+		'sort_order' => 9,
 	);
 
 	/**
