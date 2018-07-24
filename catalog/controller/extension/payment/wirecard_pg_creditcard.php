@@ -53,7 +53,6 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
 
 		$transaction_service = new TransactionService($this->getConfig(), $this->getLogger());
-		$this->getLogger()->debug(print_r($_POST, true));
 		$response = $transaction_service->processJsResponse($_POST,
 			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
 
@@ -70,6 +69,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	public function getConfig($currency = null) {
 		$config = parent::getConfig($currency);
 		$payment_config = new CreditCardConfig();
+		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
 
 		if ($this->getShopConfigVal('merchant_account_id') !== 'null') {
 			$payment_config->setSSLCredentials(
@@ -86,18 +86,23 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		}
 
 		if ($this->getShopConfigVal('ssl_max_limit') !== '') {
+			$ssl_max_limit = floatval($this->getShopConfigVal('ssl_max_limit'));
 			$payment_config->addSslMaxLimit(
 				new Amount(
-					$this->getShopConfigVal('ssl_max_limit') * $currency['currency_value'],
+					$additional_helper->convert($ssl_max_limit, $currency),
 					$currency['currency_code']
 				)
 			);
 		}
 
 		if ($this->getShopConfigVal('three_d_min_limit') !== '') {
+			$three_d_min_limit = floatval($this->getShopConfigVal('three_d_min_limit'));
 			$payment_config->addThreeDMinLimit(
 				new Amount(
-					$this->getShopConfigVal('three_d_min_limit') * $currency['currency_value'],
+					$additional_helper->convert(
+						$three_d_min_limit,
+						$currency
+					),
 					$currency['currency_code']
 				)
 			);
@@ -130,13 +135,12 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		$this->prepareTransaction();
 		$this->transaction->setConfig($this->payment_config->get(CreditCardTransaction::NAME));
 		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
-		$this->getLogger()->debug('transaction: ' . print_r($this->transaction, true));
 		$transaction_service = new TransactionService($this->payment_config, $this->getLogger());
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(($transaction_service->getCreditCardUiWithData(
 			$this->transaction,
 			$this->getPaymentAction($this->getShopConfigVal('payment_action')),
-			'en'
+			$this->language->get('code')
 		)));
 	}
 

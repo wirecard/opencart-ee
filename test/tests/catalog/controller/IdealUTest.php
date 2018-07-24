@@ -34,6 +34,7 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 	private $language;
 	private $cart;
 	private $subController;
+	private $currency;
 
 	const SHOP = 'OpenCart';
 	const PLUGIN = 'Wirecard_PaymentGateway';
@@ -76,7 +77,7 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 			'lastname' => 'Doe',
 			'ip' => '1',
 			'store_name' => 'Demoshop',
-			'currency_value' => 1,
+			'currency_value' => 1.12,
 			'customer_id' => 1,
 			'payment_iso_code_2' => 'AT',
 			'payment_city' => 'BillingCity',
@@ -110,6 +111,8 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 
 		$this->language = $this->getMockBuilder(Language::class)->disableOriginalConstructor()->getMock();
 
+		$this->currency = $this->getMockBuilder(Currency::class)->disableOriginalConstructor()->getMock();
+
 		$this->request = $this->getMockBuilder(Request::class)
 			->disableOriginalConstructor()
 			->getMock();
@@ -132,7 +135,8 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelIdeal,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$this->controller = new ControllerExtensionPaymentWirecardPGIdeal(
@@ -145,7 +149,8 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelIdeal,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 	}
 
@@ -168,7 +173,8 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelIdeal,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
@@ -201,7 +207,8 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelIdeal,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$this->controller = $this->getMockBuilder(ControllerExtensionPaymentWirecardPGIdeal::class)
@@ -214,7 +221,7 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 
 		$currency = [
 			'currency_code' => 'EUR',
-			'currency_value' => 1
+			'currency_value' => 1.12
 		];
 
 		$creditConfig = $this->controller->getConfig($currency);
@@ -250,7 +257,8 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelIdeal,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$actual = $this->controller->index();
@@ -270,7 +278,8 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelIdeal,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGIdeal::class);
@@ -294,7 +303,8 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelIdeal,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGIdeal::class);
@@ -326,7 +336,8 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelIdeal,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$this->controller = $this->getMockBuilder(ControllerExtensionPaymentWirecardPGIdeal::class)
@@ -366,7 +377,8 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelIdeal,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$actual = $this->controller->getType();
@@ -387,7 +399,8 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelIdeal,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Transaction\IdealTransaction();

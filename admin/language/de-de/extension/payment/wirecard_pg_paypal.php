@@ -12,5 +12,5 @@ $_['heading_title'] = 'Wirecard PayPal';
 $_['text_wirecard_pg_paypal'] = '<img src="./view/image/wirecard_pg/paypal.png" />';
 
 // Payment specific configuration
-$_['text_edit'] = 'Edit PayPal';
-$_['config_status_desc'] = 'Activate payment method PayPal to make it available for your consumers.';
+$_['text_edit'] = 'Zahlungsmittel  PayPal bearbeiten';
+$_['config_status_desc'] = 'Zahlungsmittel PayPal aktivieren und dem Endkunden beim Checkout anbieten.';

@@ -8,9 +8,9 @@
  */
 
 // Page Title
-$_['heading_title'] = 'Wirecard PayPal';
-$_['text_wirecard_pg_paypal'] = '<img src="./view/image/wirecard_pg/paypal.png" />';
+$_['heading_title'] = 'Wirecard SEPA-Überweisung';
+$_['text_wirecard_pg_sepact'] = '<img src="./view/image/wirecard_pg/sepa.png" />';
 
 // Payment specific configuration
-$_['text_edit'] = 'Edit PayPal';
-$_['config_status_desc'] = 'Activate payment method PayPal to make it available for your consumers.';
+$_['text_edit'] = 'Zahlungsmittel SEPA-Überweisung bearbeiten';
+$_['config_status_desc'] = 'Zahlungsmittel SEPA-Überweisung aktivieren.';

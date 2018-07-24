@@ -8,9 +8,9 @@
  */
 
 // Page Title
-$_['heading_title'] = 'Wirecard PayPal';
-$_['text_wirecard_pg_paypal'] = '<img src="./view/image/wirecard_pg/paypal.png" />';
+$_['heading_title'] = 'Wirecard iDEAL';
+$_['text_wirecard_pg_ideal'] = '<img src="./view/image/wirecard_pg/ideal.png" />';
 
 // Payment specific configuration
-$_['text_edit'] = 'Edit PayPal';
-$_['config_status_desc'] = 'Activate payment method PayPal to make it available for your consumers.';
+$_['text_edit'] = 'Zahlungsmittel iDEAL bearbeiten';
+$_['config_status_desc'] = 'Zahlungsmittel iDEAL aktivieren und dem Endkunden beim Checkout anbieten.';

@@ -22,7 +22,7 @@ abstract class Controller
     public $model_checkout_order;
     public $controller_extension_payment_wirecard_pg_sepact;
 
-    public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPayment, $language, $cart, $subController = null, $request = null)
+    public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPayment, $language, $cart, $currency, $subController = null, $request = null)
     {
         $this->registry = $registry;
         $this->config = $config;
@@ -45,6 +45,8 @@ abstract class Controller
 	    	'fingerprint-session' => '123',
 			'ideal-bic' => \Wirecard\PaymentSdk\Entity\IdealBic::INGBNL2A
 		];
+
+	    $this->currency = $currency;
     }
 
     public function get($key)
