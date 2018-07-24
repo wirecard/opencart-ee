@@ -37,6 +37,15 @@ class ModelExtensionPaymentWirecardPG extends Model {
 			`date_modified` DATETIME NOT NULL,
             PRIMARY KEY (`tx_id`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+
+		$this->db->query("
+			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "wirecard_ee_vault` (
+			`vault_id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
+			`user_id` INT(10) NOT NULL,
+			`token` VARCHAR(20) NOT NULL,
+			`masked_pan` VARCHAR(30) NOT NULL,
+			PRIMARY KEY (`vault_id`)
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
 	}
 
 	/**
