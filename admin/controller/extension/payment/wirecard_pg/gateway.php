@@ -282,7 +282,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		if (isset($this->request->post[$key])) {
 			return $this->request->post[$prefix . $key];
 		} else {
-			return strlen($this->config->get($prefix . $key)) ? $this->config->get($prefix . $key) : $this->default[$key];
+			return !empty($this->config->get($prefix . $key)) ? $this->config->get($prefix . $key) : $this->default[$key];
 		}
 	}
 
