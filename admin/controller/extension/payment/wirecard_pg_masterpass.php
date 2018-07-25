@@ -10,47 +10,53 @@
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ControllerExtensionPaymentWirecardPGSofortbanking
+ * Class ControllerExtensionPaymentWirecardPGMasterpass
  *
- * Sofort. payment transaction controller
+ * Masterpass payment transaction controller
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
-class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGMasterpass extends \ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
-	protected $type = 'sofortbanking';
+	protected $type = 'masterpass';
 
 	/**
-	 * Sofort. default configuration settings
+	 * @var bool
+	 * @since 1.1.0
+	 */
+	protected $has_payment_actions = true;
+
+	/**
+	 * Masterpass default configuration settings
 	 *
 	 * @var array
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected $default = array (
 		'status' => 0,
-		'title' => 'Wirecard Sofort.',
-		'merchant_account_id' => '6c0e7efd-ee58-40f7-9bbd-5e7337a052cd',
-		'merchant_secret' => 'dbc5a498-9a66-43b9-bf1d-a618dd399684',
+		'title' => 'Wirecard Masterpass',
+		'merchant_account_id' => '8bc8ed6d-81a8-43be-bd7b-75b008f89fa6',
+		'merchant_secret' => '2d96596b-9d10-4c98-ac47-4d56e22fd878',
 		'base_url' => 'https://api-test.wirecard.com',
-		'http_password' => '3!3013=D3fD8X7',
-		'http_user' => '16390-testing',
+		'http_password' => 'qD2wzQ_hrc!8',
+		'http_user' => '70000-APITEST-AP',
 		'payment_action' => 'pay',
-		'descriptor' => 1,
+		'descriptor' => 0,
 		'additional_info' => 1,
+		'sort_order' => 5,
 		'delete_cancel_order' => 0,
-		'delete_failure_order' => 0,
-		'sort_order' => 9,
+		'delete_failure_order' => 0
 	);
 
 	/**
 	 * Set data fields or load config
 	 *
 	 * @return array
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected function getRequestData() {
 		$this->config_fields = array_merge($this->config_fields, array('sort_order'));

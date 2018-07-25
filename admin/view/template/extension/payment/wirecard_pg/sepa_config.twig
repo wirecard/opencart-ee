@@ -1,0 +1,93 @@
+<h3 class="panel-title"><b>{{ text_sepa_config }}</b></h3>
+<div class="form-group required">
+    <label class="col-sm-2 control-label" for="input-creditor_id">{{ config_creditor_id }}</label>
+    <div class="col-sm-10">
+        <input
+                name="{{ prefix ~ 'creditor_id' }}"
+                id="input-creditor_id"
+                class="form-control"
+                type="text"
+                value="{{ creditor_id }}">
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_creditor_id_desc }}</i>
+        </div>
+    </div>
+</div>
+<div class="form-group required">
+    <label class="col-sm-2 control-label" for="input-creditor_name">{{ config_creditor_name }}</label>
+    <div class="col-sm-10">
+        <input
+                name="{{ prefix ~ 'creditor_name' }}"
+                id="input-creditor_name"
+                class="form-control"
+                type="text"
+                value="{{ creditor_name }}">
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_creditor_name_desc }}</i>
+        </div>
+    </div>
+</div>
+<div class="form-group required">
+    <label class="col-sm-2 control-label" for="input-creditor-city">{{ config_creditor_city }}</label>
+    <div class="col-sm-10">
+        <input
+                name="{{ prefix ~ 'creditor_city' }}"
+                id="input-creditor-city"
+                class="form-control"
+                type="text"
+                value="{{ creditor_city }}">
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_creditor_city_desc }}</i>
+        </div>
+    </div>
+</div>
+{% for key, lang_mandate_text in mandate_text %}
+    <div class="form-group required">
+        <label class="col-sm-2 control-label" for="input-{{ lang_title }}">{{ config_mandate_text ~ '-' ~ key|upper }}</label>
+        <div class="col-sm-10">
+            <input
+                    name="{{ prefix ~ 'mandate_text'}}[{{ key }}]"
+                    id="input-title"
+                    class="form-control"
+                    type="text"
+                    value="{{ lang_mandate_text }}">
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10 description">
+                <i>{{ config_mandate_text_desc }}</i>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+<div class="form-group required">
+    <label class="col-sm-2 control-label" for="input-enable-bic">{{ config_enable_bic }}</label>
+    <div class="col-sm-10">
+        <select name="{{ prefix ~ 'enable_bic' }}" id="input-enable-bic" class="form-control">
+            {% if status %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+            {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+            {% endif %}
+        </select>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_enable_bic_desc }}</i>
+        </div>
+    </div>
+</div>
+<hr>

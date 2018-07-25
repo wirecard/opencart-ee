@@ -1,46 +1,22 @@
 <?php
 /**
- * Shop System Plugins - Terms of Use
- *
- * The plugins offered are provided free of charge by Wirecard AG and are explicitly not part
- * of the Wirecard AG range of products and services.
- *
- * They have been tested and approved for full functionality in the standard configuration
- * (status on delivery) of the corresponding shop system. They are under General Public
- * License version 3 (GPLv3) and can be used, developed and passed on to third parties under
- * the same terms.
- *
- * However, Wirecard AG does not provide any guarantee or accept any liability for any errors
- * occurring when used in an enhanced, customized shop system configuration.
- *
- * Operation in an enhanced, customized configuration is at your own risk and requires a
- * comprehensive test phase by the user of the plugin.
- *
- * Customers use the plugins at their own risk. Wirecard AG does not guarantee their full
- * functionality neither does Wirecard AG assume liability for any disadvantages related to
- * the use of the plugins. Additionally, Wirecard AG does not guarantee the full functionality
- * for customized shop systems or installed plugins of other vendors of plugins within the same
- * shop system.
- *
- * Customers are responsible for testing the plugin's functionality before starting productive
- * operation.
- *
- * By installing the plugin into the shop system the customer agrees to these terms of use.
- * Please do not use the plugin if you do not agree to these terms of use!
+ * Shop System Plugins:
+ * - Terms of Use can be found under:
+ * https://github.com/wirecard/opencart-ee/blob/master/_TERMS_OF_USE
+ * - License can be found under:
+ * https://github.com/wirecard/opencart-ee/blob/master/LICENSE
  */
 
 use Mockery as m;
 
-require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_poi.php';
-require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_poi.php';
-
-use Wirecard\PaymentSdk\Transaction\PoiPiaTransaction;
+require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_masterpass.php';
+require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_masterpass.php';
 
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-class PoiUTest extends \PHPUnit_Framework_TestCase
+class MasterpassUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
 	private $pluginVersion = '1.0.0';
@@ -51,7 +27,7 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 	private $response;
 	private $modelOrder;
 	private $url;
-	private $modelPoi;
+	private $modelMasterpass;
 	private $language;
 	private $cart;
 	private $currency;
@@ -97,7 +73,7 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 			'lastname' => 'Doe',
 			'ip' => '1',
 			'store_name' => 'Demoshop',
-			'currency_value' => 1,
+			'currency_value' => 1.12,
 			'customer_id' => 1,
 			'payment_iso_code_2' => 'AT',
 			'payment_city' => 'BillingCity',
@@ -117,12 +93,12 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 
 		$this->modelOrder->method('getOrder')->willReturn($orderDetails);
 
-		$this->modelPoi = $this->getMockBuilder(ModelExtensionPaymentWirecardPGPoi::class)
+		$this->url = $this->getMockBuilder(Url::class)->disableOriginalConstructor()->getMock();
+
+		$this->modelMasterpass = $this->getMockBuilder(ModelExtensionPaymentWirecardPGMasterpass::class)
 			->disableOriginalConstructor()
 			->setMethods(['sendRequest'])
 			->getMock();
-
-		$this->url = $this->getMockBuilder(Url::class)->disableOriginalConstructor()->getMock();
 
 		$this->loader = $this->getMockBuilder(Loader::class)
 			->disableOriginalConstructor()
@@ -141,7 +117,7 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 
 		$this->cart->method('getProducts')->willReturn($items);
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGPoi(
+		$this->controller = new ControllerExtensionPaymentWirecardPGMasterpass(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -149,7 +125,7 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelPoi,
+			$this->modelMasterpass,
 			$this->language,
 			$this->cart,
 			$this->currency
@@ -165,7 +141,7 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 		$config->expects($this->at(3))->method('get')->willReturn('user');
 		$config->expects($this->at(4))->method('get')->willReturn('password');
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGPoi(
+		$this->controller = new ControllerExtensionPaymentWirecardPGMasterpass(
 			$this->registry,
 			$config,
 			$this->loader,
@@ -173,7 +149,7 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelPoi,
+			$this->modelMasterpass,
 			$this->language,
 			$this->cart,
 			$this->currency
@@ -181,7 +157,7 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
 		$expected->add(new \Wirecard\PaymentSdk\Config\PaymentMethodConfig(
-			PoiPiaTransaction::NAME,
+			\Wirecard\PaymentSdk\Transaction\MasterpassTransaction::NAME,
 			'account123',
 			'secret123'
 		));
@@ -190,43 +166,36 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 
 		$currency = [
 			'currency_code' => 'EUR',
-			'currency_value' => 1
+			'currency_value' => 1.12
 		];
 		$actual = $this->controller->getConfig($currency);
 
 		$this->assertEquals($expected, $actual);
 	}
 
-	public function testConfirm()
+	public function testGetModel()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGPoi(
-			$this->registry,
-			$this->config,
-			$this->loader,
-			$this->session,
-			$this->response,
-			$this->modelOrder,
-			$this->url,
-			$this->modelPoi,
-			$this->language,
-			$this->cart,
-			$this->currency
-		);
+		$actual = $this->controller->getModel();
 
-		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGPoi::class);
-		$prop = $reflector->getProperty('transaction');
-		$prop->setAccessible(true);
+		$this->assertInstanceOf(get_class($this->modelMasterpass), $actual);
+	}
 
+	public function testSuccessConfirm()
+	{
 		$this->controller->confirm();
+		$json['response'] = [];
+		$this->response->method('getOutput')->willReturn(json_encode($json));
 
-		$this->assertInstanceof(PoiPiaTransaction::class, $prop->getValue($this->controller));
+		$expected = json_encode($json);
+
+		$this->assertEquals($expected, $this->response->getOutput());
 	}
 
 	public function testIndexActive()
 	{
 		$this->config->expects($this->at(0))->method('get')->willReturn(1);
 		$this->loader->method('view')->willReturn('active');
-		$this->controller = new ControllerExtensionPaymentWirecardPGPoi(
+		$this->controller = new ControllerExtensionPaymentWirecardPGMasterpass(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -234,7 +203,7 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelPoi,
+			$this->modelMasterpass,
 			$this->language,
 			$this->cart,
 			$this->currency
@@ -245,9 +214,9 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 		$this->assertNotNull($actual);
 	}
 
-	public function testCreateTransaction()
+	public function testGetType()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGPoi(
+		$this->controller = new ControllerExtensionPaymentWirecardPGMasterpass(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -255,13 +224,59 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelPoi,
+			$this->modelMasterpass,
 			$this->language,
 			$this->cart,
 			$this->currency
 		);
 
-		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGPoi::class);
+		$actual = $this->controller->getType();
+		$expected = 'masterpass';
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetInstance()
+	{
+		$this->controller = new ControllerExtensionPaymentWirecardPGMasterpass(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelMasterpass,
+			$this->language,
+			$this->cart,
+			$this->currency
+		);
+
+		$expected = new \Wirecard\PaymentSdk\Transaction\MasterpassTransaction();
+
+		$actual = $this->controller->getTransactionInstance();
+
+		$this->assertEquals($expected, $actual);
+	}
+
+
+	public function testCreateTransaction()
+	{
+		$this->controller = new ControllerExtensionPaymentWirecardPGMasterpass(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelMasterpass,
+			$this->language,
+			$this->cart,
+			$this->currency
+		);
+
+		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGMasterpass::class);
 		$prop = $reflector->getProperty('transaction');
 		$prop->setAccessible(true);
 
@@ -270,7 +285,7 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 			'amount' => '10'
 		);
 
-		$expected = new PoiPiaTransaction();
+		$expected = new \Wirecard\PaymentSdk\Transaction\MasterpassTransaction();
 		$expected->setParentTransactionId('1234');
 
 		$actual = $this->controller->createTransaction($transaction, null);
@@ -278,9 +293,9 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $actual);
 	}
 
-	public function testGetType()
+	public function testIsIgnorableMasterpassResult()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGPoi(
+		$this->controller = new ControllerExtensionPaymentWirecardPGMasterpass(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -288,87 +303,28 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelPoi,
+			$this->modelMasterpass,
 			$this->language,
 			$this->cart,
 			$this->currency
 		);
-
-		$actual = $this->controller->getType();
-		$expected = 'poi';
-
-		$this->assertEquals($expected, $actual);
-	}
-
-	public function testGetInstance()
-	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGPoi(
-			$this->registry,
-			$this->config,
-			$this->loader,
-			$this->session,
-			$this->response,
-			$this->modelOrder,
-			$this->url,
-			$this->modelPoi,
-			$this->language,
-			$this->cart,
-			$this->currency
-		);
-
-		$expected = new \Wirecard\PaymentSdk\Transaction\PoiPiaTransaction();
-
-		$actual = $this->controller->getTransactionInstance();
-
-		$this->assertEquals($expected, $actual);
-	}
-
-	public function testGetModel()
-	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGPoi(
-			$this->registry,
-			$this->config,
-			$this->loader,
-			$this->session,
-			$this->response,
-			$this->modelOrder,
-			$this->url,
-			$this->modelPoi,
-			$this->language,
-			$this->cart,
-			$this->currency
-		);
-
-		$actual = $this->controller->getModel();
-
-		$this->assertInstanceOf(get_class($this->modelPoi), $actual);
-	}
-
-	public function testCancelResponse()
-	{
-		$orderManager = m::mock('overload:PGOrderManager');
-		$orderManager->shouldReceive('updateCancelFailureOrder');
 
 		$_REQUEST = [
-			'cancelled' => 1,
-			'orderId' => 123
+			"route" => "extension/payment/wirecard_pg_masterpass/response",
+			"psp_name" => "elastic-payments",
+			"custom_css_url" => "",
+			"eppresponse" => ResponseProvider::getMasterpassDebitResponse(),
+			"locale" => "en",
 		];
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGPoi(
-			$this->registry,
-			$this->config,
-			$this->loader,
-			$this->session,
-			$this->response,
-			$this->modelOrder,
-			$this->url,
-			$this->modelPoi,
-			$this->language,
-			$this->cart,
-			$this->currency
-		);
+		$currency = [
+			'currency_code' => 'EUR',
+			'currency_value' => 1.12
+		];
 
-		$actual = $this->controller->response();
-		$this->assertNull($actual);
+		$transactionService = new \Wirecard\PaymentSdk\TransactionService($this->controller->getConfig($currency));
+		$result = $transactionService->handleResponse($_REQUEST);
+
+		$this->assertTrue($this->controller->isIgnorableMasterpassResult($result));
 	}
 }

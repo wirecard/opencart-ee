@@ -170,7 +170,8 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelPia,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 	}
 
@@ -193,7 +194,8 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelPia,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
@@ -226,7 +228,8 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelPia,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGPia::class);
@@ -252,7 +255,8 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelPia,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$actual = $this->controller->index();
@@ -272,7 +276,8 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelPia,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGPia::class);
@@ -304,7 +309,8 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelPia,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$actual = $this->controller->getType();
@@ -325,7 +331,8 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelPia,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Transaction\PoiPiaTransaction();
@@ -347,7 +354,8 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$this->modelPia,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$actual = $this->controller->getModel();
@@ -375,8 +383,8 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->modelPia,
 			$this->language,
 			$this->cart,
-			null,
 			$this->currency,
+			null,
 			$this->document,
 			$this->customer
 		);
@@ -398,8 +406,8 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->modelPia,
 			$this->language,
 			$this->cart,
-			null,
 			$this->currency,
+			null,
 			$this->document,
 			$this->customer
 		);

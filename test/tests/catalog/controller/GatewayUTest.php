@@ -54,9 +54,9 @@ class GatewayUTest extends \PHPUnit_Framework_TestCase
 	private $response;
 	private $modelOrder;
 	private $url;
-	private $modelPia;
 	private $language;
 	private $cart;
+	private $currency;
 
 	const SHOP = 'OpenCart';
 	const PLUGIN = 'Wirecard_PaymentGateway';
@@ -128,6 +128,8 @@ class GatewayUTest extends \PHPUnit_Framework_TestCase
 
 		$this->language = $this->getMockBuilder(Language::class)->disableOriginalConstructor()->getMock();
 
+		$this->currency = $this->getMockBuilder(Currency::class)->disableOriginalConstructor()->getMock();
+
 		$items = [
 			["price" => 10.465, "name" => "Produkt1", "quantity" => 2, "product_id" => 2, "tax_class_id" => 2],
 			["price" => 20.241, "name" => "Produkt2", "quantity" => 3, "product_id" => 1, "tax_class_id" => 1],
@@ -154,7 +156,8 @@ class GatewayUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$modelPaypal,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$orderManager = m::mock('overload:PGOrderManager');
@@ -190,7 +193,8 @@ class GatewayUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$modelPaypal,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$orderManager = m::mock('overload:PGOrderManager');
@@ -226,7 +230,8 @@ class GatewayUTest extends \PHPUnit_Framework_TestCase
 			$this->url,
 			$modelPaypal,
 			$this->language,
-			$this->cart
+			$this->cart,
+			$this->currency
 		);
 
 		$_REQUEST = array(

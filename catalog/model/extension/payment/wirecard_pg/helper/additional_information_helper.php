@@ -9,6 +9,7 @@
 
 require_once(dirname(__FILE__) . '/pg_basket.php');
 require_once(dirname(__FILE__) . '/pg_account_holder.php');
+include_once(DIR_SYSTEM . 'library/autoload.php');
 
 use Wirecard\PaymentSdk\Transaction\Transaction;
 
@@ -18,7 +19,6 @@ use Wirecard\PaymentSdk\Transaction\Transaction;
  * @since 1.0.0
  */
 class AdditionalInformationHelper extends Model {
-
 	const CURRENCYCODE = 'currency_code';
 	const CURRENCYVALUE = 'currency_value';
 
@@ -67,14 +67,18 @@ class AdditionalInformationHelper extends Model {
 	 *
 	 * @param Transaction $transaction
 	 * @param $order
+	 * @param $includeShipping
 	 * @return Transaction
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
-	public function addAccountHolder($transaction, $order) {
+	public function addAccountHolder($transaction, $order, $includeShipping = true) {
 		$account_holder = new PGAccountHolder();
 
 		$transaction->setAccountHolder($account_holder->createAccountHolder($order, $account_holder::BILLING));
-		$transaction->setShipping($account_holder->createAccountHolder($order, $account_holder::SHIPPING));
+
+		if ($includeShipping) {
+			$transaction->setShipping($account_holder->createAccountHolder($order, $account_holder::SHIPPING));
+		}
 
 		return $transaction;
 	}
@@ -128,12 +132,9 @@ class AdditionalInformationHelper extends Model {
 		if (strlen($order['customer_id'])) {
 			$transaction->setConsumerId($order['customer_id']);
 		}
+
 		$transaction->setOrderNumber($order['order_id']);
 		$transaction->setDescriptor($this->createDescriptor($order));
-
-		$account_holder = new PGAccountHolder();
-		$transaction->setAccountHolder($account_holder->createAccountHolder($order, $account_holder::BILLING));
-		$transaction->setShipping($account_holder->createAccountHolder($order, $account_holder::SHIPPING));
 
 		return $transaction;
 	}
