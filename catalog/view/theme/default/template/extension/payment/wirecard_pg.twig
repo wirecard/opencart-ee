@@ -66,6 +66,7 @@
                     popup.html(json['popup']).show();
                     $('#payment').hide();
                     disableButton = true;
+                    $('#button-confirm').parent().prepend('<a id="sepa-cancel-button" onClick="hideSepaMandate();" class="btn btn-primary">' + json['button_text'] + '</a>');
                 }
                 if (json['error']) {
                     $('#error-text-sepa', '#payment').html(json['error']).parent().removeClass('hidden');

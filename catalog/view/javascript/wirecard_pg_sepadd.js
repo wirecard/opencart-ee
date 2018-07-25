@@ -7,10 +7,13 @@
  */
 
 function hideSepaMandate() {
+	var button = $('#button-confirm');
+	button.unbind('DOMSubtreeModified');
 	$('#payment').show();
 	$('#mandate-popup').hide();
 	$('#mandate_confirmed').val(0);
-	$('#button-confirm').prop("disabled",false);
+	button.prop("disabled",false);
+	$('#sepa-cancel-button').remove();
 }
 
 function checkSepaMandate(checkbox) {

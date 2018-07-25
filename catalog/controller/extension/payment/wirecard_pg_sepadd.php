@@ -57,12 +57,12 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	 * @since 1.1.0
 	 */
 	public function confirm() {
+		$this->load->language('extension/payment/wirecard_pg_sepadd');
 		if ((bool)$this->request->post['mandate_confirmed'] == false) {
 			$json = [];
 			if ($this->validateMadnatoryFields($this->request->post, $this->getShopConfigVal('enable_bic'))) {
-				$json = ['popup' => $this->generateMandateTemplate($this->request->post)];
+				$json = ['popup' => $this->generateMandateTemplate($this->request->post), 'button_text' => $this->language->get('sepa_cancel')];
 			} else {
-				$this->load->language('extension/payment/wirecard_pg_sepadd');
 				$json = ['error' => $this->language->get('sepa_fields_error')];
 			}
 
@@ -169,6 +169,10 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 		$data['creditor_name'] = $this->getShopConfigVal('creditor_name');
 		$data['creditor_city'] = $this->getShopConfigVal('creditor_city');
 		$data['creditor_date'] = date( 'd.m.Y' );
+		$code = $this->language->get('code');
+		if (isset($code) && isset($this->config->get('payment_wirecard_pg_sepadd_mandate_text')[$code])) {
+			$data['additional_text'] = $this->config->get('payment_wirecard_pg_sepadd_mandate_text')[$code];
+		}
 
 		array_merge(
 			$this->loadLangLines(

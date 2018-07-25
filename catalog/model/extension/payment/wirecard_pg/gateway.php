@@ -99,6 +99,18 @@ abstract class ModelExtensionPaymentGateway extends Model {
 
 		if ($response instanceof \Wirecard\PaymentSdk\Response\InteractionResponse) {
 			$redirect = $response->getRedirectUrl();
+		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FormInteractionResponse) {
+			$this->load->language('information/static');
+
+			$data['url'] = $response->getUrl();
+			$data['method'] = $response->getMethod();
+			$data['form_fields'] = $response->getFormFields();
+
+			$data['footer'] = $this->load->controller('common/footer');
+			$data['header'] = $this->load->controller('common/header');
+			$data['redirect_text'] = $this->language->get('redirect_text');
+			$this->response->setOutput($this->load->view('extension/payment/wirecard_interaction_response', $data));
+			$redirect = $this->url->link('checkout/success');
 		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			$errors = '';
 
