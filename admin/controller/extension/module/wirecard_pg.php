@@ -63,12 +63,13 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 		$this->load->model('setting/extension');
 		$this->load->model('user/user_group');
 
-		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', self::PG_TRANSACTION);
-		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', self::PG_TRANSACTION);
-		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', self::PG_SUPPORT_MAIL);
-		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', self::PG_SUPPORT_MAIL);
-		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', self::PG_GENERAL_TERMS);
-		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', self::PG_GENERAL_TERMS);
+		$this->addPermissionToShop(
+			array(
+				self::PG_TRANSACTION,
+				self::PG_SUPPORT_MAIL,
+				self::PG_GENERAL_TERMS
+			)
+		);
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/panel', $data));
 	}
@@ -165,5 +166,24 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 		$data['footer'] = $this->load->controller('common/footer');
 
 		return $data;
+	}
+
+	/**
+	 * Add permissions to the shop
+	 *
+	 * @param array $permissions
+	 * @since 1.1.0
+	 */
+	public function addPermissionToShop($permissions) {
+		foreach ($permissions as $permission) {
+			if (!in_array($permission,
+				$this->model_user_user_group->getUserGroup($this->user->getGroupId())['permission']['access'])) {
+				$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', $permission);
+			}
+			if (!in_array($permission,
+				$this->model_user_user_group->getUserGroup($this->user->getGroupId())['permission']['modify'])) {
+				$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', $permission);
+			}
+		}
 	}
 }
