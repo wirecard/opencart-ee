@@ -95,10 +95,9 @@ class ControllerExtensionPaymentWirecardPGUPI extends ControllerExtensionPayment
 	/**
 	 * Return data via ajax call for the seamless form renderer
 	 *
-	 * @return array
 	 * @since 1.1.0
 	 */
-	public function getCreditCardUiRequestData() {
+	public function getUpiUiRequestData() {
 		$this->transaction = $this->getTransactionInstance();
 		$this->prepareTransaction();
 		$this->transaction->setConfig($this->payment_config->get(UpiTransaction::NAME));
@@ -111,21 +110,6 @@ class ControllerExtensionPaymentWirecardPGUPI extends ControllerExtensionPayment
 			$this->getPaymentAction($this->getShopConfigVal('payment_action')),
 			$this->language->get('code')
 		)));
-	}
-
-	/**
-	 * Get payment action
-	 *
-	 * @param string $action
-	 * @return string
-	 * @since 1.1.0
-	 */
-	public function getPaymentAction($action) {
-		if ($action == 'pay') {
-			return 'purchase';
-		} else {
-			return 'authorization';
-		}
 	}
 
 	/**

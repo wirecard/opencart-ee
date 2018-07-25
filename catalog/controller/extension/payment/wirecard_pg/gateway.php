@@ -475,4 +475,19 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			return false;
 		}
 	}
+
+	/**
+	 * Get payment action
+	 *
+	 * @param string $action
+	 * @return string
+	 * @since 1.1.0
+	 */
+	public function getPaymentAction($action) {
+		if ($action == 'pay') {
+			return 'purchase';
+		} else {
+			return 'authorization';
+		}
+	}
 }

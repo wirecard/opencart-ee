@@ -128,7 +128,6 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	/**
 	 * Return data via ajax call for the seamless form renderer
 	 *
-	 * @return array
 	 * @since 1.0.0
 	 */
 	public function getCreditCardUiRequestData() {
@@ -143,21 +142,6 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 			$this->getPaymentAction($this->getShopConfigVal('payment_action')),
 			$this->language->get('code')
 		)));
-	}
-
-	/**
-	 * Get payment action
-	 *
-	 * @param string $action
-	 * @return string
-	 * @since 1.0.0
-	 */
-	public function getPaymentAction($action) {
-		if ($action == 'pay') {
-			return 'purchase';
-		} else {
-			return 'authorization';
-		}
 	}
 
 	/**

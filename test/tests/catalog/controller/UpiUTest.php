@@ -223,8 +223,8 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 	public function testGetUpiUiRequestData() {
         $actual = $this->controller;
         $transactionService = m::mock('overload:TransactionService');
-        $transactionService->shouldReceive('getCreditCardUiWithData');
-        $actual->getCreditCardUiRequestData();
+        $transactionService->shouldReceive('getUpiUiWithData');
+        $actual->getUpiUiRequestData();
 
         $this->assertNull($actual->response->getOutput());
     }
