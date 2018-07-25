@@ -41,13 +41,13 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends \ControllerExte
 		'payment_action' => 'reserve',
 		'basket_min' => 20,
 		'basket_max' => 3500,
-		'allowed_currencies' => 'EUR',
-		'shipping_countries' => 'AT,DE',
-		'billing_countries' => 'AT,DE',
+		'allowed_currencies' => array('EUR'),
+		'shipping_countries' => array('AT', 'DE'),
+		'billing_countries' => array('AT', 'DE'),
 		'billing_shipping' => 1,
 		'descriptor' => 0,
 		'additional_info' => 1,
-        'sort_order' => 3,
+		'sort_order' => 3,
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0,
 	);
@@ -67,8 +67,8 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends \ControllerExte
 				'basket_max',
 				'allowed_currencies',
 				'shipping_countries',
-                'billing_countries',
-                'billing_shipping'
+				'billing_countries',
+				'billing_shipping'
 			)
 		);
 
