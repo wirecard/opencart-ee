@@ -92,7 +92,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 			$this->transaction->setBic($this->request->post['bic']);
 		}
 
-		$mandate = new \Wirecard\PaymentSdk\Entity\Mandate($this->generateID());
+		$mandate = new \Wirecard\PaymentSdk\Entity\Mandate($this->generateId());
 		$this->transaction->setMandate($mandate);
 	}
 
@@ -142,7 +142,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	 * @return string
 	 * @since 1.1.0
 	 */
-	private function generateID() {
+	private function generateId() {
 		return $this->getShopConfigVal('creditor_id') . strtotime(date('Y-m-d H:i:s'));
 	}
 
