@@ -41,7 +41,7 @@ class ControllerExtensionPaymentWirecardPGInvoice extends \ControllerExtensionPa
 		'payment_action' => 'reserve',
 		'basket_min' => 20,
 		'basket_max' => 3500,
-		'currencies' => 'EUR',
+		'allowed_currencies' => 'EUR',
 		'shipping_countries' => 'AT,DE',
 		'billing_countries' => 'AT,DE',
 		'billing_shipping' => 1,
@@ -64,7 +64,7 @@ class ControllerExtensionPaymentWirecardPGInvoice extends \ControllerExtensionPa
 				'sort_order',
 				'basket_min',
 				'basket_max',
-				'currencies',
+				'allowed_currencies',
 				'shipping_countries',
                 'billing_countries',
                 'billing_shipping'
