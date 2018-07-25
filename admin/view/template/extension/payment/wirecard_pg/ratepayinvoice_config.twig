@@ -1,10 +1,8 @@
 <div class="form-group">
     <label class="col-sm-2 control-label" for="input-billing-shipping">{{ config_billing_shipping }}</label>
     <div class="col-sm-10">
-        <select class="form-control"
-                id="input-billing-shipping"
-                name="{{ prefix ~ 'billing_shipping' }}">
-            {% if billing_shipping == '1' %}
+        <select name="{{ prefix ~ 'config_billing_shipping' }}" id="input-billing-shipping" class="form-control">
+            {% if config_billing_shipping %}
                 <option value="1" selected="selected">{{ text_enabled }}</option>
                 <option value="0">{{ text_disabled }}</option>
             {% else %}
