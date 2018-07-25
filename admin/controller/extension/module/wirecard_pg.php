@@ -63,7 +63,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 		$this->load->model('setting/extension');
 		$this->load->model('user/user_group');
 
-		$this->addPermissionToShop(
+		$this->addPermissionsToShop(
 			array(
 				self::PG_TRANSACTION,
 				self::PG_SUPPORT_MAIL,
@@ -174,7 +174,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 	 * @param array $permissions
 	 * @since 1.1.0
 	 */
-	public function addPermissionToShop($permissions) {
+	private function addPermissionsToShop($permissions) {
 		foreach ($permissions as $permission) {
 			if (!in_array($permission,
 				$this->model_user_user_group->getUserGroup($this->user->getGroupId())['permission']['access'])) {
