@@ -135,6 +135,7 @@ class AdditionalInformationHelper extends Model {
 
 		$transaction->setOrderNumber($order['order_id']);
 		$transaction->setDescriptor($this->createDescriptor($order));
+		$transaction = $this->addAccountHolder($transaction, $order);
 
 		return $transaction;
 	}
