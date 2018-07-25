@@ -81,7 +81,7 @@ class PGOrderManager extends Model {
 
 				if ($payment_controller->getShopConfigVal('details_on_invoice')) {
 					$order = $this->model_checkout_order->getOrder($order_id);
-					$order_comment = $order['comment'] ? $order['comment'] . '<hr>' : '';
+					$order_comment = ($order['comment']) ? $order['comment'] . '<hr>' : '';
 					$order_comment .= $view;
 
 					$this->db->query("
