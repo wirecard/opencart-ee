@@ -54,7 +54,7 @@ class ControllerExtensionPaymentWirecardPGAlipayCrossborder extends \ControllerE
 	 * @since 1.1.0
 	 */
 	protected function getRequestData() {
-		$this->config_fields = array_merge($this->config_fields, array('sort_order', 'logo_variant'));
+		$this->config_fields = array_merge($this->config_fields, array('sort_order'));
 
 		return parent::getRequestData();
 	}
