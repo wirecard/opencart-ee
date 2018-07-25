@@ -25,7 +25,7 @@ class ControllerExtensionPaymentWirecardPGAlipayCrossborder extends \ControllerE
 	protected $type = 'alipay_crossborder';
 
 	/**
-	 * AlipayCrossborder default configuration settings
+	 * Alipay Cross-border default configuration settings
 	 *
 	 * @var array
 	 * @since 1.1.0

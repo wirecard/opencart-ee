@@ -13,9 +13,9 @@ use Wirecard\PaymentSdk\Transaction\AlipayCrossborderTransaction;
 use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
 
 /**
- * Class ControllerExtensionPaymentWirecardPGAlipayC
+ * Class ControllerExtensionPaymentWirecardPGAlipayCrossborder
  *
- * rossborderAlipay Cross-border Transaction controller
+ * Alipay Cross-border Transaction controller
  *
  * @since 1.1.0
  */
@@ -37,20 +37,30 @@ class ControllerExtensionPaymentWirecardPGAlipayCrossborder extends ControllerEx
 	}
 
 	/**
-	 * Create paypal transaction
+	 * Create Alipay Cross-border transaction
 	 *
 	 * @since 1.1.0
 	 */
 	public function confirm() {
-		$this->load->model('checkout/order');
 		$this->transaction = $this->getTransactionInstance();
+
+		parent::confirm();
+	}
+
+	/**
+	 * Prepare transaction as required.
+	 *
+	 * @since 1.1.0
+	 */
+	public function prepareTransaction() {
+		parent::prepareTransaction();
+
+		$this->load->model('checkout/order');
 
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
 
 		$additional_helper->addAccountHolder($this->transaction, $order);
-
-		parent::confirm();
 	}
 
 	/**
@@ -94,7 +104,7 @@ class ControllerExtensionPaymentWirecardPGAlipayCrossborder extends ControllerEx
 	}
 
 	/**
-	 * Create Paypal transaction
+	 * Create Alipay Cross-border transaction
 	 *
 	 * @param array $parentTransaction
 	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount

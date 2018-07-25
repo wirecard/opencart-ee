@@ -129,11 +129,12 @@ class AdditionalInformationHelper extends Model {
 			$transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
 		}
 
-			if (strlen($order['customer_id'])) {
-				$transaction->setConsumerId($order['customer_id']);
-			}
-			$transaction->setOrderNumber($order['order_id']);
-			$transaction->setDescriptor($this->createDescriptor($order));
+		if (strlen($order['customer_id'])) {
+			$transaction->setConsumerId($order['customer_id']);
+		}
+		$transaction->setOrderNumber($order['order_id']);
+		$transaction->setDescriptor($this->createDescriptor($order));
+		$transaction = $this->addAccountHolder($transaction, $order);
 
 		return $transaction;
 	}

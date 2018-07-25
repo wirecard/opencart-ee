@@ -14,22 +14,14 @@ require_once(dirname( __FILE__ ) . '/wirecard_pg/gateway.php');
  *
  * Alipay Cross-border Transaction model
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
 class ModelExtensionPaymentWirecardPGAlipayCrossborder extends ModelExtensionPaymentGateway {
 
 	/**
 	 * @var string
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected $type = 'alipay_crossborder';
 
-	/**
-	 * Basic getMethod method
-	 *
-	 * @since 1.0.0
-	 */
-	public function getMethod($address, $total) {
-		return parent::getMethod($address, $total);
-	}
 }
