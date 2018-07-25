@@ -339,7 +339,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return bool|string
 	 * @since 1.0.0
 	 */
-	protected function getShopConfigVal($field) {
+	public function getShopConfigVal($field) {
 		return $this->config->get($this->prefix . $this->type . '_' . $field);
 	}
 

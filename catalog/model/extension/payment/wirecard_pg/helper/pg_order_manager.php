@@ -63,7 +63,7 @@ class PGOrderManager extends Model {
 					],
 
 					'texts' => [
-						'merchant_notice' => $this->language->get('merchant_notice'),
+						'transfer_notice' => $this->language->get('transfer_notice'),
 						'amount' => $this->language->get('amount'),
 						'iban' => $this->language->get('iban'),
 						'bic' => $this->language->get('bic'),
@@ -78,6 +78,18 @@ class PGOrderManager extends Model {
 					$view,
 					false
 				);
+
+				if ($payment_controller->getShopConfigVal('details_on_invoice')) {
+					$order = $this->model_checkout_order->getOrder($order_id);
+					$order_comment = $order['comment'] ? $order['comment'] . '<hr>' : '';
+					$order_comment .= $view;
+
+					$this->db->query("
+						UPDATE `" . DB_PREFIX . "order`
+						SET comment = '" . $this->db->escape($order_comment) . "' 
+						WHERE order_id = '" . (int)$order_id . "'
+					");
+				}
 			}
 
 			$transaction_status = in_array($payment_controller->getType(), $success_methods) ? 'success' : 'awaiting';

@@ -44,6 +44,7 @@ class ControllerExtensionPaymentWirecardPGPoi extends \ControllerExtensionPaymen
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0,
 		'sort_order' => 6,
+		'details_on_invoice' => 1,
 	);
 
 	/**
@@ -53,7 +54,7 @@ class ControllerExtensionPaymentWirecardPGPoi extends \ControllerExtensionPaymen
 	 * @since 1.1.0
 	 */
 	protected function getRequestData() {
-		$this->config_fields = array_merge($this->config_fields, array('sort_order'));
+		$this->config_fields = array_merge($this->config_fields, array('sort_order', 'details_on_invoice'));
 
 		return parent::getRequestData();
 	}
