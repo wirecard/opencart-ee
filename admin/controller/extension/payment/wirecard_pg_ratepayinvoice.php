@@ -10,13 +10,13 @@
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ControllerExtensionPaymentWirecardPGInvoice
+ * Class ControllerExtensionPaymentWirecardPGRatepayInvoice
  *
  * Guaranteed Invoice payment transaction controller
  *
  * @since 1.1.0
  */
-class ControllerExtensionPaymentWirecardPGInvoice extends \ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGRatepayInvoice extends \ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
@@ -47,6 +47,7 @@ class ControllerExtensionPaymentWirecardPGInvoice extends \ControllerExtensionPa
 		'billing_shipping' => 1,
 		'descriptor' => 0,
 		'additional_info' => 1,
+        'sort_order' => 3,
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0,
 	);

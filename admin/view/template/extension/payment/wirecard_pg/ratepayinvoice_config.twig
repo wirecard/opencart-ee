@@ -29,10 +29,10 @@
                 id="input-billing-countries"
                 name="{{ prefix ~ 'billing_countries' }}">
             {% for country in countries %}
-                {% if country in billing_countries|keys %}
-                    <option value="{{ country }}" selected="selected">{{ country }}</option>
+                {% if country['country_id'] in billing_countries|keys %}
+                    <option value="{{ country['country_id'] }}" selected="selected">{{ country['name'] }}</option>
                 {% else %}
-                    <option value="{{ country }}">{{ country }}</option>
+                    <option value="{{ country['country_id'] }}">{{ country['name'] }}</option>
                 {% endif %}
             {% endfor %}
         </select>
@@ -53,10 +53,10 @@
                 id="input-shipping-countries"
                 name="{{ prefix ~ 'shipping_countries' }}">
             {% for country in countries %}
-                {% if country in shipping_countries|keys %}
-                    <option value="{{ country }}" selected="selected">{{ country }}</option>
+                {% if country['country_id'] in shipping_countries|keys %}
+                    <option value="{{ country['country_id'] }}" selected="selected">{{ country['name'] }}</option>
                 {% else %}
-                    <option value="{{ country }}">{{ country }}</option>
+                    <option value="{{ country['country_id'] }}">{{ country['name'] }}</option>
                 {% endif %}
             {% endfor %}
         </select>
@@ -72,14 +72,15 @@
 <div class="form-group">
     <label class="col-sm-2 control-label" for="input-allowed-currencies">{{ config_allowed_currencies }}</label>
     <div class="col-sm-10">
-        <select class="form-control"
+        <select multiple
+                class="form-control"
                 id="input-allowed-currencies"
                 name="{{ prefix ~ 'allowed_currencies' }}">
             {% for currency in currencies %}
-                {% if currency in allowed_currencies|keys %}
-                    <option value="{{ currency }}" selected="selected">{{ currency }}</option>
+                {% if currency['code'] in allowed_currencies|keys %}
+                    <option value="{{ currency['code'] }}" selected="selected">{{ currency['code'] }}</option>
                 {% else %}
-                    <option value="{{ currency }}">{{ currency }}</option>
+                    <option value="{{ currency['code'] }}">{{ currency['code'] }}</option>
                 {% endif %}
             {% endfor %}
         </select>
