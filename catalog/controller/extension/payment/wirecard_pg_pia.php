@@ -107,5 +107,73 @@ class ControllerExtensionPaymentWirecardPGPia extends ControllerExtensionPayment
 	public function getTransactionInstance() {
 		return new PoiPiaTransaction();
 	}
+
+	/**
+	 * Generates a custom success page to show the necessary payment details.
+	 *
+	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $result
+	 * @return array
+	 * @since 1.1.0
+	 */
+	public function generateSuccessPage($result) {
+		$this->load->language('checkout/success');
+		$this->load->language('extension/payment/wirecard_pg_poipia');
+
+		$this->cart->clear();
+		$this->document->setTitle($this->language->get('heading_title'));
+
+		$response_data = $result->getData();
+		$data = [
+			'breadcrumbs' => $this->getCheckoutSuccessBreadcrumbs(),
+			'pia' => [
+				'transaction' => [
+					'amount' => $this->currency->format($response_data['requested-amount'], $response_data['currency']),
+					'iban' => $response_data['merchant-bank-account.0.iban'],
+					'bic' => $response_data['merchant-bank-account.0.bic'],
+					'ptrid' => $response_data['provider-transaction-reference-id'],
+				],
+
+				'texts' => [
+					'transfer_notice' => $this->language->get('transfer_notice'),
+					'amount' => $this->language->get('amount'),
+					'iban' => $this->language->get('iban'),
+					'bic' => $this->language->get('bic'),
+					'ptrid' => $this->language->get('ptrid'),
+				]
+			]
+		];
+
+		$data = array_merge($this->getCommonBlocks(), $data);
+		$this->response->setOutput($this->load->view('extension/payment/wirecard_wiretransfer_success', $data));
+
+		return $data;
+	}
+
+	/**
+	 * Get required breadcrumbs for checkout success
+	 *
+	 * @return array
+	 * @since 1.1.0
+	 */
+	public function getCheckoutSuccessBreadcrumbs() {
+		return [
+			[
+				'text' => $this->language->get('text_home'),
+				'href' => $this->url->link('common/home')
+			],
+			[
+				'text' => $this->language->get('text_basket'),
+				'href' => $this->url->link('checkout/cart')
+			],
+			[
+				'text' => $this->language->get('text_checkout'),
+				'href' => $this->url->link('checkout/checkout', '', true)
+			],
+			[
+				'text' => $this->language->get('text_success'),
+				'href' => $this->url->link('checkout/success')
+			],
+		];
+	}
 }
 

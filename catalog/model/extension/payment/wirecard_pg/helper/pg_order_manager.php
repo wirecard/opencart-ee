@@ -35,7 +35,6 @@ class PGOrderManager extends Model {
 	 */
 	public function createResponseOrder($response, $payment_controller) {
 		$this->load->model('checkout/order');
-		$this->load->language('extension/payment/wirecard_pg_poipia');
 
 		$success_methods = ['poi', 'pia'];
 		$order_id = $response->getCustomFields()->get('orderId');
@@ -53,43 +52,7 @@ class PGOrderManager extends Model {
 			);
 
 			if ('poi' == $payment_controller->getType()) {
-				$response_data = $response->getData();
-				$data = [
-					'transaction' => [
-						'amount' => $this->currency->format($response_data['requested-amount'], $response_data['currency']),
-						'iban' => $response_data['merchant-bank-account.0.iban'],
-						'bic' => $response_data['merchant-bank-account.0.bic'],
-						'ptrid' => $response_data['provider-transaction-reference-id'],
-					],
-
-					'texts' => [
-						'transfer_notice' => $this->language->get('transfer_notice'),
-						'amount' => $this->language->get('amount'),
-						'iban' => $this->language->get('iban'),
-						'bic' => $this->language->get('bic'),
-						'ptrid' => $this->language->get('ptrid'),
-					]
-				];
-
-				$view = preg_replace("/\r|\n/", "", $this->load->view('extension/payment/wirecard_wiretransfer_notice', $data));
-				$this->model_checkout_order->addOrderHistory(
-					$order_id,
-					self::PENDING,
-					$view,
-					false
-				);
-
-				if ($payment_controller->getShopConfigVal('details_on_invoice')) {
-					$order = $this->model_checkout_order->getOrder($order_id);
-					$order_comment = ($order['comment']) ? $order['comment'] . '<hr>' : '';
-					$order_comment .= $view;
-
-					$this->db->query("
-						UPDATE `" . DB_PREFIX . "order`
-						SET comment = '" . $this->db->escape($order_comment) . "' 
-						WHERE order_id = '" . (int)$order_id . "'
-					");
-				}
+				$payment_controller->addBankDetailsToInvoice($response, $order_id, self::PENDING);
 			}
 
 			$transaction_status = in_array($payment_controller->getType(), $success_methods) ? 'success' : 'awaiting';

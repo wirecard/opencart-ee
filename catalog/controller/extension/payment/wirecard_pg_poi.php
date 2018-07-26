@@ -107,5 +107,57 @@ class ControllerExtensionPaymentWirecardPGPoi extends ControllerExtensionPayment
 	public function getTransactionInstance() {
 		return new PoiPiaTransaction();
 	}
+
+	/**
+	 * Adds the payment details to the automatically generated
+	 *
+	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
+	 * @param $order_id
+	 * @param $order_state
+	 * @param ModelCheckoutOrder $model_order
+	 * @since 1.1.0
+	 */
+	public function addBankDetailsToInvoice($response, $order_id, $order_state) {
+		$this->load->model('checkout/order');
+		$this->load->language('extension/payment/wirecard_pg_poipia');
+
+		$response_data = $response->getData();
+		$data = [
+			'transaction' => [
+				'amount' => $this->currency->format($response_data['requested-amount'], $response_data['currency']),
+				'iban' => $response_data['merchant-bank-account.0.iban'],
+				'bic' => $response_data['merchant-bank-account.0.bic'],
+				'ptrid' => $response_data['provider-transaction-reference-id'],
+			],
+
+			'texts' => [
+				'transfer_notice' => $this->language->get('transfer_notice'),
+				'amount' => $this->language->get('amount'),
+				'iban' => $this->language->get('iban'),
+				'bic' => $this->language->get('bic'),
+				'ptrid' => $this->language->get('ptrid'),
+			]
+		];
+
+		$view = preg_replace("/\r|\n/", "", $this->load->view('extension/payment/wirecard_wiretransfer_notice', $data));
+		$this->model_checkout_order->addOrderHistory(
+			$order_id,
+			$order_state,
+			$view,
+			false
+		);
+
+		if ($this->getShopConfigVal('details_on_invoice')) {
+			$order = $this->model_checkout_order->getOrder($order_id);
+			$order_comment = ($order['comment']) ? $order['comment'] . '<hr>' : '';
+			$order_comment .= $view;
+
+			$this->db->query("
+				UPDATE `" . DB_PREFIX . "order`
+				SET comment = '" . $this->db->escape($order_comment) . "' 
+				WHERE order_id = '" . (int)$order_id . "'
+			");
+		}
+	}
 }
 

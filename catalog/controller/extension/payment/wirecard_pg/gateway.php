@@ -320,14 +320,14 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	/**
 	 * Create payment specific redirects
 	 *
-	 * @param int $orderId
+	 * @param int $order_id
 	 * @return \Wirecard\PaymentSdk\Entity\Redirect
 	 * @since 1.0.0
 	 */
-	protected function getRedirects($orderId) {
+	protected function getRedirects($order_id) {
 		return new \Wirecard\PaymentSdk\Entity\Redirect(
 			$this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL'),
-			$this->url->link(self::ROUTE . $this->type . '/response&cancelled=1&orderId=' . $orderId, '', 'SSL'),
+			$this->url->link(self::ROUTE . $this->type . '/response&cancelled=1&orderId=' . $order_id, '', 'SSL'),
 			$this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL')
 		);
 	}
@@ -386,36 +386,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			}
 
 			if ('pia' == $this->type && isset($this->session->data['order_id'])) {
-				$this->load->language('checkout/success');
-				$this->load->language('extension/payment/wirecard_pg_poipia');
-
-				$this->cart->clear();
-				$this->document->setTitle($this->language->get('heading_title'));
-
-				$response_data = $result->getData();
-				$data = [
-					'breadcrumbs' => $this->getCheckoutSuccessBreadcrumbs(),
-					'pia' => [
-						'transaction' => [
-							'amount' => $this->currency->format($response_data['requested-amount'], $response_data['currency']),
-							'iban' => $response_data['merchant-bank-account.0.iban'],
-							'bic' => $response_data['merchant-bank-account.0.bic'],
-							'ptrid' => $response_data['provider-transaction-reference-id'],
-						],
-
-						'texts' => [
-							'transfer_notice' => $this->language->get('transfer_notice'),
-							'amount' => $this->language->get('amount'),
-							'iban' => $this->language->get('iban'),
-							'bic' => $this->language->get('bic'),
-							'ptrid' => $this->language->get('ptrid'),
-						]
-					]
-				];
-
-				$data = array_merge($this->getCommonBlocks(), $data);
-				$this->response->setOutput($this->load->view('extension/payment/wirecard_wiretransfer_success', $data));
-				return $data;
+				return $this->generateSuccessPage($result);
 			}
 
 			$this->response->redirect($this->url->link('checkout/success'));
@@ -496,7 +467,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * Get common blocks for building a template
 	 *
 	 * @return array
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function getCommonBlocks() {
 		$data = [
@@ -525,33 +496,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		}
 
 		return $data;
-	}
-
-	/**
-	 * Get required breadcrumbs for checkout success
-	 *
-	 * @return array
-	 * @since 1.0.0
-	 */
-	public function getCheckoutSuccessBreadcrumbs() {
-		return [
-			[
-				'text' => $this->language->get('text_home'),
-				'href' => $this->url->link('common/home')
-			],
-			[
-				'text' => $this->language->get('text_basket'),
-				'href' => $this->url->link('checkout/cart')
-			],
-			[
-				'text' => $this->language->get('text_checkout'),
-				'href' => $this->url->link('checkout/checkout', '', true)
-			],
-			[
-				'text' => $this->language->get('text_success'),
-				'href' => $this->url->link('checkout/success')
-			],
-		];
 	}
 
 	/**
