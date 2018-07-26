@@ -218,54 +218,6 @@ class PayPalUTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->response->getOutput());
     }
 
-    public function testSuccessResponse()
-    {
-        $orderManager = m::mock('overload:PGOrderManager');
-        $orderManager->shouldReceive('createResponseOrder');
-
-        $_REQUEST = array(
-            "route" => "extension/payment/wirecard_pg_paypal/response",
-            "psp_name" => "elastic-payments",
-            "custom_css_url" => "",
-            "eppresponse" => ResponseProvider::getPaypalSuccessResponse(),
-            "locale" => "en",
-        );
-
-        $response = $this->controller->response();
-
-        $this->assertTrue($response);
-    }
-
-    public function testFailureResponse()
-    {
-        $orderManager = m::mock('overload:PGOrderManager');
-        $orderManager->shouldReceive('updateCancelFailureOrder');
-
-        $_REQUEST = array(
-            "route" => "extension/payment/wirecard_pg_paypal/response",
-            "psp_name" => "elastic-payments",
-            "custom_css_url" => "",
-            "eppresponse" => ResponseProvider::getPaypalFailureResponse(),
-            "locale" => "en",
-        );
-
-        $response = $this->controller->response();
-
-        $this->assertFalse($response);
-    }
-
-    public function testMalformedResponse()
-    {
-        $_REQUEST = array(
-            "payment-method" => "paypal"
-        );
-
-        $this->controller->response();
-
-        $this->assertArrayHasKey('error', $this->session->data);
-        $this->assertEquals('Missing response in payload.', $this->session->data['error']);
-    }
-
     public function testIndexActive()
     {
         $this->config->expects($this->at(0))->method('get')->willReturn(1);
