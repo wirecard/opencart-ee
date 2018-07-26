@@ -13,6 +13,7 @@ $_['text_extension'] = 'Extensions';
 // Admin Panel
 $_['heading_title'] = 'Wirecard Transactions';
 $_['text_list'] = 'Transactions';
+$_['error_mandatory_fields'] = 'Not all mandatory fields are set.';
 
 // Transaction Table
 $_['panel_transaction'] = 'Transaction';

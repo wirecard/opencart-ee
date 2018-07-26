@@ -53,8 +53,23 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExten
 	 * @since 1.0.0
 	 */
 	protected function getRequestData() {
-		$this->config_fields = array_merge($this->config_fields, array('sort_order'));
+		$this->config_fields = $this->getPaymentConfigFields();
 
 		return parent::getRequestData();
+	}
+
+	/**
+	 * Return payment config fields
+	 *
+	 * @return array
+	 * @since 1.1.0
+	 */
+	public function getPaymentConfigFields() {
+		return array_merge(
+			$this->config_fields,
+			array(
+				'sort_order'
+			)
+		);
 	}
 }
