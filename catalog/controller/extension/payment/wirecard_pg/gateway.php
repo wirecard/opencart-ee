@@ -148,12 +148,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->load->model('checkout/order');
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
-		$precision = $this->getPrecision($order);
-		$currency = [
-			'currency_code' => $order['currency_code'],
-			'currency_value' => $order['currency_value'],
-			'precision' => $precision
-		];
+		$precision = $additional_helper->getPrecision($order['currency_value']);
+		$currency = $additional_helper->getCurrency($order['currency_code']);
+
 		$total = $additional_helper->convert($order['total'], $currency);
 		$amount = new \Wirecard\PaymentSdk\Entity\Amount(number_format($total, $precision), $order['currency_code']);
 		$this->payment_config = $this->getConfig($currency);
@@ -192,19 +189,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$device->setFingerprint($this->request->post['fingerprint-session']);
 			$this->transaction->setDevice($device);
 		}
-	}
-
-	/**
-	 * Get precision for current currency from order
-	 *
-	 * @param array $order
-	 * @return int
-	 * @since 1.0.0
-	 */
-	public function getPrecision( $order ) {
-		$currency_value = floatval( $order['currency_value'] );
-		$precision = strlen(substr(strrchr($currency_value, "."), 1));
-		return $precision;
 	}
 
 	/**

@@ -179,4 +179,34 @@ class AdditionalInformationHelper extends Model {
 	public function convertWithTax($amount, $currency, $taxClassId) {
 		return $this->tax->calculate($this->convert($amount, $currency), $taxClassId, 'P');
 	}
+
+	/**
+	 * Get currency array by code
+	 *
+	 * @param $currency_code
+	 * @return array
+	 * @since 1.1.0
+	 */
+	public function getCurrency($currency_code) {
+		$this->load->model('localisation/currency');
+		$currency_row = $this->model_localisation_currency->getCurrencyByCode($currency_code);
+		$currency = [
+			'currency_code' => $currency_row['code'],
+			'currency_value' => $currency_row['value'],
+			'precision' => $this->getPrecision($currency_row['value'])
+			];
+		return $currency;
+	}
+
+	/**
+	 * Get precision for current currency from value
+	 *
+	 * @param float $currency_value
+	 * @return int
+	 * @since 1.1.0
+	 */
+	public function getPrecision( $currency_value ) {
+		$precision = strlen(substr(strrchr($currency_value, "."), 1));
+		return $precision;
+	}
 }

@@ -7,6 +7,7 @@
  * https://github.com/wirecard/opencart-ee/blob/master/LICENSE
  */
 
+include_once(DIR_SYSTEM . 'library/autoload.php');
 require_once(dirname( __FILE__ ) . '/wirecard_pg/gateway.php');
 
 /**
@@ -23,4 +24,32 @@ class ModelExtensionPaymentWirecardPGRatepayInvoice extends ModelExtensionPaymen
 	 * @since 1.1.0
 	 */
 	protected $type = 'ratepayinvoice';
+
+	/**
+	 * Basic getMethod method
+	 *
+	 * @since 1.1.0
+	 */
+	public function getMethod($address, $total) {
+		$prefix = $this->prefix . $this->type;
+		$additional_info = new AdditionalInformationHelper($this->registry, $prefix, $this->config);
+		$shipping_address = $this->session->data['shipping_address'];
+		$payment_address = $this->session->data['payment_address'];
+		$allowed_shipping = $this->config->get($prefix . '_shipping_countries');
+		$allowed_billing = $this->config->get($prefix . '_billing_countries');
+
+		if (!in_array($shipping_address['iso_code_2'], $allowed_shipping)) {
+			return false;
+		}
+		if (!in_array($payment_address['iso_code_2'], $allowed_billing)) {
+			return false;
+		}
+		$amount = $additional_info->convert($total, $additional_info->getCurrency($this->session->data['currency']));
+
+		if ($amount < $this->config->get($prefix . '_basket_min') || $amount > $this->config->get($prefix . '_basket_max')) {
+			return false;
+		}
+
+		return parent::getMethod($address, $total);
+	}
 }
