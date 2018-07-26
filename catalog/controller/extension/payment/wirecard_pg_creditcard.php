@@ -37,9 +37,13 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 */
 	public function index($data = null) {
 		$this->load->language('extension/payment/wirecard_pg');
+
+		$vault = $this->getVault();
+		$data['existing_cards'] = $vault->getCards($this->customer);
 		$data['base_url'] = $this->getShopConfigVal('base_url');
 		$data['loading_text'] = $this->language->get('loading_text');
 		$data['credit_card'] = $this->load->view('extension/payment/wirecard_credit_card_ui', $data);
+
 		return parent::index($data);
 	}
 
@@ -51,6 +55,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	public function confirm() {
 		$this->load->model('checkout/order');
 		$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
+		$this->session->data['save_card'] = isset($this->request->post['save_card']) ? $this->request->post['save_card'] : null;
 
 		$transaction_service = new TransactionService($this->getConfig(), $this->getLogger());
 		$response = $transaction_service->processJsResponse($_POST,

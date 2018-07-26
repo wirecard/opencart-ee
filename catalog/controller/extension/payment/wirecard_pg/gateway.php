@@ -107,6 +107,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$session_id = $this->getShopConfigVal('merchant_account_id') . '_' . $this->createSessionString($order);
 		$data['session_id'] = substr($session_id, 0, 127);
 		$data['type'] = $this->type;
+		$data['vault_enabled'] = $this->getShopConfigVal('vault');
+		$data['customer_logged_in'] = $this->customer->isLogged();
 
 		return $this->load->view(self::PATH, $data);
 	}
@@ -185,6 +187,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 				$currency,
 				$order['total']
 			);
+
+			$this->transaction = $additional_helper->addAccountHolder($this->transaction, $order);
 		}
 
 		if (isset($this->request->post['fingerprint-session'])) {
@@ -327,8 +331,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	protected function getRedirects($order_id) {
 		return new \Wirecard\PaymentSdk\Entity\Redirect(
 			$this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL'),
-			$this->url->link(self::ROUTE . $this->type . '/response&cancelled=1&orderId=' . $order_id, '', 'SSL'),
-			$this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL')
+			$this->url->link(self::ROUTE . $this->type . '/response&cancelled=1&orderId='. $order_id, '', 'SSL'),
+			$this->url->link(self::ROUTE. $this->type . '/response', '', 'SSL')
 		);
 	}
 
@@ -339,7 +343,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return bool|string
 	 * @since 1.0.0
 	 */
-	public function getShopConfigVal($field) {
+	protected function getShopConfigVal($field) {
 		return $this->config->get($this->prefix . $this->type . '_' . $field);
 	}
 
@@ -385,6 +389,13 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 				$order_manager->createResponseOrder($result, $this);
 			}
 
+			if ('creditcard' == $this->type && isset($this->session->data['save_card'])) {
+				unset($this->session->data['save_card']);
+
+				$vault = $this->getVault();
+				$vault->saveCard($this->customer, $result);
+			}
+
 			if ('pia' == $this->type && isset($this->session->data['order_id'])) {
 				return $this->generateSuccessPage($result);
 			}
@@ -395,14 +406,13 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FormInteractionResponse) {
 			$this->load->language('information/static');
 
-			$data = [
-				'url' => $result->getUrl(),
-				'method' => $result->getMethod(),
-				'form_fields' => $result->getFormFields(),
-				'redirect_text' => $this->language->get('redirect_text'),
-			];
+			$data['url'] = $result->getUrl();
+			$data['method'] = $result->getMethod();
+			$data['form_fields'] = $result->getFormFields();
 
-			$data = array_merge($this->getCommonBlocks(), $data);
+			$data['footer'] = $this->load->controller('common/footer');
+			$data['header'] = $this->load->controller('common/header');
+			$data['redirect_text'] = $this->language->get('redirect_text');
 			$this->response->setOutput($this->load->view('extension/payment/wirecard_interaction_response', $data));
 		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			$errors = '';
@@ -464,41 +474,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	}
 
 	/**
-	 * Get common blocks for building a template
-	 *
-	 * @return array
-	 * @since 1.1.0
-	 */
-	public function getCommonBlocks() {
-		$data = [
-			'continue' => $this->url->link('common/home'),
-			'column_left' => $this->load->controller('common/column_left'),
-			'column_right' => $this->load->controller('common/column_right'),
-			'content_top' => $this->load->controller('common/content_top'),
-			'content_bottom' => $this->load->controller('common/content_bottom'),
-			'footer' => $this->load->controller('common/footer'),
-			'header' => $this->load->controller('common/header'),
-		];
-
-		if ($this->customer->isLogged()) {
-			$data['text_message'] = sprintf(
-				$this->language->get('text_customer'),
-				$this->url->link('account/account', '', true),
-				$this->url->link('account/order', '', true),
-				$this->url->link('account/download', '', true),
-				$this->url->link('information/contact')
-			);
-		} else {
-			$data['text_message'] = sprintf(
-				$this->language->get('text_guest'),
-				$this->url->link('information/contact')
-			);
-		}
-
-		return $data;
-	}
-
-	/**
 	 * @param \Wirecard\PaymentSdk\Response\Response
 	 * @return bool
 	 * @since 1.1.0
@@ -512,5 +487,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->getLogger()->error(get_class($e) . ": " . $e->getMessage());
 			return false;
 		}
+	}
+
+	/**
+	 * Get an instance of the Credit Card vault.
+	 *
+	 * @return ModelExtensionPaymentWirecardPGVault
+	 * @since 1.1.0
+	 */
+	protected function getVault() {
+		$this->load->model('extension/payment/wirecard_pg/vault');
+
+		return $this->model_extension_payment_wirecard_pg_vault;
 	}
 }

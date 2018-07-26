@@ -23,6 +23,13 @@
         <input type="hidden" value="{{ session_id }}" id="input-fingerprint-session" name="fingerprint-session"/>
         {%  endif %}
 
+        {% if credit_card and vault_enabled and customer_logged_in %}
+            <label style="padding-right: 8px;">
+                Save credit card for later use
+                <input type="checkbox" name="save_card" />
+            </label>
+        {% endif %}
+
         <input type="button" value="{{ button_confirm }}" id="button-confirm" data-loading-text="{{ text_loading }}" class="btn btn-primary" />
     </div>
 </div>
