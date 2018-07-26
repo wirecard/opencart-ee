@@ -41,7 +41,9 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 		$data['first_name_input'] = $this->language->get('first_name_input');
 		$data['last_name_input'] = $this->language->get('last_name_input');
 		$data['sepa_legend'] = $this->language->get('sepa_legend');
+		$data['creditor_mandate_id'] = $this->language->get('sepa_mandate_id');
 		$data['show_bic'] = false;
+		$data['mandate_id'] = $this->generateId();
 		if ($this->getShopConfigVal('enable_bic')) {
 			$data['show_bic'] = true;
 			$data['bic_input'] = $this->language->get('bic_input');
@@ -60,7 +62,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 		$this->load->language('extension/payment/wirecard_pg_sepadd');
 		if ((bool)$this->request->post['mandate_confirmed'] == false) {
 			$json = [];
-			if ($this->validateMadnatoryFields($this->request->post, $this->getShopConfigVal('enable_bic'))) {
+			if ($this->validateMandatoryFields()) {
 				$json = ['popup' => $this->generateMandateTemplate($this->request->post), 'button_text' => $this->language->get('sepa_cancel')];
 			} else {
 				$json = ['error' => $this->language->get('sepa_fields_error')];
@@ -92,7 +94,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 			$this->transaction->setBic($this->request->post['bic']);
 		}
 
-		$mandate = new \Wirecard\PaymentSdk\Entity\Mandate($this->generateId());
+		$mandate = new \Wirecard\PaymentSdk\Entity\Mandate($this->request->post['mandate_id']);
 		$this->transaction->setMandate($mandate);
 	}
 
@@ -148,27 +150,30 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 
 	/**
 	 * Generate template for SEPA mandate
-	 * @param array $formData
+	 * @param array $form_data
 	 * @return array
 	 * @since 1.1.0
 	 */
-	private function generateMandateTemplate($formData) {
+	private function generateMandateTemplate($form_data) {
 		$this->load->model('checkout/order');
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
-		$data['consumer_first_name'] = $formData['first_name'];
-		$data['consumer_last_name'] = $formData['last_name'];
+		$data['consumer_first_name'] = $form_data['first_name'];
+		$data['consumer_last_name'] = $form_data['last_name'];
 		$data['consumer_address'] = $order['payment_address_1'];
-		$data['consumer_iban'] = $formData['iban'];
+		$data['consumer_iban'] = $form_data['iban'];
+		$data['mandate_id'] = $form_data['mandate_id'];
 		$data['customer_bic'] = null;
+
 		if ($this->getShopConfigVal('enable_bic')) {
-			$data['consumer_bic'] = $formData['bic'];
+			$data['consumer_bic'] = $form_data['bic'];
 		}
 
 		$data['creditor_id'] = $this->getShopConfigVal('creditor_id');
 		$data['creditor_name'] = $this->getShopConfigVal('creditor_name');
 		$data['creditor_city'] = $this->getShopConfigVal('creditor_city');
 		$data['creditor_date'] = date( 'd.m.Y' );
+
 		$code = $this->language->get('code');
 		if (isset($code) && isset($this->config->get('payment_wirecard_pg_sepadd_mandate_text')[$code])) {
 			$data['additional_text'] = $this->config->get('payment_wirecard_pg_sepadd_mandate_text')[$code];
@@ -188,7 +193,8 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 					'sepa_text_5',
 					'sepa_text_6',
 					'sepa_cancel',
-					'sepa_mandate'
+					'sepa_mandate',
+					'creditor_mandate_id'
 				)
 			),
 			$data
@@ -215,24 +221,24 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	}
 
 	/**
-	 * @param array $formFields
-	 * @param bool $bic_enabled
 	 * @return boolean
 	 * @since 1.1.0
 	 */
-	private function validateMadnatoryFields($formFields, $bic_enabled) {
-		$mandatoryFields = array(
+	private function validateMandatoryFields() {
+		$form_fields = $this->request->post;
+		$mandatory_fields = array(
 			'iban',
 			'first_name',
 			'last_name',
+			'mandate_id'
 		);
-		if ($bic_enabled) {
-			array_push($mandatoryFields, 'bic');
+		if ($this->getShopConfigVal('enable_bic')) {
+			array_push($mandatory_fields, 'bic');
 		}
 
-		foreach ($mandatoryFields as $field) {
-			if (!array_key_exists($field, $formFields) ||
-				$formFields[$field] === '') {
+		foreach ($mandatory_fields as $field) {
+			if (!array_key_exists($field, $form_fields) ||
+				$form_fields[$field] === '') {
 				return false;
 			}
 		}

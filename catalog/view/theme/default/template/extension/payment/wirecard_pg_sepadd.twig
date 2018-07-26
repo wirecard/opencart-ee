@@ -22,7 +22,8 @@
             <input id="sepa-iban" class="form-control" placeholder="{{ iban_input }}" type="text" name="iban" autocomplete="false" form="wirecard-pg-form">
         </div>
     </div>
-    <input id="mandate_confirmed" class="form-control" value="0" type="hidden" name="mandate_confirmed" autocomplete="false" form="wirecard-pg-form">
+    <input id="mandate_confirmed" class="form-control" value="0" type="hidden" name="mandate_confirmed" form="wirecard-pg-form">
+    <input id="mandate_id" class="form-control" type="hidden" name="mandate_id" form="wirecard-pg-form" value="{{ mandate_id }}">
     {% if show_bic %}
         <div class="form-group required">
             <label class="col-sm-2 control-label col-form-label text-right" for="sepa-bic">{{ bic_input }}:</label>

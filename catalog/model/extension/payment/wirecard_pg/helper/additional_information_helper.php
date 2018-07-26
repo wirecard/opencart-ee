@@ -95,8 +95,8 @@ class AdditionalInformationHelper extends Model {
 		$basic_info = new ExtensionModuleWirecardPGPluginData();
 		$custom_fields = new \Wirecard\PaymentSdk\Entity\CustomFieldCollection();
 		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('orderId', $order['order_id']));
-		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('shopName', 'OpenCart'));
-		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('shopVersion', VERSION));
+		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('shopName', $basic_info->getShopName()));
+		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('shopVersion', $basic_info->getShopVersion()));
 		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('pluginName', $basic_info->getName()));
 		$custom_fields->add(new \Wirecard\PaymentSdk\Entity\CustomField('pluginVersion', $basic_info->getVersion()));
 		$transaction->setCustomFields($custom_fields);
