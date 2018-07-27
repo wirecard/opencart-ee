@@ -88,14 +88,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 	 * @since 1.0.0
 	 */
 	protected function getRequestData() {
-		$this->config_fields = array_merge($this->config_fields, array(
-			'three_d_merchant_account_id',
-			'three_d_merchant_secret',
-			'ssl_max_limit',
-			'three_d_min_limit',
-			'sort_order',
-			'vault')
-		);
+		$this->config_fields = $this->getPaymentConfigFields();
 
 		return parent::getRequestData();
 	}
@@ -113,5 +106,25 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 		$data['vault_config'] = $this->load->view('extension/payment/wirecard_pg/vault_config', $data);
 
 		return $data;
+	}
+
+	/**
+	 * Return payment config fields
+	 *
+	 * @return array
+	 * @since 1.1.0
+	 */
+	public function getPaymentConfigFields() {
+		return array_merge(
+			$this->config_fields,
+			array(
+				'three_d_merchant_account_id',
+				'three_d_merchant_secret',
+				'ssl_max_limit',
+				'three_d_min_limit',
+				'sort_order',
+				'vault'
+			)
+		);
 	}
 }
