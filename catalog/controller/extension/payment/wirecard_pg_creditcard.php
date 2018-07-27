@@ -33,6 +33,8 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	/**
 	 * Basic index method
 	 *
+	 * @param array $data
+	 * @return array
 	 * @since 1.0.0
 	 */
 	public function index($data = null) {
