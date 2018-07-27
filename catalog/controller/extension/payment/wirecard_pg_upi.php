@@ -9,33 +9,31 @@
 
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
-use Wirecard\PaymentSdk\Transaction\CreditCardTransaction;
+use Wirecard\PaymentSdk\Transaction\UpiTransaction;
 use Wirecard\PaymentSdk\Entity\Amount;
-use Wirecard\PaymentSdk\Config\CreditCardConfig;
+use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
 use Wirecard\PaymentSdk\TransactionService;
 use Wirecard\PaymentSdk\Exception\MalformedResponseException;
 
 /**
- * Class ControllerExtensionPaymentWirecardPGCreditCard
+ * Class ControllerExtensionPaymentWirecardPGUPI
  *
- * CreditCard Transaction controller
+ * UnionPay Interational Transaction controller
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
-class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGUPI extends ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
-	protected $type = 'creditcard';
+	protected $type = 'upi';
 
 	/**
 	 * Basic index method
 	 *
-	 * @param array $data
-	 * @return array
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function index($data = null) {
 		$this->load->language('extension/payment/wirecard_pg');
@@ -49,15 +47,17 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	/**
 	 * After the order is confirmed in frontend
 	 *
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function confirm() {
 		$this->load->model('checkout/order');
 		$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
 
 		$transaction_service = new TransactionService($this->getConfig(), $this->getLogger());
-		$response = $transaction_service->processJsResponse($_POST,
-			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
+		$response = $transaction_service->processJsResponse(
+			$_POST,
+			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL')
+		);
 
 		return $this->processResponse($response, $this->getLogger());
 	}
@@ -67,49 +67,14 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 *
 	 * @param array $currency
 	 * @return \Wirecard\PaymentSdk\Config\Config
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function getConfig($currency = null) {
+		$merchant_account_id = $this->getShopConfigVal('merchant_account_id');
+		$merchant_secret = $this->getShopConfigVal('merchant_secret');
+
 		$config = parent::getConfig($currency);
-		$payment_config = new CreditCardConfig();
-		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
-
-		if ($this->getShopConfigVal('merchant_account_id') !== 'null') {
-			$payment_config->setSSLCredentials(
-				$this->getShopConfigVal('merchant_account_id'),
-				$this->getShopConfigVal('merchant_secret')
-			);
-		}
-
-		if ($this->getShopConfigVal('three_d_merchant_account_id') !== 'null') {
-			$payment_config->setThreeDCredentials(
-				$this->getShopConfigVal('three_d_merchant_account_id'),
-				$this->getShopConfigVal('three_d_merchant_secret')
-			);
-		}
-
-		if ($this->getShopConfigVal('ssl_max_limit') !== '') {
-			$ssl_max_limit = floatval($this->getShopConfigVal('ssl_max_limit'));
-			$payment_config->addSslMaxLimit(
-				new Amount(
-					$additional_helper->convert($ssl_max_limit, $currency),
-					$currency['currency_code']
-				)
-			);
-		}
-
-		if ($this->getShopConfigVal('three_d_min_limit') !== '') {
-			$three_d_min_limit = floatval($this->getShopConfigVal('three_d_min_limit'));
-			$payment_config->addThreeDMinLimit(
-				new Amount(
-					$additional_helper->convert(
-						$three_d_min_limit,
-						$currency
-					),
-					$currency['currency_code']
-				)
-			);
-		}
+		$payment_config = new PaymentMethodConfig(UpiTransaction::NAME, $merchant_account_id, $merchant_secret);
 		$config->add($payment_config);
 
 		return $config;
@@ -119,24 +84,25 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 * Payment specific model getter
 	 *
 	 * @return Model
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function getModel() {
 		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
 
-		return $this->model_extension_payment_wirecard_pg_creditcard;
+		return $this->model_extension_payment_wirecard_pg_upi;
 	}
 
 	/**
 	 * Return data via ajax call for the seamless form renderer
 	 *
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
-	public function getCreditCardUiRequestData() {
-		$this->transaction = new CreditCardTransaction();
+	public function getUpiUiRequestData() {
+		$this->transaction = $this->getTransactionInstance();
 		$this->prepareTransaction();
-		$this->transaction->setConfig($this->payment_config->get(CreditCardTransaction::NAME));
+		$this->transaction->setConfig($this->payment_config->get(UpiTransaction::NAME));
 		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
+
 		$transaction_service = new TransactionService($this->payment_config, $this->getLogger());
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(($transaction_service->getCreditCardUiWithData(
@@ -149,25 +115,25 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	/**
 	 * Get new instance of payment specific transaction
 	 *
-	 * @return CreditCardTransaction
-	 * @since 1.0.0
+	 * @return UpiTransaction
+	 * @since 1.1.0
 	 */
 	public function getTransactionInstance() {
-		return new CreditCardTransaction();
+		return new UpiTransaction();
 	}
 
 	/**
-	 * Create CreditCard transaction
+	 * Create UnionPay International transaction
 	 *
-	 * @param array $parentTransaction
+	 * @param array $parent_transaction
 	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
-	public function createTransaction($parentTransaction, $amount) {
-		$this->transaction = new CreditCardTransaction();
+	public function createTransaction($parent_transaction, $amount) {
+		$this->transaction = $this->getTransactionInstance();
 
-		return parent::createTransaction($parentTransaction, $amount);
+		return parent::createTransaction($parent_transaction, $amount);
 	}
 
 }

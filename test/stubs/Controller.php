@@ -23,6 +23,7 @@ abstract class Controller
 	public $model_extension_payment_wirecard_pg_poi;
 	public $model_extension_payment_wirecard_pg_pia;
 	public $model_extension_payment_wirecard_pg_masterpass;
+	public $model_extension_payment_wirecard_pg_upi;
     public $model_checkout_order;
     public $controller_extension_payment_wirecard_pg_sepact;
 
@@ -41,6 +42,7 @@ abstract class Controller
 		$this->model_extension_payment_wirecard_pg_sofortbanking = $modelPayment;
 		$this->model_extension_payment_wirecard_pg_ideal = $modelPayment;
 		$this->model_extension_payment_wirecard_pg_masterpass = $modelPayment;
+		$this->model_extension_payment_wirecard_pg_upi = $modelPayment;
 		$this->model_extension_payment_wirecard_pg_poi = $modelPayment;
 		$this->model_extension_payment_wirecard_pg_pia = $modelPayment;
         $this->language = $language;

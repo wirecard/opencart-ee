@@ -95,12 +95,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		$this->document->setTitle($this->language->get(self::HEADING_TITLE));
 
-		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-			$this->model_setting_setting->editSetting($this->prefix . $this->type, $this->request->post);
+		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
+			if ($this->validate($this->request->post)) {
+				$this->model_setting_setting->editSetting($this->prefix . $this->type, $this->request->post);
 
-			$this->session->data['success'] = $this->language->get('text_success');
+				$this->session->data['success'] = $this->language->get('text_success');
 
-			$this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
+				$this->response->redirect($this->url->link('marketplace/extension',
+					'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
+			} else {
+				$data['error_warning'] = $this->language->get('error_mandatory_fields');
+			}
 		}
 
 		$basic_data = new ExtensionModuleWirecardPGPluginData();
@@ -194,15 +199,43 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	/**
 	 * Validate specific fields
 	 *
+	 * @param array $formFields
 	 * @return bool
 	 * @since 1.0.0
 	 */
-	protected function validate() {
+	protected function validate($formFields) {
 		if (!$this->user->hasPermission('modify', 'extension/payment/wirecard_pg_' . $this->type )) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 
+		foreach ($this->getMandatoryFields() as $field) {
+			if (!array_key_exists($this->prefix . $this->type . '_' . $field, $formFields) ||
+				$formFields[$this->prefix . $this->type . '_' . $field] === '') {
+				return false;
+			}
+		}
+
 		return !$this->error;
+	}
+
+	/**
+	 * Get mandatory fields that need to be set
+	 *
+	 * @return array
+	 * @since 1.1.0
+	 */
+	public function getMandatoryFields() {
+		return $this->getPaymentConfigFields();
+	}
+
+	/**
+	 * Return payment config fields
+	 *
+	 * @return array
+	 * @since 1.1.0
+	 */
+	public function getPaymentConfigFields() {
+		return $this->config_fields;
 	}
 
 	/**

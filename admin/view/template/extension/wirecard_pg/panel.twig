@@ -60,7 +60,7 @@
                                 <td>{{ transaction.action }}</td>
                                 <td>{{ transaction.payment_method }}</td>
                                 <td>{{ transaction.transaction_state }}</td>
-                                <td>{{ transaction.amount }}</td>
+                                <td>{{ transaction.amount | round(2, 'floor') }}</td>
                                 <td>{{ transaction.currency }}</td>
                                 <td class="text-right">
                                     <div style="min-width: 45px;">
