@@ -67,16 +67,16 @@ class AdditionalInformationHelper extends Model {
 	 *
 	 * @param Transaction $transaction
 	 * @param $order
-	 * @param $includeShipping
+	 * @param $include_shipping
 	 * @return Transaction
 	 * @since 1.1.0
 	 */
-	public function addAccountHolder($transaction, $order, $includeShipping = true) {
+	public function addAccountHolder($transaction, $order, $include_shipping = true) {
 		$account_holder = new PGAccountHolder();
 
 		$transaction->setAccountHolder($account_holder->createAccountHolder($order, $account_holder::BILLING));
 
-		if ($includeShipping) {
+		if ($include_shipping) {
 			$transaction->setShipping($account_holder->createAccountHolder($order, $account_holder::SHIPPING));
 		}
 
@@ -108,9 +108,6 @@ class AdditionalInformationHelper extends Model {
 	/**
 	 * Create additional information data
 	 *
-	 * The AccountHolder is being set along with the basket and shipping in
-	 * ControllerExtensionPaymentGateway::prepareTransaction().
-	 *
 	 * @param Transaction $transaction
 	 * @param array $order
 	 * @return Transaction
@@ -132,12 +129,13 @@ class AdditionalInformationHelper extends Model {
 			$transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
 		}
 
-			if (strlen($order['customer_id'])) {
-				$transaction->setConsumerId($order['customer_id']);
-			}
+		if (strlen($order['customer_id'])) {
+			$transaction->setConsumerId($order['customer_id']);
+		}
 
-			$transaction->setOrderNumber($order['order_id']);
-			$transaction->setDescriptor($this->createDescriptor($order));
+		$transaction->setOrderNumber($order['order_id']);
+		$transaction->setDescriptor($this->createDescriptor($order));
+		$transaction = $this->addAccountHolder($transaction, $order);
 
 		return $transaction;
 	}

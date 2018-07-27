@@ -1,0 +1,56 @@
+{{ header }}
+<div id="common-success" class="container">
+    <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+            <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+    </ul>
+    <div class="row">{{ column_left }}
+        {% if column_left and column_right %}
+            {% set class = 'col-sm-6' %}
+        {% elseif column_left or column_right %}
+            {% set class = 'col-sm-9' %}
+        {% else %}
+            {% set class = 'col-sm-12' %}
+        {% endif %}
+        <div id="content" class="{{ class }}">{{ content_top }}
+            <h1>{{ heading_title }}</h1>
+
+            {% if pia %}
+                <br>
+                <table class="table table-bordered table-responsive">
+                    <thead>
+                        <tr>
+                            <th colspan="2">{{ pia.texts.transfer_notice }}</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <th scope="row" width="25%">{{ pia.texts.amount }}</th>
+                            <td>{{ pia.transaction.amount }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" width="25%">{{ pia.texts.iban }}</th>
+                            <td>{{ pia.transaction.iban }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" width="25%">{{ pia.texts.bic }}</th>
+                            <td>{{ pia.transaction.bic }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" width="25%">{{ pia.texts.ptrid }}</th>
+                            <td>{{ pia.transaction.ptrid }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endif %}
+
+            {{ text_message }}
+            <div class="buttons">
+                <div class="float-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+            </div>
+            {{ content_bottom }}</div>
+        {{ column_right }}</div>
+</div>
+{{ footer }}

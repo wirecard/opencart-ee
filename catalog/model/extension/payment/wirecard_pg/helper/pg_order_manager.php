@@ -35,8 +35,11 @@ class PGOrderManager extends Model {
 	 */
 	public function createResponseOrder($response, $payment_controller) {
 		$this->load->model('checkout/order');
+
+		$success_methods = ['poi', 'pia'];
 		$order_id = $response->getCustomFields()->get('orderId');
 		$order = $this->model_checkout_order->getOrder($order_id);
+
 		/** @var ModelExtensionPaymentGateway $transaction_model */
 		$transaction_model = $payment_controller->getModel();
 
@@ -44,10 +47,16 @@ class PGOrderManager extends Model {
 			$this->model_checkout_order->addOrderHistory(
 				$order_id,
 				self::PENDING,
-				'<pre>' . htmlentities($response->getRawData()) . '</pre>',
+				'<pre style="white-space: pre-line;">' . htmlentities($response->getRawData()) . '</pre>',
 				false
 			);
-			$transaction_model->createTransaction($response, $order, 'awaiting', $payment_controller);
+
+			if ('poi' == $payment_controller->getType()) {
+				$payment_controller->addBankDetailsToInvoice($response, $order_id, self::PENDING);
+			}
+
+			$transaction_status = in_array($payment_controller->getType(), $success_methods) ? 'success' : 'awaiting';
+			$transaction_model->createTransaction($response, $order, $transaction_status, $payment_controller);
 		}
 	}
 
@@ -85,7 +94,7 @@ class PGOrderManager extends Model {
 			$this->model_checkout_order->addOrderHistory(
 				$order_id,
 				$state,
-				'<pre>' . htmlentities($response->getRawData()) . '</pre>',
+				'<pre style="white-space: pre-line;">' . htmlentities($response->getRawData()) . '</pre>',
 				false
 			);
 			if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse && $transaction_model->getTransaction($response->getTransactionId())) {
@@ -123,7 +132,7 @@ class PGOrderManager extends Model {
 		$this->model_checkout_order->addOrderHistory(
 			$response->getCustomFields()->get('orderId'),
 			$state,
-			'<pre>' . htmlentities($response->getRawData()) . '</pre>',
+			'<pre style="white-space: pre-line;">' . htmlentities($response->getRawData()) . '</pre>',
 			false
 		);
 
