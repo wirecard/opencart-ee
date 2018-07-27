@@ -72,12 +72,12 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 *
 	 * @param $config
 	 * @param $transaction
-	 * @param string $paymetAction
+	 * @param string $payment_action
 	 * @return \Wirecard\PaymentSdk\Response\Response
 	 * @throws Exception
 	 * @since 1.0.0
 	 */
-	public function sendRequest($config, $transaction, $paymetAction) {
+	public function sendRequest($config, $transaction, $payment_action) {
 		$this->load->language('extension/payment/wirecard_pg');
 
 		$logger = $this->getLogger();
@@ -87,7 +87,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 
 		try {
 			/* @var \Wirecard\PaymentSdk\Response\Response $response */
-			$response = $transaction_service->process($transaction, $paymetAction);
+			$response = $transaction_service->process($transaction, $payment_action);
 		} catch (Exception $exception) {
 			$logger->error(get_class($exception) . ' ' . $exception->getMessage());
 			$this->session->data['error'] = $this->language->get('order_error');
@@ -99,6 +99,16 @@ abstract class ModelExtensionPaymentGateway extends Model {
 
 		if ($response instanceof \Wirecard\PaymentSdk\Response\InteractionResponse) {
 			$redirect = $response->getRedirectUrl();
+		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FormInteractionResponse) {
+			$form_fields = $response->getFormFields();
+			$response_query = array();
+
+			foreach ($form_fields->getIterator() as $key => $value) {
+				$response_query[$key] = $value;
+			}
+
+			$query = http_build_query($response_query);
+			$redirect = $response->getUrl() . '&' . $query;
 		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			$errors = '';
 

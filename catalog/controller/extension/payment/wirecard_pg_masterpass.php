@@ -33,15 +33,25 @@ class ControllerExtensionPaymentWirecardPGMasterpass extends ControllerExtension
 	 * @since 1.1.0
 	 */
 	public function confirm() {
-		$this->load->model('checkout/order');
 		$this->transaction = $this->getTransactionInstance();
+
+		parent::confirm();
+	}
+
+	/**
+	 * Prepare the Masterpass transaction as required.
+	 *
+	 * @since 1.1.0
+	 */
+	public function prepareTransaction() {
+		parent::prepareTransaction();
+
+		$this->load->model('checkout/order');
 
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
 
 		$this->transaction = $additional_helper->addAccountHolder($this->transaction, $order, false);
-
-		parent::confirm();
 	}
 
 	/**
