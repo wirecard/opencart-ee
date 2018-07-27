@@ -32,7 +32,7 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 	private $cart;
 
 	const SHOP = 'OpenCart';
-	const PLUGIN = 'Wirecard_PaymentGateway';
+	const PLUGIN = 'Wirecard OpenCart Extension';
 
 	public function setUp() {
 		$this->registry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->getMock();
