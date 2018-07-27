@@ -16,11 +16,13 @@ var WirecardPaymentPage;
  */
 function setParentTransactionId(response) {
 	var form = $("#wirecard-pg-form");
+
 	for (var key in response) {
 		if (response.hasOwnProperty(key)) {
 			form.append("<input type='hidden' name='" + key + "' value='" + response[key] + "'>");
 		}
 	}
+
 	form.submit();
 }
 
@@ -58,6 +60,7 @@ function getCreditCardRequestData() {
 				dataType: "json",
 				success: function ( data ) {
 					if ( data != null ) {
+						console.log(data);
 						WirecardPaymentPage.seamlessRenderForm( {
 							requestData: data,
 							wrappingDivId: "creditcard-form-div",
@@ -80,14 +83,24 @@ function getCreditCardRequestData() {
 }
 
 /**
+ * Set a saved credit card token.
+ *
+ * @param token
+ * @since 1.1.0
+ */
+function setToken(token) {
+	jQuery('#token-field').val(token);
+}
+
+/**
  * When document loads get the data for the credit card form
  *
  * @since 1.0.0
  */
 $(document).ready(function() {
-	$("#button-confirm").prop("disabled", true);
+	//$("#button-confirm").prop("disabled", true);
 	$("#creditcard-form-div").hide();
-	getCreditCardRequestData();
+	//getCreditCardRequestData();
 });
 
 /**
@@ -96,8 +109,11 @@ $(document).ready(function() {
  * @since 1.0.0
  */
 $("#button-confirm").on("click", function() {
+
 	WirecardPaymentPage.seamlessSubmitForm({
 		onSuccess: setParentTransactionId,
 		onError: logError
 	});
+
+	jQuery("#wirecard-pg-form").submit();
 });

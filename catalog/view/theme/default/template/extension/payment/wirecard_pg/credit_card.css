@@ -91,3 +91,19 @@ At https://github.com/lukehaas/css-loaders you can find more spinners and change
         box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
     }
 }
+
+.credit-card-selector {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+}
+
+.credit-card-selector label {
+    flex-grow: 1;
+}
+
+.credit-card-selector input[type=radio] {
+    position: relative;
+    top: 1px;
+    margin-right: 8px;
+}

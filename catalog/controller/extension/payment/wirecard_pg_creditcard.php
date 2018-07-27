@@ -53,6 +53,9 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 * @since 1.0.0
 	 */
 	public function confirm() {
+		var_dump($_POST);
+		die();
+
 		$this->load->model('checkout/order');
 		$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
 		$this->session->data['save_card'] = isset($this->request->post['save_card']) ? $this->request->post['save_card'] : null;

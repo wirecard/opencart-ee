@@ -331,8 +331,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	protected function getRedirects($order_id) {
 		return new \Wirecard\PaymentSdk\Entity\Redirect(
 			$this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL'),
-			$this->url->link(self::ROUTE . $this->type . '/response&cancelled=1&orderId='. $order_id, '', 'SSL'),
-			$this->url->link(self::ROUTE. $this->type . '/response', '', 'SSL')
+			$this->url->link(self::ROUTE . $this->type . '/response&cancelled=1&orderId=' . $order_id, '', 'SSL'),
+			$this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL')
 		);
 	}
 
@@ -343,7 +343,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @return bool|string
 	 * @since 1.0.0
 	 */
-	protected function getShopConfigVal($field) {
+	public function getShopConfigVal($field) {
 		return $this->config->get($this->prefix . $this->type . '_' . $field);
 	}
 
@@ -413,6 +413,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['header'] = $this->load->controller('common/header');
 			$data['redirect_text'] = $this->language->get('redirect_text');
+
+			$data = array_merge($this->getCommonBlocks(), $data);
 			$this->response->setOutput($this->load->view('extension/payment/wirecard_interaction_response', $data));
 		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			$errors = '';
@@ -471,6 +473,41 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->transaction->setAmount($amount);
 
 		return $this->transaction;
+	}
+
+	/**
+	 * Get common blocks for building a template
+	 *
+	 * @return array
+	 * @since 1.1.0
+	 */
+	public function getCommonBlocks() {
+		$data = [
+			'continue' => $this->url->link('common/home'),
+			'column_left' => $this->load->controller('common/column_left'),
+			'column_right' => $this->load->controller('common/column_right'),
+			'content_top' => $this->load->controller('common/content_top'),
+			'content_bottom' => $this->load->controller('common/content_bottom'),
+			'footer' => $this->load->controller('common/footer'),
+			'header' => $this->load->controller('common/header'),
+		];
+
+		if ($this->customer->isLogged()) {
+			$data['text_message'] = sprintf(
+				$this->language->get('text_customer'),
+				$this->url->link('account/account', '', true),
+				$this->url->link('account/order', '', true),
+				$this->url->link('account/download', '', true),
+				$this->url->link('information/contact')
+			);
+		} else {
+			$data['text_message'] = sprintf(
+				$this->language->get('text_guest'),
+				$this->url->link('information/contact')
+			);
+		}
+
+		return $data;
 	}
 
 	/**
