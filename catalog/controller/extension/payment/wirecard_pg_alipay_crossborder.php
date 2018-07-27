@@ -28,15 +28,6 @@ class ControllerExtensionPaymentWirecardPGAlipayCrossborder extends ControllerEx
 	protected $type = 'alipay_crossborder';
 
 	/**
-	 * Basic index method
-	 *
-	 * @since 1.1.0
-	 */
-	public function index($data = null) {
-		return parent::index();
-	}
-
-	/**
 	 * Create Alipay Cross-border transaction
 	 *
 	 * @since 1.1.0
@@ -106,16 +97,16 @@ class ControllerExtensionPaymentWirecardPGAlipayCrossborder extends ControllerEx
 	/**
 	 * Create Alipay Cross-border transaction
 	 *
-	 * @param array $parentTransaction
+	 * @param array $parent_transaction
 	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
 	 * @param string $operation
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
 	 * @since 1.1.0
 	 */
-	public function createTransaction($parentTransaction, $amount) {
+	public function createTransaction($parent_transaction, $amount) {
 		$this->transaction = $this->getTransactionInstance();
 
-		return parent::createTransaction($parentTransaction, $amount);
+		return parent::createTransaction($parent_transaction, $amount);
 	}
 }
 
