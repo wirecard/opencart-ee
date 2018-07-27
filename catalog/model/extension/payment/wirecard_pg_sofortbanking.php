@@ -23,13 +23,4 @@ class ModelExtensionPaymentWirecardPGSofortbanking extends ModelExtensionPayment
 	 * @since 1.0.0
 	 */
 	protected $type = 'sofortbanking';
-
-	/**
-	 * Basic getMethod method
-	 *
-	 * @since 1.0.0
-	 */
-	public function getMethod($address, $total) {
-		return parent::getMethod($address, $total);
-	}
 }
