@@ -38,6 +38,25 @@ class ModelExtensionPaymentWirecardPGRatepayInvoice extends ModelExtensionPaymen
 		$allowed_shipping = $this->config->get($prefix . '_shipping_countries');
 		$allowed_billing = $this->config->get($prefix . '_billing_countries');
 
+		if ($this->config->get($prefix . '_billing_shipping')) {
+            $fields = array(
+                'firstname',
+                'lastname',
+                'company',
+                'address_1',
+                'address_2',
+                'postcode',
+                'city',
+                'zone',
+                'country'
+            );
+            foreach ($fields as $field) {
+                if ($payment_address[$field] != $shipping_address[$field]) {
+                    return false;
+                }
+            }
+        }
+
 		if (!in_array($shipping_address['iso_code_2'], $allowed_shipping)) {
 			return false;
 		}
