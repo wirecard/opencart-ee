@@ -10,17 +10,17 @@
 require_once(dirname( __FILE__ ) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ModelExtensionPaymentWirecardPGCreditCard
+ * Class ModelExtensionPaymentWirecardPGUPI
  *
- * CreditCard Transaction model
+ * Unionpay International Transaction model
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
-class ModelExtensionPaymentWirecardPGCreditCard extends ModelExtensionPaymentGateway {
+class ModelExtensionPaymentWirecardPGUPI extends ModelExtensionPaymentGateway {
 
 	/**
 	 * @var string
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
-	protected $type = 'creditcard';
+	protected $type = 'upi';
 }

@@ -25,6 +25,12 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends \ControllerExtensionPay
 	protected $type = 'sepadd';
 
 	/**
+	 * @var bool
+	 * @since 1.1.0
+	 */
+	protected $has_payment_actions = true;
+
+	/**
 	 * SEPA Direct Debit default configuration settings
 	 *
 	 * @var array
@@ -58,16 +64,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends \ControllerExtensionPay
 	 * @since 1.1.0
 	 */
 	protected function getRequestData() {
-		$this->config_fields = array_merge(
-			$this->config_fields,
-			array(
-				'sort_order',
-				'creditor_id',
-				'creditor_name',
-				'creditor_city',
-				'enable_bic'
-			)
-		);
+		$this->config_fields = $this->getPaymentConfigFields();
 
 		return parent::getRequestData();
 	}
@@ -92,5 +89,42 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends \ControllerExtensionPay
 		);
 
 		return $data;
+	}
+
+	/**
+	 * Get mandatory fields that need to be set
+	 *
+	 * @return array
+	 * @since 1.1.0
+	 */
+	public function getMandatoryFields() {
+		$all_fields = parent::getMandatoryFields();
+
+		return array_diff(
+			$all_fields,
+			array(
+				'creditor_name',
+				'creditor_city'
+			)
+		);
+	}
+
+	/**
+	 * Return payment config fields
+	 *
+	 * @return array
+	 * @since 1.1.0
+	 */
+	public function getPaymentConfigFields() {
+		return array_merge(
+			$this->config_fields,
+			array(
+				'sort_order',
+				'creditor_id',
+				'creditor_name',
+				'creditor_city',
+				'enable_bic'
+			)
+		);
 	}
 }

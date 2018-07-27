@@ -28,12 +28,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @var string
 	 * @since 1.0.0
 	 */
-	private $plugin_version = '1.0.0';
-
-	/**
-	 * @var string
-	 * @since 1.0.0
-	 */
 	protected $prefix = 'payment_wirecard_pg_';
 
 	/**
@@ -90,6 +84,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	/**
 	 * Basic index method
 	 *
+	 * @param array $data
 	 * @return mixed
 	 * @since 1.0.0
 	 */
@@ -202,6 +197,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	public function getPrecision( $order ) {
+		if ($this->type == 'sepadd') {
+			return 2;
+		}
+
 		$currency_value = floatval( $order['currency_value'] );
 		$precision = strlen(substr(strrchr($currency_value, "."), 1));
 		return $precision;
@@ -215,13 +214,14 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 * @since 1.0.0
 	 */
 	public function getConfig($currency = null) {
+		$basic_info = new ExtensionModuleWirecardPGPluginData();
 		$base_url = $this->getShopConfigVal('base_url');
 		$http_user = $this->getShopConfigVal('http_user');
 		$http_password = $this->getShopConfigVal('http_password');
 
 		$config = new Config($base_url, $http_user, $http_password);
-		$config->setShopInfo('OpenCart', VERSION);
-		$config->setPluginInfo('Wirecard_PaymentGateway', $this->plugin_version);
+		$config->setShopInfo($basic_info->getShopName(), $basic_info->getShopVersion());
+		$config->setPluginInfo($basic_info->getName(), $basic_info->getVersion());
 
 		return $config;
 	}
@@ -511,6 +511,21 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		} catch(Exception $e) {
 			$this->getLogger()->error(get_class($e) . ": " . $e->getMessage());
 			return false;
+		}
+	}
+
+	/**
+	 * Get payment action
+	 *
+	 * @param string $action
+	 * @return string
+	 * @since 1.1.0
+	 */
+	public function getPaymentAction($action) {
+		if ($action == 'pay') {
+			return 'purchase';
+		} else {
+			return 'authorization';
 		}
 	}
 }

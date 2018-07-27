@@ -15,6 +15,7 @@
 class ExtensionModuleWirecardPGPluginData {
 	const OPENCART_GATEWAY_WIRECARD_VERSION = '1.0.0';
 	const OPENCART_GATEWAY_WIRECARD_NAME = 'Wirecard OpenCart Extension';
+	const SHOP_NAME = 'OpenCart';
 
 	/**
 	 * Return plugin version
@@ -34,6 +35,26 @@ class ExtensionModuleWirecardPGPluginData {
 	 */
 	public function getName() {
 		return self::OPENCART_GATEWAY_WIRECARD_NAME;
+	}
+
+	/**
+	 * Return shop name
+	 *
+	 * @return string
+	 * @since 1.1.0
+	 */
+	public function getShopName() {
+		return self::SHOP_NAME;
+	}
+
+	/**
+	 * Return version of shop
+	 *
+	 * @return string
+	 * @since 1.1.0
+	 */
+	public function getShopVersion() {
+		return VERSION;
 	}
 
 	/**
