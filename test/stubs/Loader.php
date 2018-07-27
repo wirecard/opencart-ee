@@ -23,7 +23,7 @@ class Loader {
 	 * @param	string	$route
  	*/	
 	public function model($route) {
-		$this->model = new ModelExtensionPaymentWirecardPGPayPal();
+		$this->model = $route;
 	}
 
 	public function getModel()
