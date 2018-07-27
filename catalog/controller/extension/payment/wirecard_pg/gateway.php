@@ -143,8 +143,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->load->model('checkout/order');
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
-		$precision = $additional_helper->getPrecision($order['currency_value']);
-		$currency = $additional_helper->getCurrency($order['currency_code']);
+		$precision = $additional_helper->getPrecision($order['currency_value'], $this->type);
+		$currency = $additional_helper->getCurrency($order['currency_code'], $this->type);
 
 		$total = $additional_helper->convert($order['total'], $currency);
 		$amount = new \Wirecard\PaymentSdk\Entity\Amount(number_format($total, $precision), $order['currency_code']);

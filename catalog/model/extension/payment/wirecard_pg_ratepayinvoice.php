@@ -63,7 +63,7 @@ class ModelExtensionPaymentWirecardPGRatepayInvoice extends ModelExtensionPaymen
 		if (!in_array($payment_address['iso_code_2'], $allowed_billing)) {
 			return false;
 		}
-		$amount = $additional_info->convert($total, $additional_info->getCurrency($this->session->data['currency']));
+		$amount = $additional_info->convert($total, $additional_info->getCurrency($this->session->data['currency'], $this->type));
 
 		if ($amount < $this->config->get($prefix . '_basket_min') || $amount > $this->config->get($prefix . '_basket_max')) {
 			return false;
