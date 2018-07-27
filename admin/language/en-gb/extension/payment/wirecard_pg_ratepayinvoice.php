@@ -9,7 +9,7 @@
 
 // Page Title
 $_['heading_title'] = 'Wirecard Guaranteed Invoice by Wirecard / Ratepay';
-$_['text_wirecard_pg_ratepayinvoice'] = '<img src="./view/image/wirecard_pg/ratepayinvoice.png" width="100"/>';
+$_['text_wirecard_pg_ratepayinvoice'] = '<img src="./view/image/wirecard_pg/ratepayinvoice.png"/>';
 
 // Payment specific configuration
 $_['text_edit'] = 'Edit Guaranteed Invoice by Wirecard / Ratepay';

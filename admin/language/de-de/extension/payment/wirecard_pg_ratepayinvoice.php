@@ -9,7 +9,7 @@
 
 // Page Title
 $_['heading_title'] = 'Wirecard Garantierter Kauf auf Rechnung by Wirecard / Ratepay';
-$_['text_wirecard_pg_ratepayinvoice'] = '<img src="./view/image/wirecard_pg/ratepayinvoice.png" width="100"/>';
+$_['text_wirecard_pg_ratepayinvoice'] = '<img src="./view/image/wirecard_pg/ratepayinvoice.png"/>';
 
 // Payment specific configuration
 $_['text_edit'] = 'Zahlungsmittel Garantierter Kauf auf Rechnung by Wirecard / Ratepay bearbeiten';
