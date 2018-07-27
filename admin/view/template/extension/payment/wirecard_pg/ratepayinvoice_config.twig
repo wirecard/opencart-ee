@@ -1,0 +1,128 @@
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="input-billing-shipping">{{ config_billing_shipping }}</label>
+    <div class="col-sm-10">
+        <select name="{{ prefix ~ 'config_billing_shipping' }}" id="input-billing-shipping" class="form-control">
+            {% if config_billing_shipping %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+            {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+            {% endif %}
+        </select>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_billing_shipping_desc }}</i>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="input-billing-countries">{{ config_billing_countries }}</label>
+    <div class="col-sm-10">
+        <select multiple
+                class="form-control"
+                id="input-billing-countries"
+                name="{{ prefix ~ 'billing_countries' }}[]">
+            {% for country in countries %}
+                {% if country['iso_code_2'] in billing_countries %}
+                    <option value="{{ country['iso_code_2'] }}" selected="selected">{{ country['name'] }}</option>
+                {% else %}
+                    <option value="{{ country['iso_code_2'] }}">{{ country['name'] }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_billing_countries_desc }}</i>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="input-shipping-countries">{{ config_shipping_countries }}</label>
+    <div class="col-sm-10">
+        <select multiple
+                class="form-control"
+                id="input-shipping-countries"
+                name="{{ prefix ~ 'shipping_countries' }}[]">
+            {% for country in countries %}
+                {% if country['iso_code_2'] in shipping_countries %}
+                    <option value="{{ country['iso_code_2'] }}" selected="selected">{{ country['name'] }}</option>
+                {% else %}
+                    <option value="{{ country['iso_code_2'] }}">{{ country['name'] }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_shipping_countries_desc }}</i>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="input-allowed-currencies">{{ config_allowed_currencies }}</label>
+    <div class="col-sm-10">
+        <select multiple
+                class="form-control"
+                id="input-allowed-currencies"
+                name="{{ prefix ~ 'allowed_currencies' }}[]">
+            {% for currency in currencies %}
+                {% if currency['code'] in allowed_currencies %}
+                    <option value="{{ currency['code'] }}" selected="selected">{{ currency['code'] }}</option>
+                {% else %}
+                    <option value="{{ currency['code'] }}">{{ currency['code'] }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_allowed_currencies_desc }}</i>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="input-basket-min">{{ config_basket_min }}</label>
+    <div class="col-sm-10">
+        <input
+                name="{{ prefix ~ 'basket_min' }}"
+                id="input-basket-min"
+                class="form-control"
+                type="text"
+                value="{{ basket_min }}">
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_basket_min_desc }}</i>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="input-basket-max">{{ config_basket_max }}</label>
+    <div class="col-sm-10">
+        <input
+                name="{{ prefix ~ 'basket_max' }}"
+                id="input-basket-max"
+                class="form-control"
+                type="text"
+                value="{{ basket_max }}">
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_basket_max_desc }}</i>
+        </div>
+    </div>
+</div>
