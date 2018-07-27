@@ -221,7 +221,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		$config = new Config($base_url, $http_user, $http_password);
 		$config->setShopInfo('OpenCart', VERSION);
-		$config->setPluginInfo('Wirecard_PaymentGateway', $this->plugin_version);
+		$config->setPluginInfo('Wirecard OpenCart Extension', $this->plugin_version);
 
 		return $config;
 	}

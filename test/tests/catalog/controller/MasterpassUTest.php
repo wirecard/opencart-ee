@@ -33,7 +33,7 @@ class MasterpassUTest extends \PHPUnit_Framework_TestCase
 	private $currency;
 
 	const SHOP = 'OpenCart';
-	const PLUGIN = 'Wirecard_PaymentGateway';
+	const PLUGIN = 'Wirecard OpenCart Extension';
 
 	public function setUp()
 	{
