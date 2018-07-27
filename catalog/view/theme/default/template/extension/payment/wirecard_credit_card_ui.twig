@@ -5,6 +5,8 @@
         {{ loading_text }}
     </div>
 </div>
-<script id="credit-card-lib" src="{{ base_url }}/engine/hpp/paymentPageLoader.js" type="text/javascript"></script>
+
 <div id="creditcard-form-div"></div>
+<script>window.WirecardPaymentMethod = "{{ type }}"</script>
+<script id="credit-card-lib" src="{{ base_url }}/engine/hpp/paymentPageLoader.js" type="text/javascript"></script>
 <script src="catalog/view/javascript/wirecard_pg_credit_card.js" type="text/javascript"></script>
