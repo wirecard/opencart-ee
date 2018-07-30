@@ -62,11 +62,7 @@ class ControllerExtensionPaymentWirecardPGTransactionHandler extends Controller 
 			);
 
 			return $response->getTransactionId();
-		}
-
-		$this->session->data['admin_error'] = $this->language->get('error_occured');
-
-		if ($response instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
+		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			$errors = '';
 
 			foreach ($response->getStatusCollection()->getIterator() as $item) {
@@ -75,7 +71,9 @@ class ControllerExtensionPaymentWirecardPGTransactionHandler extends Controller 
 			}
 
 			$this->session->data['admin_error'] = $errors;
+			return false;
 		}
+		$this->session->data['admin_error'] = $this->language->get('error_occured');
 
 		return false;
 	}
