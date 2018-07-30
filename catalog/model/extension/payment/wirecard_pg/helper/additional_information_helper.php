@@ -74,7 +74,6 @@ class AdditionalInformationHelper extends Model {
 	 */
 	public function addAccountHolder($transaction, $order, $include_shipping = true, $birthdate = null) {
 		$account_holder = new PGAccountHolder();
-
 		$transaction->setAccountHolder($account_holder->createAccountHolder($order, $account_holder::BILLING, $birthdate));
 
 		if ($include_shipping) {

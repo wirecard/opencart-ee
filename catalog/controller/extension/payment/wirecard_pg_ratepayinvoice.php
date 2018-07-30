@@ -43,24 +43,22 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 		return parent::index($data);
 	}
 
-	/**
-	 * Create Ratepay-Invoice transaction
-	 *
-	 * @since 1.1.0
-	 */
-	public function confirm() {
-		$this->transaction = new RatepayInvoiceTransaction();
-		$this->prepareTransaction();
-
-		parent::confirm();
-	}
-
     /**
-     * Set additional data needed for Guaranteed Invoice
+     * Create Guaranteed invoice transaction
      *
      * @since 1.1.0
      */
-    public function prepareTransaction() {
+    public function confirm() {
+        $this->transaction = $this->getTransactionInstance();
+        parent::confirm();
+    }
+
+	/**
+	 * Set additional data for Ratepay-Invoice transaction
+	 *
+	 * @since 1.1.0
+	 */
+	public function prepareTransaction() {
         parent::prepareTransaction();
 
         $this->load->model('checkout/order');
@@ -68,7 +66,6 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
         $additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
         $currency = $additional_helper->getCurrency($order['currency_code'], $this->type);
 
-        $birthdate = $this->request->post['birthdate'];
         $this->transaction = $additional_helper->addBasket(
             $this->transaction,
             $this->cart->getProducts(),
@@ -76,8 +73,15 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
             $currency,
             $order['total']
         );
-        $this->transaction = $additional_helper->addAccountHolder($this->transaction, $order, $birthdate);
-    }
+        if (isset($this->request->post['ratepayinvoice-birthdate'])) {
+            $this->transaction = $additional_helper->addAccountHolder(
+                $this->transaction,
+                $order,
+                true,
+                $this->request->post['ratepayinvoice-birthdate']
+            );
+        }
+	}
 
 	/**
 	 * Create payment specific config

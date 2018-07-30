@@ -42,7 +42,7 @@ class PGAccountHolder {
 			$account_holder->setEmail($order['email']);
 			$account_holder->setPhone($order['telephone']);
 			if (!is_null($birthdate)) {
-			    $account_holder->setDateOfBirth($birthdate);
+			    $account_holder->setDateOfBirth(new \DateTime($birthdate));
             }
 		}
 
