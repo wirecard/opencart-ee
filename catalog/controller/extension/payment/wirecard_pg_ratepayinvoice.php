@@ -27,21 +27,21 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 	 */
 	protected $type = 'ratepayinvoice';
 
-    /**
-     * Basic index method
-     *
-     * @param array $data
-     * @return array
-     * @since 1.1.0
-     */
-    public function index($data = null) {
-        $this->load->language('extension/payment/wirecard_pg_ratepayinvoice');
-        $data['birthdate_input'] = $this->language->get('birthdate_input');
-        $data['birthdate_error'] = $this->language->get('ratepayinvoice_fields_error');
+	/**
+	 * Basic index method
+	 *
+	 * @param array $data
+	 * @return array
+	 * @since 1.1.0
+	 */
+	public function index($data = null) {
+		$this->load->language('extension/payment/wirecard_pg_ratepayinvoice');
+		$data['birthdate_input'] = $this->language->get('birthdate_input');
+		$data['birthdate_error'] = $this->language->get('ratepayinvoice_fields_error');
 
-        $data['ratepayinvoice'] = $this->load->view('extension/payment/wirecard_pg_ratepayinvoice', $data);
-        return parent::index($data);
-    }
+		$data['ratepayinvoice'] = $this->load->view('extension/payment/wirecard_pg_ratepayinvoice', $data);
+		return parent::index($data);
+	}
 
 	/**
 	 * Create Ratepay-Invoice transaction

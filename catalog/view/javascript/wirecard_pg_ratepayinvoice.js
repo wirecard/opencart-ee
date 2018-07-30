@@ -12,21 +12,20 @@
  * @since 1.1.0
  */
 function validateBirthdate() {
-    var birthDate = new Date($('#ratepayinvoice-birthdate').val());
-    birthDate.setHours(0,0,0,0);
-    var limit = new Date();
-    limit.setFullYear(limit.getFullYear() - 18);
-    limit.setHours(0,0,0,0);
-    if (birthDate <= limit) {
-        $("#button-confirm").prop("disabled", false);
-        $("#error-box-ratepayinvoice").hide();
-    } else {
-        $("#button-confirm").prop("disabled", true);
-        $("#error-box-ratepayinvoice").show();
-    }
+	var birthDate = new Date($('#ratepayinvoice-birthdate').val());
+	birthDate.setHours(0,0,0,0);
+	var limit = new Date();
+	limit.setFullYear(limit.getFullYear() - 18);
+	limit.setHours(0,0,0,0);
+	if (birthDate <= limit) {
+		$("#button-confirm").prop("disabled", false);
+		$("#error-box-ratepayinvoice").hide();
+	} else {
+		$("#button-confirm").prop("disabled", true);
+		$("#error-box-ratepayinvoice").show();
+	}
 }
 
 $(document).ready(function() {
-    $("#error-box-ratepayinvoice").hide();
+	$("#error-box-ratepayinvoice").hide();
 });
-
