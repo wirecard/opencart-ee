@@ -55,6 +55,30 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 		parent::confirm();
 	}
 
+    /**
+     * Set additional data needed for Guaranteed Invoice
+     *
+     * @since 1.1.0
+     */
+    public function prepareTransaction() {
+        parent::prepareTransaction();
+
+        $this->load->model('checkout/order');
+        $order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+        $additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
+        $currency = $additional_helper->getCurrency($order['currency_code'], $this->type);
+
+        $birthdate = $this->request->post['birthdate'];
+        $this->transaction = $additional_helper->addBasket(
+            $this->transaction,
+            $this->cart->getProducts(),
+            $this->session->data['shipping_method'],
+            $currency,
+            $order['total']
+        );
+        $this->transaction = $additional_helper->addAccountHolder($this->transaction, $order, $birthdate);
+    }
+
 	/**
 	 * Create payment specific config
 	 *
