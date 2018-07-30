@@ -37,6 +37,7 @@ class ModelExtensionPaymentWirecardPGRatepayInvoice extends ModelExtensionPaymen
 		$payment_address = $this->session->data['payment_address'];
 		$allowed_shipping = $this->config->get($prefix . '_shipping_countries');
 		$allowed_billing = $this->config->get($prefix . '_billing_countries');
+		$allowed_currencies = $this->config->get($prefix . '_allowed_currencies');
 
 		if ($this->config->get($prefix . '_billing_shipping')) {
 			$fields = array(
@@ -63,6 +64,10 @@ class ModelExtensionPaymentWirecardPGRatepayInvoice extends ModelExtensionPaymen
 		if (!in_array($payment_address['iso_code_2'], $allowed_billing)) {
 			return false;
 		}
+		if (!in_array($this->session->data['currency'], $allowed_currencies)) {
+			return false;
+		}
+
 		$amount = $additional_info->convert($total, $additional_info->getCurrency($this->session->data['currency'], $this->type));
 
 		if ($amount < $this->config->get($prefix . '_basket_min') || $amount > $this->config->get($prefix . '_basket_max')) {
