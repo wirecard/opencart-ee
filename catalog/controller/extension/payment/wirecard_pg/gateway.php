@@ -182,8 +182,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 				$currency,
 				$order['total']
 			);
-
-			$this->transaction = $additional_helper->addAccountHolder($this->transaction, $order);
 		}
 
 		if (isset($this->request->post['fingerprint-session'])) {
@@ -406,13 +404,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FormInteractionResponse) {
 			$this->load->language('information/static');
 
-			$data['url'] = $result->getUrl();
-			$data['method'] = $result->getMethod();
-			$data['form_fields'] = $result->getFormFields();
-
-			$data['footer'] = $this->load->controller('common/footer');
-			$data['header'] = $this->load->controller('common/header');
-			$data['redirect_text'] = $this->language->get('redirect_text');
+			$data = [
+				'url' => $result->getUrl(),
+				'method' => $result->getMethod(),
+				'form_fields' => $result->getFormFields(),
+				'redirect_text' => $this->language->get('redirect_text'),
+			];
 
 			$data = array_merge($this->getCommonBlocks(), $data);
 			$this->response->setOutput($this->load->view('extension/payment/wirecard_interaction_response', $data));
@@ -536,5 +533,20 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->load->model('extension/payment/wirecard_pg/vault');
 
 		return $this->model_extension_payment_wirecard_pg_vault;
+	}
+
+	/**
+	 * Get payment action
+	 *
+	 * @param string $action
+	 * @return string
+	 * @since 1.1.0
+	 */
+	public function getPaymentAction($action) {
+		if ($action == 'pay') {
+			return 'purchase';
+		} else {
+			return 'authorization';
+		}
 	}
 }

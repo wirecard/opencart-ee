@@ -29,6 +29,6 @@
     {% include 'default/template/extension/payment/wirecard_credit_card_form.twig' with { 'loading_text': loading_text } %}
 {% endif %}
 
-<link rel="stylesheet" href="catalog/view/theme/default/template/extension/payment/wirecard_pg/credit_card.css" />
+<script>window.WirecardPaymentMethod = "{{ type }}"</script>
 <script id="credit-card-lib" src="{{ base_url }}/engine/hpp/paymentPageLoader.js" type="text/javascript"></script>
 <script src="catalog/view/javascript/wirecard_pg_credit_card.js" type="text/javascript"></script>

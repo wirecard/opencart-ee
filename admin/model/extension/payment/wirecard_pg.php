@@ -29,7 +29,7 @@ class ModelExtensionPaymentWirecardPG extends Model {
             `transaction_type` VARCHAR(32) NOT NULL,
             `payment_method` VARCHAR(32) NOT NULL,
             `transaction_state` VARCHAR(32) NOT NULL,
-            `amount` DECIMAL(10, 2) NOT NULL,
+            `amount` DECIMAL(10, 6) NOT NULL,
             `currency` VARCHAR(3) NOT NULL,
             `response` TEXT default NULL,
             `transaction_link` VARCHAR(255) default NULL,
@@ -37,6 +37,15 @@ class ModelExtensionPaymentWirecardPG extends Model {
 			`date_modified` DATETIME NOT NULL,
             PRIMARY KEY (`tx_id`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+
+		// This is added for those who have already installed the existing version of the extension.
+		// It just changes the column type to a 6-digit decimal. Doing this right after the creation
+		// of a table causes no harm since it just updates to the same type anyways.
+
+		$this->db->query("
+			ALTER TABLE `" . DB_PREFIX . "wirecard_ee_transactions`
+			MODIFY COLUMN `amount` DECIMAL(10, 6) NOT NULL;
+		");
 
 		$this->db->query("
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "wirecard_ee_vault` (
