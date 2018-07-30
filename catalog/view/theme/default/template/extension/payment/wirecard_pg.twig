@@ -37,10 +37,25 @@
     </div>
 </div>
 </form>
-{% if credit_card is null %}
+
 <script type="text/javascript"><!--
+    window.WirecardPaymentMethod = "{{ type }}";
     var disableButton = false;
+    var newCardTab = '.tab-new';
+    var existingCardTab = '.tab-existing';
+
     $('#button-confirm').on('click', function() {
+        if ((WirecardPaymentMethod === 'creditcard' && jQuery(existingCardTab).hasClass('active')) || WirecardPaymentMethod === 'upi') {
+            var form = $('#wirecard-pg-form');
+            form.submit();
+
+            return;
+        }
+
+        if (WirecardPaymentMethod === 'creditcard' || WirecardPaymentMethod === 'upi') {
+            return;
+        }
+
         var formData = new FormData(document.querySelector('#wirecard-pg-form'));
 
         $.ajax({
@@ -88,4 +103,3 @@
 
     });
     //--></script>
-{% endif %}

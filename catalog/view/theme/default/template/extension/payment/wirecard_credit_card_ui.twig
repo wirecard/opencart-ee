@@ -2,8 +2,8 @@
     <div>
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#existing" aria-controls="existing" role="tab" data-toggle="tab">Use saved credit cards</a></li>
-            <li role="presentation"><a href="#new" aria-controls="new" role="tab" data-toggle="tab">Enter new credit card</a></li>
+            <li class="tab-existing active" role="presentation"><a href="#existing" aria-controls="existing" role="tab" data-toggle="tab">Use saved credit cards</a></li>
+            <li class="tab-new" role="presentation"><a href="#new" aria-controls="new" role="tab" data-toggle="tab">Enter new credit card</a></li>
         </ul>
 
         <div class="tab-content">
@@ -29,6 +29,6 @@
     {% include 'default/template/extension/payment/wirecard_credit_card_form.twig' with { 'loading_text': loading_text } %}
 {% endif %}
 
-<script>window.WirecardPaymentMethod = "{{ type }}"</script>
+<link rel="stylesheet" href="catalog/view/theme/default/template/extension/payment/wirecard_pg/credit_card.css" />
 <script id="credit-card-lib" src="{{ base_url }}/engine/hpp/paymentPageLoader.js" type="text/javascript"></script>
 <script src="catalog/view/javascript/wirecard_pg_credit_card.js" type="text/javascript"></script>

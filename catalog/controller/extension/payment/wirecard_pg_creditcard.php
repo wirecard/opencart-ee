@@ -56,12 +56,29 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 * @since 1.0.0
 	 */
 	public function confirm() {
-		var_dump($_POST);
-		die();
+		if (array_key_exists('token', $this->request->post) && strlen($this->request->post['token'])) {
+			$model = $this->getModel();
+
+			$this->transaction = $this->getTransactionInstance();
+			$this->prepareTransaction();
+
+			$this->transaction->setConfig($this->payment_config->get(CreditCardTransaction::NAME));
+			$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
+			$this->transaction->setTokenId($this->request->post['token']);
+
+			$response = $model->sendRequest($this->payment_config, $this->transaction, $this->getShopConfigVal('payment_action'));
+			if (!isset($this->session->data['error'])) {
+				//Save pending order
+				$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
+			}
+
+			return $this->response->setOutput($response);
+		}
+
+		 $this->session->data['save_card'] = isset($this->request->post['save_card']) ? $this->request->post['save_card'] : null;
 
 		$this->load->model('checkout/order');
 		$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
-		$this->session->data['save_card'] = isset($this->request->post['save_card']) ? $this->request->post['save_card'] : null;
 
 		$transaction_service = new TransactionService($this->getConfig(), $this->getLogger());
 		$response = $transaction_service->processJsResponse($_POST,

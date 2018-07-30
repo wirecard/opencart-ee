@@ -19,6 +19,17 @@ class NotificationHandler {
 		try {
 			$transaction_service = new \Wirecard\PaymentSdk\TransactionService($config, $logger);
 			$response = $transaction_service->handleNotification($payload);
+
+			ob_start();
+			echo "RESPONSE: ";
+			var_dump($response);
+			$logger->debug(ob_get_clean());
+
+			ob_start();
+			echo "PAYLOAD: ";
+			var_dump($payload);
+			$logger->debug(ob_get_clean());
+
 		} catch (\InvalidArgumentException $exception) {
 			$logger->error($exception->getMessage());
 			return false;
