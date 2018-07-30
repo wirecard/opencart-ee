@@ -132,7 +132,6 @@ class AdditionalInformationHelper extends Model {
 		if (strlen($order['customer_id'])) {
 			$transaction->setConsumerId($order['customer_id']);
 		}
-
 		$transaction->setOrderNumber($order['order_id']);
 		$transaction->setDescriptor($this->createDescriptor($order));
 		$transaction = $this->addAccountHolder($transaction, $order);
