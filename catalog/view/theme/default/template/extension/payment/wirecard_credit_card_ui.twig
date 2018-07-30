@@ -8,14 +8,27 @@
 
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="existing">
+                <div id="success-message" class="alert alert-success" style="display: none;">
+                    <i class="fa fa-check-circle"></i>
+                    Sucessfully deleted credit card <strong id="deleted-pan"></strong>.
+                </div>
+
+                <div id="failure-message" class="alert alert-danger" style="display: none;"><i class="fa fa-exclamation-circle"></i>
+                    Unable to delete credit card <strong id="deleted-pan"></strong>. Please try again later.
+                </div>
+
                 <div class="list-group">
                     {% for card in existing_cards %}
-                        <a class="list-group-item credit-card-selector">
-                            <label>
+                        <label data-pan="{{ card.masked_pan }}" class="list-group-item credit-card-selector">
+                            <div>
                                 <input type="radio" name="token" value="{{ card.token }}" onclick="setToken(this.value)" />
-                                {{ card.masked_pan }}
-                            </label>
-                        </a>
+                                <span class="credit-card-pan">{{ card.masked_pan }}</span>
+                            </div>
+
+                            <div>
+                                <a onclick="deleteCardFromVault({{ card.vault_id }}, '{{ card.masked_pan }}')" class="credit-card-delete">Delete card</a>
+                            </div>
+                        </label>
                     {% endfor %}
                 </div>
             </div>

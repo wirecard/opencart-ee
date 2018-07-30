@@ -95,15 +95,47 @@ At https://github.com/lukehaas/css-loaders you can find more spinners and change
 .credit-card-selector {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     line-height: 1;
 }
 
-.credit-card-selector label {
-    flex-grow: 1;
+.credit-card-selector:hover {
+    cursor: pointer;
+    background-color: #EFEFEF;
 }
 
 .credit-card-selector input[type=radio] {
     position: relative;
-    top: 1px;
+    top: -2px;
     margin-right: 8px;
+}
+
+.credit-card-selector:hover a.credit-card-delete {
+    display: block;
+}
+
+a.credit-card-delete {
+    display: none;
+    color: red;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+a.credit-card-delete:hover {
+    color: firebrick;
+    text-decoration: underline;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.credit-card-pan {
+    position: relative;
+    top: -4px;
+}
+
+#failure-message.alert-dismissible .close,
+#success-message.alert-dismissible .close {
+    right: 0px;
 }

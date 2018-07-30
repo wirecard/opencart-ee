@@ -17,9 +17,6 @@ var WirecardPaymentPage;
 function setParentTransactionId(response) {
 	var form = $("#wirecard-pg-form");
 
-	console.log(response);
-	return;
-
 	for (var key in response) {
 		if (response.hasOwnProperty(key)) {
 			form.append("<input type='hidden' name='" + key + "' value='" + response[key] + "'>");
@@ -93,6 +90,41 @@ function getCreditCardRequestData() {
  */
 function setToken(token) {
 	jQuery('#token-field').val(token);
+}
+
+/**
+ * Delete a card from the vault.
+ *
+ * @param card
+ * @since 1.1.0
+ */
+function deleteCardFromVault(card, masked_pan) {
+	if (confirm("Are you sure you want to delete this credit card?")) {
+		$.ajax({
+			url: "index.php?route=extension/payment/wirecard_pg_creditcard/deleteCardFromVault",
+			type: "post",
+			dataType: "json",
+			data: {
+				card: card,
+				masked_pan: masked_pan
+			},
+			success: function (data) {
+				$('#success-message, #failure-message').hide();
+				$('#deleted-pan').text(data.deleted_card);
+
+				if (data.success) {
+					$('#success-message').fadeIn();
+					$('.credit-card-selector[data-pan="' + data.deleted_card + '"]').fadeOut(300, function() {
+						$(this).remove();
+					});
+
+					return;
+				}
+
+				$('#failure-message').fadeIn();
+			}
+		});
+	}
 }
 
 /**

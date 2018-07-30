@@ -195,5 +195,20 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		return parent::createTransaction($parentTransaction, $amount);
 	}
 
+	/**
+	 * Delete a credit card from the vault.
+	 *
+	 * @since 1.1.0
+	 */
+	public function deleteCardFromVault() {
+		$vault = $this->getVault();
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode([
+			"success" => $vault->deleteCard($this->customer, $this->request->post['card']),
+			"deleted_card" => $this->request->post['masked_pan']
+		]));
+	}
+
 }
 

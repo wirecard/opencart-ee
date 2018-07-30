@@ -55,6 +55,13 @@ class ModelExtensionPaymentWirecardPGVault extends Model {
 			`token` = '" . $token . "',
 			`masked_pan` = '" . $masked_pan . "';"
 		);
+	}
 
+	public function deleteCard($user, $card_id) {
+		return $this->db->query(
+			"DELETE FROM `" . DB_PREFIX . "wirecard_ee_vault` 
+			WHERE user_id=" . $user->getId() . "
+			AND vault_id=" . $card_id . ";"
+		);
 	}
 }
