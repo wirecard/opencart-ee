@@ -207,7 +207,7 @@ class AdditionalInformationHelper extends Model {
 	 * @since 1.1.0
 	 */
 	public function getPrecision($currency_value, $type) {
-		if ('sepadd' == $type) {
+		if ('sepadirectdebit' == $type) {
 			return 2;
 		}
 		$precision = strlen(substr(strrchr($currency_value, "."), 1));

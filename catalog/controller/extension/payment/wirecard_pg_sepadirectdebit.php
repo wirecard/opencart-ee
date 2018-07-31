@@ -13,19 +13,19 @@ use Wirecard\PaymentSdk\Transaction\SepaTransaction;
 use Wirecard\PaymentSdk\Config\SepaConfig;
 
 /**
- * Class ControllerExtensionPaymentWirecardPGSepaDD
+ * Class ControllerExtensionPaymentWirecardPGSepaDirectDebit
  *
  * SepaDirectDebit Transaction controller
  *
  * @since 1.1.0
  */
-class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGSepaDirectDebit extends ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.1.0
 	 */
-	protected $type = 'sepadd';
+	protected $type = 'sepadirectdebit';
 
 	/**
 	 * Basic index method
@@ -35,7 +35,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	 * @since 1.1.0
 	 */
 	public function index($data = null) {
-		$this->load->language('extension/payment/wirecard_pg_sepadd');
+		$this->load->language('extension/payment/wirecard_pg_sepadirectdebit');
 
 		$data['iban_input'] = $this->language->get('iban_input');
 		$data['first_name_input'] = $this->language->get('first_name_input');
@@ -49,7 +49,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 			$data['bic_input'] = $this->language->get('bic_input');
 		}
 
-		$data['sepa'] = $this->load->view('extension/payment/wirecard_pg_sepadd', $data);
+		$data['sepa'] = $this->load->view('extension/payment/wirecard_pg_sepadirectdebit', $data);
 		return parent::index($data);
 	}
 
@@ -59,7 +59,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	 * @since 1.1.0
 	 */
 	public function confirm() {
-		$this->load->language('extension/payment/wirecard_pg_sepadd');
+		$this->load->language('extension/payment/wirecard_pg_sepadirectdebit');
 		if ((bool)$this->request->post['mandate_confirmed'] == false) {
 			$json = [];
 			if ($this->validateMandatoryFields()) {
@@ -126,7 +126,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	public function getModel() {
 		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
 
-		return $this->model_extension_payment_wirecard_pg_sepadd;
+		return $this->model_extension_payment_wirecard_pg_sepadirectdebit;
 	}
 
 	/**
@@ -175,8 +175,8 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 		$data['creditor_date'] = date( 'd.m.Y' );
 
 		$code = $this->language->get('code');
-		if (isset($code) && isset($this->config->get('payment_wirecard_pg_sepadd_mandate_text')[$code])) {
-			$data['additional_text'] = $this->config->get('payment_wirecard_pg_sepadd_mandate_text')[$code];
+		if (isset($code) && isset($this->config->get('payment_wirecard_pg_sepadirectdebit_mandate_text')[$code])) {
+			$data['additional_text'] = $this->config->get('payment_wirecard_pg_sepadirectdebit_mandate_text')[$code];
 		}
 
 		array_merge(
@@ -211,7 +211,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	 * @since 1.1.0
 	 */
 	private function loadLangLines($lines) {
-		$this->load->language('extension/payment/wirecard_pg_sepadd');
+		$this->load->language('extension/payment/wirecard_pg_sepadirectdebit');
 		$data = [];
 		foreach ($lines as $line) {
 			$data[$line] = $this->language->get($line);

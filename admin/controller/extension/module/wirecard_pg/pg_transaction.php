@@ -108,6 +108,19 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		return $data;
 	}
 
+	public function getBasketItems($transaction_id) {
+        $this->load->model(self::ROUTE);
+        $this->load->language(self::ROUTE);
+
+        $transaction = $this->model_extension_payment_wirecard_pg->getTransaction($transaction_id);
+        $data = false;
+
+        if ($transaction) {
+            $response = new Wirecard\PaymentSdk\Response\SuccessResponse(json_decode($transaction['response']));
+            $basket = $response->getBasket();
+        }
+    }
+
 	/**
 	 * Handle back-end transactions
 	 *

@@ -1,0 +1,49 @@
+
+            <div class="panel-body">
+                {% if transaction %}
+                    {% if transaction.operations %}
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{ text_backend_operations }}</h3>
+                    </div>
+                    <div class="panel-group">
+                        <br>
+                        <form action="{{ transaction.action }}" method="post" enctype="multipart/form-data" id="wirecard-operation" class="form-horizontal">
+                            <label for="amount">{{ text_request_amount }} in {{ transaction.currency }}</label>&nbsp;<input type="number" name="amount" value="{{ transaction.amount }}" id="amount" class="input-sm" step="any" min="0.000001" max="{{ transaction.amount }}"> &nbsp;
+                            <input type="hidden" name="currency" value="{{ transaction.currency }}">
+                        {% for key,operation in transaction.operations %}
+                            {% for item in items %}
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="{{ item ~ '-basket-item-quantity'}}">{{ item.articlenumber }}</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control"
+                                            id="{{ item ~ '-basket-item-quantity'}}"
+                                            name="{{ item ~ '-basket-item-quantity' }}">
+                                        {% for quantity in item.quantities %}
+                                            <option value="{{ quantity.value }}">{{ quantity.value }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            <button type="submit" form="wirecard-operation" data-toggle="tooltip" class="btn btn-primary" name="operation" value="{{ operation.action }}">{{ operation.text }}</button>
+                        {% endfor %}
+                        </form>
+                    </div>
+                    {% endif %}
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ text_response_data }}</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <tbody>
+                        {% for key, value in transaction.response %}
+                            <tr>
+                                <td>{{ key }}</td>
+                                <td>{{ value }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+            </div>
