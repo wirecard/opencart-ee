@@ -9,7 +9,7 @@
 
 use Mockery as m;
 
-require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_sepact.php';
+require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_sepacredit.php';
 
 use Wirecard\PaymentSdk\Transaction\SepaTransaction;
 
@@ -17,7 +17,7 @@ use Wirecard\PaymentSdk\Transaction\SepaTransaction;
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-class SepaCTUTest extends \PHPUnit_Framework_TestCase
+class SepaCreditUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
 	private $pluginVersion = '1.0.0';
@@ -112,7 +112,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 		$this->cart->method('getProducts')->willReturn($items);
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCredit(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -136,7 +136,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 		$config->expects($this->at(3))->method('get')->willReturn('user');
 		$config->expects($this->at(4))->method('get')->willReturn('password');
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCredit(
 			$this->registry,
 			$config,
 			$this->loader,
@@ -169,7 +169,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 	public function testConfirm()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCredit(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -183,7 +183,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->currency
 		);
 
-		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSepaCT::class);
+		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSepaCredit::class);
 		$prop = $reflector->getProperty('transaction');
 		$prop->setAccessible(true);
 
@@ -196,7 +196,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->config->expects($this->at(0))->method('get')->willReturn(1);
 		$this->loader->method('view')->willReturn('active');
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCredit(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -217,7 +217,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 	public function testCreateTransaction()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCredit(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -231,7 +231,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->currency
 		);
 
-		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSepaCT::class);
+		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSepaCredit::class);
 		$prop = $reflector->getProperty('transaction');
 		$prop->setAccessible(true);
 
@@ -250,7 +250,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetType()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCredit(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -265,14 +265,14 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 		);
 
 		$actual = $this->controller->getType();
-		$expected = 'sepact';
+		$expected = 'sepacredit';
 
 		$this->assertEquals($expected, $actual);
 	}
 
 	public function testGetInstance()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCredit(
 			$this->registry,
 			$this->config,
 			$this->loader,

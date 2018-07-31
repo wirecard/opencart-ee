@@ -18,7 +18,7 @@
         </div>
     </div>
 </div>
-{% if type != 'sepact' %}
+{% if type != 'sepacredit' %}
     {% for key, lang_title in title %}
         <div class="form-group required">
             <label class="col-sm-2 control-label" for="input-{{ title_lang }}">{{ config_title ~ '-' ~ key|upper }}</label>
@@ -39,7 +39,7 @@
         </div>
     {% endfor %}
 {% endif %}
-{% if type != 'sepact' %}
+{% if type != 'sepacredit' %}
     <div class="form-group required">
         <label class="col-sm-2 control-label" for="input-sort-order">{{ config_sort_order }}</label>
         <div class="col-sm-10">

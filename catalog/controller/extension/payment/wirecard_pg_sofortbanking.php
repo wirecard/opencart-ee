@@ -8,7 +8,7 @@
  */
 
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
-require_once(dirname(__FILE__) . '/wirecard_pg_sepact.php');
+require_once(dirname(__FILE__) . '/wirecard_pg_sepacredit.php');
 
 use Wirecard\PaymentSdk\Transaction\SofortTransaction;
 use Wirecard\PaymentSdk\Transaction\SepaTransaction;
@@ -54,12 +54,12 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	/**
 	 * Provides a SEPA Credit Transfer controller for refunding payments.
 	 *
-	 * @return ControllerExtensionPaymentWirecardPGSepaCT
+	 * @return ControllerExtensionPaymentWirecardPGSepaCredit
 	 */
 	public function getSepaController() {
-		$this->controller_extension_payment_wirecard_pg_sepact = new ControllerExtensionPaymentWirecardPGSepaCT($this->registry);
+		$this->controller_extension_payment_wirecard_pg_sepacredit = new ControllerExtensionPaymentWirecardPGSepaCredit($this->registry);
 
-		return $this->controller_extension_payment_wirecard_pg_sepact;
+		return $this->controller_extension_payment_wirecard_pg_sepacredit;
 	}
 
 	/**

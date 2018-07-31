@@ -120,7 +120,7 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 
 		$this->cart->method('getProducts')->willReturn($items);
 
-		$this->subController = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->subController = new ControllerExtensionPaymentWirecardPGSepaCredit(
 			$this->registry,
 			$this->config,
 			$this->loader,

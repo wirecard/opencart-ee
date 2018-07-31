@@ -10,19 +10,19 @@
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ControllerExtensionPaymentWirecardPGSEPACT
+ * Class ControllerExtensionPaymentWirecardPGSEPACredit
  *
  * SEPA Credit Transfer payment transaction controller
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGSepaCT extends \ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGSepaCredit extends \ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'sepact';
+	protected $type = 'sepacredit';
 
 	/**
 	 * SEPA Credit Transfer default configuration settings

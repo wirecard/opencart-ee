@@ -13,19 +13,19 @@ use Wirecard\PaymentSdk\Transaction\SepaTransaction;
 use Wirecard\PaymentSdk\Config\SepaConfig;
 
 /**
- * Class ControllerExtensionPaymentWirecardPGSepaCT
+ * Class ControllerExtensionPaymentWirecardPGSepaCredit
  *
  * SEPA Credit Transfer Transaction controller
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGSepaCredit extends ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'sepact';
+	protected $type = 'sepacredit';
 
 	/**
 	 * Basic index method
