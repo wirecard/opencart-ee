@@ -11,7 +11,7 @@ require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 require_once(dirname(__FILE__) . '/wirecard_pg_sepacredit.php');
 
 use Wirecard\PaymentSdk\Transaction\IdealTransaction;
-use Wirecard\PaymentSdk\Transaction\SepaTransaction;
+use Wirecard\PaymentSdk\Transaction\SepaCreditTransferTransaction;
 use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
 use Wirecard\PaymentSdk\Transaction\Operation;
 use Wirecard\PaymentSdk\Entity\IdealBic;
@@ -121,7 +121,7 @@ class ControllerExtensionPaymentWirecardPGIdeal extends ControllerExtensionPayme
 	 */
 	public function createTransaction($parent_transaction, $amount) {
 		if ($this->operation == Operation::CREDIT) {
-			$this->transaction = new SepaTransaction();
+			$this->transaction = new SepaCreditTransferTransaction();
 		} else {
 			$this->transaction = new IdealTransaction();
 		}

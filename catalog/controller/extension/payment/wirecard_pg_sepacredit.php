@@ -9,7 +9,7 @@
 
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
-use Wirecard\PaymentSdk\Transaction\SepaTransaction;
+use Wirecard\PaymentSdk\Transaction\SepaCreditTransferTransaction;
 use Wirecard\PaymentSdk\Config\SepaConfig;
 
 /**
@@ -42,7 +42,7 @@ class ControllerExtensionPaymentWirecardPGSepaCredit extends ControllerExtension
 	 * @since 1.0.0
 	 */
 	public function confirm() {
-		$this->transaction = new SepaTransaction();
+		$this->transaction = new SepaCreditTransferTransaction();
 
 		parent::confirm();
 	}
@@ -59,7 +59,7 @@ class ControllerExtensionPaymentWirecardPGSepaCredit extends ControllerExtension
 		$merchant_secret = $this->getShopConfigVal('merchant_secret');
 
 		$config = parent::getConfig($currency);
-		$payment_config = new SepaConfig($merchant_account_id, $merchant_secret);
+		$payment_config = new SepaConfig($this->type, $merchant_account_id, $merchant_secret);
 		$config->add($payment_config);
 
 		return $config;
@@ -73,7 +73,7 @@ class ControllerExtensionPaymentWirecardPGSepaCredit extends ControllerExtension
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
 	 */
 	public function createTransaction($parentTransaction, $amount) {
-		$this->transaction = new SepaTransaction();
+		$this->transaction = new SepaCreditTransferTransaction();
 
 		return parent::createTransaction($parentTransaction, $amount);
 	}
@@ -81,11 +81,11 @@ class ControllerExtensionPaymentWirecardPGSepaCredit extends ControllerExtension
 	/**
 	 * Get new instance of payment specific transaction
 	 *
-	 * @return SepaTransaction
+	 * @return SepaCreditTransferTransaction
 	 * @since 1.0.0
 	 */
 	public function getTransactionInstance() {
-		return new SepaTransaction();
+		return new SepaCreditTransferTransaction();
 	}
 }
 

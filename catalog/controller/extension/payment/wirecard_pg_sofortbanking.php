@@ -11,7 +11,7 @@ require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 require_once(dirname(__FILE__) . '/wirecard_pg_sepacredit.php');
 
 use Wirecard\PaymentSdk\Transaction\SofortTransaction;
-use Wirecard\PaymentSdk\Transaction\SepaTransaction;
+use Wirecard\PaymentSdk\Transaction\SepaCreditTransferTransaction;
 use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
 use Wirecard\PaymentSdk\Transaction\Operation;
 
@@ -107,7 +107,7 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	 */
 	public function createTransaction($parentTransaction, $amount) {
 		if ($this->operation == Operation::CREDIT) {
-			$this->transaction = new SepaTransaction();
+			$this->transaction = new SepaCreditTransferTransaction();
 		} else {
 			$this->transaction = new SofortTransaction();
 		}
