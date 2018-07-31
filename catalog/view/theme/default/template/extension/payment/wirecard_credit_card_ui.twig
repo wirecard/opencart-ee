@@ -1,3 +1,11 @@
+{% if shipping_data_changed %}
+    <div class="alert alert-shipping-data alert-info alert-dismissible">
+        <i class="fa fa-info-circle"></i>
+        Your shipping address has changed since your last order. For security purposes we require you to enter new credit card details.
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+{% endif %}
+
 {% if existing_cards %}
     <div>
         <!-- Nav tabs -->

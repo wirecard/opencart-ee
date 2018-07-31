@@ -135,7 +135,6 @@ a.credit-card-delete:hover {
     top: -4px;
 }
 
-#failure-message.alert-dismissible .close,
-#success-message.alert-dismissible .close {
+.alert-shipping-data.alert-dismissible .close {
     right: 0px;
 }

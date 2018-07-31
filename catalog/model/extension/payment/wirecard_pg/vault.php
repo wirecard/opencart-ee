@@ -30,7 +30,7 @@ class ModelExtensionPaymentWirecardPGVault extends Model {
 	}
 
 	/**
-	 * Save the Credit Card to the database.
+	 * Save a Credit Card to the database.
 	 *
 	 * @param \Cart\Customer $user
 	 * @param Wirecard\PaymentSdk\Response\SuccessResponse $response
@@ -52,16 +52,24 @@ class ModelExtensionPaymentWirecardPGVault extends Model {
 		$this->db->query(
 			"INSERT INTO `" . DB_PREFIX . "wirecard_ee_vault` SET
 			`user_id` = " . $user->getId() . ",
-			`token` = '" . $token . "',
-			`masked_pan` = '" . $masked_pan . "';"
+			`token` = '" . $this->db->escape($token) . "',
+			`masked_pan` = '" . $this->db->escape($masked_pan) . "';"
 		);
 	}
 
+	/**
+	 * Delete a Credit Card from the database.
+	 *
+	 * @param \Cart\Customer $user
+	 * @param $card_id
+	 * @return bool
+	 * @since 1.1.0
+	 */
 	public function deleteCard($user, $card_id) {
 		return $this->db->query(
 			"DELETE FROM `" . DB_PREFIX . "wirecard_ee_vault` 
 			WHERE user_id=" . $user->getId() . "
-			AND vault_id=" . $card_id . ";"
+			AND vault_id=" . $this->db->escape($card_id) . ";"
 		);
 	}
 }

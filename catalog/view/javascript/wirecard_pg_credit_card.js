@@ -128,7 +128,26 @@ function deleteCardFromVault(card, masked_pan) {
 }
 
 /**
- * When document loads get the data for the credit card form
+ * Handle tab changes for saved credit cards.
+ *
+ * @since 1.1.0
+ */
+function handleTabChanges() {
+	$('a[data-toggle="tab"]').on('shown.bs.tab', function (evt) {
+		var saveCreditCard = '.save-credit-card';
+		var target = $(evt.target).attr("href");
+
+		if (target === "#new") {
+			$(saveCreditCard).show();
+			return;
+		}
+
+		$(saveCreditCard).hide();
+	});
+}
+
+/**
+ * When document loads get the data for the credit card form and attach a tab event handler
  *
  * @since 1.0.0
  */
@@ -136,6 +155,7 @@ $(document).ready(function() {
 	$("#button-confirm").prop("disabled", true);
 	$("#creditcard-form-div").hide();
 	getCreditCardRequestData();
+	handleTabChanges();
 });
 
 /**

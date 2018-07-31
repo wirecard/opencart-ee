@@ -27,7 +27,7 @@
 
         {% if credit_card and vault_enabled and customer_logged_in %}
             <input type="hidden" name="token" id="token-field"/>
-            <label style="padding-right: 8px;">
+            <label class="save-credit-card" style="padding-right: 8px; {{ existing_cards|length > 0 ? 'display: none;' : '' }}">
                 Save credit card for later use
                 <input type="checkbox" name="save_card" />
             </label>

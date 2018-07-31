@@ -40,8 +40,18 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	public function index($data = null) {
 		$this->load->language('extension/payment/wirecard_pg');
 
+		$model = $this->getModel();
 		$vault = $this->getVault();
-		$data['existing_cards'] = $vault->getCards($this->customer);
+
+		$last_shipping_data = $model->getLatestCustomerShipping($this->customer);
+		$shipping_data = array_filter($this->session->data['shipping_address'], function($key) use ($last_shipping_data) {
+			return in_array($key, array_keys($last_shipping_data));
+		}, ARRAY_FILTER_USE_KEY);
+
+		// I'm explicitly using != instead of !== here to avoid the array being checked for key order.
+		// It *should* theoretically be the same, but there's no guarantees.
+		$data['shipping_data_changed'] = $last_shipping_data != $shipping_data;
+		$data['existing_cards'] = $data['shipping_data_changed'] ? null : $vault->getCards($this->customer);
 		$data['base_url'] = $this->getShopConfigVal('base_url');
 		$data['loading_text'] = $this->language->get('loading_text');
 		$data['type'] = $this->type;
