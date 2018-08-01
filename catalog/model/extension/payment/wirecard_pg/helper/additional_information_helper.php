@@ -68,7 +68,7 @@ class AdditionalInformationHelper extends Model {
 	 * @param Transaction $transaction
 	 * @param array $order
 	 * @param boolean $include_shipping
-     * @param string|null $birthdate
+	 * @param string|null $birthdate
 	 * @return Transaction
 	 * @since 1.1.0
 	 */

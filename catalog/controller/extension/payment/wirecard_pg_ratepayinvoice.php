@@ -43,15 +43,15 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 		return parent::index($data);
 	}
 
-    /**
-     * Create Guaranteed invoice transaction
-     *
-     * @since 1.1.0
-     */
-    public function confirm() {
-        $this->transaction = $this->getTransactionInstance();
-        parent::confirm();
-    }
+	/**
+	 * Create Guaranteed invoice transaction
+	 *
+	 * @since 1.1.0
+	 */
+	public function confirm() {
+		$this->transaction = $this->getTransactionInstance();
+		parent::confirm();
+	}
 
 	/**
 	 * Set additional data for Ratepay-Invoice transaction
@@ -59,28 +59,28 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 	 * @since 1.1.0
 	 */
 	public function prepareTransaction() {
-        parent::prepareTransaction();
+		parent::prepareTransaction();
 
-        $this->load->model('checkout/order');
-        $order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-        $additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
-        $currency = $additional_helper->getCurrency($order['currency_code'], $this->type);
+		$this->load->model('checkout/order');
+		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
+		$currency = $additional_helper->getCurrency($order['currency_code'], $this->type);
 
-        $this->transaction = $additional_helper->addBasket(
-            $this->transaction,
-            $this->cart->getProducts(),
-            $this->session->data['shipping_method'],
-            $currency,
-            $order['total']
-        );
-        if (isset($this->request->post['ratepayinvoice-birthdate'])) {
-            $this->transaction = $additional_helper->addAccountHolder(
-                $this->transaction,
-                $order,
-                true,
-                $this->request->post['ratepayinvoice-birthdate']
-            );
-        }
+		$this->transaction = $additional_helper->addBasket(
+			$this->transaction,
+			$this->cart->getProducts(),
+			$this->session->data['shipping_method'],
+			$currency,
+			$order['total']
+		);
+		if (isset($this->request->post['ratepayinvoice-birthdate'])) {
+			$this->transaction = $additional_helper->addAccountHolder(
+				$this->transaction,
+				$order,
+				true,
+				$this->request->post['ratepayinvoice-birthdate']
+			);
+		}
 	}
 
 	/**
@@ -125,9 +125,9 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 		$this->transaction = new RatepayInvoiceTransaction();
 
 		//create basket from response
-        $basket_factory = new PGBasket($this);
-        $requested_amount = $basket_factory->createBasketFromArray($this->transaction, $parent_transaction);
-        $amount = new \Wirecard\PaymentSdk\Entity\Amount($requested_amount, $parent_transaction['currency']);
+		$basket_factory = new PGBasket($this);
+		$requested_amount = $basket_factory->createBasketFromArray($this->transaction, $parent_transaction);
+		$amount = new \Wirecard\PaymentSdk\Entity\Amount($requested_amount, $parent_transaction['currency']);
 
 		return parent::createTransaction($parent_transaction, $amount);
 	}

@@ -55,11 +55,11 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		if (isset($this->request->get['id'])) {
 			$data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
 			if ('ratepayinvoice' == $data['transaction']['payment_method']) {
-                $this->load->language(self::ROUTE . '_ratepayinvoice');
-                $basket = $this->getBasketItems($this->request->get['id']);
-                $data['basket'] = $this->updateBasketItemQuantity($this->request->get['id'], $basket);
-                $data['ratepayinvoice_details'] = $this->load->view('extension/wirecard_pg/ratepayinvoice_details', $data);
-            }
+				$this->load->language(self::ROUTE . '_ratepayinvoice');
+				$basket = $this->getBasketItems($this->request->get['id']);
+				$data['basket'] = $this->updateBasketItemQuantity($this->request->get['id'], $basket);
+				$data['ratepayinvoice_details'] = $this->load->view('extension/wirecard_pg/ratepayinvoice_details', $data);
+			}
 		} else {
 			$data['error_warning'] = $this->language->get('error_no_transaction');
 		}
@@ -140,12 +140,12 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$operation = $this->request->post['operation'];
 			$payment_method = $this->request->post['payment-method'];
 			if ('ratepayinvoice' == $payment_method) {
-			    $transaction['basket'] = $this->addResponseBasket($transaction);
-            }
-            $amount = new \Wirecard\PaymentSdk\Entity\Amount($this->request->post['amount'], $this->request->post['currency']);
-            if ('cancel' == $operation) {
-			    $amount = null;
-            }
+				$transaction['basket'] = $this->addResponseBasket($transaction);
+			}
+			$amount = new \Wirecard\PaymentSdk\Entity\Amount($this->request->post['amount'], $this->request->post['currency']);
+			if ('cancel' == $operation) {
+				$amount = null;
+			}
 
 			$controller = $this->getPaymentController($transaction['payment_method']);
 			$transaction_id = $transaction_handler->processTransaction($controller, $transaction, $this->config, $operation, $amount);
@@ -231,95 +231,95 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		return false;
 	}
 
-    /**
-     * Create multidimensional basket array from response
-     *
-     * @param $transaction_id
-     * @return array|bool
-     * @since 1.1.0
-     */
-    private function getBasketItems($transaction_id) {
-        $this->load->model(self::ROUTE);
-        $this->load->language(self::ROUTE);
+	/**
+	 * Create multidimensional basket array from response
+	 *
+	 * @param $transaction_id
+	 * @return array|bool
+	 * @since 1.1.0
+	 */
+	private function getBasketItems($transaction_id) {
+		$this->load->model(self::ROUTE);
+		$this->load->language(self::ROUTE);
 
-        $transaction = $this->model_extension_payment_wirecard_pg->getTransaction($transaction_id);
+		$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($transaction_id);
 
-        $basket = array();
-        if ($transaction) {
-            foreach (json_decode($transaction['response']) as $key => $value) {
-                if (strpos($key, 'order-items') !== false) {
-                    $item_start = substr($key, strpos($key, 'order-item.') + strlen('order-item.'));
-                    $item_count = substr($item_start, 0, strpos($item_start, '.'));
-                    $item_name = substr($item_start, strpos($item_start, '.') + 1);
-                    $item_name = str_replace('-', '_', $item_name);
-                    $basket[$item_count][$item_name] = $value;
-                }
-            }
-            return $basket;
-        }
-        return false;
-    }
+		$basket = array();
+		if ($transaction) {
+			foreach (json_decode($transaction['response']) as $key => $value) {
+				if (strpos($key, 'order-items') !== false) {
+					$item_start = substr($key, strpos($key, 'order-item.') + strlen('order-item.'));
+					$item_count = substr($item_start, 0, strpos($item_start, '.'));
+					$item_name = substr($item_start, strpos($item_start, '.') + 1);
+					$item_name = str_replace('-', '_', $item_name);
+					$basket[$item_count][$item_name] = $value;
+				}
+			}
+			return $basket;
+		}
+		return false;
+	}
 
-    /**
-     * Update response quantities to actual basket quantity
-     *
-     * @param string $transaction_id
-     * @param array $basket
-     * @return mixed
-     * @since 1.1.0
-     */
-    private function updateBasketItemQuantity($transaction_id, $basket) {
-        $this->load->model(self::ROUTE);
-        $this->load->language(self::ROUTE);
-        $parent_quantities = $this->getArticleNumbersWithQuantity($basket);
+	/**
+	 * Update response quantities to actual basket quantity
+	 *
+	 * @param string $transaction_id
+	 * @param array $basket
+	 * @return mixed
+	 * @since 1.1.0
+	 */
+	private function updateBasketItemQuantity($transaction_id, $basket) {
+		$this->load->model(self::ROUTE);
+		$this->load->language(self::ROUTE);
+		$parent_quantities = $this->getArticleNumbersWithQuantity($basket);
 
-        $transactions = $this->model_extension_payment_wirecard_pg->getChildTransactions($transaction_id);
-        if ($transactions) {
-            foreach ($transactions as $transaction) {
-                $child_basket = $this->getBasketItems($transaction['transaction_id']);
-                $child_quantities = $this->getArticleNumbersWithQuantity($child_basket);
-                foreach ($child_quantities as $key => $value) {
-                    $parent_quantities[$key] = $parent_quantities[$key] - $value;
-                }
-            }
-        }
-        foreach ($basket as $key => $item) {
-            if (isset($parent_quantities[$item['article_number']])) {
-                $basket[$key]['quantity'] = $parent_quantities[$item['article_number']];
-            }
-        }
-        return $basket;
-    }
+		$transactions = $this->model_extension_payment_wirecard_pg->getChildTransactions($transaction_id);
+		if ($transactions) {
+			foreach ($transactions as $transaction) {
+				$child_basket = $this->getBasketItems($transaction['transaction_id']);
+				$child_quantities = $this->getArticleNumbersWithQuantity($child_basket);
+				foreach ($child_quantities as $key => $value) {
+					$parent_quantities[$key] = $parent_quantities[$key] - $value;
+				}
+			}
+		}
+		foreach ($basket as $key => $item) {
+			if (isset($parent_quantities[$item['article_number']])) {
+				$basket[$key]['quantity'] = $parent_quantities[$item['article_number']];
+			}
+		}
+		return $basket;
+	}
 
-    /**
-     * Get quantities for specific articlenumbers
-     *
-     * @param array $basket
-     * @return array
-     * @since 1.1.0
-     */
-    private function getArticleNumbersWithQuantity($basket) {
-        $quantities = array();
-        foreach ($basket as $key => $value) {
-            $quantities[$value['article_number']] = $value['quantity'];
-        }
-        return $quantities;
-    }
+	/**
+	 * Get quantities for specific articlenumbers
+	 *
+	 * @param array $basket
+	 * @return array
+	 * @since 1.1.0
+	 */
+	private function getArticleNumbersWithQuantity($basket) {
+		$quantities = array();
+		foreach ($basket as $key => $value) {
+			$quantities[$value['article_number']] = $value['quantity'];
+		}
+		return $quantities;
+	}
 
-    /**
-     * Add updated basket item quantities
-     *
-     * @param Wirecard\PaymentSdk\Transaction\Transaction $transaction
-     * @return array|bool
-     * @since 1.1.0
-     */
+	/**
+	 * Add updated basket item quantities
+	 *
+	 * @param Wirecard\PaymentSdk\Transaction\Transaction $transaction
+	 * @return array|bool
+	 * @since 1.1.0
+	 */
 	private function addResponseBasket($transaction) {
-        $basket = $this->getBasketItems($transaction['transaction_id']);
-        foreach ($basket as $key => $value) {
-            if (isset($this->request->post['quantity-' . $key])) {
-                $basket[$key]['quantity'] = $this->request->post['quantity-' . $key];
-            }
-        }
-        return $basket;
-    }
+		$basket = $this->getBasketItems($transaction['transaction_id']);
+		foreach ($basket as $key => $value) {
+			if (isset($this->request->post['quantity-' . $key])) {
+				$basket[$key]['quantity'] = $this->request->post['quantity-' . $key];
+			}
+		}
+		return $basket;
+	}
 }

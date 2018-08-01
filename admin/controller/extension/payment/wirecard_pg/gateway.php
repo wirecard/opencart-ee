@@ -226,14 +226,14 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	public function getMandatoryFields() {
 		return array(
-            'status',
-            'merchant_account_id',
-            'merchant_secret',
-            'base_url',
-            'http_user',
-            'http_password',
-            'payment_action'
-        );
+			'status',
+			'merchant_account_id',
+			'merchant_secret',
+			'base_url',
+			'http_user',
+			'http_password',
+			'payment_action'
+		);
 	}
 
 	/**
