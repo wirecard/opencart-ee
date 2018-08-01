@@ -151,15 +151,18 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
         $orderManager = m::mock('overload:PGOrderManager');
         $orderManager->shouldReceive('createResponseOrder');
 
-	    $_POST['merchant_account_id'] = '1111111111';
-	    $_POST['transaction_id'] = 'da04876d-1d92-431c-b33a-49080914c996';
-	    $_POST['transaction_type'] = 'authorization';
-	    $_POST['payment_method'] = 'creditcard';
-        $_POST['request_id'] = '123';
-        $_POST['transaction_state'] = 'success';
-        $_POST['status_code_1'] = '201.0000';
-        $_POST['status_description_1'] = '3d-acquirer:The resource was successfully created.';
-        $_POST['status_severity_1'] = 'information';
+		$this->controller->request->post = array_merge($this->controller->request->post, array(
+			'merchant_account_id' => '1111111111',
+			'transaction_id' => 'da04876d-1d92-431c-b33a-49080914c996',
+			'transaction_type' => 'authorization',
+			'payment_method' => 'creditcard',
+			'request_id' => '123',
+			'transaction_state' => 'success',
+			'status_code_1' => '201.0000',
+			'status_description_1' => '3d-acquirer:The resource was successfully created.',
+			'status_severity_1' => 'information'
+
+		));
 
         $this->controller->confirm();
 		$json['response'] = [];

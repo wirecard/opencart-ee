@@ -56,7 +56,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
 
 		$transaction_service = new TransactionService($this->getConfig(), $this->getLogger());
-		$response = $transaction_service->processJsResponse($_POST,
+		$response = $transaction_service->processJsResponse($this->request->post,
 			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
 
 		return $this->processResponse($response, $this->getLogger());
