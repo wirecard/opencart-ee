@@ -7,6 +7,7 @@
         <form action="{{ transaction.action }}" method="post" enctype="multipart/form-data" id="wirecard-operation"
               class="form-horizontal">
             <input type="hidden" name="currency" value="{{ transaction.currency }}">
+            <input type="hidden" name="payment-method" id="payment-method" value="{{ transaction.payment_method }}">
             <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
@@ -21,18 +22,20 @@
                     <tr>
                         <td class="text-left">{{ item.article_number }}</td>
                         <td class="text-left">{{ item.name }}</td>
-                        <td class="text-left">{{ item.tax_rate }}</td>
-                        <td class="text-left">{{ item.amount }}</td>
+                        <td class="text-left">{{ item.tax_rate | round(2, 'floor') }}</td>
+                        <td class="text-left">{{ item.amount| round(2, 'floor') }}</td>
                         <td class="text-left">
-                            <input type="number" name="{{ item.article_number }}" id="{{ item.article_number }}"
+                            <input type="number" name="quantity-{{ key }}" id="quantity-{{ key }}"
                                    value="{{ item.quantity }}" min="0" max="{{ item.quantity }}">
                         </td>
                     </tr>
                 {% endfor %}
             </table>
+            <div class="text-right">
             {% for key,operation in transaction.operations %}
                 <button type="submit" form="wirecard-operation" data-toggle="tooltip" class="btn btn-primary" name="operation" value="{{ operation.action }}">{{ operation.text }}</button>
             {% endfor %}
+            </div>
         </form>
     </div>
 {% endif %}

@@ -33,5 +33,5 @@ $_['config_basket_max_desc'] = 'Payment method Guaranteed Invoice will only be d
 $_['text_article_number'] = 'Article-Number';
 $_['text_article_name'] = 'Product Name';
 $_['text_tax_rate'] = 'Tax Rate';
-$_['text_article_amount'] = 'Amount/#';
+$_['text_article_amount'] = '# Amount';
 $_['text_quantity'] = 'Quantity';

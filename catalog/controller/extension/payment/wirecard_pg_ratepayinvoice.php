@@ -124,6 +124,8 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 	public function createTransaction($parent_transaction, $amount) {
 		$this->transaction = new RatepayInvoiceTransaction();
 
+		//create basket from response
+
 		return parent::createTransaction($parent_transaction, $amount);
 	}
 

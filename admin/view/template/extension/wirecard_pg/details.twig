@@ -45,6 +45,7 @@
                             <div class="panel-group">
                                 <br>
                                 <form action="{{ transaction.action }}" method="post" enctype="multipart/form-data" id="wirecard-operation" class="form-horizontal">
+                                    <input type="hidden" name="payment-method" id="payment-method" value="{{ transaction.payment_method }}">
                                     <label for="amount">{{ text_request_amount }} in {{ transaction.currency }}</label>&nbsp;<input type="number" name="amount" value="{{ transaction.amount }}" id="amount" class="input-sm" step="any" min="0.000001" max="{{ transaction.amount }}"> &nbsp;
                                     <input type="hidden" name="currency" value="{{ transaction.currency }}">
                                     {% for key,operation in transaction.operations %}

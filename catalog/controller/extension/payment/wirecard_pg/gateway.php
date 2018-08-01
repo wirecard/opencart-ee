@@ -438,7 +438,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	public function createTransaction($parentTransaction, $amount) {
 		$this->transaction->setParentTransactionId($parentTransaction['transaction_id']);
-		$this->transaction->setAmount($amount);
+		if (!is_null($amount)) {
+            $this->transaction->setAmount($amount);
+        }
 
 		return $this->transaction;
 	}
