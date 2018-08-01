@@ -28,3 +28,10 @@ $_['config_basket_min'] = 'Minimum Amount';
 $_['config_basket_min_desc'] = 'Payment method Guaranteed Invoice will only be displayed if the ordered amount exceeds the amount defined here. Amount in default shop currency.';
 $_['config_basket_max'] = 'Maximum Amount';
 $_['config_basket_max_desc'] = 'Payment method Guaranteed Invoice will only be displayed if the ordered amount is smaller than this defined amount. Amount in default shop currency.';
+
+// Post-processing operations
+$_['text_article_number'] = 'Article-Number';
+$_['text_article_name'] = 'Product Name';
+$_['text_tax_rate'] = 'Tax Rate';
+$_['text_article_amount'] = 'Amount/#';
+$_['text_quantity'] = 'Quantity';
