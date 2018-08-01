@@ -296,4 +296,44 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 		$expected = $this->controller->getController('creditcard');
 		$this->assertNotNull($expected);
     }
+
+    public function testConfirmWithToken() {
+		$overrideRequest = [ 'token' => '123456789' ];
+
+		$this->controller = new ControllerExtensionPaymentWirecardPGCreditCard(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelCreditCard,
+			$this->language,
+			$this->cart,
+			$this->currency,
+			null,
+			null,
+			$this->customer,
+			$overrideRequest
+		);
+
+		$this->controller->confirm();
+
+		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGCreditCard::class);
+		$prop = $reflector->getProperty('transaction');
+		$prop->setAccessible(true);
+
+		/** @var \Wirecard\PaymentSdk\Transaction\CreditCardTransaction $transaction */
+		$transaction = $prop->getValue($this->controller);
+
+		$transactionReflector = new ReflectionClass(\Wirecard\PaymentSdk\Transaction\CreditCardTransaction::class);
+		$prop = $transactionReflector->getProperty('tokenId');
+		$prop->setAccessible(true);
+
+		$tokenId = $prop->getValue($transaction);
+
+		$this->assertEquals('123456789', $tokenId);
+		$this->assertInstanceOf(\Wirecard\PaymentSdk\Transaction\CreditCardTransaction::class, $transaction);
+	}
 }

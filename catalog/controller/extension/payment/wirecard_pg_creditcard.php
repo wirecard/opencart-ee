@@ -52,10 +52,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		// It *should* theoretically be the same, but there's no guarantees.
 		$data['shipping_data_changed'] = $last_shipping_data != $shipping_data;
 		$data['allow_changed_shipping'] = $this->getShopConfigVal('allow_changed_shipping');
-		$data['existing_cards'] = !$data['shipping_data_changed'] || $data['allow_changed_shipping']
-			? $vault->getCards($this->customer)
-			: null;
-
+		$data['existing_cards'] = !$data['shipping_data_changed'] || $data['allow_changed_shipping'] ? $vault->getCards($this->customer) : null;
 		$data['base_url'] = $this->getShopConfigVal('base_url');
 		$data['loading_text'] = $this->language->get('loading_text');
 		$data['type'] = $this->type;
