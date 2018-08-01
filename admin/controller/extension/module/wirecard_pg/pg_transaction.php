@@ -114,35 +114,6 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		return $data;
 	}
 
-    /**
-     * Create multidimensional basket array from response
-     *
-     * @param $transaction_id
-     * @return array|bool
-     * @since 1.1.0
-     */
-	public function getBasketItems($transaction_id) {
-        $this->load->model(self::ROUTE);
-        $this->load->language(self::ROUTE);
-
-        $transaction = $this->model_extension_payment_wirecard_pg->getTransaction($transaction_id);
-
-        $basket = array();
-        if ($transaction) {
-            foreach (json_decode($transaction['response']) as $key => $value) {
-                if (strpos($key, 'order-items') !== false) {
-                    $item_start = substr($key, strpos($key, 'order-item.') + strlen('order-item.'));
-                    $item_count = substr($item_start, 0, strpos($item_start, '.'));
-                    $item_name = substr($item_start, strpos($item_start, '.') + 1);
-                    $item_name = str_replace('-', '_', $item_name);
-                    $basket[$item_count][$item_name] = $value;
-                }
-            }
-            return $basket;
-        }
-        return false;
-    }
-
 	/**
 	 * Handle back-end transactions
 	 *
@@ -259,6 +230,42 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		return false;
 	}
 
+    /**
+     * Create multidimensional basket array from response
+     *
+     * @param $transaction_id
+     * @return array|bool
+     * @since 1.1.0
+     */
+    private function getBasketItems($transaction_id) {
+        $this->load->model(self::ROUTE);
+        $this->load->language(self::ROUTE);
+
+        $transaction = $this->model_extension_payment_wirecard_pg->getTransaction($transaction_id);
+
+        $basket = array();
+        if ($transaction) {
+            foreach (json_decode($transaction['response']) as $key => $value) {
+                if (strpos($key, 'order-items') !== false) {
+                    $item_start = substr($key, strpos($key, 'order-item.') + strlen('order-item.'));
+                    $item_count = substr($item_start, 0, strpos($item_start, '.'));
+                    $item_name = substr($item_start, strpos($item_start, '.') + 1);
+                    $item_name = str_replace('-', '_', $item_name);
+                    $basket[$item_count][$item_name] = $value;
+                }
+            }
+            return $basket;
+        }
+        return false;
+    }
+
+    /**
+     * Add updated basket item quantities
+     *
+     * @param Wirecard\PaymentSdk\Transaction\Transaction $transaction
+     * @return array|bool
+     * @since 1.1.0
+     */
 	private function addResponseBasket($transaction) {
         $basket = $this->getBasketItems($transaction['transaction_id']);
         foreach ($basket as $key => $value) {
