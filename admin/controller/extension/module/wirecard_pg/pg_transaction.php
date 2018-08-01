@@ -54,8 +54,10 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		}
 		if (isset($this->request->get['id'])) {
 			$data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
-			$data['basket'] = $this->getBasketItems($this->request->get['id']);
-			$data['ratepayinvoice_details'] = $this->load->view('extension/wirecard_pg/ratepayinvoice_details', $data);
+			if ('ratepayinvoice' == $data['transaction']['payment_method']) {
+                $data['basket'] = $this->getBasketItems($this->request->get['id']);
+                $data['ratepayinvoice_details'] = $this->load->view('extension/wirecard_pg/ratepayinvoice_details', $data);
+            }
 		} else {
 			$data['error_warning'] = $this->language->get('error_no_transaction');
 		}
@@ -111,6 +113,13 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		return $data;
 	}
 
+    /**
+     * Create multidimensional basket array from response
+     *
+     * @param $transaction_id
+     * @return array|bool
+     * @since 1.1.0
+     */
 	public function getBasketItems($transaction_id) {
         $this->load->model(self::ROUTE);
         $this->load->language(self::ROUTE);
@@ -121,7 +130,11 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
         if ($transaction) {
             foreach (json_decode($transaction['response']) as $key => $value) {
                 if (strpos($key, 'order-items') !== false) {
-                    array_push($basket, array($key, $value));
+                    $item_start = substr($key, strpos($key, 'order-item.') + strlen('order-item.'));
+                    $item_count = substr($item_start, 0, strpos($item_start, '.'));
+                    $item_name = substr($item_start, strpos($item_start, '.') + 1);
+                    $item_name = str_replace('-', '_', $item_name);
+                    $basket[$item_count][$item_name] = $value;
                 }
             }
             return $basket;

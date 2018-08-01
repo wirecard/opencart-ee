@@ -35,7 +35,7 @@
             </div>
             <div class="panel-body">
                 {% if transaction %}
-                    {% if transaction.payment_method == 'ratepayinvoice' %}
+                    {% if ratepayinvoice_details %}
                         {{ ratepayinvoice_details }}
                     {% else %}
                         {% if transaction.operations %}
