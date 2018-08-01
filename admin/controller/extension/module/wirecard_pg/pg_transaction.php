@@ -54,6 +54,8 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		}
 		if (isset($this->request->get['id'])) {
 			$data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
+			$data['basket'] = $this->getBasketItems($this->request->get['id']);
+			$data['ratepayinvoice_details'] = $this->load->view('extension/wirecard_pg/ratepayinvoice_details', $data);
 		} else {
 			$data['error_warning'] = $this->language->get('error_no_transaction');
 		}
@@ -98,6 +100,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 				'amount' => $amount,
 				'currency' => $transaction['currency'],
 				'operations' => ($transaction['transaction_state'] == 'success') ? $operations : false,
+				'payment_method' => $transaction['payment_method'],
 				'action' => $this->url->link(
 					self::TRANSACTION . '/process', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['transaction_id'],
 					true
@@ -113,12 +116,17 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
         $this->load->language(self::ROUTE);
 
         $transaction = $this->model_extension_payment_wirecard_pg->getTransaction($transaction_id);
-        $data = false;
 
+        $basket = array();
         if ($transaction) {
-            $response = new Wirecard\PaymentSdk\Response\SuccessResponse(json_decode($transaction['response']));
-            $basket = $response->getBasket();
+            foreach (json_decode($transaction['response']) as $key => $value) {
+                if (strpos($key, 'order-items') !== false) {
+                    array_push($basket, array($key, $value));
+                }
+            }
+            return $basket;
         }
+        return false;
     }
 
 	/**
