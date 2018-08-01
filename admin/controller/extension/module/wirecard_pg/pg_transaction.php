@@ -56,7 +56,8 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
 			if ('ratepayinvoice' == $data['transaction']['payment_method']) {
                 $this->load->language(self::ROUTE . '_ratepayinvoice');
-                $data['basket'] = $this->getBasketItems($this->request->get['id']);
+                $basket = $this->getBasketItems($this->request->get['id']);
+                $data['basket'] = $this->updateBasketItemQuantity($this->request->get['id'], $basket);
                 $data['ratepayinvoice_details'] = $this->load->view('extension/wirecard_pg/ratepayinvoice_details', $data);
             }
 		} else {
@@ -257,6 +258,52 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
             return $basket;
         }
         return false;
+    }
+
+    /**
+     * Update response quantities to actual basket quantity
+     *
+     * @param string $transaction_id
+     * @param array $basket
+     * @return mixed
+     * @since 1.1.0
+     */
+    private function updateBasketItemQuantity($transaction_id, $basket) {
+        $this->load->model(self::ROUTE);
+        $this->load->language(self::ROUTE);
+        $parent_quantities = $this->getArticleNumbersWithQuantity($basket);
+
+        $transactions = $this->model_extension_payment_wirecard_pg->getChildTransactions($transaction_id);
+        if ($transactions) {
+            foreach ($transactions as $transaction) {
+                $child_basket = $this->getBasketItems($transaction['transaction_id']);
+                $child_quantities = $this->getArticleNumbersWithQuantity($child_basket);
+                foreach ($child_quantities as $key => $value) {
+                    $parent_quantities[$key] = $parent_quantities[$key] - $value;
+                }
+            }
+        }
+        foreach ($basket as $key => $item) {
+            if (isset($parent_quantities[$item['article_number']])) {
+                $basket[$key]['quantity'] = $parent_quantities[$item['article_number']];
+            }
+        }
+        return $basket;
+    }
+
+    /**
+     * Get quantities for specific articlenumbers
+     *
+     * @param array $basket
+     * @return array
+     * @since 1.1.0
+     */
+    private function getArticleNumbersWithQuantity($basket) {
+        $quantities = array();
+        foreach ($basket as $key => $value) {
+            $quantities[$value['article_number']] = $value['quantity'];
+        }
+        return $quantities;
     }
 
     /**
