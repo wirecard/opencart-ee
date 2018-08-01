@@ -164,7 +164,7 @@ $(document).ready(function() {
  * @since 1.0.0
  */
 $("#button-confirm").on("click", function() {
-	if (jQuery(newCardTab).length === 0 || jQuery(newCardTab).hasClass("active") || WirecardPaymentMethod === "upi") {
+	if (jQuery(window.newCardTab).length === 0 || jQuery(window.newCardTab).hasClass("active") || WirecardPaymentMethod === "upi") {
 		WirecardPaymentPage.seamlessSubmitForm({
 			onSuccess: setParentTransactionId,
 			onError: logError
