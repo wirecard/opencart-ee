@@ -55,12 +55,11 @@ function getCreditCardRequestData() {
 		maxWait -= waitStep;
 		if ( typeof WirecardPaymentPage !== "undefined" ) {
 			$.ajax( {
-				url: "index.php?route=extension/payment/wirecard_pg_" + WirecardPaymentMethod + "/get" + WirecardPaymentMethod + "UiRequestData",
+				url: "index.php?route=extension/payment/wirecard_pg_" + window.WirecardPaymentMethod + "/get" + window.WirecardPaymentMethod + "UiRequestData",
 				type: "post",
 				dataType: "json",
 				success: function ( data ) {
 					if ( data != null ) {
-						console.log(data);
 						WirecardPaymentPage.seamlessRenderForm( {
 							requestData: data,
 							wrappingDivId: "creditcard-form-div",
@@ -89,13 +88,14 @@ function getCreditCardRequestData() {
  * @since 1.1.0
  */
 function setToken(token) {
-	jQuery('#token-field').val(token);
+	jQuery("#token-field").val(token);
 }
 
 /**
  * Delete a card from the vault.
  *
  * @param card
+ * @param masked_pan
  * @since 1.1.0
  */
 function deleteCardFromVault(card, masked_pan) {
@@ -109,19 +109,19 @@ function deleteCardFromVault(card, masked_pan) {
 				masked_pan: masked_pan
 			},
 			success: function (data) {
-				$('#success-message, #failure-message').hide();
-				$('#deleted-pan').text(data.deleted_card);
+				$("#success-message, #failure-message").hide();
+				$("#deleted-pan").text(data.deleted_card);
 
 				if (data.success) {
-					$('#success-message').fadeIn();
-					$('.credit-card-selector[data-pan="' + data.deleted_card + '"]').fadeOut(300, function() {
+					$("#success-message").fadeIn();
+					$(".credit-card-selector[data-pan=''" + data.deleted_card + "']").fadeOut(300, function() {
 						$(this).remove();
 					});
 
 					return;
 				}
 
-				$('#failure-message').fadeIn();
+				$("#failure-message").fadeIn();
 			}
 		});
 	}
@@ -133,8 +133,8 @@ function deleteCardFromVault(card, masked_pan) {
  * @since 1.1.0
  */
 function handleTabChanges() {
-	$('a[data-toggle="tab"]').on('shown.bs.tab', function (evt) {
-		var saveCreditCard = '.save-credit-card';
+	$("a[data-toggle='tab']").on("shown.bs.tab", function (evt) {
+		var saveCreditCard = ".save-credit-card";
 		var target = $(evt.target).attr("href");
 
 		if (target === "#new") {
@@ -164,7 +164,7 @@ $(document).ready(function() {
  * @since 1.0.0
  */
 $("#button-confirm").on("click", function() {
-	if (jQuery(newCardTab).length === 0 || jQuery(newCardTab).hasClass('active') || WirecardPaymentMethod === 'upi') {
+	if (jQuery(newCardTab).length === 0 || jQuery(newCardTab).hasClass("active") || WirecardPaymentMethod === "upi") {
 		WirecardPaymentPage.seamlessSubmitForm({
 			onSuccess: setParentTransactionId,
 			onError: logError
