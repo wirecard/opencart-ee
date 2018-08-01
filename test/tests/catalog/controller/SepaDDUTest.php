@@ -48,6 +48,7 @@ class SepaDDUTest extends \PHPUnit_Framework_TestCase
 		$this->config->method('get')->willReturn('somthing');
 
 		$this->session = $this->getMockBuilder(Session::class)->disableOriginalConstructor()->getMock();
+		$this->session->data['payment_method']['code'] = 'wirecard_pg_sepadd';
 
 		$this->response = $this->getMockBuilder(Response::class)
 			->disableOriginalConstructor()
@@ -203,34 +204,5 @@ class SepaDDUTest extends \PHPUnit_Framework_TestCase
 
 	public function testIndex() {
 		$this->assertNull($this->controller->index());
-	}
-
-	public function testPrepareTransaction() {
-		$this->controller->request->post = array_merge($this->controller->request->post, array(
-			'mandate_id' => '12312312312',
-			'iban' => '123',
-			'first_name' => 'first',
-			'last_name' => 'last',
-			'mandate_id' => '123123123',
-			'bic' => '123'
-		));
-
-		$expected = new SepaTransaction();
-		$account_holder = new \Wirecard\PaymentSdk\Entity\AccountHolder();
-		$account_holder->setFirstName('first');
-		$account_holder->setLastName('last');
-		$expected->setAccountHolder($account_holder);
-		$expected->setIban('123');
-		$expected->setBic('123');
-		$expected->setMandate('12312312312');
-
-		$transaction = array(
-			'transaction_id' => '1234',
-			'amount' => '10'
-		);
-
-		//$actual = $this->controller->prepareTransaction();
-
-		//$this->assertEquals($expected, $actual);
 	}
 }
