@@ -85,6 +85,37 @@ class PGBasket {
 		return $basket;
 	}
 
+    /**
+     * Create basket from transaction array
+     *
+     * @param Transaction $transaction
+     * @param $parent_transaction
+     * @return float
+     * @since 1.1.0
+     */
+	public function createBasketFromArray($transaction, $parent_transaction) {
+	    $basket = new Basket();
+	    $basket->setVersion($transaction);
+
+	    $response_basket = $parent_transaction['basket'];
+	    $request_amount = 0;
+	    foreach ($response_basket as $key => $value) {
+	        if ($value['quantity']) {
+	            $amount = new Amount($value['amount'], $value['currency']);
+	            $item = new Item($value['name'], $amount, $value['quantity']);
+	            $item->setDescription($value['description']);
+	            $item->setArticleNumber($value['article_number']);
+	            $item->setTaxRate($value['tax_rate']);
+	            $basket->add($item);
+
+	            $request_amount += $value['amount'] * $value['quantity'];
+            }
+        }
+        $transaction->setBasket($basket);
+
+	    return $request_amount;
+    }
+
 	/**
 	 * Create basket item
 	 *

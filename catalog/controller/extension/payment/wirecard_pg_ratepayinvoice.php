@@ -125,6 +125,9 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 		$this->transaction = new RatepayInvoiceTransaction();
 
 		//create basket from response
+        $basket_factory = new PGBasket($this);
+        $requested_amount = $basket_factory->createBasketFromArray($this->transaction, $parent_transaction);
+        $amount = new \Wirecard\PaymentSdk\Entity\Amount($requested_amount, $parent_transaction['currency']);
 
 		return parent::createTransaction($parent_transaction, $amount);
 	}
