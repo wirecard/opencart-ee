@@ -48,7 +48,7 @@
     var existingCardTab = '.tab-existing';
 
     $('#button-confirm').on('click', function() {
-        if ((WirecardPaymentMethod === 'creditcard' && jQuery(existingCardTab).hasClass('active')) || WirecardPaymentMethod === 'upi') {
+        if ((WirecardPaymentMethod === 'creditcard' && jQuery(existingCardTab).hasClass('active'))) {
             var form = $('#wirecard-pg-form');
             form.submit();
 
