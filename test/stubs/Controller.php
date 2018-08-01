@@ -13,9 +13,9 @@ abstract class Controller
     protected $url;
     protected $language;
     protected $cart;
-    protected $request;
 	protected $currency;
-    public $model_extension_payment_wirecard_pg_paypal;
+	public $request;
+	public $model_extension_payment_wirecard_pg_paypal;
     public $model_extension_payment_wirecard_pg_creditcard;
 	public $model_extension_payment_wirecard_pg_sepact;
 	public $model_extension_payment_wirecard_pg_sofortbanking;
@@ -25,6 +25,7 @@ abstract class Controller
 	public $model_extension_payment_wirecard_pg_alipay_crossborder;
 	public $model_extension_payment_wirecard_pg_masterpass;
 	public $model_extension_payment_wirecard_pg_upi;
+	public $model_extension_payment_wirecard_pg_sepadd;
     public $model_checkout_order;
     public $controller_extension_payment_wirecard_pg_sepact;
 
@@ -47,6 +48,7 @@ abstract class Controller
 		$this->model_extension_payment_wirecard_pg_upi = $modelPayment;
 		$this->model_extension_payment_wirecard_pg_poi = $modelPayment;
 		$this->model_extension_payment_wirecard_pg_pia = $modelPayment;
+		$this->model_extension_payment_wirecard_pg_sepadd = $modelPayment;
         $this->language = $language;
         $this->cart = $cart;
         $this->controller_extension_payment_wirecard_pg_sepact = $subController;
