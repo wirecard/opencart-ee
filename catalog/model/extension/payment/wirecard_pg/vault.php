@@ -22,12 +22,23 @@ class ModelExtensionPaymentWirecardPGVault extends Model {
 	 * @since 1.1.0
 	 */
 	public function getCards($user) {
-		return $this->db->query(
+		$cards = $this->db->query(
 			"SELECT * FROM `" . DB_PREFIX . "wirecard_ee_vault` 
 			WHERE user_id=" . $user->getId() . "
 			ORDER BY vault_id DESC"
 		)->rows;
+
+		return array_filter($cards, function($card) {
+			$date_expiration = new DateTime($card['expiration_year'] . '-' . $card['expiration_month'] . '-01');
+			$date_expiration->add(new DateInterval('P6M'));
+
+			$date_today = new DateTime();
+
+			return $date_today < $date_expiration;
+		});
 	}
+
+
 
 	/**
 	 * Save a Credit Card to the database.
@@ -36,9 +47,11 @@ class ModelExtensionPaymentWirecardPGVault extends Model {
 	 * @param Wirecard\PaymentSdk\Response\SuccessResponse $response
 	 * @since 1.1.0
 	 */
-	public function saveCard($user, $response) {
+	public function saveCard($user, $response, $card) {
 		$token = $response->getCardTokenId();
 		$masked_pan = $response->getMaskedAccountNumber();
+		$expiration_month = $card['expiration-month'];
+		$expiration_year = $card['expiration-year'];
 
 		$existing_cards = $this->getCards($user);
 		if(!empty($existing_cards)) {
@@ -53,7 +66,9 @@ class ModelExtensionPaymentWirecardPGVault extends Model {
 			"INSERT INTO `" . DB_PREFIX . "wirecard_ee_vault` SET
 			`user_id` = " . $user->getId() . ",
 			`token` = '" . $this->db->escape($token) . "',
-			`masked_pan` = '" . $this->db->escape($masked_pan) . "';"
+			`masked_pan` = '" . $this->db->escape($masked_pan) . "',
+			`expiration_month` = " . $expiration_month . ",
+			`expiration_year` = " . $expiration_year . ";"
 		);
 	}
 

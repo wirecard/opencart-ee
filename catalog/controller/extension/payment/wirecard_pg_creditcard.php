@@ -18,7 +18,7 @@ use Wirecard\PaymentSdk\Exception\MalformedResponseException;
 /**
  * Class ControllerExtensionPaymentWirecardPGCreditCard
  *
- * CreditCard Transaction controller
+ * Credit Card Transaction controller
  *
  * @since 1.0.0
  */
@@ -51,7 +51,11 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		// I'm explicitly using != instead of !== here to avoid the array being checked for key order.
 		// It *should* theoretically be the same, but there's no guarantees.
 		$data['shipping_data_changed'] = $last_shipping_data != $shipping_data;
-		$data['existing_cards'] = $data['shipping_data_changed'] ? null : $vault->getCards($this->customer);
+		$data['allow_changed_shipping'] = $this->getShopConfigVal('allow_changed_shipping');
+		$data['existing_cards'] = !$data['shipping_data_changed'] || $data['allow_changed_shipping']
+			? $vault->getCards($this->customer)
+			: null;
+
 		$data['base_url'] = $this->getShopConfigVal('base_url');
 		$data['loading_text'] = $this->language->get('loading_text');
 		$data['type'] = $this->type;
@@ -63,29 +67,13 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	/**
 	 * After the order is confirmed in frontend
 	 *
+	 * @return mixed
 	 * @since 1.0.0
 	 */
 	public function confirm() {
 		if (array_key_exists('token', $this->request->post) && strlen($this->request->post['token'])) {
-			$model = $this->getModel();
-
-			$this->transaction = $this->getTransactionInstance();
-			$this->prepareTransaction();
-
-			$this->transaction->setConfig($this->payment_config->get(CreditCardTransaction::NAME));
-			$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
-			$this->transaction->setTokenId($this->request->post['token']);
-
-			$response = $model->sendRequest($this->payment_config, $this->transaction, $this->getShopConfigVal('payment_action'));
-			if (!isset($this->session->data['error'])) {
-				//Save pending order
-				$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
-			}
-
-			return $this->response->setOutput($response);
+			return $this->confirmTokenBasedTransaction();
 		}
-
-		 $this->session->data['save_card'] = isset($this->request->post['save_card']) ? $this->request->post['save_card'] : null;
 
 		$this->load->model('checkout/order');
 		$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
@@ -94,7 +82,34 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		$response = $transaction_service->processJsResponse($_POST,
 			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
 
-		return $this->processResponse($response, $this->getLogger());
+		$this->session->data['save_card'] = isset($this->request->post['save_card']) ? $this->request->post['save_card'] : null;
+
+		return $this->processResponse($response, $this->getLogger(), $transaction_service);
+	}
+
+	/**
+	 * Handles the confirmation flow for one-click checkout transactions.
+	 *
+	 * @return mixed
+	 * @since 1.1.0
+	 */
+	protected function confirmTokenBasedTransaction() {
+		$model = $this->getModel();
+
+		$this->transaction = $this->getTransactionInstance();
+		$this->prepareTransaction(true);
+
+		$this->transaction->setConfig($this->payment_config->get(CreditCardTransaction::NAME));
+		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
+		$this->transaction->setTokenId($this->request->post['token']);
+
+		$response = $model->sendRequest($this->payment_config, $this->transaction, $this->getShopConfigVal('payment_action'));
+		if (!isset($this->session->data['error'])) {
+			//Save pending order
+			$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
+		}
+
+		return $this->response->setOutput($response);
 	}
 
 	/**
@@ -192,7 +207,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	}
 
 	/**
-	 * Create CreditCard transaction
+	 * Create Credit Card transaction
 	 *
 	 * @param array $parentTransaction
 	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
@@ -206,7 +221,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	}
 
 	/**
-	 * Delete a credit card from the vault.
+	 * Delete a Credit Card from the vault.
 	 *
 	 * @since 1.1.0
 	 */

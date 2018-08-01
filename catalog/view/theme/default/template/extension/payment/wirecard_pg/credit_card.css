@@ -106,7 +106,7 @@ At https://github.com/lukehaas/css-loaders you can find more spinners and change
 
 .credit-card-selector input[type=radio] {
     position: relative;
-    top: -2px;
+    top: -1px;
     margin-right: 8px;
 }
 
@@ -130,9 +130,14 @@ a.credit-card-delete:hover {
     background: transparent;
 }
 
-.credit-card-pan {
+.credit-card-info {
     position: relative;
-    top: -4px;
+    top: -3px;
+}
+
+.credit-card-expires {
+    color: #999;
+    padding-left: 8px;
 }
 
 .alert-shipping-data.alert-dismissible .close {

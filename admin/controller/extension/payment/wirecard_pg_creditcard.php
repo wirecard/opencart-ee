@@ -54,7 +54,8 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 		'sort_order' => 1,
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0,
-		'vault' => 0
+		'vault' => 0,
+		'allow_changed_shipping' => 0
 	);
 
 	/**
@@ -76,7 +77,9 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 			'config_three_d_min_limit',
 			'config_limit_desc',
 			'config_vault',
-			'config_vault_desc'
+			'config_vault_desc',
+			'config_allow_changed_shipping',
+			'config_allow_changed_shipping_desc'
 		);
 		return parent::getConfigText($fields);
 	}
@@ -123,7 +126,8 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 				'ssl_max_limit',
 				'three_d_min_limit',
 				'sort_order',
-				'vault'
+				'vault',
+				'allow_changed_shipping',
 			)
 		);
 	}
