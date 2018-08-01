@@ -62,7 +62,15 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$data['child_transaction_id'] = $this->session->data['wirecard_info']['child_transaction_id'];
 			$data['child_transaction_href'] = $this->session->data['wirecard_info']['child_transaction_href'];
 		}
-		unset($this->session->data['wirecard_info']);
+
+		if (isset($this->session->data['admin_error'])) {
+			$data['error_warning'] = $this->session->data['admin_error'];
+		}
+
+		unset(
+			$this->session->data['wirecard_info'],
+			$this->session->data['admin_error']
+		);
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/details', $data));
 	}
@@ -133,7 +141,6 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 				$this->session->data['wirecard_info']['child_transaction_href'] = $this->url->link(self::TRANSACTION, 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction_id, true);
 				$this->response->redirect($this->url->link(self::TRANSACTION, 'user_token=' . $this->session->data['user_token'] . '&id=' . $this->request->get['id'], true));
 			} else {
-				$data['error_warning'] = $this->session->data['admin_error'];
 				$this->response->redirect($this->url->link(self::TRANSACTION, 'user_token=' . $this->session->data['user_token'] . '&id=' . $this->request->get['id'], true));
 			}
 		}
