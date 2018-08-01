@@ -31,6 +31,7 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 	private $language;
 	private $cart;
 	private $currency;
+	private $customer;
 
 	const SHOP = 'OpenCart';
 	const PLUGIN = 'Wirecard OpenCart Extension';
@@ -91,8 +92,21 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 
 		$this->modelCreditCard = $this->getMockBuilder(ModelExtensionPaymentWirecardPGCreditCard::class)
 			->disableOriginalConstructor()
-			->setMethods(['sendRequest'])
+			->setMethods(['sendRequest', 'getLatestCustomerShipping'])
 			->getMock();
+
+		$this->modelCreditCard->method('getLatestCustomerShipping')->willReturn(array(
+			'firstname' => 'John',
+			'lastname' => 'Doe',
+			'company' => '',
+			'address_1' => 'Unit St 123',
+			'address_2' => '',
+			'city' => 'Testing City',
+			'zone_id' => '999',
+			'zone' => 'California',
+			'country_id' => '999',
+			'country' => 'USA',
+		));
 
 		$this->loader = $this->getMockBuilder(Loader::class)
 			->disableOriginalConstructor()
@@ -102,6 +116,11 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 		$this->language = $this->getMockBuilder(Language::class)->disableOriginalConstructor()->getMock();
 
 		$this->currency = $this->getMockBuilder(Currency::class)->disableOriginalConstructor()->getMock();
+
+		$this->customer = $this->getMockBuilder(Customer::class)
+			->disableOriginalConstructor()
+			->setMethods(['isLogged'])
+			->getMock();
 
 		$items = [
 			["price" => 10.465, "name" => "Produkt1", "quantity" => 2, "product_id" => 2, "tax_class_id" => 2],
@@ -121,13 +140,29 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 			$this->modelCreditCard,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 	}
 
 	public function testIndexActive() {
 		$this->config->expects($this->at(0))->method('get')->willReturn(1);
 		$this->loader->method('view')->willReturn('active');
+		$this->session->data['shipping_address'] = array(
+			'firstname' => 'John',
+			'lastname' => 'Doe',
+			'company' => '',
+			'address_1' => 'Unit St 123',
+			'address_2' => '',
+			'city' => 'Testing City',
+			'zone_id' => '999',
+			'zone' => 'California',
+			'country_id' => '999',
+			'country' => 'USA',
+		);
+
 		$this->controller = new ControllerExtensionPaymentWirecardPGCreditCard(
 			$this->registry,
 			$this->config,
@@ -139,7 +174,10 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 			$this->modelCreditCard,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$actual = $this->controller->index();
@@ -198,7 +236,10 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 			$this->modelCreditCard,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');

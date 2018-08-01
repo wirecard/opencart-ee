@@ -1,5 +1,7 @@
 <?php
 
+use Mockery as m;
+
 /**
  * Controller class
  */
@@ -60,6 +62,9 @@ abstract class Controller
 		];
 
 	    $this->currency = $currency;
+
+	    $this->model_extension_payment_wirecard_pg_vault = m::mock('overload:ModelExtensionPaymentWirecardPGVault');
+		$this->model_extension_payment_wirecard_pg_vault->shouldReceive('getCards');
     }
 
     public function get($key)
