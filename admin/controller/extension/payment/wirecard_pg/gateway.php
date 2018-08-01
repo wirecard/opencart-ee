@@ -190,7 +190,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$data = array();
 
 		foreach ($this->config_fields as $config_field) {
-			$data[$config_field] = $this->getConfigVal($config_field);
+			$data[$config_field] = is_array($this->getConfigVal($config_field)) ? $this->getConfigVal($config_field) : (string)$this->getConfigVal($config_field) ;
 		}
 
 		return $data;
@@ -313,8 +313,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 		if (isset($this->request->post[$key])) {
 			return $this->request->post[$prefix . $key];
+		} elseif ($this->config->get($prefix . $key) != null) {
+			return $this->config->get($prefix . $key);
 		} else {
-			return !empty($this->config->get($prefix . $key)) ? $this->config->get($prefix . $key) : $this->default[$key];
+			return $this->default[$key];
 		}
 	}
 
