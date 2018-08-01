@@ -74,4 +74,19 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends \ControllerExte
 
 		return parent::getRequestData();
 	}
+
+	/**
+	 * Load required blocks for configuration view.
+	 *
+	 * @param array $data
+	 * @return array
+	 * @since 1.1.0
+	 */
+	public function loadConfigBlocks($data) {
+		$data = parent::loadConfigBlocks($data);
+
+		$data['ratepayinvoice_config'] = $this->load->view('extension/payment/wirecard_pg/ratepayinvoice_config', $data);
+
+		return $data;
+	}
 }

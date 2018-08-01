@@ -12,13 +12,17 @@
  */
 abstract class Model {
     protected $registry;
+    protected $load;
     public $tax;
     public $currency;
+    public $model_localisation_currency;
 
-    public function __construct($registry) {
+    public function __construct($registry, $loader = null) {
         $this->registry = $registry;
         $this->tax = new Tax();
         $this->currency = new Currency();
+        $this->load = new Loader($registry, $this);
+        $this->model_localisation_currency = new Currency();
     }
 
     public function __get($key) {
