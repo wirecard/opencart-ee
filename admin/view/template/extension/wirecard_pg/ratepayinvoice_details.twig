@@ -34,6 +34,9 @@
             </table>
             <div class="text-right">
             {% for key,operation in transaction.operations %}
+                {% if operation.override == 'Refund' %}
+                    <input type="hidden" value="refund" name="override-operation">
+                {% endif %}
                 <button type="submit" form="wirecard-operation" data-toggle="tooltip" class="btn btn-primary" name="operation" value="{{ operation.action }}">{{ operation.text }}</button>
             {% endfor %}
             </div>

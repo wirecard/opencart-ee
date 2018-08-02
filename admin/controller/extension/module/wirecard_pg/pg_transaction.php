@@ -139,13 +139,14 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($this->request->get['id']);
 			$operation = $this->request->post['operation'];
 			$payment_method = $this->request->post['payment-method'];
+
+            $amount = new \Wirecard\PaymentSdk\Entity\Amount($this->request->post['amount'], $this->request->post['currency']);
 			if ('ratepayinvoice' == $payment_method) {
 				$transaction['basket'] = $this->addResponseBasket($transaction);
 			}
-			$amount = new \Wirecard\PaymentSdk\Entity\Amount($this->request->post['amount'], $this->request->post['currency']);
-			if ('cancel' == $operation) {
-				$amount = null;
-			}
+			if ('cancel' == $operation && !isset($this->request->post['override-operation'])) {
+                $amount = null;
+            }
 
 			$controller = $this->getPaymentController($transaction['payment_method']);
 			$transaction_id = $transaction_handler->processTransaction($controller, $transaction, $this->config, $operation, $amount);
@@ -219,7 +220,8 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 
 				$op = array(
 					'action' => $key,
-					'text' => $this->language->get($key),
+					'text' => $this->language->get($value),
+                    'override' => $value
 				);
 
 				array_push($operations, $op);
