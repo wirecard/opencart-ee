@@ -210,7 +210,7 @@ class AdditionalInformationHelper extends Model {
 		if ('sepadirectdebit' == $type) {
 			return 2;
 		}
-		$precision = strlen(substr(strrchr($currency_value, "."), 1));
-		return $precision;
+		//hardcoded decimal precision for testing ratepay basket
+		return 6;
 	}
 }

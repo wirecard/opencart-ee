@@ -131,8 +131,16 @@ class PGBasket {
 			$currency,
 			$item[self::TAXCLASSID]
 		);
+        $rates = $this->model->tax->getRates($item[self::PRICE], $item[self::TAXCLASSID]);
+        $tax_rate = 0;
+        foreach ($rates as $key => $value) {
+            if ($value['amount'] == $this->model->tax->getTax($item[self::PRICE], $item[self::TAXCLASSID])) {
+                //$tax_rate = number_format((1 - 1 / (1 + ($value['rate'] / 100))) * 100, 6); used for reversed tax rate
+                $tax_rate = $value['rate'];
+            }
+        }
 		$tax_amount = $gross_amount - $this->model->convert($item[self::PRICE], $currency);
-		$tax_rate = $this->model->convert($tax_amount / $gross_amount * 100, $currency);
+		//$tax_rate = number_format($this->model->convert($tax_amount / $gross_amount * 100, $currency), 2);
 
 		$this->sum += $gross_amount * $item[self::QUANTITY];
 		$amount = new Amount(number_format($gross_amount, $currency['precision']), $currency[self::CURRENCYCODE]);
@@ -162,8 +170,15 @@ class PGBasket {
 			$shipping[self::TAXCLASSID]
 		);
 		$tax_amount = $this->model->tax->getTax($shipping[self::COST], $shipping[self::TAXCLASSID]);
-		$tax_rate = $this->model->convert($tax_amount / $gross_amount * 100, $currency);
-
+        $rates = $this->model->tax->getRates($shipping[self::COST], $shipping[self::TAXCLASSID]);
+        $tax_rate = 0;
+        foreach ($rates as $key => $value) {
+            if ($value['amount'] == $this->model->tax->getTax($shipping[self::COST], $shipping[self::TAXCLASSID])) {
+                //$tax_rate = number_format((1 - 1 / (1 + ($value['rate'] / 100))) * 100, 6); used for reversed tax rate
+                $tax_rate = $value['rate'];
+            }
+        }
+		//$tax_rate = number_format($this->model->convert($tax_amount / $gross_amount * 100, $currency),2);
 		$this->sum += $gross_amount;
 		$item = new Item('Shipping', new Amount(number_format($gross_amount, $currency['precision']), $currency[self::CURRENCYCODE]), 1);
 		$item->setDescription('Shipping');

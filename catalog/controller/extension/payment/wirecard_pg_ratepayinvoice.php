@@ -81,6 +81,10 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 				$this->request->post['ratepayinvoice-birthdate']
 			);
 		}
+        $total = $additional_helper->convert($order['total'], $currency);
+        //hardcoded decimal precision for testing ratepay basket just for now!
+        $amount = new \Wirecard\PaymentSdk\Entity\Amount(number_format($total, 6), $order['currency_code']);
+		$this->transaction->setAmount($amount);
 	}
 
 	/**
