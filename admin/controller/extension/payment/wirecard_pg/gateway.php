@@ -311,13 +311,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	private function getConfigVal($key) {
 		$prefix = $this->prefix . $this->type . '_';
 
-		if (isset($this->request->post[$key])) {
-			return $this->request->post[$prefix . $key];
-		} elseif ($this->config->get($prefix . $key) != null) {
+		if ($this->config->get($prefix . $key) != null) {
 			return $this->config->get($prefix . $key);
-		} else {
-			return $this->default[$key];
 		}
+		
+		return $this->default[$key];
 	}
 
 	/**
