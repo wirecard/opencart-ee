@@ -377,7 +377,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 				);
 
 				$vault = $this->getVault();
-				$vault->saveCard($this->customer, $result, $transaction_details['payment']['card']);
+				$vault->saveCard($result, $transaction_details['payment']['card']);
 
 				unset($this->session->data['save_card']);
 			}

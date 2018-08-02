@@ -17,14 +17,14 @@ class ModelExtensionPaymentWirecardPGVault extends Model {
 	/**
 	 * Get all Credit Cards associated with a user.
 	 *
-	 * @param \Cart\Customer $user
 	 * @return array
 	 * @since 1.1.0
 	 */
-	public function getCards($user) {
+	public function getCards() {
 		$cards = $this->db->query(
 			"SELECT * FROM `" . DB_PREFIX . "wirecard_ee_vault` 
-			WHERE user_id=" . $user->getId() . "
+			WHERE user_id=" . $this->customer->getId() . "
+			AND address_id=" . $this->session->data['shipping_address']['address_id'] . "
 			ORDER BY vault_id DESC"
 		)->rows;
 
@@ -43,20 +43,21 @@ class ModelExtensionPaymentWirecardPGVault extends Model {
 	/**
 	 * Save a Credit Card to the database.
 	 *
-	 * @param \Cart\Customer $user
 	 * @param Wirecard\PaymentSdk\Response\SuccessResponse $response
+	 * @param array card
 	 * @since 1.1.0
 	 */
-	public function saveCard($user, $response, $card) {
+	public function saveCard($response, $card) {
 		$token = $response->getCardTokenId();
 		$masked_pan = $response->getMaskedAccountNumber();
 		$expiration_month = $card['expiration-month'];
 		$expiration_year = $card['expiration-year'];
+		$address_id = $this->session->data['shipping_address']['address_id'];
 
-		$existing_cards = $this->getCards($user);
+		$existing_cards = $this->getCards();
 		if(!empty($existing_cards)) {
 			foreach($existing_cards as $card) {
-				if ($card['token'] == $token) {
+				if ($card['token'] == $token && $card['address_id'] == $address_id) {
 					return;
 				}
 			}
@@ -64,7 +65,8 @@ class ModelExtensionPaymentWirecardPGVault extends Model {
 
 		$this->db->query(
 			"INSERT INTO `" . DB_PREFIX . "wirecard_ee_vault` SET
-			`user_id` = " . $user->getId() . ",
+			`user_id` = " . $this->customer->getId() . ",
+			`address_id` = " . $this->session->data['shipping_address']['address_id'] . ",
 			`token` = '" . $this->db->escape($token) . "',
 			`masked_pan` = '" . $this->db->escape($masked_pan) . "',
 			`expiration_month` = " . $expiration_month . ",
@@ -75,15 +77,14 @@ class ModelExtensionPaymentWirecardPGVault extends Model {
 	/**
 	 * Delete a Credit Card from the database.
 	 *
-	 * @param \Cart\Customer $user
 	 * @param $card_id
 	 * @return bool
 	 * @since 1.1.0
 	 */
-	public function deleteCard($user, $card_id) {
+	public function deleteCard($card_id) {
 		return $this->db->query(
 			"DELETE FROM `" . DB_PREFIX . "wirecard_ee_vault` 
-			WHERE user_id=" . $user->getId() . "
+			WHERE user_id=" . $this->customer->getId() . "
 			AND vault_id=" . $this->db->escape($card_id) . ";"
 		);
 	}
