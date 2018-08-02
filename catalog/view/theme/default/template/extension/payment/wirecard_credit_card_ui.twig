@@ -25,7 +25,7 @@
                     {{ vault_delete_failure_text }} <strong id="deleted-pan"></strong>.
                 </div>
 
-                <div class="list-group">
+                <div class="list-group" id="list-existing-cards">
                     {% for card in existing_cards %}
                         <label data-pan="{{ card.masked_pan }}" class="list-group-item credit-card-selector">
                             <div>

@@ -44,6 +44,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		$vault = $this->getVault();
 
 		if ($this->customer->isLogged()) {
+			$cards = $vault->getCards();
 			$last_shipping_data = $model->getLatestCustomerShipping();
 			$shipping_data = array_filter($this->session->data['shipping_address'], function($key) use ($last_shipping_data) {
 				return in_array($key, array_keys($last_shipping_data));
@@ -51,9 +52,9 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 
 			// I'm explicitly using != instead of !== here to avoid the array being checked for key order.
 			// It *should* theoretically be the same, but there's no guarantees.
-			$data['shipping_data_changed'] = $last_shipping_data != $shipping_data;
+			$data['shipping_data_changed'] = $last_shipping_data != $shipping_data && count($cards) == 0;
 			$data['allow_changed_shipping'] = $this->getShopConfigVal('allow_changed_shipping');
-			$data['existing_cards'] = (!$data['shipping_data_changed'] || $data['allow_changed_shipping']) ? $vault->getCards() : null;
+			$data['existing_cards'] = (!$data['shipping_data_changed'] || $data['allow_changed_shipping']) ? $cards : null;
 		}
 
 		$data['base_url'] = $this->getShopConfigVal('base_url');

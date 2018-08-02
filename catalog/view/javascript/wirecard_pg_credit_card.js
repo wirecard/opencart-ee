@@ -88,7 +88,14 @@ function getCreditCardRequestData() {
  * @since 1.1.0
  */
 function setToken(token) {
-	jQuery("#token-field").val(token);
+	var tokenField = "#token-field";
+
+	if (token == null) {
+		$(tokenField).removeAttr("value");
+		return;
+	}
+
+	$(tokenField).val(token);
 }
 
 /**
@@ -116,6 +123,11 @@ function deleteCardFromVault(card, masked_pan) {
 					$("#success-message").fadeIn();
 					$(".credit-card-selector[data-pan='" + data.deleted_card + "']").fadeOut(300, function() {
 						$(this).remove();
+
+						if($('#list-existing-cards').children().length === 0) {
+							setToken(null);
+							$('#button-confirm').attr('disabled', 'disabled');
+						}
 					});
 
 					return;
@@ -139,7 +151,13 @@ function handleTabChanges() {
 
 		if (target === "#new") {
 			$(saveCreditCard).show();
+			$('#button-confirm').removeAttr('disabled');
 			return;
+		}
+
+		if($('#list-existing-cards').children().length === 0) {
+			setToken(null);
+			$('#button-confirm').attr('disabled', 'disabled');
 		}
 
 		$(saveCreditCard).hide();
