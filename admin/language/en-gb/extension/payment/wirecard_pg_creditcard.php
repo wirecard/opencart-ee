@@ -14,7 +14,7 @@ $_['text_wirecard_pg_creditcard'] = '<img src="./view/image/wirecard_pg/creditca
 // Payment specific configuration
 $_['text_edit'] = 'Edit Credit Card';
 $_['config_status_desc'] = 'Activate payment method Credit Card to make it available for your consumers.';
-$_['config_three_d_merchant_account_id'] = '3-D Secure Merchant Account ID';
+$_['config_three_d_merchant_account_id'] = '3-D Secure MAID';
 $_['config_three_d_merchant_account_id_desc'] = 'Unique identifier assigned to your 3-D Secure merchant account. Can be set to "null" to force SSL process.';
 $_['config_three_d_merchant_secret'] = '3-D Secure Secret Key';
 $_['config_three_d_merchant_secret_desc'] = 'Secret Key is mandatory to calculate the Digital Signature for the 3-D Secure payment. Can be set to "null" to force SSL process.';
