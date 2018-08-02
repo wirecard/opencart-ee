@@ -123,9 +123,9 @@ function deleteCardFromVault(card, masked_pan) {
 					$("#success-message").fadeIn();
 					$(".credit-card-selector[data-pan='" + data.deleted_card + "']").fadeOut(300, function() {
 						$(this).remove();
+						setToken(null);
 
 						if($('#list-existing-cards').children().length === 0) {
-							setToken(null);
 							$('#button-confirm').attr('disabled', 'disabled');
 						}
 					});
