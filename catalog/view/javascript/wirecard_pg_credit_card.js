@@ -114,7 +114,7 @@ function deleteCardFromVault(card, masked_pan) {
 
 				if (data.success) {
 					$("#success-message").fadeIn();
-					$(".credit-card-selector[data-pan=''" + data.deleted_card + "']").fadeOut(300, function() {
+					$(".credit-card-selector[data-pan='" + data.deleted_card + "']").fadeOut(300, function() {
 						$(this).remove();
 					});
 

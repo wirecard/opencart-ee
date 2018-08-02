@@ -150,6 +150,8 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 	public function testIndexActive() {
 		$this->config->expects($this->at(0))->method('get')->willReturn(1);
 		$this->loader->method('view')->willReturn('active');
+		$this->customer->method('isLogged')->willReturn(true);
+
 		$this->session->data['shipping_address'] = array(
 			'firstname' => 'John',
 			'lastname' => 'Doe',

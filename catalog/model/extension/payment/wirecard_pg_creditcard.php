@@ -35,6 +35,7 @@ class ModelExtensionPaymentWirecardPGCreditCard extends ModelExtensionPaymentGat
 	 * @since 1.1.0
 	 */
 	public function getLatestCustomerShipping($user) {
+
 		return reset($this->db->query("SELECT
 			shipping_firstname AS firstname, 
 			shipping_lastname AS lastname, 
