@@ -171,7 +171,10 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->modelPia,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 	}
 
@@ -195,7 +198,10 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->modelPia,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
@@ -229,7 +235,10 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->modelPia,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGPia::class);
@@ -256,7 +265,10 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->modelPia,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$actual = $this->controller->index();
@@ -277,7 +289,10 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->modelPia,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGPia::class);
@@ -310,7 +325,10 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->modelPia,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$actual = $this->controller->getType();
@@ -332,7 +350,10 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->modelPia,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Transaction\PoiPiaTransaction();
@@ -355,7 +376,10 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->modelPia,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$actual = $this->controller->getModel();

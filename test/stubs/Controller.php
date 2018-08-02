@@ -1,5 +1,7 @@
 <?php
 
+use Mockery as m;
+
 /**
  * Controller class
  */
@@ -28,7 +30,7 @@ abstract class Controller
     public $model_checkout_order;
     public $controller_extension_payment_wirecard_pg_sepact;
 
-    public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPayment, $language, $cart, $currency, $subController = null, $document = null, $customer = null)
+    public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPayment, $language, $cart, $currency, $subController = null, $document = null, $customer = null, $overrideRequest = null)
     {
         $this->registry = $registry;
         $this->config = $config;
@@ -54,12 +56,15 @@ abstract class Controller
         $this->customer = $customer;
 
 	    $this->request = new stdClass();
-	    $this->request->post = [
+	    $this->request->post = $overrideRequest ?: [
 	    	'fingerprint-session' => '123',
 			'ideal-bic' => \Wirecard\PaymentSdk\Entity\IdealBic::INGBNL2A
 		];
 
 	    $this->currency = $currency;
+
+	    $this->model_extension_payment_wirecard_pg_vault = m::mock('overload:ModelExtensionPaymentWirecardPGVault');
+		$this->model_extension_payment_wirecard_pg_vault->shouldReceive('getCards');
     }
 
     public function get($key)
