@@ -314,7 +314,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		if ($this->config->get($prefix . $key) != null) {
 			return $this->config->get($prefix . $key);
 		}
-		
 		return $this->default[$key];
 	}
 
