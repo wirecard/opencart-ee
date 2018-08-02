@@ -54,7 +54,7 @@ class ModelExtensionPaymentWirecardPG extends Model {
 			`token` VARCHAR(20) NOT NULL,
 			`masked_pan` VARCHAR(30) NOT NULL,
 			`expiration_month` INT(10) NOT NULL,
-			`expiration_year` INT(10) NOT NULL
+			`expiration_year` INT(10) NOT NULL,
 			PRIMARY KEY (`vault_id`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
 	}
