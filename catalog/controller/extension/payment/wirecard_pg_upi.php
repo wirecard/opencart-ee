@@ -59,7 +59,7 @@ class ControllerExtensionPaymentWirecardPGUPI extends ControllerExtensionPayment
 			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL')
 		);
 
-		return $this->processResponse($response, $this->getLogger());
+		return $this->processResponse($response, $this->getLogger(), $transaction_service);
 	}
 
 	/**

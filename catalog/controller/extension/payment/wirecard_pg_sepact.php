@@ -59,7 +59,7 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaym
 		$merchant_secret = $this->getShopConfigVal('merchant_secret');
 
 		$config = parent::getConfig($currency);
-		$payment_config = new SepaConfig($merchant_account_id, $merchant_secret);
+		$payment_config = new SepaConfig(SepaTransaction::NAME, $merchant_account_id, $merchant_secret);
 		$config->add($payment_config);
 
 		return $config;

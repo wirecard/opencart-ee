@@ -28,14 +28,37 @@
         <input type="hidden" value="{{ session_id }}" id="input-fingerprint-session" name="fingerprint-session"/>
         {%  endif %}
 
+        {% if credit_card and vault_enabled and customer_logged_in %}
+            <input type="hidden" name="token" id="token-field"/>
+            <label class="save-credit-card" style="padding-right: 8px; {{ existing_cards|length > 0 ? 'display: none;' : '' }}">
+                {{ vault_save_text }}
+                <input type="checkbox" name="save_card" />
+            </label>
+        {% endif %}
+
         <input type="button" value="{{ button_confirm }}" id="button-confirm" data-loading-text="{{ text_loading }}" class="btn btn-primary" />
     </div>
 </div>
 </form>
-{% if credit_card is null %}
+
 <script type="text/javascript"><!--
+    window.WirecardPaymentMethod = "{{ type }}";
     var disableButton = false;
+    var newCardTab = '.tab-new';
+    var existingCardTab = '.tab-existing';
+
     $('#button-confirm').on('click', function() {
+        if ((WirecardPaymentMethod === 'creditcard' && jQuery(existingCardTab).hasClass('active'))) {
+            var form = $('#wirecard-pg-form');
+            form.submit();
+
+            return;
+        }
+
+        if (WirecardPaymentMethod === 'creditcard' || WirecardPaymentMethod === 'upi') {
+            return;
+        }
+
         var formData = new FormData(document.querySelector('#wirecard-pg-form'));
 
         $.ajax({
@@ -83,4 +106,3 @@
 
     });
     //--></script>
-{% endif %}

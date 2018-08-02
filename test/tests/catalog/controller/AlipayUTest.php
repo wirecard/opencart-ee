@@ -33,6 +33,7 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 	private $cart;
 	private $subController;
 	private $currency;
+	private $customer;
 
 	const SHOP = 'OpenCart';
 	const PLUGIN = 'Wirecard OpenCart Extension';
@@ -115,6 +116,11 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 			->disableOriginalConstructor()
 			->getMock();
 
+		$this->customer = $this->getMockBuilder(Customer::class)
+			->disableOriginalConstructor()
+			->setMethods(['isLogged'])
+			->getMock();
+
 		$items = [
 			["price" => 10.465, "name" => "Produkt1", "quantity" => 2, "product_id" => 2, "tax_class_id" => 2],
 			["price" => 20.241, "name" => "Produkt2", "quantity" => 3, "product_id" => 1, "tax_class_id" => 1],
@@ -134,7 +140,10 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 			$this->modelAlipayCrossborder,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 	}
 
@@ -158,7 +167,10 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 			$this->modelAlipayCrossborder,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
@@ -202,7 +214,10 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 			$this->modelAlipayCrossborder,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$actual = $this->controller->index();
@@ -223,7 +238,10 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 			$this->modelAlipayCrossborder,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGAlipayCrossborder::class);
@@ -248,7 +266,10 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 			$this->modelAlipayCrossborder,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGAlipayCrossborder::class);
@@ -281,7 +302,10 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 			$this->modelAlipayCrossborder,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$actual = $this->controller->getType();
@@ -303,7 +327,10 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 			$this->modelAlipayCrossborder,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Transaction\AlipayCrossborderTransaction();

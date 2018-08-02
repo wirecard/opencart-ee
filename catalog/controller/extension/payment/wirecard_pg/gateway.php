@@ -11,6 +11,7 @@ include_once(DIR_SYSTEM . 'library/autoload.php');
 
 use Wirecard\PaymentSdk\Config\Config;
 use Wirecard\PaymentSdk\Exception\MalformedResponseException;
+use Wirecard\PaymentSdk\Transaction\CreditCardTransaction;
 
 /**
  * Class ControllerExtensionPaymentGateway
@@ -102,6 +103,8 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$session_id = $this->getShopConfigVal('merchant_account_id') . '_' . $this->createSessionString($order);
 		$data['session_id'] = substr($session_id, 0, 127);
 		$data['type'] = $this->type;
+		$data['vault_enabled'] = $this->getShopConfigVal('vault');
+		$data['customer_logged_in'] = $this->customer->isLogged();
 
 		return $this->load->view(self::PATH, $data);
 	}
@@ -136,9 +139,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	/**
 	 * Fill transaction with data
 	 *
+	 * @param bool $force_data If set to true, sets all data no matter the merchant settings.
 	 * @since 1.0.0
 	 */
-	public function prepareTransaction() {
+	public function prepareTransaction($force_data = false) {
 		$this->load->language(self::PATH);
 		$this->load->model('checkout/order');
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
@@ -154,11 +158,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->transaction->setAmount($amount);
 
 		$this->transaction = $additional_helper->setIdentificationData($this->transaction, $order);
-		if ($this->getShopConfigVal('descriptor')) {
+		if ($this->getShopConfigVal('descriptor') || $force_data) {
 			$this->transaction->setDescriptor($additional_helper->createDescriptor($order));
 		}
 
-		if ($this->getShopConfigVal('shopping_basket')) {
+		if ($this->getShopConfigVal('shopping_basket') || $force_data) {
 			$this->transaction = $additional_helper->addBasket(
 				$this->transaction,
 				$this->cart->getProducts(),
@@ -168,7 +172,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			);
 		}
 
-		if ($this->getShopConfigVal('additional_info')) {
+		if ($this->getShopConfigVal('additional_info') || $force_data) {
 			$this->transaction = $additional_helper->setAdditionalInformation($this->transaction, $order);
 			$this->transaction = $additional_helper->addBasket(
 				$this->transaction,
@@ -258,7 +262,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$transaction_service = new \Wirecard\PaymentSdk\TransactionService($this->getConfig(), $logger);
 			$result = $transaction_service->handleResponse($_REQUEST);
 
-			return $this->processResponse($result, $logger);
+			return $this->processResponse($result, $logger, $transaction_service);
 
 		} catch (\InvalidArgumentException $exception) {
 			$logger->error(__METHOD__ . ':' . 'Invalid argument set: ' . $exception->getMessage());
@@ -353,16 +357,29 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 *
 	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse | \Wirecard\PaymentSdk\Response\FormInteractionResponse |
 	 * \Wirecard\PaymentSdk\Response\FailureResponse $result
-	 * @param Logger $logger
+	 * @param PGLogger $logger
+	 * @param \Wirecard\PaymentSdk\TransactionService $transaction_service
 	 * @return bool | array
 	 */
-	public function processResponse($result, $logger) {
+	public function processResponse($result, $logger, $transaction_service) {
 		$order_manager = new PGOrderManager($this->registry);
 		$delete_failure = $this->getShopConfigVal('delete_failure_order');
 
 		if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
 			if (!$this->isIgnorableMasterpassResult($result)) {
 				$order_manager->createResponseOrder($result, $this);
+			}
+
+			if ('creditcard' == $this->type && isset($this->session->data['save_card'])) {
+				$transaction_details = $transaction_service->getTransactionByTransactionId(
+					$result->getTransactionId(),
+					CreditCardTransaction::NAME
+				);
+
+				$vault = $this->getVault();
+				$vault->saveCard($result, $transaction_details['payment']['card']);
+
+				unset($this->session->data['save_card']);
 			}
 
 			if ('pia' == $this->type && isset($this->session->data['order_id'])) {
@@ -374,6 +391,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			return true;
 		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FormInteractionResponse) {
 			$this->load->language('information/static');
+			$this->load->language('language/extension/wirecard_pg');
 
 			$data = [
 				'url' => $result->getUrl(),
@@ -492,6 +510,18 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->getLogger()->error(get_class($e) . ": " . $e->getMessage());
 			return false;
 		}
+	}
+
+	/**
+	 * Get an instance of the Credit Card vault.
+	 *
+	 * @return ModelExtensionPaymentWirecardPGVault
+	 * @since 1.1.0
+	 */
+	protected function getVault() {
+		$this->load->model('extension/payment/wirecard_pg/vault');
+
+		return $this->model_extension_payment_wirecard_pg_vault;
 	}
 
 	/**
