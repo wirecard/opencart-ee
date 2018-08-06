@@ -53,4 +53,12 @@
             }
         );
     });
+
+    $(document).on('change', '#input-logo-variant', function() {
+        var variant  = $(this).val();
+        var image = "https://cdn.klarna.com/1.0/shared/image/generic/badge/{{ language_code }}/pay_now/" + variant + "/pink.svg";
+
+        $("#logo-preview").attr('src', image)
+    });
+
 </script>

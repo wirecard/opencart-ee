@@ -44,6 +44,7 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExten
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0,
 		'sort_order' => 9,
+		'logo_variant' => 'standard',
 	);
 
 	/**
@@ -68,7 +69,8 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends \ControllerExten
 		return array_merge(
 			$this->config_fields,
 			array(
-				'sort_order'
+				'sort_order',
+				'logo_variant'
 			)
 		);
 	}

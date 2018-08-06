@@ -279,6 +279,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	public function loadConfigBlocks($data) {
 		$language_helper = new ControllerExtensionPaymentWirecardPGLanguageHelper($this->registry);
 
+		$data['language_code'] = $language_helper->getActiveLanguageCode();
 		$data['payment_header'] = $this->load->view('extension/payment/wirecard_pg/header', $data);
 		$data['basic_config'] = $this->load->view('extension/payment/wirecard_pg/basic_config',
 			array_merge($data, $language_helper->getConfigFields($this->multi_lang_fields, $this->prefix, $this->type, $this->default)));
