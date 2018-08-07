@@ -45,11 +45,11 @@ function callback() {
  */
 function logError(error) {
 	if (typeof error == "string") {
-        $("#error-message span").html(error).parent().show();
-    }
-    if (debug) {
-        console.log(error);
-    }
+		$("#error-message span").html(error).parent().show();
+	}
+	if (debug) {
+		console.log(error);
+	}
 }
 
 /**
