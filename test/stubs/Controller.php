@@ -15,9 +15,9 @@ abstract class Controller
     protected $url;
     protected $language;
     protected $cart;
-    protected $request;
 	protected $currency;
-    public $model_extension_payment_wirecard_pg_paypal;
+	public $request;
+	public $model_extension_payment_wirecard_pg_paypal;
     public $model_extension_payment_wirecard_pg_creditcard;
 	public $model_extension_payment_wirecard_pg_sepact;
 	public $model_extension_payment_wirecard_pg_sofortbanking;
