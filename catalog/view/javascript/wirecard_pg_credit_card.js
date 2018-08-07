@@ -106,10 +106,10 @@ function setToken(token) {
  * Delete a card from the vault.
  *
  * @param card
- * @param masked_pan
+ * @param maskedPan
  * @since 1.1.0
  */
-function deleteCardFromVault(card, masked_pan) {
+function deleteCardFromVault(card, maskedPan) {
 	if (confirm("Are you sure you want to delete this credit card?")) {
 		$.ajax({
 			url: "index.php?route=extension/payment/wirecard_pg_creditcard/deleteCardFromVault",
@@ -117,7 +117,7 @@ function deleteCardFromVault(card, masked_pan) {
 			dataType: "json",
 			data: {
 				card: card,
-				masked_pan: masked_pan
+				masked_pan: maskedPan
 			},
 			success: function (data) {
 				$("#success-message, #failure-message").hide();
@@ -129,8 +129,8 @@ function deleteCardFromVault(card, masked_pan) {
 						$(this).remove();
 						setToken(null);
 
-						if($('#list-existing-cards').children().length === 0) {
-							$('#button-confirm').attr('disabled', 'disabled');
+						if($("#list-existing-cards").children().length === 0) {
+							$("#button-confirm").attr("disabled", "disabled");
 						}
 					});
 
@@ -155,13 +155,13 @@ function handleTabChanges() {
 
 		if (target === "#new") {
 			$(saveCreditCard).show();
-			$('#button-confirm').removeAttr('disabled');
+			$("#button-confirm").removeAttr("disabled");
 			return;
 		}
 
-		if($('#list-existing-cards').children().length === 0) {
+		if($("#list-existing-cards").children().length === 0) {
 			setToken(null);
-			$('#button-confirm').attr('disabled', 'disabled');
+			$("#button-confirm").attr("disabled", "disabled");
 		}
 
 		$(saveCreditCard).hide();
