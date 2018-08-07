@@ -509,18 +509,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	}
 
 	/**
-	 * Get an instance of the Credit Card vault.
-	 *
-	 * @return ModelExtensionPaymentWirecardPGVault
-	 * @since 1.1.0
-	 */
-	protected function getVault() {
-		$this->load->model('extension/payment/wirecard_pg/vault');
-
-		return $this->model_extension_payment_wirecard_pg_vault;
-	}
-
-	/**
 	 * Get payment action
 	 *
 	 * @param string $action

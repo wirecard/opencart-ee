@@ -49,11 +49,8 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		$data['text_request_amount'] = $this->language->get('text_request_amount');
 		$data['route_href'] = $this->url->link(self::TRANSACTION . '/');
 
-		if (isset($this->session->data['wirecard_info']['admin_error'])) {
-			$data['error_warning'] = $this->session->data['wirecard_info']['admin_error'];
-		}
 		if (isset($this->request->get['id'])) {
-			$data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
+			$data['transaction'] = $this->getTransactionDetails($this->request->get['id'];
 		} else {
 			$data['error_warning'] = $this->language->get('error_no_transaction');
 		}

@@ -7,6 +7,7 @@
  */
 
 var WirecardPaymentPage;
+var debug = false;
 
 /**
  * Set the paren transaction id to the form and submit it
@@ -43,7 +44,12 @@ function callback() {
  * @since 1.0.0
  */
 function logError(error) {
-	console.log(error);
+	if (typeof error == "string") {
+        $("#error-message span").html(error).parent().show();
+    }
+    if (debug) {
+        console.log(error);
+    }
 }
 
 /**
@@ -68,14 +74,12 @@ function getCreditCardRequestData() {
 						} );
 					}
 				},
-				error: function ( error ) {
-					console.error( error );
-				}
+				error: logError
 			} );
 			clearInterval( WPPavailableInterval );
 		}
 		if ( maxWait <= 0 ) {
-			console.error("WPP did not respond in " + Integer.valueOf(maxWait/1000) + "seconds");
+			logError("WPP did not respond in " + Integer.valueOf(maxWait/1000) + "seconds");
 			clearInterval(WPPavailableInterval);
 		}
 	}, waitStep );
