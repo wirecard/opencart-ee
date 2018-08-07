@@ -28,6 +28,12 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 	protected $type = 'ratepayinvoice';
 
 	/**
+	 * @var int
+	 * @since 1.1.0
+	 */
+	protected $scale = 2;
+
+	/**
 	 * Basic index method
 	 *
 	 * @param array $data
@@ -63,7 +69,7 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 
 		$this->load->model('checkout/order');
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
+		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config, $this->scale);
 		$currency = $additional_helper->getCurrency($order['currency_code'], $this->type);
 
 		$this->transaction = $additional_helper->addBasket(
@@ -81,10 +87,6 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 				$this->request->post['ratepayinvoice-birthdate']
 			);
 		}
-        $total = $additional_helper->convert($order['total'], $currency);
-        //hardcoded decimal precision for testing ratepay basket just for now!
-        $amount = new \Wirecard\PaymentSdk\Entity\Amount(number_format($total, 6), $order['currency_code']);
-		$this->transaction->setAmount($amount);
 	}
 
 	/**

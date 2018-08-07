@@ -23,4 +23,10 @@ class ModelExtensionPaymentWirecardPGSepaDirectDebit extends ModelExtensionPayme
 	 * @since 1.1.0
 	 */
 	protected $type = 'sepadirectdebit';
+
+	/**
+	 * @var int
+	 * @since 1.1.0
+	 */
+	protected $scale = 2;
 }

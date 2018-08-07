@@ -45,6 +45,7 @@ class PGBasket {
 	 * @since 1.0.0
 	 */
 	public function __construct($model) {
+		/** @var AdditionalInformationHelper model */
 		$this->model = $model;
 		$this->sum = 0;
 	}
@@ -61,6 +62,10 @@ class PGBasket {
 	 * @since 1.0.0
 	 */
 	public function getBasket($transaction, $items, $shipping, $currency, $total) {
+		$this->sum = 0;
+		$total_amount = $this->model->convert($total, $currency);
+		$total_amount = number_format($total_amount, $this->model->getScale());
+
 		$basket = new Basket();
 		$basket->setVersion($transaction);
 
@@ -68,16 +73,26 @@ class PGBasket {
 			$basket = $this->setBasketItem(
 				$basket,
 				$item,
-				$currency
+				$currency,
+				$transaction
 			);
 		}
 
 		$this->setShippingItem($basket, $shipping, $currency);
 
-		if ($this->sum - $total > 0) {
+		$coupon_amount = bcsub($this->sum, $total_amount, $this->model->getScale());
+		if ((float)$coupon_amount > 0) {
 			$this->setCouponItem(
 				$basket,
-				$this->sum - $total,
+				$coupon_amount,
+				$currency
+			);
+		}
+		$precision_amount = bcsub($total_amount, $this->sum, $this->model->getScale());
+		if ((float)$precision_amount) {
+			$this->setPrecisionItem(
+				$basket,
+				$precision_amount,
 				$currency
 			);
 		}
@@ -122,33 +137,37 @@ class PGBasket {
 	 * @param Basket $basket
 	 * @param array $item
 	 * @param array $currency
+	 * @param Transaction $transaction
 	 * @return Basket
 	 * @since 1.0.0
 	 */
-	private function setBasketItem($basket, $item, $currency) {
+	private function setBasketItem($basket, $item, $currency, $transaction) {
 		$gross_amount = $this->model->convertWithTax(
 			$item[self::PRICE],
 			$currency,
 			$item[self::TAXCLASSID]
 		);
-        $rates = $this->model->tax->getRates($item[self::PRICE], $item[self::TAXCLASSID]);
-        $tax_rate = 0;
-        foreach ($rates as $key => $value) {
-            if ($value['amount'] == $this->model->tax->getTax($item[self::PRICE], $item[self::TAXCLASSID])) {
-                //$tax_rate = number_format((1 - 1 / (1 + ($value['rate'] / 100))) * 100, 6); used for reversed tax rate
-                $tax_rate = $value['rate'];
-            }
-        }
-		$tax_amount = $gross_amount - $this->model->convert($item[self::PRICE], $currency);
-		//$tax_rate = number_format($this->model->convert($tax_amount / $gross_amount * 100, $currency), 2);
+		$net_amount = $this->model->convert($item[self::PRICE], $currency);
 
-		$this->sum += $gross_amount * $item[self::QUANTITY];
-		$amount = new Amount(number_format($gross_amount, $currency['precision']), $currency[self::CURRENCYCODE]);
+		$rates = $this->model->tax->getRates($item[self::PRICE], $item[self::TAXCLASSID]);
+		$tax_rate = 0;
+		foreach ($rates as $key => $value) {
+			if ($value['amount'] == $this->model->tax->getTax($item[self::PRICE], $item[self::TAXCLASSID])) {
+				$tax_rate = $value['rate'];
+			}
+		}
+		$tax_amount = bcsub($gross_amount, $net_amount, $this->model->getScale());
+
+		$full_amount = bcmul($gross_amount, $item[self::QUANTITY], $this->model->getScale());
+		$this->sum = bcadd($this->sum, $full_amount, $this->model->getScale());
+		$amount = new Amount(number_format($gross_amount, $this->model->getScale()), $currency[self::CURRENCYCODE]);
 		$basket_item = new Item($item[self::NAME], $amount, $item[self::QUANTITY]);
 		$basket_item->setDescription($item[self::NAME]);
 		$basket_item->setArticleNumber($item[self::ID]);
 		$basket_item->setTaxRate($tax_rate);
-		$basket_item->setTaxAmount(new Amount(number_format($tax_amount, $currency['precision']), $currency[self::CURRENCYCODE]));
+		if ('ratepayinvoice' != $transaction::NAME) {
+			$basket_item->setTaxAmount(new Amount($tax_amount, $currency[self::CURRENCYCODE]));
+		}
 		$basket->add($basket_item);
 
 		return $basket;
@@ -169,21 +188,21 @@ class PGBasket {
 			$currency,
 			$shipping[self::TAXCLASSID]
 		);
-		$tax_amount = $this->model->tax->getTax($shipping[self::COST], $shipping[self::TAXCLASSID]);
-        $rates = $this->model->tax->getRates($shipping[self::COST], $shipping[self::TAXCLASSID]);
-        $tax_rate = 0;
-        foreach ($rates as $key => $value) {
-            if ($value['amount'] == $this->model->tax->getTax($shipping[self::COST], $shipping[self::TAXCLASSID])) {
-                //$tax_rate = number_format((1 - 1 / (1 + ($value['rate'] / 100))) * 100, 6); used for reversed tax rate
-                $tax_rate = $value['rate'];
-            }
-        }
-		//$tax_rate = number_format($this->model->convert($tax_amount / $gross_amount * 100, $currency),2);
-		$this->sum += $gross_amount;
-		$item = new Item('Shipping', new Amount(number_format($gross_amount, $currency['precision']), $currency[self::CURRENCYCODE]), 1);
+		$net_amount = $this->model->convert($shipping[self::COST], $currency);
+		$tax_amount = bcsub($gross_amount, $net_amount, $this->model->getScale());
+		$rates = $this->model->tax->getRates($shipping[self::COST], $shipping[self::TAXCLASSID]);
+		$tax_rate = 0;
+		foreach ($rates as $key => $value) {
+			if ($value['amount'] == $this->model->tax->getTax($shipping[self::COST], $shipping[self::TAXCLASSID])) {
+				$tax_rate = $value['rate'];
+			}
+		}
+		$this->sum = bcadd($this->sum, $gross_amount, $this->model->getScale());
+		$item = new Item('Shipping', new Amount(number_format($gross_amount, $this->model->getScale()), $currency[self::CURRENCYCODE]), 1);
 		$item->setDescription('Shipping');
 		$item->setArticleNumber('Shipping');
-		$item->setTaxRate(number_format($tax_rate, $currency['precision']));
+		$item->setTaxRate(number_format($tax_rate, 2));
+		$item->setTaxAmount(new Amount($tax_amount, $currency[self::CURRENCYCODE]));
 		$basket->add($item);
 
 		return $basket;
@@ -192,16 +211,36 @@ class PGBasket {
 	/**
 	 * Set coupon/discount item
 	 *
-	 * @param $basket
-	 * @param $amount
-	 * @param $currency
+	 * @param Basket $basket
+	 * @param float $amount
+	 * @param string $currency
 	 * @return Basket
 	 * @since 1.0.0
 	 */
 	private function setCouponItem($basket, $amount, $currency) {
-		$item = new Item('Coupon', new Amount(number_format($amount * -1, $currency['precision']), $currency[self::CURRENCYCODE]), 1);
+		$item = new Item('Coupon', new Amount(bcmul($amount, -1, $this->model->getScale()), $currency[self::CURRENCYCODE]), 1);
 		$item->setDescription('Coupon');
 		$item->setArticleNumber('Coupon');
+		$basket->add($item);
+
+		return $basket;
+	}
+
+	/**
+	 * Set precision/rounding item
+	 *
+	 * @param Basket $basket
+	 * @param float $amount
+	 * @param string $currency
+	 * @return Basket
+	 * @since 1.1.0
+	 */
+	private function setPrecisionItem($basket, $amount, $currency) {
+		$item = new Item('Precision', new Amount($amount, $currency[self::CURRENCYCODE]), 1);
+		$item->setDescription('Precision');
+		$item->setArticleNumber('Precision');
+		$item->setTaxRate(0);
+		$item->setTaxAmount(0);
 		$basket->add($item);
 
 		return $basket;

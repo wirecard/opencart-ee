@@ -35,15 +35,23 @@ class AdditionalInformationHelper extends Model {
 	private $config;
 
 	/**
+	 * @var int
+	 * @since 1.1.0
+	 */
+	private $scale;
+
+	/**
 	 * AdditionalInformationHelper constructor.
 	 * @param $registry
 	 * @param $prefix
+	 * @param int $scale
 	 * @since 1.0.0
 	 */
-	public function __construct($registry, $prefix, $config) {
+	public function __construct($registry, $prefix, $config, $scale = 12) {
 		parent::__construct($registry);
 		$this->prefix = $prefix;
 		$this->config = $config;
+		$this->scale = $scale;
 	}
 
 	/**
@@ -183,34 +191,25 @@ class AdditionalInformationHelper extends Model {
 	 * Get currency array by code
 	 *
 	 * @param string $currency_code
-	 * @param string $type
 	 * @return array
 	 * @since 1.1.0
 	 */
-	public function getCurrency($currency_code, $type) {
+	public function getCurrency($currency_code) {
 		$this->load->model('localisation/currency');
 		$currency_row = $this->model_localisation_currency->getCurrencyByCode($currency_code);
 		$currency = [
 			'currency_code' => $currency_row['code'],
-			'currency_value' => $currency_row['value'],
-			'precision' => $this->getPrecision($currency_row['value'], $type)
+			'currency_value' => $currency_row['value']
 			];
 		return $currency;
 	}
 
 	/**
-	 * Get precision for current currency from value
+	 * Get transaction specific scaling factor
 	 *
-	 * @param float $currency_value
-	 * @param string $type
 	 * @return int
-	 * @since 1.1.0
 	 */
-	public function getPrecision($currency_value, $type) {
-		if ('sepadirectdebit' == $type) {
-			return 2;
-		}
-		//hardcoded decimal precision for testing ratepay basket
-		return 6;
+	public function getScale() {
+		return $this->scale;
 	}
 }
