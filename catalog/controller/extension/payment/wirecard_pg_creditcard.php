@@ -81,7 +81,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1);
 
 		$transaction_service = new TransactionService($this->getConfig(), $this->getLogger());
-		$response = $transaction_service->processJsResponse($_POST,
+		$response = $transaction_service->processJsResponse($this->request->post,
 			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
 
 		$this->session->data['save_card'] = isset($this->request->post['save_card']) ? $this->request->post['save_card'] : null;
@@ -237,5 +237,16 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		]));
 	}
 
+	/**
+	 * Get an instance of the Credit Card vault.
+	 *
+	 * @return ModelExtensionPaymentWirecardPGVault
+	 * @since 1.1.0
+	 */
+	protected function getVault() {
+		$this->load->model('extension/payment/wirecard_pg/vault');
+
+		return $this->model_extension_payment_wirecard_pg_vault;
+	}
 }
 

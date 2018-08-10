@@ -193,11 +193,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	/**
 	 * Create payment specific config
 	 *
-	 * @param array $currency
 	 * @return Config
 	 * @since 1.0.0
 	 */
-	public function getConfig($currency = null) {
+	public function getConfig() {
 		$basic_info = new ExtensionModuleWirecardPGPluginData();
 		$base_url = $this->getShopConfigVal('base_url');
 		$http_user = $this->getShopConfigVal('http_user');
@@ -364,6 +363,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	public function processResponse($result, $logger, $transaction_service) {
 		$order_manager = new PGOrderManager($this->registry);
 		$delete_failure = $this->getShopConfigVal('delete_failure_order');
+		$errors = '';
 
 		if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
 			if (!$this->isIgnorableMasterpassResult($result)) {
@@ -403,24 +403,20 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$data = array_merge($this->getCommonBlocks(), $data);
 			$this->response->setOutput($this->load->view('extension/payment/wirecard_interaction_response', $data));
 		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
-			$errors = '';
-
 			foreach ($result->getStatusCollection()->getIterator() as $item) {
 				$errors .= $item->getDescription() . "<br>\n";
 				$logger->error($item->getDescription());
 			}
 
-			$this->session->data['error'] = $errors;
 			$order_manager->updateCancelFailureOrder($result->getCustomFields()->get('orderId'), 'failed', $delete_failure);
-			$this->response->redirect($this->url->link('checkout/checkout'));
-
-			return false;
 		} else {
-			$this->session->data['error'] = $this->language->get('order_error');
-			$this->response->redirect($this->url->link('checkout/checkout'));
-
-			return false;
+			$errors = $this->language->get('order_error');
 		}
+
+		$this->session->data['error'] = $errors;
+		$this->response->redirect($this->url->link('checkout/checkout'));
+
+		return false;
 	}
 
 	/**
@@ -510,18 +506,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->getLogger()->error(get_class($e) . ": " . $e->getMessage());
 			return false;
 		}
-	}
-
-	/**
-	 * Get an instance of the Credit Card vault.
-	 *
-	 * @return ModelExtensionPaymentWirecardPGVault
-	 * @since 1.1.0
-	 */
-	protected function getVault() {
-		$this->load->model('extension/payment/wirecard_pg/vault');
-
-		return $this->model_extension_payment_wirecard_pg_vault;
 	}
 
 	/**
