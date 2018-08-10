@@ -57,8 +57,8 @@ function logError(error) {
  * @since 1.0.0
  */
 function getCreditCardRequestData() {
-	var maxWait = 5000, waitStep = 250, WPPavailableInterval = setInterval( function () {
-		maxWait -= waitStep;
+	var maxWait = 500, WPPavailableInterval = setInterval( function () {
+		maxWait--;
 		if ( typeof WirecardPaymentPage !== "undefined" ) {
 			$.ajax( {
 				url: "index.php?route=extension/payment/wirecard_pg_" + window.WirecardPaymentMethod + "/get" + window.WirecardPaymentMethod + "UiRequestData",
@@ -79,10 +79,10 @@ function getCreditCardRequestData() {
 			clearInterval( WPPavailableInterval );
 		}
 		if ( maxWait <= 0 ) {
-			logError("WPP did not respond in " + Integer.valueOf(maxWait/1000) + "seconds");
+			logError("A time out error occurred during render form process. No successful response possible");
 			clearInterval(WPPavailableInterval);
 		}
-	}, waitStep );
+	}, 20 );
 }
 
 /**
