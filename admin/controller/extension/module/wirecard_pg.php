@@ -44,9 +44,9 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 
 		$this->document->setTitle($this->language->get(self::HEADING_TITLE));
 
-		$data['error_warning'] = '';
+		$data['wirecard_error'] = '';
 		if (isset($this->error['warning'])) {
-			$data['error_warning'] = $this->error['warning'];
+			$data['wirecard_error'] = $this->error['warning'];
 		}
 
 		$data[self::HEADING_TITLE] = $this->language->get(self::HEADING_TITLE);

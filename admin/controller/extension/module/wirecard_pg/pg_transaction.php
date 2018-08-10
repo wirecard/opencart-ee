@@ -52,7 +52,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		if (isset($this->request->get['id'])) {
 			$data['transaction'] = $this->getTransactionDetails($this->request->get['id'];
 		} else {
-			$data['error_warning'] = $this->language->get('error_no_transaction');
+			$data['wirecard_error'] = $this->language->get('error_no_transaction');
 		}
 		if (isset($this->session->data['wirecard_info']['success_message'])) {
 			$data['success_message'] = $this->session->data['wirecard_info']['success_message'];
@@ -61,7 +61,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		}
 
 		if (isset($this->session->data['wirecard_info']['admin_error'])) {
-			$data['error_warning'] = $this->session->data['wirecard_info']['admin_error'];
+			$data['wirecard_error'] = $this->session->data['wirecard_info']['admin_error'];
 		}
 
 		unset(

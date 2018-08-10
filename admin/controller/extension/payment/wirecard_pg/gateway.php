@@ -104,7 +104,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 				$this->response->redirect($this->url->link('marketplace/extension',
 					'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
 			} else {
-				$data['error_warning'] = $this->language->get('error_mandatory_fields');
+				$data['wirecard_error'] = $this->language->get('error_mandatory_fields');
 			}
 		}
 
