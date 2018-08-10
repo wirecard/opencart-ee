@@ -70,10 +70,10 @@ class ControllerExtensionPaymentWirecardPGTransactionHandler extends Controller 
 				$logger->error($item->getDescription());
 			}
 
-			$this->session->data['admin_error'] = $errors;
+			$this->session->data['wirecard_info']['admin_error'] = $errors;
 			return false;
 		}
-		$this->session->data['admin_error'] = $this->language->get('error_occured');
+		$this->session->data['wirecard_info']['admin_error'] = $this->language->get('error_occured');
 
 		return false;
 	}

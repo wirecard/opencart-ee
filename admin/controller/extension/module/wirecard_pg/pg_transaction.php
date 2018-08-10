@@ -60,13 +60,12 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$data['child_transaction_href'] = $this->session->data['wirecard_info']['child_transaction_href'];
 		}
 
-		if (isset($this->session->data['admin_error'])) {
-			$data['error_warning'] = $this->session->data['admin_error'];
+		if (isset($this->session->data['wirecard_info']['admin_error'])) {
+			$data['error_warning'] = $this->session->data['wirecard_info']['admin_error'];
 		}
 
 		unset(
-			$this->session->data['wirecard_info'],
-			$this->session->data['admin_error']
+			$this->session->data['wirecard_info']
 		);
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/details', $data));
