@@ -46,6 +46,18 @@ class ModelExtensionPaymentWirecardPG extends Model {
 			ALTER TABLE `" . DB_PREFIX . "wirecard_ee_transactions`
 			MODIFY COLUMN `amount` DECIMAL(10, 6) NOT NULL;
 		");
+
+		$this->db->query("
+			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "wirecard_ee_vault` (
+			`vault_id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
+			`user_id` INT(10) NOT NULL,
+			`address_id` INT(10) NOT NULL,
+			`token` VARCHAR(20) NOT NULL,
+			`masked_pan` VARCHAR(30) NOT NULL,
+			`expiration_month` INT(10) NOT NULL,
+			`expiration_year` INT(10) NOT NULL,
+			PRIMARY KEY (`vault_id`)
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
 	}
 
 	/**

@@ -134,7 +134,7 @@ class AdditionalInformationHelper extends Model {
 		if ($order['ip']) {
 			$transaction->setIpAddress($order['ip']);
 		} else {
-			$transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
+			$transaction->setIpAddress($this->request->server['REMOTE_ADDR']);
 		}
 
 		if (strlen($order['customer_id'])) {

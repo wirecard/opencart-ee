@@ -73,11 +73,9 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	public function confirm() {
 		$this->load->language('extension/payment/wirecard_pg_sepadd');
 		if ((bool)$this->request->post['mandate_confirmed'] == false) {
-			$json = [];
+			$json = ['error' => $this->language->get('sepa_fields_error')];
 			if ($this->validateMandatoryFields()) {
 				$json = ['popup' => $this->generateMandateTemplate($this->request->post), 'button_text' => $this->language->get('sepa_cancel')];
-			} else {
-				$json = ['error' => $this->language->get('sepa_fields_error')];
 			}
 
 			$this->response->addHeader('Content-Type: application/json');
@@ -91,10 +89,11 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	/**
 	 * Set additional data needed for SEPA
 	 *
+	 * @param $force_data
 	 * @since 1.1.0
 	 */
-	public function prepareTransaction() {
-		parent::prepareTransaction();
+	public function prepareTransaction($force_data = false) {
+		parent::prepareTransaction($force_data);
 
 		$account_holder = new \Wirecard\PaymentSdk\Entity\AccountHolder();
 		$account_holder->setFirstName($this->request->post['first_name']);

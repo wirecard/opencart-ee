@@ -1,12 +1,60 @@
-<link rel="stylesheet" href="catalog/view/theme/default/template/extension/payment/wirecard_pg/loader.css" />
-<div id="pg-spinner">
-    <div class="loader" style="display: flex; justify-content: center; font-size: 20px;"></div>
-    <div class="loading-text" style="text-align: center;margin-bottom: 50px;">
-        {{ loading_text }}
+{% if shipping_data_changed and not allow_changed_shipping%}
+    <div class="alert alert-shipping-data alert-info alert-dismissible">
+        <i class="fa fa-info-circle"></i>
+        {{ vault_changed_shipping_text }}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div>
+{% endif %}
+<div id="error-message" class="alert alert-danger" style="display: none;"><i class="fa fa-exclamation-circle"></i>
+    <span></span> <strong id="deleted-pan"></strong>.
 </div>
+{% if existing_cards and vault %}
+    <div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="tab-existing active" role="presentation"><a href="#existing" aria-controls="existing" role="tab" data-toggle="tab">{{ vault_use_existing_text }}</a></li>
+            <li class="tab-new" role="presentation"><a href="#new" aria-controls="new" role="tab" data-toggle="tab">{{ vault_use_new_text }}</a></li>
+        </ul>
 
-<div id="creditcard-form-div"></div>
-<script>window.WirecardPaymentMethod = "{{ type }}"</script>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="existing">
+                <div id="success-message" class="alert alert-success" style="display: none;">
+                    <i class="fa fa-check-circle"></i>
+                    {{ vault_delete_success_text }} <strong id="deleted-pan"></strong>.
+                </div>
+
+                <div id="failure-message" class="alert alert-danger" style="display: none;"><i class="fa fa-exclamation-circle"></i>
+                    {{ vault_delete_failure_text }} <strong id="deleted-pan"></strong>.
+                </div>
+
+                <div class="list-group" id="list-existing-cards">
+                    {% for card in existing_cards %}
+                        <label data-pan="{{ card.masked_pan }}" class="list-group-item credit-card-selector">
+                            <div>
+                                <input type="radio" name="token" value="{{ card.token }}" onclick="setToken(this.value)" />
+                                <span class="credit-card-info">
+                                    <strong>{{ card.masked_pan }}</strong>
+                                    <span class="credit-card-expires">({{ vault_valid_until_text }} {{ "%'02.2s"|format(card.expiration_month) }}/{{ card.expiration_year }})</span>
+                                </span>
+                            </div>
+
+                            <div>
+                                <a onclick="deleteCardFromVault({{ card.vault_id }}, '{{ card.masked_pan }}')" class="credit-card-delete">{{ vault_delete_card_text }}</a>
+                            </div>
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="new">
+                {% include 'default/template/extension/payment/wirecard_credit_card_form.twig' with { 'loading_text': loading_text } %}
+            </div>
+        </div>
+    </div>
+{% else %}
+    {% include 'default/template/extension/payment/wirecard_credit_card_form.twig' with { 'loading_text': loading_text } %}
+{% endif %}
+
+<link rel="stylesheet" href="catalog/view/theme/default/template/extension/payment/wirecard_pg/credit_card.css" />
 <script id="credit-card-lib" src="{{ base_url }}/engine/hpp/paymentPageLoader.js" type="text/javascript"></script>
 <script src="catalog/view/javascript/wirecard_pg_credit_card.js" type="text/javascript"></script>

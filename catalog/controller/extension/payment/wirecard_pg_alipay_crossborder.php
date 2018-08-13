@@ -41,10 +41,11 @@ class ControllerExtensionPaymentWirecardPGAlipayCrossborder extends ControllerEx
 	/**
 	 * Prepare transaction as required.
 	 *
+	 * @param $force_data
 	 * @since 1.1.0
 	 */
-	public function prepareTransaction() {
-		parent::prepareTransaction();
+	public function prepareTransaction($force_data = false) {
+		parent::prepareTransaction($force_data);
 
 		$this->load->model('checkout/order');
 

@@ -104,7 +104,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 				$this->response->redirect($this->url->link('marketplace/extension',
 					'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
 			} else {
-				$data['error_warning'] = $this->language->get('error_mandatory_fields');
+				$data['wirecard_error'] = $this->language->get('error_mandatory_fields');
 			}
 		}
 
@@ -190,7 +190,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$data = array();
 
 		foreach ($this->config_fields as $config_field) {
-			$data[$config_field] = $this->getConfigVal($config_field);
+			$data[$config_field] = is_array($this->getConfigVal($config_field)) ? $this->getConfigVal($config_field) : (string)$this->getConfigVal($config_field) ;
 		}
 
 		return $data;
@@ -319,11 +319,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	private function getConfigVal($key) {
 		$prefix = $this->prefix . $this->type . '_';
 
-		if (isset($this->request->post[$key])) {
-			return $this->request->post[$prefix . $key];
-		} else {
-			return !empty($this->config->get($prefix . $key)) ? $this->config->get($prefix . $key) : $this->default[$key];
+		if ($this->config->get($prefix . $key) != null) {
+			return $this->config->get($prefix . $key);
 		}
+		return $this->default[$key];
 	}
 
 	/**

@@ -12,3 +12,13 @@ $_['order_error'] = 'Während des Zahlungsprozesses ist ein Fehler aufgetreten.'
 
 $_['redirect_text'] = 'Sie werden weitergeleitet. Bitte warten.';
 $_['loading_text'] = 'Eingabemaske für Kreditkarte wird geladen.';
+
+// One-click checkout
+$_['vault_changed_shipping_text'] = 'Ihre Lieferadresse hat sich seit Ihrer letzten Bestellung geändert. Aus Sicherheitsgründen müssen Sie ihre Kreditkarteninformation erneut eingeben.';
+$_['vault_use_existing_text'] = 'Gespeicherte Kreditkarte verwenden';
+$_['vault_use_new_text'] = 'Neue Kreditkarte verwenden';
+$_['vault_delete_card_text'] = 'Karte löschen';
+$_['vault_delete_success_text'] = 'Folgende Kreditkarte wurde erfolgreich gelöscht:';
+$_['vault_delete_failure_text'] = 'Folgende Kreditkarte konnte nicht gelöscht werden:';
+$_['vault_valid_until_text'] = 'gültig bis';
+$_['vault_save_text'] = 'Speichern für One-Click Checkout';

@@ -12,7 +12,7 @@
  * @since 1.1.0
  */
 function validateBirthdate() {
-	var birthDate = new Date($('#ratepayinvoice-birthdate').val());
+	var birthDate = new Date($("#ratepayinvoice-birthdate").val());
 	birthDate.setHours(0,0,0,0);
 	var limit = new Date();
 	limit.setFullYear(limit.getFullYear() - 18);

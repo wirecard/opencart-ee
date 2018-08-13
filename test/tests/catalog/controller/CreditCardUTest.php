@@ -31,6 +31,7 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 	private $language;
 	private $cart;
 	private $currency;
+	private $customer;
 
 	const SHOP = 'OpenCart';
 	const PLUGIN = 'Wirecard OpenCart Extension';
@@ -91,8 +92,21 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 
 		$this->modelCreditCard = $this->getMockBuilder(ModelExtensionPaymentWirecardPGCreditCard::class)
 			->disableOriginalConstructor()
-			->setMethods(['sendRequest'])
+			->setMethods(['sendRequest', 'getLatestCustomerShipping'])
 			->getMock();
+
+		$this->modelCreditCard->method('getLatestCustomerShipping')->willReturn(array(
+			'firstname' => 'John',
+			'lastname' => 'Doe',
+			'company' => '',
+			'address_1' => 'Unit St 123',
+			'address_2' => '',
+			'city' => 'Testing City',
+			'zone_id' => '999',
+			'zone' => 'California',
+			'country_id' => '999',
+			'country' => 'USA',
+		));
 
 		$this->loader = $this->getMockBuilder(Loader::class)
 			->disableOriginalConstructor()
@@ -102,6 +116,11 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 		$this->language = $this->getMockBuilder(Language::class)->disableOriginalConstructor()->getMock();
 
 		$this->currency = $this->getMockBuilder(Currency::class)->disableOriginalConstructor()->getMock();
+
+		$this->customer = $this->getMockBuilder(Customer::class)
+			->disableOriginalConstructor()
+			->setMethods(['isLogged'])
+			->getMock();
 
 		$items = [
 			["price" => 10.465, "name" => "Produkt1", "quantity" => 2, "product_id" => 2, "tax_class_id" => 2],
@@ -121,13 +140,31 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 			$this->modelCreditCard,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 	}
 
 	public function testIndexActive() {
 		$this->config->expects($this->at(0))->method('get')->willReturn(1);
 		$this->loader->method('view')->willReturn('active');
+		$this->customer->method('isLogged')->willReturn(true);
+
+		$this->session->data['shipping_address'] = array(
+			'firstname' => 'John',
+			'lastname' => 'Doe',
+			'company' => '',
+			'address_1' => 'Unit St 123',
+			'address_2' => '',
+			'city' => 'Testing City',
+			'zone_id' => '999',
+			'zone' => 'California',
+			'country_id' => '999',
+			'country' => 'USA',
+		);
+
 		$this->controller = new ControllerExtensionPaymentWirecardPGCreditCard(
 			$this->registry,
 			$this->config,
@@ -139,7 +176,10 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 			$this->modelCreditCard,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$actual = $this->controller->index();
@@ -151,15 +191,17 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
         $orderManager = m::mock('overload:PGOrderManager');
         $orderManager->shouldReceive('createResponseOrder');
 
-	    $_POST['merchant_account_id'] = '1111111111';
-	    $_POST['transaction_id'] = 'da04876d-1d92-431c-b33a-49080914c996';
-	    $_POST['transaction_type'] = 'authorization';
-	    $_POST['payment_method'] = 'creditcard';
-        $_POST['request_id'] = '123';
-        $_POST['transaction_state'] = 'success';
-        $_POST['status_code_1'] = '201.0000';
-        $_POST['status_description_1'] = '3d-acquirer:The resource was successfully created.';
-        $_POST['status_severity_1'] = 'information';
+        $this->controller->request->post = array (
+        	'merchant_account_id' => '1111111111',
+	        'transaction_id' => 'da04876d-1d92-431c-b33a-49080914c996',
+	        'transaction_type' => 'authorization',
+	        'payment_method' => 'creditcard',
+	        'request_id' => '123',
+	        'transaction_state' => 'success',
+	        'status_code_1' => '201.0000',
+	        'status_description_1' => '3d-acquirer:The resource was successfully created.',
+	        'status_severity_1' => 'information'
+        );
 
         $this->controller->confirm();
 		$json['response'] = [];
@@ -198,7 +240,10 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 			$this->modelCreditCard,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
@@ -255,4 +300,44 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 		$expected = $this->controller->getController('creditcard');
 		$this->assertNotNull($expected);
     }
+
+    public function testConfirmWithToken() {
+		$overrideRequest = [ 'token' => '123456789' ];
+
+		$this->controller = new ControllerExtensionPaymentWirecardPGCreditCard(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelCreditCard,
+			$this->language,
+			$this->cart,
+			$this->currency,
+			null,
+			null,
+			$this->customer,
+			$overrideRequest
+		);
+
+		$this->controller->confirm();
+
+		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGCreditCard::class);
+		$prop = $reflector->getProperty('transaction');
+		$prop->setAccessible(true);
+
+		/** @var \Wirecard\PaymentSdk\Transaction\CreditCardTransaction $transaction */
+		$transaction = $prop->getValue($this->controller);
+
+		$transactionReflector = new ReflectionClass(\Wirecard\PaymentSdk\Transaction\CreditCardTransaction::class);
+		$prop = $transactionReflector->getProperty('tokenId');
+		$prop->setAccessible(true);
+
+		$tokenId = $prop->getValue($transaction);
+
+		$this->assertEquals('123456789', $tokenId);
+		$this->assertInstanceOf(\Wirecard\PaymentSdk\Transaction\CreditCardTransaction::class, $transaction);
+	}
 }

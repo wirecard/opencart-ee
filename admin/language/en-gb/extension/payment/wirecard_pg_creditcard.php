@@ -14,7 +14,7 @@ $_['text_wirecard_pg_creditcard'] = '<img src="./view/image/wirecard_pg/creditca
 // Payment specific configuration
 $_['text_edit'] = 'Edit Credit Card';
 $_['config_status_desc'] = 'Activate payment method Credit Card to make it available for your consumers.';
-$_['config_three_d_merchant_account_id'] = '3-D Secure Merchant Account ID';
+$_['config_three_d_merchant_account_id'] = '3-D Secure MAID';
 $_['config_three_d_merchant_account_id_desc'] = 'Unique identifier assigned to your 3-D Secure merchant account. Can be set to "null" to force SSL process.';
 $_['config_three_d_merchant_secret'] = '3-D Secure Secret Key';
 $_['config_three_d_merchant_secret_desc'] = 'Secret Key is mandatory to calculate the Digital Signature for the 3-D Secure payment. Can be set to "null" to force SSL process.';
@@ -23,3 +23,8 @@ $_['config_limit_desc'] = 'Amount in default shop currency';
 $_['config_three_d_min_limit'] = '3-D Secure Min. Limit';
 $_['config_merchant_account_id_cc_desc'] = 'Unique identifier assigned to your merchant account. Can be set to "null" to force 3-D process.';
 $_['config_merchant_secret_cc_desc'] = 'Secret Key is mandatory to calculate the Digital Signature for payments. Can be set to "null" to force 3-D process.';
+$_['text_vault'] = "One-Click Checkout";
+$_['config_vault'] = "One-Click Checkout";
+$_['config_vault_desc'] = "Credit Cards can be saved for further use without re-entering credit card details.";
+$_['config_allow_changed_shipping'] = "Allow Shipping Address Change";
+$_['config_allow_changed_shipping_desc'] = "If disabled the customer will be required to enter new credit card details should their shipping address changes between transactions.";
