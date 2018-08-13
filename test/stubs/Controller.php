@@ -16,6 +16,7 @@ abstract class Controller
     protected $language;
     protected $cart;
 	protected $currency;
+	protected $transaction;
 	public $request;
 	public $model_extension_payment_wirecard_pg_paypal;
     public $model_extension_payment_wirecard_pg_creditcard;
@@ -31,7 +32,7 @@ abstract class Controller
     public $model_checkout_order;
     public $controller_extension_payment_wirecard_pg_sepact;
 
-    public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPayment, $language, $cart, $currency, $subController = null, $document = null, $customer = null, $overrideRequest = null)
+    public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPayment, $language, $cart, $currency, $subController = null, $document = null, $customer = null, $overrideRequest = null, $transaction = null)
     {
         $this->registry = $registry;
         $this->config = $config;
@@ -56,6 +57,7 @@ abstract class Controller
         $this->controller_extension_payment_wirecard_pg_sepact = $subController;
         $this->document = $document;
         $this->customer = $customer;
+        $this->transaction = $transaction;
 
 	    $this->request = new stdClass();
 	    $this->request->post = $overrideRequest ?: [

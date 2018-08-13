@@ -428,4 +428,31 @@ class RatepayInvoiceUTest extends \PHPUnit_Framework_TestCase
 		$actual = $this->controller->response();
 		$this->assertNull($actual);
 	}
+
+	public function testPrepareTransaction()
+    {
+        $transaction = new RatepayInvoiceTransaction();
+        $this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
+            $this->registry,
+            $this->config,
+            $this->loader,
+            $this->session,
+            $this->response,
+            $this->modelOrder,
+            $this->url,
+            $this->modelRatepayInvoice,
+            $this->language,
+            $this->cart,
+            $this->currency,
+            null,
+            null,
+            $this->customer,
+            null,
+            $transaction
+        );
+
+        $this->controller->prepareTransaction();
+
+        $this->assertEquals($transaction, $this->controller->getTransaction());
+    }
 }

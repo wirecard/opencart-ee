@@ -528,4 +528,14 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			return 'authorization';
 		}
 	}
+
+    /**
+     * Get transaction member
+     *
+     * @return \Wirecard\PaymentSdk\Transaction\Transaction
+     * @since 1.1.0
+     */
+	public function getTransaction() {
+	    return $this->transaction;
+    }
 }
