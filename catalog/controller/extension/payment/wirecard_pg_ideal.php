@@ -31,6 +31,12 @@ class ControllerExtensionPaymentWirecardPGIdeal extends ControllerExtensionPayme
 	 */
 	protected $type = 'ideal';
 
+    /**
+     * @var int
+     * @since 1.1.0
+     */
+    protected $scale = 2;
+
 	/**
 	 * Basic index method
 	 *

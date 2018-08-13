@@ -33,6 +33,12 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
      */
 	protected $payment_method = 'sepadirectdebit';
 
+    /**
+     * @var int
+     * @since 1.1.0
+     */
+    protected $scale = 2;
+
 	/**
 	 * Basic index method
 	 *
