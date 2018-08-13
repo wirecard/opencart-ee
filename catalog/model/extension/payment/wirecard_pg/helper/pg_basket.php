@@ -62,9 +62,9 @@ class PGBasket {
 	 * @since 1.0.0
 	 */
 	public function getBasket($transaction, $items, $shipping, $currency, $total) {
-		$this->sum = 0;
 		$total_amount = $this->model->convert($total, $currency);
-		$total_amount = number_format($total_amount, $this->model->getScale());
+		$total_amount = bcadd($total_amount, 0.000000000000, $this->model->getScale());
+        $this->sum = $total_amount;
 
 		$basket = new Basket();
 		$basket->setVersion($transaction);
@@ -88,11 +88,10 @@ class PGBasket {
 				$currency
 			);
 		}
-		$precision_amount = bcsub($total_amount, $this->sum, $this->model->getScale());
-		if ((float)$precision_amount) {
+		if ($this->sum > 0) {
 			$this->setPrecisionItem(
 				$basket,
-				$precision_amount,
+				$this->sum,
 				$currency
 			);
 		}
@@ -147,6 +146,7 @@ class PGBasket {
 			$currency,
 			$item[self::TAXCLASSID]
 		);
+		$gross_amount = bcadd($gross_amount, 0.000000000000, $this->model->getScale());
 		$net_amount = $this->model->convert($item[self::PRICE], $currency);
 
 		$rates = $this->model->tax->getRates($item[self::PRICE], $item[self::TAXCLASSID]);
@@ -157,10 +157,9 @@ class PGBasket {
 			}
 		}
 		$tax_amount = bcsub($gross_amount, $net_amount, $this->model->getScale());
-
 		$full_amount = bcmul($gross_amount, $item[self::QUANTITY], $this->model->getScale());
-		$this->sum = bcadd($this->sum, $full_amount, $this->model->getScale());
-		$amount = new Amount(number_format($gross_amount, $this->model->getScale()), $currency[self::CURRENCYCODE]);
+		$this->sum = bcsub($this->sum, $full_amount, $this->model->getScale());
+		$amount = new Amount(bcadd($gross_amount, 0.000000000000, $this->model->getScale()), $currency[self::CURRENCYCODE]);
 		$basket_item = new Item($item[self::NAME], $amount, $item[self::QUANTITY]);
 		$basket_item->setDescription($item[self::NAME]);
 		$basket_item->setArticleNumber($item[self::ID]);
@@ -197,7 +196,7 @@ class PGBasket {
 				$tax_rate = $value['rate'];
 			}
 		}
-		$this->sum = bcadd($this->sum, $gross_amount, $this->model->getScale());
+		$this->sum = bcsub($this->sum, $gross_amount, $this->model->getScale());
 		$item = new Item('Shipping', new Amount(number_format($gross_amount, $this->model->getScale()), $currency[self::CURRENCYCODE]), 1);
 		$item->setDescription('Shipping');
 		$item->setArticleNumber('Shipping');
