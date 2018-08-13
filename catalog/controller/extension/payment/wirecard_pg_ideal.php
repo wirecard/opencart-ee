@@ -126,10 +126,9 @@ class ControllerExtensionPaymentWirecardPGIdeal extends ControllerExtensionPayme
 	 * @since 1.0.0
 	 */
 	public function createTransaction($parent_transaction, $amount) {
+		$this->transaction = new IdealTransaction();
 		if ($this->operation == Operation::CREDIT) {
 			$this->transaction = new SepaCreditTransferTransaction();
-		} else {
-			$this->transaction = new IdealTransaction();
 		}
 
 		return parent::createTransaction($parent_transaction, $amount);

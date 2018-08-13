@@ -112,10 +112,9 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	 * @since 1.0.0
 	 */
 	public function createTransaction($parentTransaction, $amount) {
+		$this->transaction = new SofortTransaction();
 		if ($this->operation == Operation::CREDIT) {
 			$this->transaction = new SepaCreditTransferTransaction();
-		} else {
-			$this->transaction = new SofortTransaction();
 		}
 
 		return parent::createTransaction($parentTransaction, $amount);

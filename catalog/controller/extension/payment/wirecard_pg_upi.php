@@ -55,7 +55,7 @@ class ControllerExtensionPaymentWirecardPGUPI extends ControllerExtensionPayment
 
 		$transaction_service = new TransactionService($this->getConfig(), $this->getLogger());
 		$response = $transaction_service->processJsResponse(
-			$_POST,
+			$this->request->post,
 			$this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL')
 		);
 
