@@ -37,15 +37,6 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	protected $scale = 2;
 
 	/**
-	 * Basic index method
-	 *
-	 * @since 1.0.0
-	 */
-	public function index($data = null) {
-		return parent::index();
-	}
-
-	/**
 	 * Create Sofort. transaction
 	 *
 	 * @since 1.0.0
