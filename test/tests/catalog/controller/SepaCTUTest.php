@@ -11,7 +11,6 @@ use Mockery as m;
 
 require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_sepact.php';
 
-use Wirecard\PaymentSdk\Transaction\SepaTransaction;
 
 /**
  * @runTestsInSeparateProcesses
@@ -152,6 +151,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
 		$expected->add(new \Wirecard\PaymentSdk\Config\SepaConfig(
+		    'sepacredit',
 			'account123',
 			'secret123'
 		));
@@ -189,7 +189,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 		$this->controller->confirm();
 
-		$this->assertInstanceof(SepaTransaction::class, $prop->getValue($this->controller));
+		$this->assertInstanceof(\Wirecard\PaymentSdk\Transaction\SepaCreditTransferTransaction::class, $prop->getValue($this->controller));
 	}
 
 	public function testIndexActive()
@@ -240,7 +240,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			'amount' => '10'
 		);
 
-		$expected = new SepaTransaction();
+		$expected = new \Wirecard\PaymentSdk\Transaction\SepaCreditTransferTransaction();
 		$expected->setParentTransactionId('1234');
 
 		$actual = $this->controller->createTransaction($transaction, null);
@@ -286,7 +286,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->currency
 		);
 
-		$expected = new \Wirecard\PaymentSdk\Transaction\SepaTransaction();
+		$expected = new \Wirecard\PaymentSdk\Transaction\SepaCreditTransferTransaction();
 
 		$actual = $this->controller->getTransactionInstance();
 
