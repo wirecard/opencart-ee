@@ -64,7 +64,7 @@ class PGBasket {
 	public function getBasket($transaction, $items, $shipping, $currency, $total) {
 		$total_amount = $this->model->convert($total, $currency);
 		$total_amount = bcadd($total_amount, 0.000000000000, $this->model->getScale());
-        $this->sum = $total_amount;
+		$this->sum = $total_amount;
 
 		$basket = new Basket();
 		$basket->setVersion($transaction);
