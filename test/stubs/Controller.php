@@ -17,7 +17,7 @@ abstract class Controller
 	protected $currency;
     public $model_extension_payment_wirecard_pg_paypal;
     public $model_extension_payment_wirecard_pg_creditcard;
-	public $model_extension_payment_wirecard_pg_sepacredit;
+	public $model_extension_payment_wirecard_pg_sepact;
 	public $model_extension_payment_wirecard_pg_sofortbanking;
 	public $model_extension_payment_wirecard_pg_ideal;
 	public $model_extension_payment_wirecard_pg_poi;
@@ -26,7 +26,7 @@ abstract class Controller
 	public $model_extension_payment_wirecard_pg_masterpass;
 	public $model_extension_payment_wirecard_pg_upi;
     public $model_checkout_order;
-    public $controller_extension_payment_wirecard_pg_sepacredit;
+    public $controller_extension_payment_wirecard_pg_sepact;
 
     public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPayment, $language, $cart, $currency, $subController = null, $document = null, $customer = null)
     {
@@ -39,7 +39,7 @@ abstract class Controller
         $this->url = $url;
         $this->model_extension_payment_wirecard_pg_paypal = $modelPayment;
         $this->model_extension_payment_wirecard_pg_creditcard = $modelPayment;
-		$this->model_extension_payment_wirecard_pg_sepacredit = $modelPayment;
+		$this->model_extension_payment_wirecard_pg_sepact = $modelPayment;
 		$this->model_extension_payment_wirecard_pg_sofortbanking = $modelPayment;
 		$this->model_extension_payment_wirecard_pg_ideal = $modelPayment;
         $this->model_extension_payment_wirecard_pg_alipay_crossborder = $modelPayment;
@@ -49,7 +49,7 @@ abstract class Controller
 		$this->model_extension_payment_wirecard_pg_pia = $modelPayment;
         $this->language = $language;
         $this->cart = $cart;
-        $this->controller_extension_payment_wirecard_pg_sepacredit = $subController;
+        $this->controller_extension_payment_wirecard_pg_sepact = $subController;
         $this->document = $document;
         $this->customer = $customer;
 

@@ -10,19 +10,19 @@
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ControllerExtensionPaymentWirecardPGSEPADirectDebit
+ * Class ControllerExtensionPaymentWirecardPGSEPADD
  *
  * SEPA Direct Debit payment transaction controller
  *
  * @since 1.1.0
  */
-class ControllerExtensionPaymentWirecardPGSepaDirectDebit extends \ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGSepaDD extends \ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.1.0
 	 */
-	protected $type = 'sepadirectdebit';
+	protected $type = 'sepadd';
 
 	/**
 	 * @var bool

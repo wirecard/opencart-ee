@@ -8,7 +8,7 @@
  */
 
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
-require_once(dirname(__FILE__) . '/wirecard_pg_sepacredit.php');
+require_once(dirname(__FILE__) . '/wirecard_pg_sepact.php');
 
 use Wirecard\PaymentSdk\Transaction\IdealTransaction;
 use Wirecard\PaymentSdk\Transaction\SepaCreditTransferTransaction;
@@ -68,12 +68,12 @@ class ControllerExtensionPaymentWirecardPGIdeal extends ControllerExtensionPayme
 	/**
 	 * Provides a SEPA Credit Transfer controller for refunding payments.
 	 *
-	 * @return ControllerExtensionPaymentWirecardPGSepaCredit
+	 * @return ControllerExtensionPaymentWirecardPGSepaCT
 	 */
 	public function getSepaController() {
-		$this->controller_extension_payment_wirecard_pg_sepacredit = new ControllerExtensionPaymentWirecardPGSepaCredit($this->registry);
+		$this->controller_extension_payment_wirecard_pg_sepact = new ControllerExtensionPaymentWirecardPGSepaCT($this->registry);
 
-		return $this->controller_extension_payment_wirecard_pg_sepacredit;
+		return $this->controller_extension_payment_wirecard_pg_sepact;
 	}
 
 	/**

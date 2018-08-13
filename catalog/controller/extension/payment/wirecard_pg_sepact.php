@@ -13,19 +13,25 @@ use Wirecard\PaymentSdk\Transaction\SepaCreditTransferTransaction;
 use Wirecard\PaymentSdk\Config\SepaConfig;
 
 /**
- * Class ControllerExtensionPaymentWirecardPGSepaCredit
+ * Class ControllerExtensionPaymentWirecardPGSepaCT
  *
  * SEPA Credit Transfer Transaction controller
  *
  * @since 1.0.0
  */
-class ControllerExtensionPaymentWirecardPGSepaCredit extends ControllerExtensionPaymentGateway {
+class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
 	 * @since 1.0.0
 	 */
-	protected $type = 'sepacredit';
+	protected $type = 'sepact';
+
+    /**
+     * @var string
+     * @since 1.1.0
+     */
+	protected $payment_method = 'sepacredit';
 
 	/**
 	 * Basic index method
@@ -59,7 +65,7 @@ class ControllerExtensionPaymentWirecardPGSepaCredit extends ControllerExtension
 		$merchant_secret = $this->getShopConfigVal('merchant_secret');
 
 		$config = parent::getConfig($currency);
-		$payment_config = new SepaConfig($this->type, $merchant_account_id, $merchant_secret);
+		$payment_config = new SepaConfig($this->payment_method, $merchant_account_id, $merchant_secret);
 		$config->add($payment_config);
 
 		return $config;

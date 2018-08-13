@@ -129,7 +129,7 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 			'creditcard',
 			'ideal',
 			'paypal',
-			'sepacredit',
+			'sepact',
 			'sofortbanking',
 			'poi',
 			'pia'
