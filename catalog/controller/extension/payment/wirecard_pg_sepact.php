@@ -27,17 +27,17 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaym
 	 */
 	protected $type = 'sepact';
 
-    /**
-     * @var string
-     * @since 1.1.0
-     */
+	/**
+	 * @var string
+	 * @since 1.1.0
+	 */
 	protected $payment_method = 'sepacredit';
 
-    /**
-     * @var int
-     * @since 1.1.0
-     */
-    protected $scale = 2;
+	/**
+	 * @var int
+	 * @since 1.1.0
+	 */
+	protected $scale = 2;
 
 	/**
 	 * Basic index method

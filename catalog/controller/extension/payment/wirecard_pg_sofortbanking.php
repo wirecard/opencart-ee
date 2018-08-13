@@ -30,11 +30,11 @@ class ControllerExtensionPaymentWirecardPGSofortbanking extends ControllerExtens
 	 */
 	protected $type = 'sofortbanking';
 
-    /**
-     * @var int
-     * @since 1.1.0
-     */
-    protected $scale = 2;
+	/**
+	 * @var int
+	 * @since 1.1.0
+	 */
+	protected $scale = 2;
 
 	/**
 	 * Basic index method
