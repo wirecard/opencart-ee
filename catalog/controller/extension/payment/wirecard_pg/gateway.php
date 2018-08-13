@@ -145,10 +145,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	/**
 	 * Fill transaction with data
 	 *
-	 * @param bool $force_data If set to true, sets all data no matter the merchant settings.
 	 * @since 1.0.0
 	 */
-	public function prepareTransaction($force_data = false) {
+	public function prepareTransaction() {
 		$this->load->language(self::PATH);
 		$this->load->model('checkout/order');
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
@@ -163,11 +162,11 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->transaction->setAmount($amount);
 
 		$this->transaction = $additional_helper->setIdentificationData($this->transaction, $order);
-		if ($this->getShopConfigVal('descriptor') || $force_data) {
+		if ($this->getShopConfigVal('descriptor')) {
 			$this->transaction->setDescriptor($additional_helper->createDescriptor($order));
 		}
 
-		if ($this->getShopConfigVal('shopping_basket') || $force_data) {
+		if ($this->getShopConfigVal('shopping_basket')) {
 			$this->transaction = $additional_helper->addBasket(
 				$this->transaction,
 				$this->cart->getProducts(),
@@ -177,7 +176,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			);
 		}
 
-		if ($this->getShopConfigVal('additional_info') || $force_data) {
+		if ($this->getShopConfigVal('additional_info')) {
 			$this->transaction = $additional_helper->setAdditionalInformation($this->transaction, $order);
 			$this->transaction = $additional_helper->addBasket(
 				$this->transaction,

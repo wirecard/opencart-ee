@@ -89,11 +89,10 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	/**
 	 * Set additional data needed for SEPA
 	 *
-	 * @param $force_data
 	 * @since 1.1.0
 	 */
-	public function prepareTransaction($force_data = false) {
-		parent::prepareTransaction($force_data);
+	public function prepareTransaction() {
+		parent::prepareTransaction();
 
 		$account_holder = new \Wirecard\PaymentSdk\Entity\AccountHolder();
 		$account_holder->setFirstName($this->request->post['first_name']);
