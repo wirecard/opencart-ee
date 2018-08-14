@@ -26,8 +26,8 @@ $_['vault_save_text'] = 'Speichern für One-Click Checkout';
 //transaction details
 $_['panel_transcation_id'] = 'Transaction ID';
 $_['panel_action'] = 'Aktion';
-$_['panel_transaction_state'] = 'Transaktionsstatus';
-$_['panel_transaction_date'] = 'Transaction date';
+$_['panel_transaction_state'] = 'Transaction state';
+$_['panel_transaction_date'] = 'Datum';
 $_['panel_transaction_provider_id'] = 'Transaction provider ID';
-$_['panel_transaction_details'] = 'View Transaction';
-$_['panel_transaction_copy'] = 'Copy XML';
+$_['panel_transaction_details'] = 'Transaktion ansehen';
+$_['panel_transaction_copy'] = 'XML kopieren';
