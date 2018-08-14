@@ -233,6 +233,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	 *
 	 * @param \Wirecard\PaymentSdk\Response\FormInteractionResponse $response
 	 * @return mixed
+	 * @since 1.1.0
 	 */
 	public function handleFormInteractionPostRequest($response) {
 		$this->load->language('information/static');
