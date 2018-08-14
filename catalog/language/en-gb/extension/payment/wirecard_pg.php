@@ -31,4 +31,3 @@ $_['panel_transaction_date'] = 'Transaction date';
 $_['panel_transaction_provider_id'] = 'Transaction provider ID';
 $_['panel_transaction_details'] = 'View Transaction';
 $_['panel_transaction_copy'] = 'Copy XML';
-$_['panel_transaction_copy_text'] = 'Copy XML';
