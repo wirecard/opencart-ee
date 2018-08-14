@@ -8,7 +8,7 @@
  */
 
 // Method Title
-$_['text_title'] = 'Wirecard Garantierter Kauf auf Rechnung by Wirecard / Ratepay';
+$_['text_title'] = 'Wirecard Garantierter Kauf auf Rechnung by Wirecard';
 $_['button_confirm'] = 'Bestellung bestätigen';
 $_['birthdate_input'] = 'Geburtsdatum';
 

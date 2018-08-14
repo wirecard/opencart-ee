@@ -8,12 +8,12 @@
  */
 
 // Page Title
-$_['heading_title'] = 'Wirecard Guaranteed Invoice by Wirecard / Ratepay';
+$_['heading_title'] = 'Wirecard Guaranteed Invoice by Wirecard';
 $_['text_wirecard_pg_ratepayinvoice'] = '<img src="./view/image/wirecard_pg/ratepayinvoice.png"/>';
 
 // Payment specific configuration
-$_['text_edit'] = 'Edit Guaranteed Invoice by Wirecard / Ratepay';
-$_['config_status_desc'] = 'Activate payment method Guaranteed Invoice by Wirecard / Ratepay to make it available for your consumers.';
+$_['text_edit'] = 'Edit Guaranteed Invoice by Wirecard';
+$_['config_status_desc'] = 'Activate payment method Guaranteed Invoice by Wirecard to make it available for your consumers.';
 
 
 $_['config_billing_shipping'] = 'Billing/shipping address must be identical';
