@@ -393,19 +393,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->response->redirect($this->url->link('checkout/success'));
 
 			return true;
-		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FormInteractionResponse) {
-			$this->load->language('information/static');
-			$this->load->language('language/extension/wirecard_pg');
-
-			$data = [
-				'url' => $result->getUrl(),
-				'method' => $result->getMethod(),
-				'form_fields' => $result->getFormFields(),
-				'redirect_text' => $this->language->get('redirect_text'),
-			];
-
-			$data = array_merge($this->getCommonBlocks(), $data);
-			$this->response->setOutput($this->load->view('extension/payment/wirecard_interaction_response', $data));
 		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			foreach ($result->getStatusCollection()->getIterator() as $item) {
 				$errors .= $item->getDescription() . "<br>\n";
