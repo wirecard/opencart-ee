@@ -187,7 +187,8 @@ class PGOrderManager extends Model {
 	/**
 	 * Create order details to display in order history
 	 * @param \Wirecard\PaymentSdk\Response\Response $response
-	 * @return string
+	 * @return strin
+	 * @since 1.1.0
 	 */
 	public function createOrderDetails($response) {
 		$data = array_merge(
@@ -232,10 +233,10 @@ class PGOrderManager extends Model {
 	 * @since 1.1.0
 	 */
 	private function prepareDataFromResponse($response) {
-		$data['transaction_link'] = 'index.php?route=extension/module/wirecard_pg/pg_transaction&id=' . $response->getData()['transaction-id'];
-		$data['transaction_xml'] = $response->getRawData();
-
-		return $data;
+		 return array(
+			 'transaction_link' => 'index.php?route=extension/module/wirecard_pg/pg_transaction&id=' . $response->getData()['transaction-id'],
+			'transaction_xml' => $response->getRawData()
+		);
 	}
 
 	/**
