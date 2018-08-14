@@ -132,7 +132,7 @@ class PGOrderManager extends Model {
 		$this->model_checkout_order->addOrderHistory(
 			$response->getCustomFields()->get('orderId'),
 			$state,
-			'<pre style="white-space: pre-line;">' . htmlentities($response->getRawData()) . '</pre>',
+			$this->createOrderDetails($response),
 			false
 		);
 
@@ -232,8 +232,8 @@ class PGOrderManager extends Model {
 	 * @since 1.1.0
 	 */
 	private function prepareDataFromResponse($response) {
-		$data['transaction_link'] = 'index.php?route=extension/module/wirecard_pg/pg_transaction';
-		$data['transaction_xml'] = 'data';
+		$data['transaction_link'] = 'index.php?route=extension/module/wirecard_pg/pg_transaction&id=' . $response->getData()['transaction-id'];
+		$data['transaction_xml'] = $response->getRawData();
 
 		return $data;
 	}

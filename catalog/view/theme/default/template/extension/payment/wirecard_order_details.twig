@@ -15,7 +15,7 @@
     <tbody>
     <tr>
         <td>{{ transaction_id }}</td>
-        <td>{{ transaction_type }}</td>
+        <td style="width: 100px;">{{ transaction_type }}</td>
         <td>{{ transaction_state }}</td>
         <td>{{ completion_time_stamp|date }}</td>
         {% if provider_account_id %}
@@ -24,7 +24,7 @@
         <td>
             <div style="min-width: 45px;">
                 <div class="btn-group">
-                    <a href="{{ transaction_link }}" data-toggle="tooltip" class="btn btn-primary" data-original-title="View">
+                    <a target="_blank" href="{{ transaction_link }}" data-toggle="tooltip" class="btn btn-primary" data-original-title="View">
                         <i class="fa fa-eye"></i>
                     </a>
                 </div>
@@ -33,12 +33,24 @@
         <td>
             <div style="min-width: 45px;">
                 <div class="btn-group">
-                    <a href="{{ transaction_xml }}" data-toggle="tooltip" class="btn btn-primary" data-original-title="{{ transaction_copy_text }}">
+                    <button onclick="saveToClipBoard()"data-toggle="tooltip" class="btn btn-primary">
                         <i class="fa fa-copy"></i>
-                    </a>
+                    </button>
                 </div>
             </div>
         </td>
     </tr>
     </tbody>
 </table>
+<script>
+    function saveToClipBoard() {
+        var textArea = document.createElement("textarea");
+        textArea.value = '{{ transaction_xml }}';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+
+        console.log('done try it');
+    }
+</script>
