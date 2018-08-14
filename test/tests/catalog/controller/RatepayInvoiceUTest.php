@@ -1,22 +1,46 @@
 <?php
 /**
- * Shop System Plugins:
- * - Terms of Use can be found under:
- * https://github.com/wirecard/opencart-ee/blob/master/_TERMS_OF_USE
- * - License can be found under:
- * https://github.com/wirecard/opencart-ee/blob/master/LICENSE
+ * Shop System Plugins - Terms of Use
+ *
+ * The plugins offered are provided free of charge by Wirecard AG and are explicitly not part
+ * of the Wirecard AG range of products and services.
+ *
+ * They have been tested and approved for full functionality in the standard configuration
+ * (status on delivery) of the corresponding shop system. They are under General Public
+ * License version 3 (GPLv3) and can be used, developed and passed on to third parties under
+ * the same terms.
+ *
+ * However, Wirecard AG does not provide any guarantee or accept any liability for any errors
+ * occurring when used in an enhanced, customized shop system configuration.
+ *
+ * Operation in an enhanced, customized configuration is at your own risk and requires a
+ * comprehensive test phase by the user of the plugin.
+ *
+ * Customers use the plugins at their own risk. Wirecard AG does not guarantee their full
+ * functionality neither does Wirecard AG assume liability for any disadvantages related to
+ * the use of the plugins. Additionally, Wirecard AG does not guarantee the full functionality
+ * for customized shop systems or installed plugins of other vendors of plugins within the same
+ * shop system.
+ *
+ * Customers are responsible for testing the plugin's functionality before starting productive
+ * operation.
+ *
+ * By installing the plugin into the shop system the customer agrees to these terms of use.
+ * Please do not use the plugin if you do not agree to these terms of use!
  */
 
 use Mockery as m;
 
-require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_sepact.php';
+require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_ratepayinvoice.php';
+require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_ratepayinvoice.php';
 
+use Wirecard\PaymentSdk\Transaction\RatepayInvoiceTransaction;
 
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-class SepaCTUTest extends \PHPUnit_Framework_TestCase
+class RatepayInvoiceUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
 	private $pluginVersion = '1.0.0';
@@ -27,6 +51,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 	private $response;
 	private $modelOrder;
 	private $url;
+	private $modelRatepayInvoice;
 	private $language;
 	private $cart;
 	private $currency;
@@ -44,7 +69,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			->setMethods(['get'])
 			->getMock();
 
-		$this->config->method('get')->willReturn('somthing');
+		$this->config->method('get')->willReturn('something');
 
 		$this->session = $this->getMockBuilder(Session::class)->disableOriginalConstructor()->getMock();
 
@@ -73,7 +98,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			'lastname' => 'Doe',
 			'ip' => '1',
 			'store_name' => 'Demoshop',
-			'currency_value' => 1.12,
+			'currency_value' => 1,
 			'customer_id' => 1,
 			'payment_iso_code_2' => 'AT',
 			'payment_city' => 'BillingCity',
@@ -93,9 +118,12 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 		$this->modelOrder->method('getOrder')->willReturn($orderDetails);
 
-		$this->url = $this->getMockBuilder(Url::class)->disableOriginalConstructor()->getMock();
+		$this->modelRatepayInvoice = $this->getMockBuilder(ModelExtensionPaymentWirecardPGRatepayInvoice::class)
+			->disableOriginalConstructor()
+			->setMethods(['sendRequest'])
+			->getMock();
 
-		$this->currency = $this->getMockBuilder(Currency::class)->disableOriginalConstructor()->getMock();
+		$this->url = $this->getMockBuilder(Url::class)->disableOriginalConstructor()->getMock();
 
 		$this->loader = $this->getMockBuilder(Loader::class)
 			->disableOriginalConstructor()
@@ -103,6 +131,8 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			->getMock();
 
 		$this->language = $this->getMockBuilder(Language::class)->disableOriginalConstructor()->getMock();
+
+		$this->currency = $this->getMockBuilder(Currency::class)->disableOriginalConstructor()->getMock();
 
 		$this->customer = $this->getMockBuilder(Customer::class)
 			->disableOriginalConstructor()
@@ -117,7 +147,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 		$this->cart->method('getProducts')->willReturn($items);
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -125,7 +155,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			null,
+			$this->modelRatepayInvoice,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -144,7 +174,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 		$config->expects($this->at(3))->method('get')->willReturn('user');
 		$config->expects($this->at(4))->method('get')->willReturn('password');
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,
 			$config,
 			$this->loader,
@@ -152,7 +182,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			null,
+			$this->modelRatepayInvoice,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -162,8 +192,8 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
-		$expected->add(new \Wirecard\PaymentSdk\Config\SepaConfig(
-		    'sepacredit',
+		$expected->add(new \Wirecard\PaymentSdk\Config\PaymentMethodConfig(
+			RatepayInvoiceTransaction::NAME,
 			'account123',
 			'secret123'
 		));
@@ -172,7 +202,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 		$currency = [
 			'currency_code' => 'EUR',
-			'currency_value' => 1.12
+			'currency_value' => 1
 		];
 		$actual = $this->controller->getConfig($currency);
 
@@ -181,7 +211,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 	public function testConfirm()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -189,7 +219,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			null,
+			$this->modelRatepayInvoice,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -198,20 +228,20 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->customer
 		);
 
-		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSepaCT::class);
+		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGRatepayInvoice::class);
 		$prop = $reflector->getProperty('transaction');
 		$prop->setAccessible(true);
 
 		$this->controller->confirm();
 
-		$this->assertInstanceof(\Wirecard\PaymentSdk\Transaction\SepaCreditTransferTransaction::class, $prop->getValue($this->controller));
+		$this->assertInstanceof(RatepayInvoiceTransaction::class, $prop->getValue($this->controller));
 	}
 
 	public function testIndexActive()
 	{
 		$this->config->expects($this->at(0))->method('get')->willReturn(1);
 		$this->loader->method('view')->willReturn('active');
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -219,7 +249,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			null,
+			$this->modelRatepayInvoice,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -235,7 +265,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 	public function testCreateTransaction()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -243,7 +273,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			null,
+			$this->modelRatepayInvoice,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -252,17 +282,41 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->customer
 		);
 
-		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSepaCT::class);
+		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGRatepayInvoice::class);
 		$prop = $reflector->getProperty('transaction');
 		$prop->setAccessible(true);
 
+		$basket = array( 1 => array(
+		    'quantity' => 1,
+            'amount' => 10,
+            'currency' => 'EUR',
+            'name' => 'Testproduct',
+            'description' => 'Another testproduct.',
+            'article_number' => 123,
+            'tax_rate' => 20
+        )
+        );
+
 		$transaction = array(
 			'transaction_id' => '1234',
-			'amount' => '10'
+			'amount' => '10',
+            'currency' => 'EUR',
+            'basket' => $basket
 		);
 
-		$expected = new \Wirecard\PaymentSdk\Transaction\SepaCreditTransferTransaction();
+		$expected = new RatepayInvoiceTransaction();
 		$expected->setParentTransactionId('1234');
+
+		$amount = new \Wirecard\PaymentSdk\Entity\Amount(10, 'EUR');
+		$item = new \Wirecard\PaymentSdk\Entity\Item('Testproduct', $amount, 1);
+		$item->setTaxRate(20);
+		$item->setArticleNumber(123);
+		$item->setDescription('Another testproduct.');
+		$basket = new \Wirecard\PaymentSdk\Entity\Basket();
+		$basket->setVersion($expected);
+		$basket->add($item);
+		$expected->setBasket($basket);
+		$expected->setAmount($amount);
 
 		$actual = $this->controller->createTransaction($transaction, null);
 
@@ -271,7 +325,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetType()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -279,7 +333,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			null,
+			$this->modelRatepayInvoice,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -289,14 +343,14 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 		);
 
 		$actual = $this->controller->getType();
-		$expected = 'sepact';
+		$expected = 'ratepayinvoice';
 
 		$this->assertEquals($expected, $actual);
 	}
 
 	public function testGetInstance()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGSepaCT(
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -304,7 +358,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			null,
+			$this->modelRatepayInvoice,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -313,10 +367,92 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			$this->customer
 		);
 
-		$expected = new \Wirecard\PaymentSdk\Transaction\SepaCreditTransferTransaction();
+		$expected = new \Wirecard\PaymentSdk\Transaction\RatepayInvoiceTransaction();
 
 		$actual = $this->controller->getTransactionInstance();
 
 		$this->assertEquals($expected, $actual);
 	}
+
+	public function testGetModel()
+	{
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelRatepayInvoice,
+			$this->language,
+			$this->cart,
+			$this->currency,
+			null,
+			null,
+			$this->customer
+		);
+
+		$actual = $this->controller->getModel();
+
+		$this->assertInstanceOf(get_class($this->modelRatepayInvoice), $actual);
+	}
+
+	public function testCancelResponse()
+	{
+		$orderManager = m::mock('overload:PGOrderManager');
+		$orderManager->shouldReceive('updateCancelFailureOrder');
+
+		$_REQUEST = [
+			'cancelled' => 1,
+			'orderId' => 123
+		];
+
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelRatepayInvoice,
+			$this->language,
+			$this->cart,
+			$this->currency,
+			null,
+			null,
+			$this->customer
+		);
+
+		$actual = $this->controller->response();
+		$this->assertNull($actual);
+	}
+
+	public function testPrepareTransaction()
+    {
+        $transaction = new RatepayInvoiceTransaction();
+        $this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
+            $this->registry,
+            $this->config,
+            $this->loader,
+            $this->session,
+            $this->response,
+            $this->modelOrder,
+            $this->url,
+            $this->modelRatepayInvoice,
+            $this->language,
+            $this->cart,
+            $this->currency,
+            null,
+            null,
+            $this->customer,
+            null,
+            $transaction
+        );
+
+        $this->controller->prepareTransaction();
+
+        $this->assertEquals($transaction, $this->controller->getTransaction());
+    }
 }
