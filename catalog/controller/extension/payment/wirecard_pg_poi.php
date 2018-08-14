@@ -53,11 +53,10 @@ class ControllerExtensionPaymentWirecardPGPoi extends ControllerExtensionPayment
 	/**
 	 * Prepare the Payment On Invoice transaction as required.
 	 *
-	 * @param $force_data
 	 * @since 1.1.0
 	 */
-	public function prepareTransaction($force_data = false) {
-		parent::prepareTransaction($force_data);
+	public function prepareTransaction() {
+		parent::prepareTransaction();
 
 		$this->load->model('checkout/order');
 

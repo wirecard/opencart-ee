@@ -16,6 +16,7 @@ abstract class Controller
     protected $language;
     protected $cart;
 	protected $currency;
+	protected $transaction;
 	public $request;
 	public $model_extension_payment_wirecard_pg_paypal;
     public $model_extension_payment_wirecard_pg_creditcard;
@@ -27,10 +28,11 @@ abstract class Controller
 	public $model_extension_payment_wirecard_pg_alipay_crossborder;
 	public $model_extension_payment_wirecard_pg_masterpass;
 	public $model_extension_payment_wirecard_pg_upi;
+	public $model_extension_payment_wirecard_pg_ratepayinvoice;
     public $model_checkout_order;
     public $controller_extension_payment_wirecard_pg_sepact;
 
-    public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPayment, $language, $cart, $currency, $subController = null, $document = null, $customer = null, $overrideRequest = null)
+    public function __construct($registry, $config, $loader, $session, $response, $orderModel, $url, $modelPayment, $language, $cart, $currency, $subController = null, $document = null, $customer = null, $overrideRequest = null, $transaction = null)
     {
         $this->registry = $registry;
         $this->config = $config;
@@ -49,11 +51,13 @@ abstract class Controller
 		$this->model_extension_payment_wirecard_pg_upi = $modelPayment;
 		$this->model_extension_payment_wirecard_pg_poi = $modelPayment;
 		$this->model_extension_payment_wirecard_pg_pia = $modelPayment;
+		$this->model_extension_payment_wirecard_pg_ratepayinvoice = $modelPayment;
         $this->language = $language;
         $this->cart = $cart;
         $this->controller_extension_payment_wirecard_pg_sepact = $subController;
         $this->document = $document;
         $this->customer = $customer;
+        $this->transaction = $transaction;
 
 	    $this->request = new stdClass();
 	    $this->request->post = $overrideRequest ?: [
