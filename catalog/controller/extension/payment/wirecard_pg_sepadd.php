@@ -80,9 +80,10 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 
 			$this->response->addHeader('Content-Type: application/json');
 			$this->response->setOutput(json_encode($json));
+		} else {
+			$this->transaction = $this->getTransactionInstance();
+			parent::confirm();
 		}
-		$this->transaction = $this->getTransactionInstance();
-		parent::confirm();
 	}
 
 	/**
