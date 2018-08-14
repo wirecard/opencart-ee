@@ -22,3 +22,13 @@ $_['vault_delete_success_text'] = 'Folgende Kreditkarte wurde erfolgreich gelös
 $_['vault_delete_failure_text'] = 'Folgende Kreditkarte konnte nicht gelöscht werden:';
 $_['vault_valid_until_text'] = 'gültig bis';
 $_['vault_save_text'] = 'Speichern für One-Click Checkout';
+
+//transaction details
+$_['panel_transcation_id'] = 'Transaction ID';
+$_['panel_action'] = 'Aktion';
+$_['panel_transaction_state'] = 'Transaktionsstatus';
+$_['panel_transaction_date'] = 'Transaction date';
+$_['panel_transaction_provider_id'] = 'Transaction provider ID';
+$_['panel_transaction_details'] = 'View Transaction';
+$_['panel_transaction_copy'] = 'Copy XML';
+$_['panel_transaction_copy_text'] = 'Copy XML';

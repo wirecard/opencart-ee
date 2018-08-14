@@ -47,7 +47,7 @@ class PGOrderManager extends Model {
 			$this->model_checkout_order->addOrderHistory(
 				$order_id,
 				self::PENDING,
-				'<pre style="white-space: pre-line;">' . htmlentities($response->getRawData()) . '</pre>',
+				$this->createOrderDetails($response),
 				false
 			);
 
@@ -94,7 +94,7 @@ class PGOrderManager extends Model {
 			$this->model_checkout_order->addOrderHistory(
 				$order_id,
 				$state,
-				'<pre style="white-space: pre-line;">' . htmlentities($response->getRawData()) . '</pre>',
+				$this->createOrderDetails($response),
 				false
 			);
 			if ($response instanceof \Wirecard\PaymentSdk\Response\SuccessResponse && $transaction_model->getTransaction($response->getTransactionId())) {
@@ -182,5 +182,73 @@ class PGOrderManager extends Model {
 				return $status['order_status_id'];
 			}
 		}
+	}
+
+	/**
+	 * Create order details to display in order history
+	 * @param \Wirecard\PaymentSdk\Response\Response $response
+	 * @return string
+	 */
+	public function createOrderDetails($response) {
+		$data = array_merge(
+			$this->loadLanguageLines(),
+			$this->prepareArrayKeys($response->getData()),
+			$this->prepareDataFromResponse($response)
+		);
+
+		return preg_replace("/\r|\n/", "", $this->load->view('extension/payment/wirecard_order_details', $data));
+	}
+
+	/**
+	 * Load lang lines needed form the order details template
+	 * @return array,
+	 * @since 1.1.0
+	 */
+	private function loadLanguageLines() {
+		$this->load->language('extension/payment/wirecard_pg');
+
+		$lines = array(
+			'panel_transcation_id',
+			'panel_action',
+			'panel_transaction_state',
+			'panel_transaction_date',
+			'panel_transaction_provider_id',
+			'panel_transaction_details',
+			'panel_transaction_copy',
+			'panel_transaction_copy_text'
+		);
+		$data = [];
+		foreach ($lines as $line) {
+			$data[$line] = $this->language->get($line);
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Create order details to display in order history
+	 * @param \Wirecard\PaymentSdk\Response\Response $response
+	 * @return array
+	 * @since 1.1.0
+	 */
+	private function prepareDataFromResponse($response) {
+		$data['transaction_link'] = 'index.php?route=extension/module/wirecard_pg/pg_transaction';
+		$data['transaction_xml'] = 'data';
+
+		return $data;
+	}
+
+	/**
+	 * Replace - with _ in key so it is possible to use the data in the template
+	 * @param array $response_array
+	 * @return array
+	 * @since 1.1.0
+	 */
+	private function prepareArrayKeys($response_array) {
+		foreach ($response_array as $key => $value) {
+			$response_array[str_replace('-', '_', $key)] = $value;
+		}
+
+		return $response_array;
 	}
 }

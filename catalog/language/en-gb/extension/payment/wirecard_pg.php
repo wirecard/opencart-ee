@@ -22,3 +22,13 @@ $_['vault_delete_success_text'] = 'Successfully deleted credit card';
 $_['vault_delete_failure_text'] = 'Unable to delete credit card';
 $_['vault_valid_until_text'] = 'valid until';
 $_['vault_save_text'] = 'Save for later use';
+
+//transaction details
+$_['panel_transcation_id'] = 'Transaction ID';
+$_['panel_action'] = 'Action';
+$_['panel_transaction_state'] = 'Transaction state';
+$_['panel_transaction_date'] = 'Transaction date';
+$_['panel_transaction_provider_id'] = 'Transaction provider ID';
+$_['panel_transaction_details'] = 'View Transaction';
+$_['panel_transaction_copy'] = 'Copy XML';
+$_['panel_transaction_copy_text'] = 'Copy XML';

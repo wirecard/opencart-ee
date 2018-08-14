@@ -1,0 +1,44 @@
+<table class="table" class="transaction-details-table">
+    <thead>
+    <tr>
+        <th scope="col">{{ panel_transcation_id }}</th>
+        <th scope="col">{{ panel_action }}</th>
+        <th scope="col">{{ panel_transaction_state }}</th>
+        <th scope="col">{{ panel_transaction_date }}</th>
+        {% if provider_account_id %}
+            <th scope="col">{{ panel_transaction_provider_id }}</th>
+        {% endif %}
+        <th scope="col">{{ panel_transaction_details }}</th>
+        <th scope="col">{{ panel_transaction_copy }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>{{ transaction_id }}</td>
+        <td>{{ transaction_type }}</td>
+        <td>{{ transaction_state }}</td>
+        <td>{{ completion_time_stamp|date }}</td>
+        {% if provider_account_id %}
+            <td>{{ provider_account_id }}</td>
+        {% endif %}
+        <td>
+            <div style="min-width: 45px;">
+                <div class="btn-group">
+                    <a href="{{ transaction_link }}" data-toggle="tooltip" class="btn btn-primary" data-original-title="View">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                </div>
+            </div>
+        </td>
+        <td>
+            <div style="min-width: 45px;">
+                <div class="btn-group">
+                    <a href="{{ transaction_xml }}" data-toggle="tooltip" class="btn btn-primary" data-original-title="{{ transaction_copy_text }}">
+                        <i class="fa fa-copy"></i>
+                    </a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
