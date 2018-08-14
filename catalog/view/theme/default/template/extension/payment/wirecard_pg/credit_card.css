@@ -91,3 +91,55 @@ At https://github.com/lukehaas/css-loaders you can find more spinners and change
         box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
     }
 }
+
+.credit-card-selector {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    line-height: 1;
+}
+
+.credit-card-selector:hover {
+    cursor: pointer;
+    background-color: #EFEFEF;
+}
+
+.credit-card-selector input[type=radio] {
+    position: relative;
+    top: -1px;
+    margin-right: 8px;
+}
+
+.credit-card-selector:hover a.credit-card-delete {
+    display: block;
+}
+
+a.credit-card-delete {
+    display: none;
+    color: red;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+a.credit-card-delete:hover {
+    color: firebrick;
+    text-decoration: underline;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.credit-card-info {
+    position: relative;
+    top: -3px;
+}
+
+.credit-card-expires {
+    color: #999;
+    padding-left: 8px;
+}
+
+.alert-shipping-data.alert-dismissible .close {
+    right: 0px;
+}

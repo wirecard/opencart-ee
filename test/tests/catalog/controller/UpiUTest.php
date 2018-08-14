@@ -30,6 +30,8 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 	private $modelUpi;
 	private $language;
 	private $cart;
+	private $currency;
+	private $customer;
 
 	const SHOP = 'OpenCart';
 	const PLUGIN = 'Wirecard OpenCart Extension';
@@ -61,6 +63,11 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 			->getMock();
 
 		$this->currency = $this->getMockBuilder(Currency::class)->disableOriginalConstructor()->getMock();
+
+		$this->customer = $this->getMockBuilder(Customer::class)
+			->disableOriginalConstructor()
+			->setMethods(['isLogged'])
+			->getMock();
 
 		$orderDetails = array(
 			'order_id' => '1',
@@ -124,7 +131,10 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 			$this->modelUpi,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 	}
 
@@ -142,7 +152,10 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 			$this->modelUpi,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$actual = $this->controller->index();
@@ -192,7 +205,10 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 			$this->modelUpi,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');

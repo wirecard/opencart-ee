@@ -31,16 +31,16 @@
 
 use Mockery as m;
 
-require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_pia.php';
-require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_pia.php';
+require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_ratepayinvoice.php';
+require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_ratepayinvoice.php';
 
-use Wirecard\PaymentSdk\Transaction\PoiPiaTransaction;
+use Wirecard\PaymentSdk\Transaction\RatepayInvoiceTransaction;
 
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-class PiaUTest extends \PHPUnit_Framework_TestCase
+class RatepayInvoiceUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
 	private $pluginVersion = '1.0.0';
@@ -51,11 +51,10 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 	private $response;
 	private $modelOrder;
 	private $url;
-	private $modelPia;
+	private $modelRatepayInvoice;
 	private $language;
 	private $cart;
 	private $currency;
-	private $document;
 	private $customer;
 
 	const SHOP = 'OpenCart';
@@ -70,11 +69,9 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			->setMethods(['get'])
 			->getMock();
 
-		$this->config->method('get')->willReturn('somthing');
+		$this->config->method('get')->willReturn('something');
 
 		$this->session = $this->getMockBuilder(Session::class)->disableOriginalConstructor()->getMock();
-		$this->session->data['order_id'] = 123;
-		$this->session->data['payment_method']['code'] = "wirecard_pg_pia";
 
 		$this->response = $this->getMockBuilder(Response::class)
 			->disableOriginalConstructor()
@@ -88,7 +85,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 
 		$this->cart = $this->getMockBuilder(Cart::class)
 			->disableOriginalConstructor()
-			->setMethods(['getProducts', 'clear'])
+			->setMethods(['getProducts'])
 			->getMock();
 
 		$orderDetails = array(
@@ -121,7 +118,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 
 		$this->modelOrder->method('getOrder')->willReturn($orderDetails);
 
-		$this->modelPia = $this->getMockBuilder(ModelExtensionPaymentWirecardPGPia::class)
+		$this->modelRatepayInvoice = $this->getMockBuilder(ModelExtensionPaymentWirecardPGRatepayInvoice::class)
 			->disableOriginalConstructor()
 			->setMethods(['sendRequest'])
 			->getMock();
@@ -135,22 +132,12 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 
 		$this->language = $this->getMockBuilder(Language::class)->disableOriginalConstructor()->getMock();
 
-		$this->currency = $this->getMockBuilder(Currency::class)
-			->disableOriginalConstructor()
-			->setMethods(['format', 'get'])
-			->getMock();
-
-		$this->document = $this->getMockBuilder(Document::class)
-			->disableOriginalConstructor()
-			->setMethods(['setTitle'])
-			->getMock();
+		$this->currency = $this->getMockBuilder(Currency::class)->disableOriginalConstructor()->getMock();
 
 		$this->customer = $this->getMockBuilder(Customer::class)
 			->disableOriginalConstructor()
 			->setMethods(['isLogged'])
 			->getMock();
-
-		$this->customer->method('isLogged')->willReturn(true);
 
 		$items = [
 			["price" => 10.465, "name" => "Produkt1", "quantity" => 2, "product_id" => 2, "tax_class_id" => 2],
@@ -160,7 +147,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 
 		$this->cart->method('getProducts')->willReturn($items);
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGPia(
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -168,7 +155,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelPia,
+			$this->modelRatepayInvoice,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -187,7 +174,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 		$config->expects($this->at(3))->method('get')->willReturn('user');
 		$config->expects($this->at(4))->method('get')->willReturn('password');
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGPia(
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,
 			$config,
 			$this->loader,
@@ -195,7 +182,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelPia,
+			$this->modelRatepayInvoice,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -206,7 +193,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
 		$expected->add(new \Wirecard\PaymentSdk\Config\PaymentMethodConfig(
-			PoiPiaTransaction::NAME,
+			RatepayInvoiceTransaction::NAME,
 			'account123',
 			'secret123'
 		));
@@ -224,7 +211,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 
 	public function testConfirm()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGPia(
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -232,7 +219,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelPia,
+			$this->modelRatepayInvoice,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -241,20 +228,20 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->customer
 		);
 
-		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGPia::class);
+		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGRatepayInvoice::class);
 		$prop = $reflector->getProperty('transaction');
 		$prop->setAccessible(true);
 
 		$this->controller->confirm();
 
-		$this->assertInstanceof(PoiPiaTransaction::class, $prop->getValue($this->controller));
+		$this->assertInstanceof(RatepayInvoiceTransaction::class, $prop->getValue($this->controller));
 	}
 
 	public function testIndexActive()
 	{
 		$this->config->expects($this->at(0))->method('get')->willReturn(1);
 		$this->loader->method('view')->willReturn('active');
-		$this->controller = new ControllerExtensionPaymentWirecardPGPia(
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -262,7 +249,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelPia,
+			$this->modelRatepayInvoice,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -278,7 +265,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 
 	public function testCreateTransaction()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGPia(
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -286,7 +273,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelPia,
+			$this->modelRatepayInvoice,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -295,17 +282,41 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->customer
 		);
 
-		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGPia::class);
+		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGRatepayInvoice::class);
 		$prop = $reflector->getProperty('transaction');
 		$prop->setAccessible(true);
 
+		$basket = array( 1 => array(
+		    'quantity' => 1,
+            'amount' => 10,
+            'currency' => 'EUR',
+            'name' => 'Testproduct',
+            'description' => 'Another testproduct.',
+            'article_number' => 123,
+            'tax_rate' => 20
+        )
+        );
+
 		$transaction = array(
 			'transaction_id' => '1234',
-			'amount' => '10'
+			'amount' => '10',
+            'currency' => 'EUR',
+            'basket' => $basket
 		);
 
-		$expected = new PoiPiaTransaction();
+		$expected = new RatepayInvoiceTransaction();
 		$expected->setParentTransactionId('1234');
+
+		$amount = new \Wirecard\PaymentSdk\Entity\Amount(10, 'EUR');
+		$item = new \Wirecard\PaymentSdk\Entity\Item('Testproduct', $amount, 1);
+		$item->setTaxRate(20);
+		$item->setArticleNumber(123);
+		$item->setDescription('Another testproduct.');
+		$basket = new \Wirecard\PaymentSdk\Entity\Basket();
+		$basket->setVersion($expected);
+		$basket->add($item);
+		$expected->setBasket($basket);
+		$expected->setAmount($amount);
 
 		$actual = $this->controller->createTransaction($transaction, null);
 
@@ -314,7 +325,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetType()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGPia(
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -322,7 +333,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelPia,
+			$this->modelRatepayInvoice,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -332,14 +343,14 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 		);
 
 		$actual = $this->controller->getType();
-		$expected = 'pia';
+		$expected = 'ratepayinvoice';
 
 		$this->assertEquals($expected, $actual);
 	}
 
 	public function testGetInstance()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGPia(
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -347,7 +358,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelPia,
+			$this->modelRatepayInvoice,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -356,7 +367,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->customer
 		);
 
-		$expected = new \Wirecard\PaymentSdk\Transaction\PoiPiaTransaction();
+		$expected = new \Wirecard\PaymentSdk\Transaction\RatepayInvoiceTransaction();
 
 		$actual = $this->controller->getTransactionInstance();
 
@@ -365,7 +376,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetModel()
 	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGPia(
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -373,7 +384,7 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelPia,
+			$this->modelRatepayInvoice,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -384,19 +395,20 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 
 		$actual = $this->controller->getModel();
 
-		$this->assertInstanceOf(get_class($this->modelPia), $actual);
+		$this->assertInstanceOf(get_class($this->modelRatepayInvoice), $actual);
 	}
 
-	public function testPiaResponse()
+	public function testCancelResponse()
 	{
 		$orderManager = m::mock('overload:PGOrderManager');
-		$orderManager->shouldReceive('createResponseOrder');
+		$orderManager->shouldReceive('updateCancelFailureOrder');
 
 		$_REQUEST = [
-			"sync_response" => ResponseProvider::getPIAResponse()
+			'cancelled' => 1,
+			'orderId' => 123
 		];
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGPia(
+		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -404,41 +416,43 @@ class PiaUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelPia,
+			$this->modelRatepayInvoice,
 			$this->language,
 			$this->cart,
 			$this->currency,
 			null,
-			$this->document,
-			$this->customer
-		);
-
-		$actual = $this->controller->response();
-		$this->assertArrayHasKey('pia', $actual);
-		$this->assertArrayHasKey('breadcrumbs', $actual);
-		$this->assertArrayHasKey('text_message', $actual);
-
-		$this->customer->method('isLogged')->willReturn(false);
-		$this->controller = new ControllerExtensionPaymentWirecardPGPia(
-			$this->registry,
-			$this->config,
-			$this->loader,
-			$this->session,
-			$this->response,
-			$this->modelOrder,
-			$this->url,
-			$this->modelPia,
-			$this->language,
-			$this->cart,
-			$this->currency,
 			null,
-			$this->document,
 			$this->customer
 		);
 
 		$actual = $this->controller->response();
-		$this->assertArrayHasKey('pia', $actual);
-		$this->assertArrayHasKey('breadcrumbs', $actual);
-		$this->assertArrayHasKey('text_message', $actual);
+		$this->assertNull($actual);
 	}
+
+	public function testPrepareTransaction()
+    {
+        $transaction = new RatepayInvoiceTransaction();
+        $this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
+            $this->registry,
+            $this->config,
+            $this->loader,
+            $this->session,
+            $this->response,
+            $this->modelOrder,
+            $this->url,
+            $this->modelRatepayInvoice,
+            $this->language,
+            $this->cart,
+            $this->currency,
+            null,
+            null,
+            $this->customer,
+            null,
+            $transaction
+        );
+
+        $this->controller->prepareTransaction();
+
+        $this->assertEquals($transaction, $this->controller->getTransaction());
+    }
 }

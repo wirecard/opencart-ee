@@ -11,7 +11,6 @@ require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wireca
 require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_sofortbanking.php';
 
 use Wirecard\PaymentSdk\Transaction\SofortTransaction;
-use Wirecard\PaymentSdk\Transaction\SepaTransaction;
 use Wirecard\PaymentSdk\Transaction\Operation;
 
 /**
@@ -34,6 +33,7 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 	private $cart;
 	private $subController;
 	private $currency;
+	private $customer;
 
 	const SHOP = 'OpenCart';
 	const PLUGIN = 'Wirecard OpenCart Extension';
@@ -112,6 +112,11 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 
 		$this->currency = $this->getMockBuilder(Currency::class)->disableOriginalConstructor()->getMock();
 
+		$this->customer = $this->getMockBuilder(Customer::class)
+			->disableOriginalConstructor()
+			->setMethods(['isLogged'])
+			->getMock();
+
 		$items = [
 			["price" => 10.465, "name" => "Produkt1", "quantity" => 2, "product_id" => 2, "tax_class_id" => 2],
 			["price" => 20.241, "name" => "Produkt2", "quantity" => 3, "product_id" => 1, "tax_class_id" => 1],
@@ -131,7 +136,10 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 			$this->modelSofort,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$this->controller = new ControllerExtensionPaymentWirecardPGSofortbanking(
@@ -145,7 +153,10 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 			$this->modelSofort,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 	}
 
@@ -169,7 +180,10 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 			$this->modelSofort,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
@@ -203,7 +217,10 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 			$this->modelSofort,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$this->controller = $this->getMockBuilder(ControllerExtensionPaymentWirecardPGSofortbanking::class)
@@ -227,7 +244,7 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 		$prop->setAccessible(true);
 
 		$paymentMethodConfigs = $prop->getValue($creditConfig);
-		$this->assertArrayHasKey('sepa', $paymentMethodConfigs);
+		$this->assertArrayHasKey('sepacredit', $paymentMethodConfigs);
 	}
 
 	public function testGetModel()
@@ -253,7 +270,10 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 			$this->modelSofort,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$actual = $this->controller->index();
@@ -274,7 +294,10 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 			$this->modelSofort,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSofortbanking::class);
@@ -299,7 +322,10 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 			$this->modelSofort,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGSofortbanking::class);
@@ -332,7 +358,10 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 			$this->modelSofort,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$this->controller = $this->getMockBuilder(ControllerExtensionPaymentWirecardPGSofortbanking::class)
@@ -351,7 +380,7 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 			'amount' => '10'
 		);
 
-		$expected = new SepaTransaction();
+		$expected = new \Wirecard\PaymentSdk\Transaction\SepaCreditTransferTransaction();
 		$expected->setParentTransactionId('1234');
 
 		$this->controller->setOperation(Operation::CREDIT);
@@ -373,7 +402,10 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 			$this->modelSofort,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$actual = $this->controller->getType();
@@ -395,7 +427,10 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 			$this->modelSofort,
 			$this->language,
 			$this->cart,
-			$this->currency
+			$this->currency,
+			null,
+			null,
+			$this->customer
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Transaction\SofortTransaction();

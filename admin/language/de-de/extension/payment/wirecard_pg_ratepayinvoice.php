@@ -8,12 +8,12 @@
  */
 
 // Page Title
-$_['heading_title'] = 'Wirecard Garantierter Kauf auf Rechnung by Wirecard / Ratepay';
+$_['heading_title'] = 'Wirecard Garantierter Kauf auf Rechnung by Wirecard';
 $_['text_wirecard_pg_ratepayinvoice'] = '<img src="./view/image/wirecard_pg/ratepayinvoice.png"/>';
 
 // Payment specific configuration
-$_['text_edit'] = 'Zahlungsmittel Garantierter Kauf auf Rechnung by Wirecard / Ratepay bearbeiten';
-$_['config_status_desc'] = 'Zahlungsmittel Garantierter Kauf auf Rechnung by Wirecard / Ratepay aktivieren und dem Endkunden beim Checkout anbieten.';
+$_['text_edit'] = 'Zahlungsmittel Garantierter Kauf auf Rechnung by Wirecard bearbeiten';
+$_['config_status_desc'] = 'Zahlungsmittel Garantierter Kauf auf Rechnung by Wirecard aktivieren und dem Endkunden beim Checkout anbieten.';
 
 
 $_['config_billing_shipping'] = 'Rechnungsadresse und Versandadresse müssen übereinstimmen';
@@ -28,3 +28,10 @@ $_['config_basket_min'] = 'Minimaler Betrag';
 $_['config_basket_min_desc'] = 'Garantierter Kauf auf Rechnung wird nur angezeigt, wenn der Bestellbetrag höher ist als der hier definierte Wert (in Standardwährung).';
 $_['config_basket_max'] = 'Maximaler Betrag';
 $_['config_basket_max_desc'] = 'Garantierter Kauf auf Rechnung wird nur angezeigt, wenn der Bestellbetrag niedriger ist als der hier definierte Wert (in Standardwährung).';
+
+// Post-processing operations
+$_['text_article_number'] = 'Artikelnummber';
+$_['text_article_name'] = 'Produktname';
+$_['text_tax_rate'] = 'Steuersatz';
+$_['text_article_amount'] = '# Preis';
+$_['text_quantity'] = 'Stück';

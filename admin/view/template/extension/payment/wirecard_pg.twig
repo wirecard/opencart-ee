@@ -2,8 +2,8 @@
 <div id="content">
     {{ payment_header }}
     <div class="container-fluid">
-        {% if error_warning %}
-            <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+        {% if wirecard_error %}
+            <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ wirecard_error }}
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
             </div>
         {% endif %}
@@ -19,6 +19,7 @@
                     {{ basic_config }}
                     {{ three_d_config }}
                     {{ credentials_config }}
+                    {{ vault_config }}
                     {{ sepa_config }}
                     {{ advanced_config }}
                 </form>

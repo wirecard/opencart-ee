@@ -9,7 +9,7 @@
 
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
-use Wirecard\PaymentSdk\Transaction\SepaTransaction;
+use Wirecard\PaymentSdk\Transaction\SepaCreditTransferTransaction;
 use Wirecard\PaymentSdk\Config\SepaConfig;
 
 /**
@@ -28,6 +28,18 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaym
 	protected $type = 'sepact';
 
 	/**
+	 * @var string
+	 * @since 1.1.0
+	 */
+	protected $payment_method = 'sepacredit';
+
+	/**
+	 * @var int
+	 * @since 1.1.0
+	 */
+	protected $scale = 2;
+
+	/**
 	 * Basic index method
 	 *
 	 * @since 1.0.0
@@ -42,7 +54,7 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaym
 	 * @since 1.0.0
 	 */
 	public function confirm() {
-		$this->transaction = new SepaTransaction();
+		$this->transaction = new SepaCreditTransferTransaction();
 
 		parent::confirm();
 	}
@@ -59,7 +71,7 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaym
 		$merchant_secret = $this->getShopConfigVal('merchant_secret');
 
 		$config = parent::getConfig($currency);
-		$payment_config = new SepaConfig($merchant_account_id, $merchant_secret);
+		$payment_config = new SepaConfig($this->payment_method, $merchant_account_id, $merchant_secret);
 		$config->add($payment_config);
 
 		return $config;
@@ -73,7 +85,7 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaym
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
 	 */
 	public function createTransaction($parentTransaction, $amount) {
-		$this->transaction = new SepaTransaction();
+		$this->transaction = new SepaCreditTransferTransaction();
 
 		return parent::createTransaction($parentTransaction, $amount);
 	}
@@ -81,11 +93,11 @@ class ControllerExtensionPaymentWirecardPGSepaCT extends ControllerExtensionPaym
 	/**
 	 * Get new instance of payment specific transaction
 	 *
-	 * @return SepaTransaction
+	 * @return SepaCreditTransferTransaction
 	 * @since 1.0.0
 	 */
 	public function getTransactionInstance() {
-		return new SepaTransaction();
+		return new SepaCreditTransferTransaction();
 	}
 }
 

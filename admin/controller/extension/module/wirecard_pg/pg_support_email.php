@@ -95,9 +95,12 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 
 		$email_content = $this->load->view('extension/wirecard_pg/email_template', $info);
 
-		$this->response->setOutput(json_encode(
-			['success' => $this->sendMail($email_content, $this->request->post['email'])]
-		));
+		$json = ['success' => false];
+		if ($this->sendMail($email_content, $this->request->post['email'])) {
+			$json = ['success' => true];
+		}
+
+		$this->response->setOutput(json_encode($json));
 	}
 
 	/**
