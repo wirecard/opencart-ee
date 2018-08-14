@@ -216,6 +216,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	public function notify() {
 		$payload = file_get_contents('php://input');
+		$this->getLogger()->debug("NOTIFY:" . $payload);
 
 		$notification_handler = new NotificationHandler();
 		$response = $notification_handler->handleNotification($this->getConfig(), $this->getLogger(), $payload);
@@ -224,7 +225,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		// So there's no need to check for an else here.
 		if ($response) {
 			if ($this->isIgnorableMasterpassResult($response)) {
-				return;
+				$this->getLogger()->debug("Actually no.");
 			}
 
 			$order_manager = new PGOrderManager($this->registry);
@@ -401,7 +402,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			];
 
 			$data = array_merge($this->getCommonBlocks(), $data);
-			$this->response->setOutput($this->load->view('extension/payment/wirecard_interaction_response', $data));
+			return $this->response->setOutput($this->load->view('extension/payment/wirecard_interaction_response', $data));
 		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			foreach ($result->getStatusCollection()->getIterator() as $item) {
 				$errors .= $item->getDescription() . "<br>\n";
