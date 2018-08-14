@@ -9,7 +9,7 @@
 
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
-use Wirecard\PaymentSdk\Transaction\SepaTransaction;
+use Wirecard\PaymentSdk\Transaction\SepaDirectDebitTransaction;
 use Wirecard\PaymentSdk\Config\SepaConfig;
 
 /**
@@ -26,6 +26,18 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	 * @since 1.1.0
 	 */
 	protected $type = 'sepadd';
+
+	/**
+	 * @var string
+	 * @since 1.1.0
+	 */
+	protected $payment_method = 'sepadirectdebit';
+
+	/**
+	 * @var int
+	 * @since 1.1.0
+	 */
+	protected $scale = 2;
 
 	/**
 	 * Basic index method
@@ -77,11 +89,10 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	/**
 	 * Set additional data needed for SEPA
 	 *
-	 * @param $force_data
 	 * @since 1.1.0
 	 */
-	public function prepareTransaction($force_data = false) {
-		parent::prepareTransaction($force_data);
+	public function prepareTransaction() {
+		parent::prepareTransaction();
 
 		$account_holder = new \Wirecard\PaymentSdk\Entity\AccountHolder();
 		$account_holder->setFirstName($this->request->post['first_name']);
@@ -109,7 +120,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 		$merchant_secret = $this->getShopConfigVal('merchant_secret');
 
 		$config = parent::getConfig($currency);
-		$payment_config = new SepaConfig($merchant_account_id, $merchant_secret);
+		$payment_config = new SepaConfig($this->payment_method, $merchant_account_id, $merchant_secret);
 		$payment_config->setCreditorId($this->getShopConfigVal('creditor_id'));
 		$config->add($payment_config);
 
@@ -131,11 +142,11 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 	/**
 	 * Get new instance of payment specific transaction
 	 *
-	 * @return SepaTransaction
+	 * @return SepaDirectDebitTransaction
 	 * @since 1.1.0
 	 */
 	public function getTransactionInstance() {
-		return new SepaTransaction();
+		return new SepaDirectDebitTransaction();
 	}
 
 	/**

@@ -11,7 +11,6 @@ require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wireca
 require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_ideal.php';
 
 use Wirecard\PaymentSdk\Transaction\IdealTransaction;
-use Wirecard\PaymentSdk\Transaction\SepaTransaction;
 use Wirecard\PaymentSdk\Transaction\Operation;
 use Wirecard\PaymentSdk\Entity\IdealBic;
 
@@ -250,7 +249,7 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 		$prop->setAccessible(true);
 
 		$paymentMethodConfigs = $prop->getValue($creditConfig);
-		$this->assertArrayHasKey('sepa', $paymentMethodConfigs);
+		$this->assertArrayHasKey('sepacredit', $paymentMethodConfigs);
 	}
 
 	public function testGetModel()
@@ -386,7 +385,7 @@ class IdealUTest extends \PHPUnit_Framework_TestCase
 			'amount' => '10'
 		);
 
-		$expected = new SepaTransaction();
+		$expected = new \Wirecard\PaymentSdk\Transaction\SepaCreditTransferTransaction();
 		$expected->setParentTransactionId('1234');
 
 		$this->controller->setOperation(Operation::CREDIT);

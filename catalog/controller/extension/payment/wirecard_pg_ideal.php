@@ -11,7 +11,7 @@ require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 require_once(dirname(__FILE__) . '/wirecard_pg_sepact.php');
 
 use Wirecard\PaymentSdk\Transaction\IdealTransaction;
-use Wirecard\PaymentSdk\Transaction\SepaTransaction;
+use Wirecard\PaymentSdk\Transaction\SepaCreditTransferTransaction;
 use Wirecard\PaymentSdk\Config\PaymentMethodConfig;
 use Wirecard\PaymentSdk\Transaction\Operation;
 use Wirecard\PaymentSdk\Entity\IdealBic;
@@ -30,6 +30,12 @@ class ControllerExtensionPaymentWirecardPGIdeal extends ControllerExtensionPayme
 	 * @since 1.0.0
 	 */
 	protected $type = 'ideal';
+
+	/**
+	 * @var int
+	 * @since 1.1.0
+	 */
+	protected $scale = 2;
 
 	/**
 	 * Basic index method
@@ -120,10 +126,9 @@ class ControllerExtensionPaymentWirecardPGIdeal extends ControllerExtensionPayme
 	 * @since 1.0.0
 	 */
 	public function createTransaction($parent_transaction, $amount) {
+		$this->transaction = new IdealTransaction();
 		if ($this->operation == Operation::CREDIT) {
-			$this->transaction = new SepaTransaction();
-		} else {
-			$this->transaction = new IdealTransaction();
+			$this->transaction = new SepaCreditTransferTransaction();
 		}
 
 		return parent::createTransaction($parent_transaction, $amount);

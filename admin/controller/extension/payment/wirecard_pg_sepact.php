@@ -10,7 +10,7 @@
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ControllerExtensionPaymentWirecardPGSEPACT
+ * Class ControllerExtensionPaymentWirecardPGSepaCT
  *
  * SEPA Credit Transfer payment transaction controller
  *
