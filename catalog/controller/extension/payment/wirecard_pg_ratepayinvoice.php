@@ -45,6 +45,7 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 		$data['birthdate_input'] = $this->language->get('birthdate_input');
 		$data['birthdate_error'] = $this->language->get('ratepayinvoice_fields_error');
 
+		$data['ratepay_device_ident'] = $this->getRatepayDevice();
 		$data['ratepayinvoice'] = $this->load->view('extension/payment/wirecard_pg_ratepayinvoice', $data);
 		return parent::index($data);
 	}
@@ -86,6 +87,12 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 				true,
 				$this->request->post['ratepayinvoice-birthdate']
 			);
+		}
+		if (isset($this->request->post['ratepayinvoice-device'])) {
+			$device_ident = $this->request->post['ratepayinvoice-device'];
+			$device = new \Wirecard\PaymentSdk\Entity\Device();
+			$device->setFingerprint($device_ident);
+			$this->transaction->setDevice($device);
 		}
 	}
 
@@ -146,6 +153,17 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 	 */
 	public function getTransactionInstance() {
 		return new RatepayInvoiceTransaction();
+	}
+
+	/**
+	 * Get Ratepay Device Ident
+	 *
+	 * @return string
+	 * @since 1.1.0
+	 */
+	private function getRatepayDevice() {
+		$merchant_account_id = $this->getShopConfigVal('merchant_account_id');
+		return md5($merchant_account_id . '_' . microtime());
 	}
 }
 
