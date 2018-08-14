@@ -41,6 +41,24 @@ class ControllerExtensionPaymentWirecardPGLanguageHelper extends Controller {
 	}
 
 	/**
+	 * Get the currently active language code (e.g. en_gb, de_de, ..)
+	 *
+	 * @return string
+	 * @since 1.2.0
+	 */
+	public function getActiveLanguageCode() {
+		$this->load->model('localisation/language');
+		$available_languages = $this->model_localisation_language->getLanguages();
+		$current_language_id = $this->config->get('config_language_id');
+
+		$current_language = array_filter($available_languages, function ($language) use ($current_language_id) {
+			return $current_language_id == $language['language_id'];
+		});
+
+		return str_replace('-', '_', reset($current_language)['code']);
+	}
+
+	/**
 	 * Get shop language codes
 	 *
 	 * @return array
