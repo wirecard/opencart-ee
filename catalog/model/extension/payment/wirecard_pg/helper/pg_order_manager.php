@@ -187,7 +187,7 @@ class PGOrderManager extends Model {
 	/**
 	 * Create order details to display in order history
 	 * @param \Wirecard\PaymentSdk\Response\Response $response
-	 * @return strin
+	 * @return string
 	 * @since 1.1.0
 	 */
 	public function createOrderDetails($response) {
