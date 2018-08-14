@@ -23,4 +23,10 @@ class ModelExtensionPaymentWirecardPGSepaDD extends ModelExtensionPaymentGateway
 	 * @since 1.1.0
 	 */
 	protected $type = 'sepadd';
+
+	/**
+	 * @var int
+	 * @since 1.1.0
+	 */
+	protected $scale = 2;
 }

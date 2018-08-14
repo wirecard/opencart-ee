@@ -186,4 +186,19 @@ class ModelExtensionPaymentWirecardPG extends Model {
             `transaction_id` = '" . $this->db->escape($transaction_id) . "'
         ");
 	}
+
+	/**
+	 * Get all child transactions to specific transaction id
+	 *
+	 * @param string $transaction_id
+	 * @return mixed
+	 * @since 1.1.0
+	 */
+	public function getChildTransactions($transaction_id) {
+		$child_transactions = $this->db->query("
+	    SELECT * FROM `" . DB_PREFIX ."wirecard_ee_transactions` WHERE `parent_transaction_id` = '" . $this->db->escape($transaction_id) . "'
+	    ")->rows;
+
+		return $child_transactions;
+	}
 }

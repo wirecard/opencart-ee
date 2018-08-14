@@ -7,6 +7,7 @@
  */
 
 var WirecardPaymentPage;
+var debug = false;
 
 /**
  * Set the paren transaction id to the form and submit it
@@ -43,7 +44,12 @@ function callback() {
  * @since 1.0.0
  */
 function logError(error) {
-	console.log(error);
+	if (typeof error == "string") {
+		$("#error-message span").html(error).parent().show();
+	}
+	if (debug) {
+		console.log(error);
+	}
 }
 
 /**
@@ -51,8 +57,8 @@ function logError(error) {
  * @since 1.0.0
  */
 function getCreditCardRequestData() {
-	var maxWait = 5000, waitStep = 250, WPPavailableInterval = setInterval( function () {
-		maxWait -= waitStep;
+	var maxWait = 500, WPPavailableInterval = setInterval( function () {
+		maxWait--;
 		if ( typeof WirecardPaymentPage !== "undefined" ) {
 			$.ajax( {
 				url: "index.php?route=extension/payment/wirecard_pg_" + window.WirecardPaymentMethod + "/get" + window.WirecardPaymentMethod + "UiRequestData",
@@ -68,17 +74,15 @@ function getCreditCardRequestData() {
 						} );
 					}
 				},
-				error: function ( error ) {
-					console.error( error );
-				}
+				error: logError
 			} );
 			clearInterval( WPPavailableInterval );
 		}
 		if ( maxWait <= 0 ) {
-			console.error("WPP did not respond in " + Integer.valueOf(maxWait/1000) + "seconds");
+			logError("A time out error occurred during render form process. No successful response possible");
 			clearInterval(WPPavailableInterval);
 		}
-	}, waitStep );
+	}, 20 );
 }
 
 /**
@@ -102,10 +106,10 @@ function setToken(token) {
  * Delete a card from the vault.
  *
  * @param card
- * @param masked_pan
+ * @param maskedPan
  * @since 1.1.0
  */
-function deleteCardFromVault(card, masked_pan) {
+function deleteCardFromVault(card, maskedPan) {
 	if (confirm("Are you sure you want to delete this credit card?")) {
 		$.ajax({
 			url: "index.php?route=extension/payment/wirecard_pg_creditcard/deleteCardFromVault",
@@ -113,7 +117,7 @@ function deleteCardFromVault(card, masked_pan) {
 			dataType: "json",
 			data: {
 				card: card,
-				masked_pan: masked_pan
+				masked_pan: maskedPan
 			},
 			success: function (data) {
 				$("#success-message, #failure-message").hide();
@@ -125,8 +129,8 @@ function deleteCardFromVault(card, masked_pan) {
 						$(this).remove();
 						setToken(null);
 
-						if($('#list-existing-cards').children().length === 0) {
-							$('#button-confirm').attr('disabled', 'disabled');
+						if($("#list-existing-cards").children().length === 0) {
+							$("#button-confirm").attr("disabled", "disabled");
 						}
 					});
 
@@ -151,13 +155,13 @@ function handleTabChanges() {
 
 		if (target === "#new") {
 			$(saveCreditCard).show();
-			$('#button-confirm').removeAttr('disabled');
+			$("#button-confirm").removeAttr("disabled");
 			return;
 		}
 
-		if($('#list-existing-cards').children().length === 0) {
+		if($("#list-existing-cards").children().length === 0) {
 			setToken(null);
-			$('#button-confirm').attr('disabled', 'disabled');
+			$("#button-confirm").attr("disabled", "disabled");
 		}
 
 		$(saveCreditCard).hide();

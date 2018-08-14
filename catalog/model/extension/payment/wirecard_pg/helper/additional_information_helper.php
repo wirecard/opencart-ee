@@ -35,15 +35,23 @@ class AdditionalInformationHelper extends Model {
 	private $config;
 
 	/**
+	 * @var int
+	 * @since 1.1.0
+	 */
+	private $scale;
+
+	/**
 	 * AdditionalInformationHelper constructor.
 	 * @param $registry
 	 * @param $prefix
+	 * @param int $scale
 	 * @since 1.0.0
 	 */
-	public function __construct($registry, $prefix, $config) {
+	public function __construct($registry, $prefix, $config, $scale = 12) {
 		parent::__construct($registry);
 		$this->prefix = $prefix;
 		$this->config = $config;
+		$this->scale = $scale;
 	}
 
 	/**
@@ -66,15 +74,15 @@ class AdditionalInformationHelper extends Model {
 	 * Add account holder to transaction.
 	 *
 	 * @param Transaction $transaction
-	 * @param $order
-	 * @param $include_shipping
+	 * @param array $order
+	 * @param boolean $include_shipping
+	 * @param string|null $birthdate
 	 * @return Transaction
 	 * @since 1.1.0
 	 */
-	public function addAccountHolder($transaction, $order, $include_shipping = true) {
+	public function addAccountHolder($transaction, $order, $include_shipping = true, $birthdate = null) {
 		$account_holder = new PGAccountHolder();
-
-		$transaction->setAccountHolder($account_holder->createAccountHolder($order, $account_holder::BILLING));
+		$transaction->setAccountHolder($account_holder->createAccountHolder($order, $account_holder::BILLING, $birthdate));
 
 		if ($include_shipping) {
 			$transaction->setShipping($account_holder->createAccountHolder($order, $account_holder::SHIPPING));
@@ -126,7 +134,7 @@ class AdditionalInformationHelper extends Model {
 		if ($order['ip']) {
 			$transaction->setIpAddress($order['ip']);
 		} else {
-			$transaction->setIpAddress($_SERVER['REMOTE_ADDR']);
+			$transaction->setIpAddress($this->request->server['REMOTE_ADDR']);
 		}
 
 		if (strlen($order['customer_id'])) {
@@ -183,34 +191,25 @@ class AdditionalInformationHelper extends Model {
 	 * Get currency array by code
 	 *
 	 * @param string $currency_code
-	 * @param string $type
 	 * @return array
 	 * @since 1.1.0
 	 */
-	public function getCurrency($currency_code, $type) {
+	public function getCurrency($currency_code) {
 		$this->load->model('localisation/currency');
 		$currency_row = $this->model_localisation_currency->getCurrencyByCode($currency_code);
 		$currency = [
 			'currency_code' => $currency_row['code'],
-			'currency_value' => $currency_row['value'],
-			'precision' => $this->getPrecision($currency_row['value'], $type)
+			'currency_value' => $currency_row['value']
 			];
 		return $currency;
 	}
 
 	/**
-	 * Get precision for current currency from value
+	 * Get transaction specific scaling factor
 	 *
-	 * @param float $currency_value
-	 * @param string $type
 	 * @return int
-	 * @since 1.1.0
 	 */
-	public function getPrecision($currency_value, $type) {
-		if ('sepadd' == $type) {
-			return 2;
-		}
-		$precision = strlen(substr(strrchr($currency_value, "."), 1));
-		return $precision;
+	public function getScale() {
+		return $this->scale;
 	}
 }

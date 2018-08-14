@@ -49,13 +49,16 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		$data['text_request_amount'] = $this->language->get('text_request_amount');
 		$data['route_href'] = $this->url->link(self::TRANSACTION . '/');
 
-		if (isset($this->session->data['wirecard_info']['admin_error'])) {
-			$data['error_warning'] = $this->session->data['wirecard_info']['admin_error'];
-		}
 		if (isset($this->request->get['id'])) {
 			$data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
+			if ('ratepayinvoice' == $data['transaction']['payment_method']) {
+				$this->load->language(self::ROUTE . '_ratepayinvoice');
+				$basket = $this->getBasketItems($this->request->get['id']);
+				$data['basket'] = $this->updateBasketItemQuantity($this->request->get['id'], $basket);
+				$data['ratepayinvoice_details'] = $this->load->view('extension/wirecard_pg/ratepayinvoice_details', $data);
+			}
 		} else {
-			$data['error_warning'] = $this->language->get('error_no_transaction');
+			$data['wirecard_error'] = $this->language->get('error_no_transaction');
 		}
 		if (isset($this->session->data['wirecard_info']['success_message'])) {
 			$data['success_message'] = $this->session->data['wirecard_info']['success_message'];
@@ -63,13 +66,12 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$data['child_transaction_href'] = $this->session->data['wirecard_info']['child_transaction_href'];
 		}
 
-		if (isset($this->session->data['admin_error'])) {
-			$data['error_warning'] = $this->session->data['admin_error'];
+		if (isset($this->session->data['wirecard_info']['admin_error'])) {
+			$data['wirecard_error'] = $this->session->data['wirecard_info']['admin_error'];
 		}
 
 		unset(
-			$this->session->data['wirecard_info'],
-			$this->session->data['admin_error']
+			$this->session->data['wirecard_info']
 		);
 
 		$this->response->setOutput($this->load->view('extension/wirecard_pg/details', $data));
@@ -98,6 +100,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 				'amount' => $amount,
 				'currency' => $transaction['currency'],
 				'operations' => ($transaction['transaction_state'] == 'success') ? $operations : false,
+				'payment_method' => $transaction['payment_method'],
 				'action' => $this->url->link(
 					self::TRANSACTION . '/process', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['transaction_id'],
 					true
@@ -131,7 +134,14 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$this->load->model(self::ROUTE);
 			$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($this->request->get['id']);
 			$operation = $this->request->post['operation'];
+			$payment_method = $this->request->post['payment-method'];
 			$amount = new \Wirecard\PaymentSdk\Entity\Amount($this->request->post['amount'], $this->request->post['currency']);
+			if ('ratepayinvoice' == $payment_method) {
+				$transaction['basket'] = $this->addResponseBasket($transaction);
+			}
+			if ('cancel' == $operation && !isset($this->request->post['override-operation'])) {
+				$amount = null;
+			}
 
 			$controller = $this->getPaymentController($transaction['payment_method']);
 			$transaction_id = $transaction_handler->processTransaction($controller, $transaction, $this->config, $operation, $amount);
@@ -205,7 +215,8 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 
 				$op = array(
 					'action' => $key,
-					'text' => $this->language->get($key),
+					'text' => $this->language->get($value),
+					'override' => $value
 				);
 
 				array_push($operations, $op);
@@ -215,5 +226,97 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Create multidimensional basket array from response
+	 *
+	 * @param $transaction_id
+	 * @return array|bool
+	 * @since 1.1.0
+	 */
+	private function getBasketItems($transaction_id) {
+		$this->load->model(self::ROUTE);
+		$this->load->language(self::ROUTE);
+
+		$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($transaction_id);
+
+		$basket = array();
+		if ($transaction) {
+			foreach (json_decode($transaction['response']) as $key => $value) {
+				if (strpos($key, 'order-items') !== false) {
+					$item_start = substr($key, strpos($key, 'order-item.') + strlen('order-item.'));
+					$item_count = substr($item_start, 0, strpos($item_start, '.'));
+					$item_name = substr($item_start, strpos($item_start, '.') + 1);
+					$item_name = str_replace('-', '_', $item_name);
+					$basket[$item_count][$item_name] = $value;
+				}
+			}
+			return $basket;
+		}
+		return false;
+	}
+
+	/**
+	 * Update response quantities to actual basket quantity
+	 *
+	 * @param string $transaction_id
+	 * @param array $basket
+	 * @return mixed
+	 * @since 1.1.0
+	 */
+	private function updateBasketItemQuantity($transaction_id, $basket) {
+		$this->load->model(self::ROUTE);
+		$this->load->language(self::ROUTE);
+		$parent_quantities = $this->getArticleNumbersWithQuantity($basket);
+
+		$transactions = $this->model_extension_payment_wirecard_pg->getChildTransactions($transaction_id);
+		if ($transactions) {
+			foreach ($transactions as $transaction) {
+				$child_basket = $this->getBasketItems($transaction['transaction_id']);
+				$child_quantities = $this->getArticleNumbersWithQuantity($child_basket);
+				foreach ($child_quantities as $key => $value) {
+					$parent_quantities[$key] = $parent_quantities[$key] - $value;
+				}
+			}
+		}
+		foreach ($basket as $key => $item) {
+			if (isset($parent_quantities[$item['article_number']])) {
+				$basket[$key]['quantity'] = $parent_quantities[$item['article_number']];
+			}
+		}
+		return $basket;
+	}
+
+	/**
+	 * Get quantities for specific articlenumbers
+	 *
+	 * @param array $basket
+	 * @return array
+	 * @since 1.1.0
+	 */
+	private function getArticleNumbersWithQuantity($basket) {
+		$quantities = array();
+		foreach ($basket as $key => $value) {
+			$quantities[$value['article_number']] = $value['quantity'];
+		}
+		return $quantities;
+	}
+
+	/**
+	 * Add updated basket item quantities
+	 *
+	 * @param Wirecard\PaymentSdk\Transaction\Transaction $transaction
+	 * @return array|bool
+	 * @since 1.1.0
+	 */
+	private function addResponseBasket($transaction) {
+		$basket = $this->getBasketItems($transaction['transaction_id']);
+		foreach ($basket as $key => $value) {
+			if (isset($this->request->post['quantity-' . $key])) {
+				$basket[$key]['quantity'] = $this->request->post['quantity-' . $key];
+			}
+		}
+		return $basket;
 	}
 }

@@ -11,8 +11,8 @@
         </div>
     </div>
     <div class="container-fluid">
-        {% if error_warning %}
-            <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+        {% if wirecard_error %}
+            <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ wirecard_error }}
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
             </div>
         {% endif %}
@@ -35,20 +35,25 @@
             </div>
             <div class="panel-body">
                 {% if transaction %}
-                    {% if transaction.operations %}
-                    <div class="panel-heading">
-                        <h3 class="panel-title">{{ text_backend_operations }}</h3>
-                    </div>
-                    <div class="panel-group">
-                        <br>
-                        <form action="{{ transaction.action }}" method="post" enctype="multipart/form-data" id="wirecard-operation" class="form-horizontal">
-                            <label for="amount">{{ text_request_amount }} in {{ transaction.currency }}</label>&nbsp;<input type="number" name="amount" value="{{ transaction.amount }}" id="amount" class="input-sm" step="any" min="0.000001" max="{{ transaction.amount }}"> &nbsp;
-                            <input type="hidden" name="currency" value="{{ transaction.currency }}">
-                        {% for key,operation in transaction.operations %}
-                            <button type="submit" form="wirecard-operation" data-toggle="tooltip" class="btn btn-primary" name="operation" value="{{ operation.action }}">{{ operation.text }}</button>
-                        {% endfor %}
-                        </form>
-                    </div>
+                    {% if ratepayinvoice_details %}
+                        {{ ratepayinvoice_details }}
+                    {% else %}
+                        {% if transaction.operations %}
+                            <div class="panel-heading">
+                                <h3 class="panel-title">{{ text_backend_operations }}</h3>
+                            </div>
+                            <div class="panel-group">
+                                <br>
+                                <form action="{{ transaction.action }}" method="post" enctype="multipart/form-data" id="wirecard-operation" class="form-horizontal">
+                                    <input type="hidden" name="payment-method" id="payment-method" value="{{ transaction.payment_method }}">
+                                    <label for="amount">{{ text_request_amount }} in {{ transaction.currency }}</label>&nbsp;<input type="number" name="amount" value="{{ transaction.amount }}" id="amount" class="input-sm" step="any" min="0.000001" max="{{ transaction.amount }}"> &nbsp;
+                                    <input type="hidden" name="currency" value="{{ transaction.currency }}">
+                                    {% for key,operation in transaction.operations %}
+                                        <button type="submit" form="wirecard-operation" data-toggle="tooltip" class="btn btn-primary" name="operation" value="{{ operation.action }}">{{ operation.text }}</button>
+                                    {% endfor %}
+                                </form>
+                            </div>
+                        {% endif %}
                     {% endif %}
                 <div class="panel-heading">
                     <h3 class="panel-title">{{ text_response_data }}</h3>

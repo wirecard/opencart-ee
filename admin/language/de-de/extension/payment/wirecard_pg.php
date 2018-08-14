@@ -89,4 +89,4 @@ $_['terms_of_use'] = 'Nutzungsbedingungen';
 $_['credit'] = "Kreditieren";
 $_['pay'] = "Buchen";
 $_['refund'] = "Refundieren";
-$_['cancel'] = "Stornieren";
+$_['cancel'] = "Stornieren mit vollem Betrag";

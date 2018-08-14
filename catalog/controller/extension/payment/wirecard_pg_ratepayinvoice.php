@@ -28,6 +28,12 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 	protected $type = 'ratepayinvoice';
 
 	/**
+	 * @var int
+	 * @since 1.1.0
+	 */
+	protected $scale = 2;
+
+	/**
 	 * Basic index method
 	 *
 	 * @param array $data
@@ -39,20 +45,55 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 		$data['birthdate_input'] = $this->language->get('birthdate_input');
 		$data['birthdate_error'] = $this->language->get('ratepayinvoice_fields_error');
 
+		$data['ratepay_device_ident'] = $this->getRatepayDevice();
 		$data['ratepayinvoice'] = $this->load->view('extension/payment/wirecard_pg_ratepayinvoice', $data);
 		return parent::index($data);
 	}
 
 	/**
-	 * Create Ratepay-Invoice transaction
+	 * Create Guaranteed invoice transaction
 	 *
 	 * @since 1.1.0
 	 */
 	public function confirm() {
-		$this->transaction = new RatepayInvoiceTransaction();
-		$this->prepareTransaction();
-
+		$this->transaction = $this->getTransactionInstance();
 		parent::confirm();
+	}
+
+	/**
+	 * Set additional data for Ratepay-Invoice transaction
+	 *
+	 * @since 1.1.0
+	 */
+	public function prepareTransaction() {
+		parent::prepareTransaction();
+
+		$this->load->model('checkout/order');
+		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config, $this->scale);
+		$currency = $additional_helper->getCurrency($order['currency_code'], $this->type);
+
+		$this->transaction = $additional_helper->addBasket(
+			$this->transaction,
+			$this->cart->getProducts(),
+			$this->session->data['shipping_method'],
+			$currency,
+			$order['total']
+		);
+		if (isset($this->request->post['ratepayinvoice-birthdate'])) {
+			$this->transaction = $additional_helper->addAccountHolder(
+				$this->transaction,
+				$order,
+				true,
+				$this->request->post['ratepayinvoice-birthdate']
+			);
+		}
+		if (isset($this->request->post['ratepayinvoice-device'])) {
+			$device_ident = $this->request->post['ratepayinvoice-device'];
+			$device = new \Wirecard\PaymentSdk\Entity\Device();
+			$device->setFingerprint($device_ident);
+			$this->transaction->setDevice($device);
+		}
 	}
 
 	/**
@@ -96,6 +137,11 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 	public function createTransaction($parent_transaction, $amount) {
 		$this->transaction = new RatepayInvoiceTransaction();
 
+		//create basket from response
+		$basket_factory = new PGBasket($this);
+		$requested_amount = $basket_factory->createBasketFromArray($this->transaction, $parent_transaction);
+		$amount = new \Wirecard\PaymentSdk\Entity\Amount($requested_amount, $parent_transaction['currency']);
+
 		return parent::createTransaction($parent_transaction, $amount);
 	}
 
@@ -107,6 +153,17 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 	 */
 	public function getTransactionInstance() {
 		return new RatepayInvoiceTransaction();
+	}
+
+	/**
+	 * Get Ratepay Device Ident
+	 *
+	 * @return string
+	 * @since 1.1.0
+	 */
+	private function getRatepayDevice() {
+		$merchant_account_id = $this->getShopConfigVal('merchant_account_id');
+		return md5($merchant_account_id . '_' . microtime());
 	}
 }
 

@@ -51,10 +51,9 @@ abstract class ModelExtensionPaymentGateway extends Model {
 		$this->load->language('extension/payment/wirecard_pg_' . $this->type);
 		$logo = '<img src="' . $base_url . 'image/catalog/wirecard_pg_'. $this->type .'.png" />';
 		$code = $this->language->get('code');
+		$title = $logo . ' ' . $this->config->get($prefix . '_title' )['en'];
 		if (isset($code) && isset($this->config->get($prefix . '_title' )[$code])) {
 			$title = $logo . ' ' . $this->config->get($prefix . '_title' )[$code];
-		} else {
-			$title = $logo . ' ' . $this->config->get($prefix . '_title' )['en'];
 		}
 
 		$method_data = array(
@@ -103,8 +102,13 @@ abstract class ModelExtensionPaymentGateway extends Model {
 			if ('creditcard' == $this->type) {
 				return $this->handleFormInteractionResponse($response);
 			}
-
-			$redirect = $this->handleFormInteractionResponse($response);
+			$form_fields = $response->getFormFields();
+			$response_query = array();
+			foreach ($form_fields->getIterator() as $key => $value) {
+				$response_query[$key] = $value;
+			}
+			$query = http_build_query($response_query);
+			$redirect = $response->getUrl() . '&' . $query;
 		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			$errors = '';
 

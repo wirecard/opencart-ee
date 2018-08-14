@@ -61,6 +61,12 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	protected $operation;
 
+	/**
+	 * @var int
+	 * @since 1.1.0
+	 */
+	protected $scale = 12;
+
 
 	/**
 	 * Sets the operation that is currently being executed.
@@ -139,30 +145,28 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	/**
 	 * Fill transaction with data
 	 *
-	 * @param bool $force_data If set to true, sets all data no matter the merchant settings.
 	 * @since 1.0.0
 	 */
-	public function prepareTransaction($force_data = false) {
+	public function prepareTransaction() {
 		$this->load->language(self::PATH);
 		$this->load->model('checkout/order');
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config);
-		$precision = $additional_helper->getPrecision($order['currency_value'], $this->type);
+		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config, $this->scale);
 		$currency = $additional_helper->getCurrency($order['currency_code'], $this->type);
 
-		$total = $additional_helper->convert($order['total'], $currency);
-		$amount = new \Wirecard\PaymentSdk\Entity\Amount(number_format($total, $precision), $order['currency_code']);
+		$total = bcadd($additional_helper->convert($order['total'], $currency), 0.000000000000, $this->scale);
+		$amount = new \Wirecard\PaymentSdk\Entity\Amount($total, $order['currency_code']);
 		$this->payment_config = $this->getConfig($currency);
 		$this->transaction->setRedirect($this->getRedirects($this->session->data['order_id']));
 		$this->transaction->setNotificationUrl($this->getNotificationUrl());
 		$this->transaction->setAmount($amount);
 
 		$this->transaction = $additional_helper->setIdentificationData($this->transaction, $order);
-		if ($this->getShopConfigVal('descriptor') || $force_data) {
+		if ($this->getShopConfigVal('descriptor')) {
 			$this->transaction->setDescriptor($additional_helper->createDescriptor($order));
 		}
 
-		if ($this->getShopConfigVal('shopping_basket') || $force_data) {
+		if ($this->getShopConfigVal('shopping_basket')) {
 			$this->transaction = $additional_helper->addBasket(
 				$this->transaction,
 				$this->cart->getProducts(),
@@ -172,7 +176,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			);
 		}
 
-		if ($this->getShopConfigVal('additional_info') || $force_data) {
+		if ($this->getShopConfigVal('additional_info')) {
 			$this->transaction = $additional_helper->setAdditionalInformation($this->transaction, $order);
 			$this->transaction = $additional_helper->addBasket(
 				$this->transaction,
@@ -193,11 +197,10 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	/**
 	 * Create payment specific config
 	 *
-	 * @param array $currency
 	 * @return Config
 	 * @since 1.0.0
 	 */
-	public function getConfig($currency = null) {
+	public function getConfig() {
 		$basic_info = new ExtensionModuleWirecardPGPluginData();
 		$base_url = $this->getShopConfigVal('base_url');
 		$http_user = $this->getShopConfigVal('http_user');
@@ -364,6 +367,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	public function processResponse($result, $logger, $transaction_service) {
 		$order_manager = new PGOrderManager($this->registry);
 		$delete_failure = $this->getShopConfigVal('delete_failure_order');
+		$errors = '';
 
 		if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
 			if (!$this->isIgnorableMasterpassResult($result)) {
@@ -403,24 +407,20 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$data = array_merge($this->getCommonBlocks(), $data);
 			$this->response->setOutput($this->load->view('extension/payment/wirecard_interaction_response', $data));
 		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
-			$errors = '';
-
 			foreach ($result->getStatusCollection()->getIterator() as $item) {
 				$errors .= $item->getDescription() . "<br>\n";
 				$logger->error($item->getDescription());
 			}
 
-			$this->session->data['error'] = $errors;
 			$order_manager->updateCancelFailureOrder($result->getCustomFields()->get('orderId'), 'failed', $delete_failure);
-			$this->response->redirect($this->url->link('checkout/checkout'));
-
-			return false;
 		} else {
-			$this->session->data['error'] = $this->language->get('order_error');
-			$this->response->redirect($this->url->link('checkout/checkout'));
-
-			return false;
+			$errors = $this->language->get('order_error');
 		}
+
+		$this->session->data['error'] = $errors;
+		$this->response->redirect($this->url->link('checkout/checkout'));
+
+		return false;
 	}
 
 	/**
@@ -456,7 +456,9 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	 */
 	public function createTransaction($parentTransaction, $amount) {
 		$this->transaction->setParentTransactionId($parentTransaction['transaction_id']);
-		$this->transaction->setAmount($amount);
+		if (!is_null($amount)) {
+			$this->transaction->setAmount($amount);
+		}
 
 		return $this->transaction;
 	}
@@ -513,18 +515,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 	}
 
 	/**
-	 * Get an instance of the Credit Card vault.
-	 *
-	 * @return ModelExtensionPaymentWirecardPGVault
-	 * @since 1.1.0
-	 */
-	protected function getVault() {
-		$this->load->model('extension/payment/wirecard_pg/vault');
-
-		return $this->model_extension_payment_wirecard_pg_vault;
-	}
-
-	/**
 	 * Get payment action
 	 *
 	 * @param string $action
@@ -537,5 +527,15 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		} else {
 			return 'authorization';
 		}
+	}
+
+	/**
+	 * Get transaction member
+	 *
+	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
+	 * @since 1.1.0
+	 */
+	public function getTransaction() {
+		return $this->transaction;
 	}
 }
