@@ -9,6 +9,7 @@
 
 require_once __DIR__ . '/../wirecard_pg.php';
 require_once __DIR__ . '/../../payment/wirecard_pg/transaction_handler.php';
+require_once __DIR__ . '/pg_response_mapper.php';
 
 use Wirecard\PaymentSdk\Transaction\Operation;
 
@@ -96,7 +97,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$amount = $this->model_extension_payment_wirecard_pg->getTransactionMaxAmount($transaction_id);
 			$data = array(
 				'transaction_id' => $transaction['transaction_id'],
-				'response' => json_decode($transaction['response'], true),
+				'response' => $this->prepareResponseData(json_decode($transaction['response'], true)),
 				'amount' => $amount,
 				'currency' => $transaction['currency'],
 				'operations' => ($transaction['transaction_state'] == 'success') ? $operations : false,
@@ -107,6 +108,23 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 				)
 			);
 		}
+
+		return $data;
+	}
+
+	/**
+	 * Prepare response data
+	 *
+	 * @param $response
+	 * @return array
+	 * @since 1.1.0
+	 */
+	public function prepareResponseData($response) {
+		$response_mapper = new ControllerExtensionModuleWirecardPGPGResponseMapper($this->registry);
+
+			$data['transaction_data'] = $response_mapper->getTransactionDetails($response);
+		$data['account_holder'] = $response_mapper->getAccountHolder($response);
+		$data['shipping'] = $response_mapper->getShipping($response);
 
 		return $data;
 	}
