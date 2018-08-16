@@ -122,9 +122,11 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 	public function prepareResponseData($response) {
 		$response_mapper = new ControllerExtensionModuleWirecardPGPGResponseMapper($this->registry);
 
-			$data['transaction_data'] = $response_mapper->getTransactionDetails($response);
+		$data['transaction_data'] = $response_mapper->getTransactionDetails($response);
 		$data['account_holder'] = $response_mapper->getAccountHolder($response);
 		$data['shipping'] = $response_mapper->getShipping($response);
+		$data['basic_info'] = $response_mapper->getBasicDetails($response);
+		$data['cc_info'] = $response_mapper->getCard($response);
 
 		return $data;
 	}

@@ -29,6 +29,7 @@ class ControllerExtensionModuleWirecardPGPGResponseMapper extends Controller {
 	const DESCRIPTOR = 'descriptor';
 
 	const ACCOUNT_HOLDER = 'account-holder.0.';
+	const CARD = 'card-token.0.';
 	const SHIPPING = 'shipping.0.';
 	const ADDRESS = 'address.0.';
 
@@ -141,5 +142,46 @@ class ControllerExtensionModuleWirecardPGPGResponseMapper extends Controller {
 			$shipping['Postal Code'] = $response[self::SHIPPING . self::ADDRESS . 'postal-code'];
 		}
 		return $shipping;
+	}
+
+	public function getBasicDetails($response) {
+		$basic = array();
+
+		if (isset($response['payment-methods.0.name'])) {
+			$basic['Payment Method'] = '<img src="' . HTTP_CATALOG .'image/catalog/wirecard_pg_' . $response['payment-methods.0.name'] . '.png" />';
+		}
+		if (isset($response['completion-time-stamp'])) {
+			$basic['Time Stamp'] = $response['completion-time-stamp'];
+		}
+		if (isset($response['consumer-id'])) {
+			$basic['Customer ID'] = $response['consumer-id'];
+		}
+		if (isset($response['ip-address'])) {
+			$basic['IP Address'] = $response['ip-address'];
+		}
+		if (isset($response['order-number'])) {
+			$basic['Order Number'] = $response['order-number'];
+		}
+
+		return $basic;
+	}
+
+
+	public function getBasket($response) {
+		$basket = array();
+
+	}
+
+	public function getCard($response) {
+		$card = array();
+
+		if (isset($response[self::CARD . 'token-id'])) {
+			$card['Token'] = $response[self::CARD . 'token-id'];
+		}
+		if (isset($response[self::CARD . 'masked-account-number'])) {
+			$card['Masked PAN'] = $response[self::CARD . 'masked-account-number'];
+		}
+
+		return $card;
 	}
 }
