@@ -393,19 +393,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->response->redirect($this->url->link('checkout/success'));
 
 			return true;
-		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FormInteractionResponse) {
-			$this->load->language('information/static');
-			$this->load->language('language/extension/wirecard_pg');
-
-			$data = [
-				'url' => $result->getUrl(),
-				'method' => $result->getMethod(),
-				'form_fields' => $result->getFormFields(),
-				'redirect_text' => $this->language->get('redirect_text'),
-			];
-
-			$data = array_merge($this->getCommonBlocks(), $data);
-			$this->response->setOutput($this->load->view('extension/payment/wirecard_interaction_response', $data));
 		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			foreach ($result->getStatusCollection()->getIterator() as $item) {
 				$errors .= $item->getDescription() . "<br>\n";
@@ -413,6 +400,16 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			}
 
 			$order_manager->updateCancelFailureOrder($result->getCustomFields()->get('orderId'), 'failed', $delete_failure);
+		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FormInteractionResponse) {
+			// This oddball case happens when you try to use a 3D-activated card for a non-3D payment.
+			// If we don't handle the case we'll get an error. Not what we want.
+
+			/** @var ModelExtensionPaymentWirecardPGCreditCard $model */
+			$model = $this->getModel();
+			$redirect = $model->handleFormInteractionPostRequest($result);
+
+			$this->response->setOutput($redirect);
+			return true;
 		} else {
 			$errors = $this->language->get('order_error');
 		}
