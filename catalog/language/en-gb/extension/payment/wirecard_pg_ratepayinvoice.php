@@ -8,7 +8,7 @@
  */
 
 // Method Title
-$_['text_title'] = 'Wirecard Guaranteed Invoice by Wirecard / Ratepay';
+$_['text_title'] = 'Wirecard Guaranteed Invoice by Wirecard';
 $_['button_confirm'] = 'Confirm Order';
 $_['birthdate_input'] = 'Date of birth';
 
