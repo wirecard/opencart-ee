@@ -400,6 +400,16 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			}
 
 			$order_manager->updateCancelFailureOrder($result->getCustomFields()->get('orderId'), 'failed', $delete_failure);
+		} elseif ($result instanceof \Wirecard\PaymentSdk\Response\FormInteractionResponse) {
+			// This oddball case happens when you try to use a 3D-activated card for a non-3D payment.
+			// If we don't handle the case we'll get an error. Not what we want.
+
+			/** @var ModelExtensionPaymentWirecardPGCreditCard $model */
+			$model = $this->getModel();
+			$redirect = $model->handleFormInteractionPostRequest($result);
+
+			$this->response->setOutput($redirect);
+			return true;
 		} else {
 			$errors = $this->language->get('order_error');
 		}
