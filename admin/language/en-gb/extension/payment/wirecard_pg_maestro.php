@@ -9,7 +9,7 @@
 
 // Page Title
 $_['heading_title'] = 'Wirecard Maestro SecureCode';
-$_['text_wirecard_pg_maestro'] = '<img src="./view/image/wirecard_pg/upi.png" />';
+$_['text_wirecard_pg_maestro'] = '<img src="./view/image/wirecard_pg/maestro.png" />';
 
 // Payment specific configuration
 $_['text_edit'] = 'Edit Maestro SecureCode';
