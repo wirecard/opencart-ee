@@ -17,6 +17,7 @@ abstract class Controller
     protected $cart;
 	protected $currency;
 	protected $transaction;
+	protected $db;
 	public $request;
 	public $model_extension_payment_wirecard_pg_paypal;
     public $model_extension_payment_wirecard_pg_creditcard;
@@ -71,6 +72,8 @@ abstract class Controller
 
 	    $this->model_extension_payment_wirecard_pg_vault = m::mock('overload:ModelExtensionPaymentWirecardPGVault');
 		$this->model_extension_payment_wirecard_pg_vault->shouldReceive('getCards');
+
+		$this->db = new DB('mysql', 'localhost', 'username', 'password', 'test');
     }
 
     public function get($key)
