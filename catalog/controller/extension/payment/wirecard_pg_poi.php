@@ -114,7 +114,7 @@ class ControllerExtensionPaymentWirecardPGPoi extends ControllerExtensionPayment
 	 * @param \Wirecard\PaymentSdk\Response\SuccessResponse $response
 	 * @param $order_id
 	 * @param $order_state
-	 * @param ModelCheckoutOrder $model_order
+	 * @return array
 	 * @since 1.1.0
 	 */
 	public function addBankDetailsToInvoice($response, $order_id, $order_state) {
@@ -154,10 +154,12 @@ class ControllerExtensionPaymentWirecardPGPoi extends ControllerExtensionPayment
 
 			$this->db->query("
 				UPDATE `" . DB_PREFIX . "order`
-				SET comment = '" . $this->db->escape($order_comment) . "' 
+				SET comment = '" . $this->db->escape($order_comment) . "'
 				WHERE order_id = '" . (int)$order_id . "'
 			");
 		}
+
+		return $data;
 	}
 }
 
