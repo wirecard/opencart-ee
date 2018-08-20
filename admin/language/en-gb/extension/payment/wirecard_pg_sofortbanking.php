@@ -16,7 +16,7 @@ $_['text_edit'] = 'Edit Sofort.';
 $_['config_status_desc'] = 'Activate payment method Sofort. to make it available for your consumers.';
 
 $_['config_logo_variant'] = "Logo variant";
-$_['config_logo_variant_desc'] = "Show either the <a href='https://developer.klarna.com/en/gb/kco-v3/updating-to-the-new-brand-v1/' target='_blank'>standard or descriptive</a> logo variants to your customers.";
+$_['config_logo_variant_desc'] = "Show either the standard or descriptive logo variants to your customers.";
 
 $_['text_logo_variant_descriptive'] = "Descriptive";
 $_['text_logo_variant_standard'] = "Standard";
