@@ -23,22 +23,4 @@ class ModelExtensionPaymentWirecardPGPia extends ModelExtensionPaymentGateway {
 	 * @since 1.1.0
 	 */
 	protected $type = 'pia';
-
-	/**
-	 * Handle the form interaction response in an appropriate way.
-	 *
-	 * @param \Wirecard\PaymentSdk\Response\FormInteractionResponse $response
-	 * @return mixed
-	 */
-	public function handleFormInteractionResponse($response) {
-		$form_fields = $response->getFormFields();
-		$response_query = array();
-
-		foreach ($form_fields->getIterator() as $key => $value) {
-			$response_query[$key] = $value;
-		}
-
-		$query = http_build_query($response_query);
-		return $response->getUrl() . '&' . $query;
-	}
 }

@@ -14,3 +14,9 @@ $_['text_wirecard_pg_sofortbanking'] = '<img src="./view/image/wirecard_pg/sofor
 // Payment specific configuration
 $_['text_edit'] = 'Edit Sofort.';
 $_['config_status_desc'] = 'Activate payment method Sofort. to make it available for your consumers.';
+
+$_['config_logo_variant'] = "Logo variant";
+$_['config_logo_variant_desc'] = "Show either the standard or descriptive logo variants to your customers.";
+
+$_['text_logo_variant_descriptive'] = "Descriptive";
+$_['text_logo_variant_standard'] = "Standard";

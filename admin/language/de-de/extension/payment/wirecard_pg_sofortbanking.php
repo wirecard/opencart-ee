@@ -14,3 +14,9 @@ $_['text_wirecard_pg_sofortbanking'] = '<img src="./view/image/wirecard_pg/sofor
 // Payment specific configuration
 $_['text_edit'] = 'Zahlungsmittel Sofort. bearbeiten';
 $_['config_status_desc'] = 'Zahlungsmittel Sofort. aktivieren und dem Endkunden beim Checkout anbieten.';
+
+$_['config_logo_variant'] = "Logo-Variante";
+$_['config_logo_variant_desc'] = "Zeige dem Kunden die Standard-Logo-Variante oder die deskriptive Logo-Variante an.";
+
+$_['text_logo_variant_descriptive'] = "Deskriptiv";
+$_['text_logo_variant_standard'] = "Standard";
