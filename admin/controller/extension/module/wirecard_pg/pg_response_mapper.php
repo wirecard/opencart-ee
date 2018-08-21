@@ -143,7 +143,6 @@ class ControllerExtensionModuleWirecardPGPGResponseMapper extends Controller {
 	private function setSettings() {
 		$this->settings = array(
 			'table_class' => 'table',
-			'paymentMethod' => HTTP_CATALOG . 'image/catalog/wirecard_pg_',
 			'translations' => $this->loadLanguage()
 		);
 	}

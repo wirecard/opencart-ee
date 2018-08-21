@@ -63,6 +63,9 @@
                                             {% for key,operation in transaction.operations %}
                                                 <button type="submit" form="wirecard-operation" data-toggle="tooltip" style="margin: 10px 0px 0px 10px;" class="btn btn-primary pull-right" name="operation" value="{{ operation.action }}">{{ operation.text }}</button>
                                             {% endfor %}
+                                            <button style="margin-top: 10px;" onclick="saveToClipBoard()" data-toggle="tooltip" class="btn btn-primary">
+                                                <i class="fa fa-copy"></i>
+                                            </button>
                                         </form>
                                     </div>
                                 </div>
@@ -92,3 +95,13 @@
 </div>
 {{ footer }}
 {{ live_chat }}
+<script>
+    function saveToClipBoard() {
+        var textArea = document.createElement("textarea");
+        textArea.value = '{{ transaction.xml }}';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+    }
+</script>
