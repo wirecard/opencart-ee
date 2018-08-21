@@ -45,6 +45,7 @@ class ModelExtensionPaymentWirecardPG extends Model {
 		$this->db->query("
 			ALTER TABLE `" . DB_PREFIX . "wirecard_ee_transactions`
 			MODIFY COLUMN `amount` DECIMAL(10, 6) NOT NULL;
+            ADD `xml` TEXT default NULL,
 		");
 
 		$this->db->query("
@@ -87,6 +88,7 @@ class ModelExtensionPaymentWirecardPG extends Model {
             `amount` = '" . (float)$amount . "',
             `currency` = '" . $this->db->escape($currency) . "',
             `response` = '" . $this->db->escape(json_encode($response->getData())) . "',
+            `xml` = '" . $this->db->escape($response->getRawData()) . "',
             `date_added` = NOW()
             ");
 	}

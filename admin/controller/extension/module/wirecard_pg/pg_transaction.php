@@ -97,7 +97,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$amount = $this->model_extension_payment_wirecard_pg->getTransactionMaxAmount($transaction_id);
 			$data = array(
 				'transaction_id' => $transaction['transaction_id'],
-				'response' => $this->prepareResponseData(json_decode($transaction['response'], true)),
+				'response' => $this->prepareResponseData($transaction['xml']),
 				'amount' => $amount,
 				'currency' => $transaction['currency'],
 				'operations' => ($transaction['transaction_state'] == 'success') ? $operations : false,
@@ -115,18 +115,25 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 	/**
 	 * Prepare response data
 	 *
-	 * @param $response
+	 * @param string $xml
 	 * @return array
 	 * @since 1.1.0
 	 */
-	public function prepareResponseData($response) {
-		$response_mapper = new ControllerExtensionModuleWirecardPGPGResponseMapper($this->registry);
+	public function prepareResponseData($xml) {
+		$response = new Wirecard\PaymentSdk\Response\SuccessResponse(simplexml_load_string($xml));
 
-		$data['transaction_data'] = $response_mapper->getTransactionDetails($response);
-		$data['account_holder'] = $response_mapper->getAccountHolder($response);
-		$data['shipping'] = $response_mapper->getShipping($response);
-		$data['basic_info'] = $response_mapper->getBasicDetails($response);
-		$data['cc_info'] = $response_mapper->getCard($response);
+		$settings = array(
+			'table_class' => 'table',
+			'translations' => [
+				'title' => ''
+			]
+		);
+
+		$data['transaction_data'] = $response->getTransactionDetails()->getAsHtml($settings);
+		$data['account_holder'] = $response->getAccountHolder()->getAsHtml($settings);
+		$data['shipping'] = $response->getShipping()->getAsHtml($settings);
+		$data['basic_info'] = $response->getPaymentDetails()->getAsHtml($settings);
+		$data['cc_info'] = $response->getCard()->getAsHtml($settings);
 
 		return $data;
 	}

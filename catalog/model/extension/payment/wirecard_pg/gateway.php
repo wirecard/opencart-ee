@@ -151,6 +151,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
             `amount` = '" . (float)$amount . "',
             `currency` = '" . $this->db->escape($currency) . "',
             `response` = '" . $this->db->escape(json_encode($response->getData())) . "',
+            `xml` = '" . $this->db->escape($response->getRawData()) . "',
             `date_added` = NOW()
             ");
 	}
@@ -167,6 +168,7 @@ abstract class ModelExtensionPaymentGateway extends Model {
         UPDATE `" . DB_PREFIX . "wirecard_ee_transactions` SET 
             `transaction_state` = '" . $this->db->escape($transaction_state) . "', 
             `response` = '" . $this->db->escape(json_encode($response->getData())) . "',
+            `xml` = '" . $this->db->escape($response->getRawData()) . "',
             `transaction_type` = '" . $this->db->escape($response->getTransactionType()) . "',
             `date_modified` = NOW() WHERE 
             `transaction_id` = '" . $this->db->escape($response->getTransactionId()) . "'

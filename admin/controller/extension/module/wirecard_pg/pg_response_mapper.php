@@ -166,7 +166,6 @@ class ControllerExtensionModuleWirecardPGPGResponseMapper extends Controller {
 		return $basic;
 	}
 
-
 	public function getBasket($response) {
 		$basket = array();
 
