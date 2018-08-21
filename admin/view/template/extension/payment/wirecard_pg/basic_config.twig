@@ -58,6 +58,35 @@
         </div>
     </div>
 {% endif %}
+{% if type == 'sofortbanking' %}
+<div class="form-group">
+    <div class="col-sm-11">
+        <label class="col-sm-2 control-label" for="input-status">
+            {{ config_logo_variant }}
+        </label>
+        <div class="col-sm-10">
+            <select name="{{ prefix ~ 'logo_variant' }}" id="input-logo-variant" class="form-control">
+                {% if logo_variant == 'standard' %}
+                    <option value="standard" selected="selected">{{ text_logo_variant_standard }}</option>
+                    <option value="descriptive">{{ text_logo_variant_descriptive }}</option>
+                {% else %}
+                    <option value="standard">{{ text_logo_variant_standard }}</option>
+                    <option value="descriptive" selected="selected">{{ text_logo_variant_descriptive }}</option>
+                {% endif %}
+            </select>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10 description">
+                <i>{{ config_logo_variant_desc }}</i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-1 text-center">
+        <img id="logo-preview" src="https://cdn.klarna.com/1.0/shared/image/generic/badge/{{ language_code }}/pay_now/{{ logo_variant }}/pink.svg">
+    </div>
+</div>
+{% endif %}
 <div class="form-group required">
     <label class="col-sm-2 control-label" for="input-merchant-account-id">{{ config_merchant_account_id }}</label>
     <div class="col-sm-10">
@@ -123,7 +152,7 @@
     </div>
 </div>
 {% else %}
-    <input type="hidden" name="{{ prefix ~ 'payment_action' }}" value="{{ payment_action }}" />
+<input type="hidden" name="{{ prefix ~ 'payment_action' }}" value="{{ payment_action }}" />
 {% endif %}
 
 <hr>

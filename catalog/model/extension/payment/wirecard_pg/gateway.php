@@ -99,15 +99,16 @@ abstract class ModelExtensionPaymentGateway extends Model {
 		if ($response instanceof \Wirecard\PaymentSdk\Response\InteractionResponse) {
 			$redirect = $response->getRedirectUrl();
 		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FormInteractionResponse) {
-			if ('creditcard' == $this->type) {
-				return $this->handleFormInteractionResponse($response);
+			$form_fields = $response
+				->getFormFields()
+				->getIterator()
+				->getArrayCopy();
+
+			if (!array_key_exists('sync_response', $form_fields)) {
+				return $this->handleFormInteractionPostRequest($response);
 			}
-			$form_fields = $response->getFormFields();
-			$response_query = array();
-			foreach ($form_fields->getIterator() as $key => $value) {
-				$response_query[$key] = $value;
-			}
-			$query = http_build_query($response_query);
+
+			$query = http_build_query($form_fields);
 			$redirect = $response->getUrl() . '&' . $query;
 		} elseif ($response instanceof \Wirecard\PaymentSdk\Response\FailureResponse) {
 			$errors = '';
@@ -228,12 +229,13 @@ abstract class ModelExtensionPaymentGateway extends Model {
 	}
 
 	/**
-	 * Handle the form interaction response in an appropriate way.
+	 * Handles the redirection of a customer via a submitted form.
 	 *
 	 * @param \Wirecard\PaymentSdk\Response\FormInteractionResponse $response
 	 * @return mixed
+	 * @since 1.1.0
 	 */
-	public function handleFormInteractionResponse($response) {
+	public function handleFormInteractionPostRequest($response) {
 		$this->load->language('information/static');
 		$this->load->language('language/extension/wirecard_pg');
 

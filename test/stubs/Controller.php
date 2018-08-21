@@ -17,6 +17,7 @@ abstract class Controller
 	protected $cart;
 	protected $currency;
 	protected $transaction;
+	protected $db;
 	public $request;
 	public $model_extension_payment_wirecard_pg_paypal;
 	public $model_extension_payment_wirecard_pg_creditcard;
@@ -30,6 +31,7 @@ abstract class Controller
 	public $model_extension_payment_wirecard_pg_upi;
 	public $model_extension_payment_wirecard_pg_sepadd;
 	public $model_extension_payment_wirecard_pg_ratepayinvoice;
+	public $model_localization_language;
 	public $model_checkout_order;
 	public $controller_extension_payment_wirecard_pg_sepact;
 
@@ -54,7 +56,8 @@ abstract class Controller
 		$this->model_extension_payment_wirecard_pg_pia = $modelPayment;
 		$this->model_extension_payment_wirecard_pg_sepadd = $modelPayment;
 		$this->model_extension_payment_wirecard_pg_ratepayinvoice = $modelPayment;
-		$this->language = $language;
+		$this->model_localisation_language = $modelPayment;
+        $this->language = $language;
 		$this->cart = $cart;
 		$this->controller_extension_payment_wirecard_pg_sepact = $subController;
 		$this->document = $document;
@@ -71,6 +74,7 @@ abstract class Controller
 
 		$this->model_extension_payment_wirecard_pg_vault = m::mock('overload:ModelExtensionPaymentWirecardPGVault');
 		$this->model_extension_payment_wirecard_pg_vault->shouldReceive('getCards');
+		$this->db = new DB('mysql', 'localhost', 'username', 'password', 'test');
     }
 
 	public function get($key)

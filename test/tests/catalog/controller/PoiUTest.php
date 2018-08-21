@@ -35,6 +35,8 @@ require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wireca
 require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_poi.php';
 
 use Wirecard\PaymentSdk\Transaction\PoiPiaTransaction;
+use Wirecard\PaymentSdk\Entity\AccountHolder;
+use Wirecard\PaymentSdk\Entity\Address;
 
 /**
  * @runTestsInSeparateProcesses
@@ -114,6 +116,7 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 			'shipping_postcode' => '0000',
 			'shipping_firstname' => 'Tina',
 			'shipping_lastname' => 'Doe',
+			'comment' => '',
 		);
 
 		$this->modelOrder->method('getOrder')->willReturn($orderDetails);
@@ -282,10 +285,6 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 			$this->customer
 		);
 
-		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGPoi::class);
-		$prop = $reflector->getProperty('transaction');
-		$prop->setAccessible(true);
-
 		$transaction = array(
 			'transaction_id' => '1234',
 			'amount' => '10'
@@ -297,6 +296,98 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 		$actual = $this->controller->createTransaction($transaction, null);
 
 		$this->assertEquals($expected, $actual);
+	}
+
+	public function testPrepareTransaction()
+	{
+		$this->controller = new ControllerExtensionPaymentWirecardPGPoi(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelPoi,
+			$this->language,
+			$this->cart,
+			$this->currency,
+			null,
+			null,
+			$this->customer
+		);
+
+		$order = $this->controller->model_checkout_order->getOrder('11111');
+
+		$address = new Address($order['payment_iso_code_2'], $order['payment_city'], $order['payment_address_1']);
+		$address->setPostalCode($order['payment_postcode']);
+		$address->setStreet2($order['payment_address_2']);
+
+		$accountHolder = new AccountHolder();
+		$accountHolder->setAddress($address);
+		$accountHolder->setFirstName($order['payment_firstname']);
+		$accountHolder->setLastName($order['payment_lastname']);
+		$accountHolder->setEmail($order['email']);
+		$accountHolder->setPhone($order['telephone']);
+
+		$expected = new PoiPiaTransaction();
+		$expected->setParentTransactionId('1234');
+		$expected->setAccountHolder($accountHolder);
+
+		$transaction = array(
+			'transaction_id' => '1234',
+			'amount' => '10'
+		);
+
+		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGPoi::class);
+		$prop = $reflector->getProperty('transaction');
+		$prop->setAccessible(true);
+
+		$this->controller->createTransaction($transaction, null);
+		$this->controller->prepareTransaction();
+
+		/** @var PoiPiaTransaction $actual */
+		$actual = $prop->getValue($this->controller);
+
+		$this->assertEquals($expected->getAccountHolder(), $actual->getAccountHolder());
+	}
+
+	public function testAddBankDetailsToInvoice()
+	{
+		$this->controller = new ControllerExtensionPaymentWirecardPGPoi(
+			$this->registry,
+			$this->config,
+			$this->loader,
+			$this->session,
+			$this->response,
+			$this->modelOrder,
+			$this->url,
+			$this->modelPoi,
+			$this->language,
+			$this->cart,
+			$this->currency,
+			null,
+			null,
+			$this->customer
+		);
+
+		$config = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
+		$config->add(new \Wirecard\PaymentSdk\Config\PaymentMethodConfig(
+			PoiPiaTransaction::NAME,
+			'account123',
+			'secret123'
+		));
+		$config->setShopInfo(self::SHOP, VERSION);
+		$config->setPluginInfo(self::PLUGIN, $this->pluginVersion);
+
+		$responseMapper = new \Wirecard\PaymentSdk\Mapper\ResponseMapper($config);
+		$response = $responseMapper->map(ResponseProvider::getPOIResponse(), null);
+
+		$bankDetails = $this->controller->addBankDetailsToInvoice($response, '1111', 'success');
+
+		$this->assertEquals('DE11512308001234567890', $bankDetails['transaction']['iban']);
+		$this->assertEquals('WIREDEMMXXX', $bankDetails['transaction']['bic']);
+		$this->assertNotNull($bankDetails['transaction']['ptrid']);
 	}
 
 	public function testGetType()
