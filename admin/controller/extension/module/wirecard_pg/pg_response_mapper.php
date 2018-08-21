@@ -37,85 +37,103 @@ class ControllerExtensionModuleWirecardPGPGResponseMapper extends Controller {
 
 	/**
 	 * Get transaction details
-	 * @return array
+	 * @return array|bool
 	 * @since 1.1.0
 	 */
 	public function getTransactionDetails() {
-		return array(
-			'data' => $this->response->getTransactionDetails()->getAsHtml($this->settings),
-			'title' => $this->language->get('transaction_details_title'),
-			'icon' => 'fa-table',
-			'type' => 'transaction_details',
-		);
+		if ($this->response->getTransactionDetails()) {
+			return array(
+				'data' => $this->response->getTransactionDetails()->getAsHtml($this->settings),
+				'title' => $this->language->get('transaction_details_title'),
+				'icon' => 'fa-table',
+				'type' => 'transaction_details',
+			);
+		}
+		return false;
 	}
 
 	/**
 	 * Get Account holder data
-	 * @return array
+	 * @return array|bool
 	 * @since 1.1.0
 	 */
 	public function getAccountHolder() {
-		return array(
-			'data' => $this->response->getAccountHolder()->getAsHtml($this->settings),
-			'title' => $this->language->get('account_holder_title'),
-			'icon' => 'fa-user',
-			'type' => 'account_holder',
-		);
+		if ($this->response->getAccountHolder()) {
+			return array(
+				'data' => $this->response->getAccountHolder()->getAsHtml($this->settings),
+				'title' => $this->language->get('account_holder_title'),
+				'icon' => 'fa-user',
+				'type' => 'account_holder',
+			);
+		}
+		return false;
 	}
 
 	/**
 	 * Get shipping data
-	 * @return array
+	 * @return array|bool
 	 * @since 1.1.0
 	 */
 	public function getShipping() {
-		return array(
-			'data' => $this->response->getShipping()->getAsHtml($this->settings),
-			'title' => $this->language->get('shipping_title'),
-			'icon' => 'fa-truck',
-			'type' => 'shipping',
-		);
+		if ($this->response->getShipping()) {
+			return array(
+				'data' => $this->response->getShipping()->getAsHtml($this->settings),
+				'title' => $this->language->get('shipping_title'),
+				'icon' => 'fa-truck',
+				'type' => 'shipping',
+			);
+		}
+		return false;
 	}
 
 	/**
 	 * Get basic transaction data
-	 * @return array
+	 * @return array|bool
 	 * @since 1.1.0
 	 */
 	public function getBasicDetails() {
-		return array(
-			'data' => $this->response->getPaymentDetails()->getAsHtml($this->settings),
-			'title' => $this->language->get('payment_details_title'),
-			'icon' => 'fa-info-circle',
-			'type' => 'basic_info',
-		);
+		if ($this->response->getPaymentDetails()) {
+			return array(
+				'data' => $this->response->getPaymentDetails()->getAsHtml($this->settings),
+				'title' => $this->language->get('payment_details_title'),
+				'icon' => 'fa-info-circle',
+				'type' => 'basic_info',
+			);
+		}
+		return false;
 	}
 
 	/**
 	 * Get basket data
-	 * @return array
+	 * @return array|bool
 	 * @since 1.1.0
 	 */
 	public function getBasket() {
-		return array(
-			'data' => $this->response->getBasket()->getAsHtml($this->settings),
-			'title' => $this->language->get('basket_title'),
-			'icon' => 'fa-shopping-cart',
-			'type' => 'basket',
-		);
+		if ($this->response->getBasket()) {
+			return array(
+				'data' => $this->response->getBasket()->getAsHtml($this->settings),
+				'title' => $this->language->get('basket_title'),
+				'icon' => 'fa-shopping-cart',
+				'type' => 'basket',
+			);
+		}
+		return false;
 	}
 
 	/**
 	 * Get credit card data
-	 * @return array
+	 * @return array|bool
 	 * @since 1.1.0
 	 */
 	public function getCard() {
-		return array(
-			'data' => $this->response->getCard()->getAsHtml($this->settings),
-			'title' => $this->language->get('credit_card_title'),
-			'icon' => 'fa-credit-card',
-		);
+		if ($this->response->getCard()) {
+			return array(
+				'data' => $this->response->getCard()->getAsHtml($this->settings),
+				'title' => $this->language->get('credit_card_title'),
+				'icon' => 'fa-credit-card',
+			);
+		}
+		return false;
 	}
 
 	/**
