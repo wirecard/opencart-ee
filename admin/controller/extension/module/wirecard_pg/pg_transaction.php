@@ -120,20 +120,14 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 	 * @since 1.1.0
 	 */
 	public function prepareResponseData($xml) {
-		$response = new Wirecard\PaymentSdk\Response\SuccessResponse(simplexml_load_string($xml));
+		$responseHelper = new ControllerExtensionModuleWirecardPGPGResponseMapper($this->registry, $xml);
 
-		$settings = array(
-			'table_class' => 'table',
-			'translations' => [
-				'title' => ''
-			]
-		);
-
-		$data['transaction_data'] = $response->getTransactionDetails()->getAsHtml($settings);
-		$data['account_holder'] = $response->getAccountHolder()->getAsHtml($settings);
-		$data['shipping'] = $response->getShipping()->getAsHtml($settings);
-		$data['basic_info'] = $response->getPaymentDetails()->getAsHtml($settings);
-		$data['cc_info'] = $response->getCard()->getAsHtml($settings);
+		$data['transaction_data'] = $responseHelper->getTransactionDetails();
+		$data['account_holder'] = $responseHelper->getAccountHolder();
+		$data['shipping'] = $responseHelper->getShipping();
+		$data['basic_info'] = $responseHelper->getBasicDetails();
+		$data['cc_info'] = $responseHelper->getCard();
+		$data['basket'] = $responseHelper->getBasket();
 
 		return $data;
 	}

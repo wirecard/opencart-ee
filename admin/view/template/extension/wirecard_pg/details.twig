@@ -34,82 +34,57 @@
             <div class="panel-body">
                 {% if transaction %}
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">
-                                        <i class="fa fa-info-circle"> Details</i>
-                                    </h3>
-                                </div>
-                                {{ transaction.response.basic_info }}
-                            </div>
-                        </div>
                         {% if ratepayinvoice_details %}
                             {{ ratepayinvoice_details }}
                         {% else %}
                             {% if transaction.operations %}
-                                <div class="col-md-6">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            <h3 class="panel-title">
-                                                <i class="fa fa-cog"> {{ text_backend_operations }}</i>
-                                            </h3>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title">
+                                                    <i class="fa {{ transaction.response.basic_info.icon }}"> {{ transaction.response.basic_info.title }}</i>
+                                                </h3>
+                                            </div>
+                                            {{ transaction.response.basic_info.data }}
                                         </div>
-                                            <form style="margin: 10px;" action="{{ transaction.action }}" method="post" enctype="multipart/form-data" id="wirecard-operation" class="form-horizontal clearfix">
-                                                <input type="hidden" name="payment-method" id="payment-method" value="{{ transaction.payment_method }}">
-                                                <label for="amount">{{ text_request_amount }} in {{ transaction.currency }}</label>
-                                                <input type="number" name="amount" value="{{ transaction.amount }}" id="amount" class="form-control" step="any" min="0.000001" max="{{ transaction.amount }}">
-                                                <input type="hidden" name="currency" value="{{ transaction.currency }}">
-                                                {% for key,operation in transaction.operations %}
-                                                    <button type="submit" form="wirecard-operation" data-toggle="tooltip" style="margin: 10px 0px 0px 10px;" class="btn btn-primary pull-right" name="operation" value="{{ operation.action }}">{{ operation.text }}</button>
-                                                {% endfor %}
-                                            </form>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title">
+                                                    <i class="fa fa-cog"> {{ text_backend_operations }}</i>
+                                                </h3>
+                                            </div>
+                                                <form style="margin: 10px;" action="{{ transaction.action }}" method="post" enctype="multipart/form-data" id="wirecard-operation" class="form-horizontal clearfix">
+                                                    <input type="hidden" name="payment-method" id="payment-method" value="{{ transaction.payment_method }}">
+                                                    <label for="amount">{{ text_request_amount }} in {{ transaction.currency }}</label>
+                                                    <input type="number" name="amount" value="{{ transaction.amount }}" id="amount" class="form-control" step="any" min="0.000001" max="{{ transaction.amount }}">
+                                                    <input type="hidden" name="currency" value="{{ transaction.currency }}">
+                                                    {% for key,operation in transaction.operations %}
+                                                        <button type="submit" form="wirecard-operation" data-toggle="tooltip" style="margin: 10px 0px 0px 10px;" class="btn btn-primary pull-right" name="operation" value="{{ operation.action }}">{{ operation.text }}</button>
+                                                    {% endfor %}
+                                                </form>
+                                        </div>
                                     </div>
                                 </div>
                             {% endif %}
                         {% endif %}
+                        {% for table in transaction.response %}
+                            {% if table.type != 'basic_info' %}
+                                <div class="col-md-4">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title">
+                                                <i class="fa {{ table.icon }}"> {{ table.title }}</i>
+                                            </h3>
+                                        </div>
+                                        {{ table.data }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
                     </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">
-                                        <i class="fa fa-table"> Transactiondetails</i>
-                                    </h3>
-                                </div>
-                                {{ transaction.response.transaction_data }}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">
-                                        <i class="fa fa-user"> Accountholder</i>
-                                    </h3>
-                                </div>
-                                {{ transaction.response.account_holder }}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">
-                                        <i class="fa fa-truck"> Shippingdata</i>
-                                    </h3>
-                                </div>
-                                {{ transaction.response.shipping }}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">
-                                        <i class="fa fa-credit-card"> Card Data</i>
-                                    </h3>
-                                </div>
-                                {{ transaction.response.cc_info }}
-                            </div>
-                        </div>
                     {% endif %}
                 </div>
             </div>
