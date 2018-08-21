@@ -37,18 +37,18 @@
                         {% if ratepayinvoice_details %}
                             {{ ratepayinvoice_details }}
                         {% else %}
-                            {% if transaction.operations %}
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading">
-                                                <h3 class="panel-title">
-                                                    <i class="fa {{ transaction.response.basic_info.icon }}"> {{ transaction.response.basic_info.title }}</i>
-                                                </h3>
-                                            </div>
-                                            {{ transaction.response.basic_info.data }}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title">
+                                                <i class="fa {{ transaction.response.basic_info.icon }}"> {{ transaction.response.basic_info.title }}</i>
+                                            </h3>
                                         </div>
+                                        {{ transaction.response.basic_info.data }}
                                     </div>
+                                </div>
+                                {% if transaction.operations %}
                                     <div class="col-md-6">
                                         <div class="panel panel-default">
                                             <div class="panel-heading">
@@ -67,8 +67,8 @@
                                                 </form>
                                         </div>
                                     </div>
-                                </div>
-                            {% endif %}
+                                {% endif %}
+                            </div>
                         {% endif %}
                         {% for table in transaction.response %}
                             {% if table.type != 'basic_info' %}
@@ -90,6 +90,5 @@
             </div>
         </div>
     </div>
-</div>
 {{ footer }}
 {{ live_chat }}
