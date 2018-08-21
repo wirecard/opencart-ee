@@ -33,43 +33,43 @@
             </div>
             <div class="panel-body">
                 {% if transaction %}
-                    <div class="row">
-                        {% if ratepayinvoice_details %}
-                            {{ ratepayinvoice_details }}
-                        {% else %}
-                            <div class="row">
+                    {% if ratepayinvoice_details %}
+                        {{ ratepayinvoice_details }}
+                    {% else %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">
+                                            <i class="fa {{ transaction.response.basic_info.icon }}"> {{ transaction.response.basic_info.title }}</i>
+                                        </h3>
+                                    </div>
+                                    {{ transaction.response.basic_info.data }}
+                                </div>
+                            </div>
+                            {% if transaction.operations %}
                                 <div class="col-md-6">
                                     <div class="panel panel-default">
                                         <div class="panel-heading">
                                             <h3 class="panel-title">
-                                                <i class="fa {{ transaction.response.basic_info.icon }}"> {{ transaction.response.basic_info.title }}</i>
+                                                <i class="fa fa-cog"> {{ text_backend_operations }}</i>
                                             </h3>
                                         </div>
-                                        {{ transaction.response.basic_info.data }}
+                                        <form style="margin: 10px;" action="{{ transaction.action }}" method="post" enctype="multipart/form-data" id="wirecard-operation" class="form-horizontal clearfix">
+                                            <input type="hidden" name="payment-method" id="payment-method" value="{{ transaction.payment_method }}">
+                                            <label for="amount">{{ text_request_amount }} in {{ transaction.currency }}</label>
+                                            <input type="number" name="amount" value="{{ transaction.amount }}" id="amount" class="form-control" step="any" min="0.000001" max="{{ transaction.amount }}">
+                                            <input type="hidden" name="currency" value="{{ transaction.currency }}">
+                                            {% for key,operation in transaction.operations %}
+                                                <button type="submit" form="wirecard-operation" data-toggle="tooltip" style="margin: 10px 0px 0px 10px;" class="btn btn-primary pull-right" name="operation" value="{{ operation.action }}">{{ operation.text }}</button>
+                                            {% endfor %}
+                                        </form>
                                     </div>
                                 </div>
-                                {% if transaction.operations %}
-                                    <div class="col-md-6">
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading">
-                                                <h3 class="panel-title">
-                                                    <i class="fa fa-cog"> {{ text_backend_operations }}</i>
-                                                </h3>
-                                            </div>
-                                                <form style="margin: 10px;" action="{{ transaction.action }}" method="post" enctype="multipart/form-data" id="wirecard-operation" class="form-horizontal clearfix">
-                                                    <input type="hidden" name="payment-method" id="payment-method" value="{{ transaction.payment_method }}">
-                                                    <label for="amount">{{ text_request_amount }} in {{ transaction.currency }}</label>
-                                                    <input type="number" name="amount" value="{{ transaction.amount }}" id="amount" class="form-control" step="any" min="0.000001" max="{{ transaction.amount }}">
-                                                    <input type="hidden" name="currency" value="{{ transaction.currency }}">
-                                                    {% for key,operation in transaction.operations %}
-                                                        <button type="submit" form="wirecard-operation" data-toggle="tooltip" style="margin: 10px 0px 0px 10px;" class="btn btn-primary pull-right" name="operation" value="{{ operation.action }}">{{ operation.text }}</button>
-                                                    {% endfor %}
-                                                </form>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        {% endif %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    <div class="row">
                         {% for table in transaction.response %}
                             {% if table.type != 'basic_info' %}
                                 <div class="col-md-4">
@@ -85,10 +85,10 @@
                             {% endif %}
                         {% endfor %}
                     </div>
-                    {% endif %}
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
+</div>
 {{ footer }}
 {{ live_chat }}

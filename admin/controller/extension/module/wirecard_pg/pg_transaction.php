@@ -97,7 +97,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$amount = $this->model_extension_payment_wirecard_pg->getTransactionMaxAmount($transaction_id);
 			$data = array(
 				'transaction_id' => $transaction['transaction_id'],
-				'response' => $this->prepareResponseData($transaction['xml']),
+				'response' => $this->prepareResponseData($transaction['xml'], $transaction['payment_method']),
 				'amount' => $amount,
 				'currency' => $transaction['currency'],
 				'operations' => ($transaction['transaction_state'] == 'success') ? $operations : false,
@@ -116,17 +116,20 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 	 * Prepare response data
 	 *
 	 * @param string $xml
+	* @param string $paymentMethod
 	 * @return array
 	 * @since 1.1.0
 	 */
-	public function prepareResponseData($xml) {
+	public function prepareResponseData($xml, $paymentMethod) {
 		$responseHelper = new ControllerExtensionModuleWirecardPGPGResponseMapper($this->registry, $xml);
 
 		$data['transaction_data'] = $responseHelper->getTransactionDetails();
 		$data['account_holder'] = $responseHelper->getAccountHolder();
 		$data['shipping'] = $responseHelper->getShipping();
 		$data['basic_info'] = $responseHelper->getBasicDetails();
-		$data['cc_info'] = $responseHelper->getCard();
+		if ($paymentMethod == 'creditcard') {
+			$data['cc_info'] = $responseHelper->getCard();
+		}
 		$data['basket'] = $responseHelper->getBasket();
 
 		return $data;
