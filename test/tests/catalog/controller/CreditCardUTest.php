@@ -185,8 +185,8 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 	}
 
 	public function testSuccessConfirm() {
-        $orderManager = m::mock('overload:PGOrderManager');
-        $orderManager->shouldReceive('createResponseOrder');
+		$orderManager = m::mock('overload:PGOrderManager');
+		$orderManager->shouldReceive('createResponseOrder');
 
 		$this->controller->request->post = array_merge($this->controller->request->post, array(
 			'merchant_account_id' => '1111111111',
@@ -198,10 +198,9 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 			'status_code_1' => '201.0000',
 			'status_description_1' => '3d-acquirer:The resource was successfully created.',
 			'status_severity_1' => 'information'
-
 		));
 
-        $this->controller->confirm();
+		$this->controller->confirm();
 		$json['response'] = [];
 		$this->response->method('getOutput')->willReturn(json_encode($json));
 
@@ -268,38 +267,38 @@ class CreditCardUTest extends \PHPUnit_Framework_TestCase
 	}
 
 	public function testGetCreditCardUiRequestData() {
-        $actual = $this->controller;
-        $transactionService = m::mock('overload:TransactionService');
-        $transactionService->shouldReceive('getCreditCardUiWithData');
-        $actual->getCreditCardUiRequestData();
+		$actual = $this->controller;
+		$transactionService = m::mock('overload:TransactionService');
+		$transactionService->shouldReceive('getCreditCardUiWithData');
+		$actual->getCreditCardUiRequestData();
 
-        $this->assertNull($actual->response->getOutput());
+		$this->assertNull($actual->response->getOutput());
     }
 
-    public function testGetPaymentAction() {
-	    $actual = $this->controller->getPaymentAction('pay');
-	    $this->assertEquals('purchase', $actual);
+	public function testGetPaymentAction() {
+		$actual = $this->controller->getPaymentAction('pay');
+		$this->assertEquals('purchase', $actual);
     }
 
-    public function testGetTransactionInstance() {
+	public function testGetTransactionInstance() {
 		$this->assertTrue($this->controller->getTransactionInstance() instanceof \Wirecard\PaymentSdk\Transaction\CreditCardTransaction);
-    }
+	}
 
-    public function testCreateTransaction() {
+	public function testCreateTransaction() {
 		$expected = new \Wirecard\PaymentSdk\Transaction\CreditCardTransaction();
 		$expected->setParentTransactionId('asd');
 		$expected->setAmount(new \Wirecard\PaymentSdk\Entity\Amount(20, 'EUR'));
 		$actual = $this->controller->createTransaction(['transaction_id' => 'asd'], new \Wirecard\PaymentSdk\Entity\Amount(20, 'EUR'));
 
 		$this->assertEquals($expected, $actual);
-    }
+	}
 
-    public function testGetController() {
+	public function testGetController() {
 		$expected = $this->controller->getController('creditcard');
 		$this->assertNotNull($expected);
-    }
+	}
 
-    public function testConfirmWithToken() {
+	public function testConfirmWithToken() {
 		$overrideRequest = [ 'token' => '123456789' ];
 
 		$this->controller = new ControllerExtensionPaymentWirecardPGCreditCard(
