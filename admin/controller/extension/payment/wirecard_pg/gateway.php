@@ -96,6 +96,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->document->setTitle($this->language->get(self::HEADING_TITLE));
 
 		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
+			$data['error_warning'] = $this->language->get('error_mandatory_fields');
 			if ($this->validate($this->request->post)) {
 				$this->model_setting_setting->editSetting($this->prefix . $this->type, $this->request->post);
 
@@ -103,8 +104,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 
 				$this->response->redirect($this->url->link('marketplace/extension',
 					'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
-			} else {
-				$data['wirecard_error'] = $this->language->get('error_mandatory_fields');
 			}
 		}
 
