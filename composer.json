@@ -2,7 +2,7 @@
   "name": "wirecard/opencart-ee",
   "description": "OpenCart extension for Wirecard Payment Processing Gateway",
   "license": "GPL-3.0-only",
-  "minimum-stability": "beta",
+  "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
     "php": ">=5.6",
