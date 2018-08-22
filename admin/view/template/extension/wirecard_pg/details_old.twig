@@ -1,0 +1,79 @@
+{{ header }}{{ column_left }}
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <h1>{{ title }}</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid">
+        {% if wirecard_error %}
+            <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ wirecard_error }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+        {% if success_message %}
+            <div class="alert alert-success alert-dismissible">
+                <i class="fa fa-check-circle"></i>
+                {{ success_message }}&nbsp;
+                <a href="{{ child_transaction_href }}">{{ child_transaction_id }}</a>
+                <button type="button" class="close" data-dismiss="alert">x</button>
+            </div>
+        {% endif %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {{ plugin_name }}&nbsp;{{ plugin_version }}
+            </div>
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-puzzle-piece"></i> {{ text_transaction }} {% if transaction %}{{ transaction.transaction_id }}{% endif %}
+                </h3>
+            </div>
+            <div class="panel-body">
+                {% if transaction %}
+                    {% if ratepayinvoice_details %}
+                        {{ ratepayinvoice_details }}
+                    {% else %}
+                        {% if transaction.operations %}
+                            <div class="panel-heading">
+                                <h3 class="panel-title">{{ text_backend_operations }}</h3>
+                            </div>
+                            <div class="panel-group">
+                                <br>
+                                <form action="{{ transaction.action }}" method="post" enctype="multipart/form-data" id="wirecard-operation" class="form-horizontal">
+                                    <input type="hidden" name="payment-method" id="payment-method" value="{{ transaction.payment_method }}">
+                                    <label for="amount">{{ text_request_amount }} in {{ transaction.currency }}</label>&nbsp;<input type="number" name="amount" value="{{ transaction.amount }}" id="amount" class="input-sm" step="any" min="0.000001" max="{{ transaction.amount }}"> &nbsp;
+                                    <input type="hidden" name="currency" value="{{ transaction.currency }}">
+                                    {% for key,operation in transaction.operations %}
+                                        <button type="submit" form="wirecard-operation" data-toggle="tooltip" class="btn btn-primary" name="operation" value="{{ operation.action }}">{{ operation.text }}</button>
+                                    {% endfor %}
+                                </form>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{ text_response_data }}</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <tbody>
+                            {% for key, value in transaction.response %}
+                                <tr>
+                                    <td>{{ key }}</td>
+                                    <td>{{ value }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{{ footer }}
+{{ live_chat }}

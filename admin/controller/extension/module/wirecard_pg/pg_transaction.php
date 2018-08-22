@@ -76,7 +76,11 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$this->session->data['wirecard_info']
 		);
 
-		$this->response->setOutput($this->load->view('extension/wirecard_pg/details', $data));
+		$template = 'extension/wirecard_pg/details_old';
+		if ($data['transaction']['newTemplate']) {
+			$template = 'extension/wirecard_pg/details';
+		}
+		$this->response->setOutput($this->load->view($template, $data));
 	}
 
 	/**
@@ -98,12 +102,16 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$amount = $this->model_extension_payment_wirecard_pg->getTransactionMaxAmount($transaction_id);
 			$data = array(
 				'transaction_id' => $transaction['transaction_id'],
-				'response' => $this->prepareResponseData($transaction['xml'], $transaction['payment_method']),
+				'response' => $transaction['xml'] ? $this->prepareResponseData(
+					$transaction['xml'],
+					$transaction['payment_method']
+				) : json_decode($transaction['response'], true),
 				'amount' => $amount,
 				'currency' => $transaction['currency'],
 				'operations' => ($transaction['transaction_state'] == 'success') ? $operations : false,
 				'payment_method' => $transaction['payment_method'],
 				'xml' => json_encode($transaction['xml']),
+				'newTemplate' => $transaction['xml'] ? true : false,
 				'action' => $this->url->link(
 					self::TRANSACTION . '/process', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['transaction_id'],
 					true
@@ -118,7 +126,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 	 * Prepare response data
 	 *
 	 * @param string $xml
-	* @param string $paymentMethod
+	 * @param string $paymentMethod
 	 * @return array
 	 * @since 1.1.0
 	 */
