@@ -9,6 +9,17 @@
 var WirecardPaymentPage;
 var debug = false;
 
+if (!Object.entries)
+	Object.entries = function( obj ){
+		var ownProps = Object.keys( obj ),
+			i = ownProps.length,
+			resArray = new Array(i); // preallocate the Array
+		while (i--)
+			resArray[i] = [ownProps[i], obj[ownProps[i]]];
+
+		return resArray;
+	};
+
 /**
  * Set the paren transaction id to the form and submit it
  *
@@ -18,9 +29,9 @@ var debug = false;
 function setParentTransactionId(response) {
 	var form = $("#wirecard-pg-form");
 
-	for (var key in response) {
+	for (const [key, value] of Object.entries(response)) {
 		if (response.hasOwnProperty(key)) {
-			form.append("<input type='hidden' name='" + key + "' value='" + response[key] + "'>");
+			form.append("<input type='hidden' name='" + key + "' value='" + value + "'>");
 		}
 	}
 
@@ -96,10 +107,9 @@ function setToken(token) {
 
 	if (token == null) {
 		$(tokenField).removeAttr("value");
-		return;
+	} else if (token != null) {
+		$(tokenField).val(token);
 	}
-
-	$(tokenField).val(token);
 }
 
 /**
