@@ -9,16 +9,18 @@
 var WirecardPaymentPage;
 var debug = false;
 
-if (!Object.entries)
-	Object.entries = function( obj ){
-		var ownProps = Object.keys( obj ),
+if (!Object.entries) {
+	Object.entries = function (obj) {
+		var ownProps = Object.keys(obj),
 			i = ownProps.length,
 			resArray = new Array(i); // preallocate the Array
-		while (i--)
+		while (i--) {
 			resArray[i] = [ownProps[i], obj[ownProps[i]]];
+		}
 
 		return resArray;
 	};
+}
 
 /**
  * Set the paren transaction id to the form and submit it
@@ -104,12 +106,16 @@ function getCreditCardRequestData() {
  */
 function setToken(token) {
 	var tokenField = "#token-field";
+	$(tokenField).val(token);
+}
 
-	if (token == null) {
-		$(tokenField).removeAttr("value");
-	} else if (token != null) {
-		$(tokenField).val(token);
-	}
+/**
+ * Remove cc token
+ * @since 1.1.0
+ */
+function removeToken() {
+	var tokenField = "#token-field";
+	$(tokenField).removeAttr("value");
 }
 
 /**
@@ -137,7 +143,7 @@ function deleteCardFromVault(card, maskedPan) {
 					$("#success-message").fadeIn();
 					$(".credit-card-selector[data-pan='" + data.deleted_card + "']").fadeOut(300, function() {
 						$(this).remove();
-						setToken(null);
+						removeToken();
 
 						if($("#list-existing-cards").children().length === 0) {
 							$("#button-confirm").attr("disabled", "disabled");
@@ -170,7 +176,7 @@ function handleTabChanges() {
 		}
 
 		if($("#list-existing-cards").children().length === 0) {
-			setToken(null);
+			removeToken();
 			$("#button-confirm").attr("disabled", "disabled");
 		}
 
