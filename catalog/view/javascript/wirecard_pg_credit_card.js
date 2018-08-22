@@ -206,7 +206,6 @@ $("#button-confirm").on("click", function() {
 		|| jQuery(window.newCardTab).hasClass("active")
 		|| WirecardPaymentMethod === "upi"
 		|| WirecardPaymentMethod === "maestro") {
-		console.log("Special submitting");
 		WirecardPaymentPage.seamlessSubmitForm({
 			onSuccess: setParentTransactionId,
 			onError: logError
