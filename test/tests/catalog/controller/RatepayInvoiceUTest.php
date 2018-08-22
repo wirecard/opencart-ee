@@ -43,7 +43,7 @@ use Wirecard\PaymentSdk\Transaction\RatepayInvoiceTransaction;
 class RatepayInvoiceUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
-	private $pluginVersion = '1.0.0';
+	private $pluginVersion = '1.1.0';
 	private $controller;
 	private $loader;
 	private $registry;

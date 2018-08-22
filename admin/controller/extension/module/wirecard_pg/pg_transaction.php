@@ -9,6 +9,7 @@
 
 require_once __DIR__ . '/../wirecard_pg.php';
 require_once __DIR__ . '/../../payment/wirecard_pg/transaction_handler.php';
+require_once __DIR__ . '/pg_response_mapper.php';
 
 use Wirecard\PaymentSdk\Transaction\Operation;
 
@@ -51,6 +52,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 
 		if (isset($this->request->get['id'])) {
 			$data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
+			$data['copy_xml_text'] = $this->language->get('copy_xml_text');
 			if ('ratepayinvoice' == $data['transaction']['payment_method']) {
 				$this->load->language(self::ROUTE . '_ratepayinvoice');
 				$basket = $this->getBasketItems($this->request->get['id']);
@@ -74,7 +76,11 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$this->session->data['wirecard_info']
 		);
 
-		$this->response->setOutput($this->load->view('extension/wirecard_pg/details', $data));
+		$template = 'extension/wirecard_pg/details_old';
+		if ($data['transaction']['newTemplate']) {
+			$template = 'extension/wirecard_pg/details';
+		}
+		$this->response->setOutput($this->load->view($template, $data));
 	}
 
 	/**
@@ -96,17 +102,42 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$amount = $this->model_extension_payment_wirecard_pg->getTransactionMaxAmount($transaction_id);
 			$data = array(
 				'transaction_id' => $transaction['transaction_id'],
-				'response' => json_decode($transaction['response'], true),
+				'response' => ($transaction['xml']) ? $this->prepareResponseData($transaction['xml'], $transaction['payment_method']) : json_decode($transaction['response'], true),
 				'amount' => $amount,
 				'currency' => $transaction['currency'],
 				'operations' => ($transaction['transaction_state'] == 'success') ? $operations : false,
 				'payment_method' => $transaction['payment_method'],
+				'xml' => json_encode($transaction['xml']),
+				'newTemplate' => ($transaction['xml']) ? true : false,
 				'action' => $this->url->link(
 					self::TRANSACTION . '/process', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['transaction_id'],
 					true
 				)
 			);
 		}
+
+		return $data;
+	}
+
+	/**
+	 * Prepare response data
+	 *
+	 * @param string $xml
+	 * @param string $paymentMethod
+	 * @return array
+	 * @since 1.1.0
+	 */
+	public function prepareResponseData($xml, $paymentMethod) {
+		$responseHelper = new ControllerExtensionModuleWirecardPGPGResponseMapper($this->registry, $xml);
+
+		$data['transaction_data'] = $responseHelper->getTransactionDetails();
+		$data['account_holder'] = $responseHelper->getAccountHolder();
+		$data['shipping'] = $responseHelper->getShipping();
+		$data['basic_info'] = $responseHelper->getBasicDetails();
+		if ($paymentMethod == 'creditcard') {
+			$data['cc_info'] = $responseHelper->getCard();
+		}
+		$data['basket'] = $responseHelper->getBasket();
 
 		return $data;
 	}

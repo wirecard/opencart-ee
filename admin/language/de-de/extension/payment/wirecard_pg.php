@@ -90,3 +90,5 @@ $_['credit'] = "Kreditieren";
 $_['pay'] = "Buchen";
 $_['refund'] = "Refundieren";
 $_['cancel'] = "Stornieren mit vollem Betrag";
+
+$_['copy_xml_text'] = 'XML Kopieren';

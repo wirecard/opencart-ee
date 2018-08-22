@@ -26,50 +26,76 @@
         {% endif %}
         <div class="panel panel-default">
             <div class="panel-heading">
-                {{ plugin_name }}&nbsp;{{ plugin_version }}
-            </div>
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    <i class="fa fa-puzzle-piece"></i> {{ text_transaction }} {% if transaction %}{{ transaction.transaction_id }}{% endif %}
+                <h3 class="panel-title text-center" style="width: 100%;">
+                    <span class="pull-left"><i class="fa fa-sticky-note"></i> {{ text_transaction }} {% if transaction %}{{ transaction.transaction_id }}{% endif %}</span>
+                    <span class="pull-right">{{ plugin_name }}&nbsp;{{ plugin_version }}</span>
                 </h3>
             </div>
             <div class="panel-body">
                 {% if transaction %}
+                    <div class="row">
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <i class="fa {{ transaction.response.basic_info.icon }}"> {{ transaction.response.basic_info.title }}</i>
+                                </h3>
+                            </div>
+                            {{ transaction.response.basic_info.data }}
+                            <table class="table">
+                                <tr></tr>
+                                <tr>
+                                    <td>{{ copy_xml_text }}</td>
+                                    <td>
+                                        <div style="margin-top: 10px;" onclick="saveToClipBoard()" data-toggle="tooltip" class="btn btn-primary">
+                                            <i class="fa fa-copy"></i>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
                     {% if ratepayinvoice_details %}
                         {{ ratepayinvoice_details }}
                     {% else %}
-                        {% if transaction.operations %}
-                            <div class="panel-heading">
-                                <h3 class="panel-title">{{ text_backend_operations }}</h3>
-                            </div>
-                            <div class="panel-group">
-                                <br>
-                                <form action="{{ transaction.action }}" method="post" enctype="multipart/form-data" id="wirecard-operation" class="form-horizontal">
-                                    <input type="hidden" name="payment-method" id="payment-method" value="{{ transaction.payment_method }}">
-                                    <label for="amount">{{ text_request_amount }} in {{ transaction.currency }}</label>&nbsp;<input type="number" name="amount" value="{{ transaction.amount }}" id="amount" class="input-sm" step="any" min="0.000001" max="{{ transaction.amount }}"> &nbsp;
-                                    <input type="hidden" name="currency" value="{{ transaction.currency }}">
-                                    {% for key,operation in transaction.operations %}
-                                        <button type="submit" form="wirecard-operation" data-toggle="tooltip" class="btn btn-primary" name="operation" value="{{ operation.action }}">{{ operation.text }}</button>
-                                    {% endfor %}
-                                </form>
-                            </div>
-                        {% endif %}
+                            {% if transaction.operations %}
+                                <div class="col-md-6">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title">
+                                                <i class="fa fa-cog"> {{ text_backend_operations }}</i>
+                                            </h3>
+                                        </div>
+                                        <form style="margin: 10px;" action="{{ transaction.action }}" method="post" enctype="multipart/form-data" id="wirecard-operation" class="form-horizontal clearfix">
+                                            <input type="hidden" name="payment-method" id="payment-method" value="{{ transaction.payment_method }}">
+                                            <label for="amount">{{ text_request_amount }} in {{ transaction.currency }}</label>
+                                            <input type="number" name="amount" value="{{ transaction.amount }}" id="amount" class="form-control" step="any" min="0.000001" max="{{ transaction.amount }}">
+                                            <input type="hidden" name="currency" value="{{ transaction.currency }}">
+                                            {% for key,operation in transaction.operations %}
+                                                <button type="submit" form="wirecard-operation" data-toggle="tooltip" style="margin: 10px 0px 0px 10px;" class="btn btn-primary pull-right" name="operation" value="{{ operation.action }}">{{ operation.text }}</button>
+                                            {% endfor %}
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
                     {% endif %}
-                <div class="panel-heading">
-                    <h3 class="panel-title">{{ text_response_data }}</h3>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <tbody>
-                        {% for key, value in transaction.response %}
-                            <tr>
-                                <td>{{ key }}</td>
-                                <td>{{ value }}</td>
-                            </tr>
+                    <div class="row">
+                        {% for table in transaction.response %}
+                            {% if table.type != 'basic_info' and table.data %}
+                                <div class="col-md-4">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title">
+                                                <i class="fa {{ table.icon }}"> {{ table.title }}</i>
+                                            </h3>
+                                        </div>
+                                        {{ table.data }}
+                                    </div>
+                                </div>
+                            {% endif %}
                         {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                    </div>
                 {% endif %}
             </div>
         </div>
@@ -77,3 +103,13 @@
 </div>
 {{ footer }}
 {{ live_chat }}
+<script>
+    function saveToClipBoard() {
+        var textArea = document.createElement("textarea");
+        textArea.value = '{{ transaction.xml }}';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+    }
+</script>
