@@ -55,7 +55,8 @@
             return;
         }
 
-        if (WirecardPaymentMethod === 'creditcard' || WirecardPaymentMethod === 'upi') {
+        if (WirecardPaymentMethod === 'creditcard' || WirecardPaymentMethod === 'upi' || WirecardPaymentMethod === 'maestro') {
+            console.log("Not normally submitting.")
             return;
         }
 
