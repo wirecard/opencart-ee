@@ -102,16 +102,13 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$amount = $this->model_extension_payment_wirecard_pg->getTransactionMaxAmount($transaction_id);
 			$data = array(
 				'transaction_id' => $transaction['transaction_id'],
-				'response' => $transaction['xml'] ? $this->prepareResponseData(
-					$transaction['xml'],
-					$transaction['payment_method']
-				) : json_decode($transaction['response'], true),
+				'response' => ($transaction['xml']) ? $this->prepareResponseData($transaction['xml'], $transaction['payment_method']) : json_decode($transaction['response'], true),
 				'amount' => $amount,
 				'currency' => $transaction['currency'],
 				'operations' => ($transaction['transaction_state'] == 'success') ? $operations : false,
 				'payment_method' => $transaction['payment_method'],
 				'xml' => json_encode($transaction['xml']),
-				'newTemplate' => $transaction['xml'] ? true : false,
+				'newTemplate' => ($transaction['xml']) ? true : false,
 				'action' => $this->url->link(
 					self::TRANSACTION . '/process', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['transaction_id'],
 					true
