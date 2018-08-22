@@ -107,7 +107,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 				'currency' => $transaction['currency'],
 				'operations' => ($transaction['transaction_state'] == 'success') ? $operations : false,
 				'payment_method' => $transaction['payment_method'],
-				'xml' => json_encode($transaction['xml']),
+				'xml' => (string)json_encode($transaction['xml']),
 				'newTemplate' => ($transaction['xml']) ? true : false,
 				'action' => $this->url->link(
 					self::TRANSACTION . '/process', 'user_token=' . $this->session->data['user_token'] . '&id=' . $transaction['transaction_id'],

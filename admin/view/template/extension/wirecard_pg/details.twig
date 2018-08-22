@@ -43,15 +43,17 @@
                             </div>
                             {{ transaction.response.basic_info.data }}
                             <table class="table">
-                                <tr></tr>
-                                <tr>
-                                    <td>{{ copy_xml_text }}</td>
-                                    <td>
-                                        <div style="margin-top: 10px;" onclick="saveToClipBoard()" data-toggle="tooltip" class="btn btn-primary">
-                                            <i class="fa fa-copy"></i>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <tbody>
+                                    <tr></tr>
+                                    <tr>
+                                        <td style="width: 40%;">{{ copy_xml_text }}</td>
+                                        <td>
+                                            <div style="margin-top: 10px;" onclick="saveToClipBoard()" data-toggle="tooltip" class="btn btn-primary">
+                                                <i class="fa fa-copy"></i>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -106,7 +108,7 @@
 <script>
     function saveToClipBoard() {
         var textArea = document.createElement("textarea");
-        textArea.value = '{{ transaction.xml }}';
+        textArea.value = {{ transaction.xml }};
         document.body.appendChild(textArea);
         textArea.select();
         document.execCommand('copy');
