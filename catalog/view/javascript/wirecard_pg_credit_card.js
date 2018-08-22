@@ -18,11 +18,9 @@ var debug = false;
 function setParentTransactionId(response) {
 	var form = $("#wirecard-pg-form");
 
-	for (var key in response) {
-		if (response.hasOwnProperty(key)) {
-			form.append("<input type='hidden' name='" + key + "' value='" + response[key] + "'>");
-		}
-	}
+	$.each(response, function(key, value){
+		form.append("<input type='hidden' name='" + key + "' value='" + value + "'>");
+	});
 
 	form.submit();
 }
@@ -93,13 +91,16 @@ function getCreditCardRequestData() {
  */
 function setToken(token) {
 	var tokenField = "#token-field";
-
-	if (token == null) {
-		$(tokenField).removeAttr("value");
-		return;
-	}
-
 	$(tokenField).val(token);
+}
+
+/**
+ * Remove cc token
+ * @since 1.1.0
+ */
+function removeToken() {
+	var tokenField = "#token-field";
+	$(tokenField).removeAttr("value");
 }
 
 /**
@@ -127,7 +128,7 @@ function deleteCardFromVault(card, maskedPan) {
 					$("#success-message").fadeIn();
 					$(".credit-card-selector[data-pan='" + data.deleted_card + "']").fadeOut(300, function() {
 						$(this).remove();
-						setToken(null);
+						removeToken();
 
 						if($("#list-existing-cards").children().length === 0) {
 							$("#button-confirm").attr("disabled", "disabled");
@@ -160,7 +161,7 @@ function handleTabChanges() {
 		}
 
 		if($("#list-existing-cards").children().length === 0) {
-			setToken(null);
+			removeToken();
 			$("#button-confirm").attr("disabled", "disabled");
 		}
 
@@ -190,7 +191,6 @@ $("#button-confirm").on("click", function() {
 		|| jQuery(window.newCardTab).hasClass("active")
 		|| WirecardPaymentMethod === "upi"
 		|| WirecardPaymentMethod === "maestro") {
-		console.log("Special submitting");
 		WirecardPaymentPage.seamlessSubmitForm({
 			onSuccess: setParentTransactionId,
 			onError: logError
