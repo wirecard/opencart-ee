@@ -42,6 +42,17 @@
                                 </h3>
                             </div>
                             {{ transaction.response.basic_info.data }}
+                            <table class="table">
+                                <tr></tr>
+                                <tr>
+                                    <td>{{ copy_xml_text }}</td>
+                                    <td>
+                                        <div style="margin-top: 10px;" onclick="saveToClipBoard()" data-toggle="tooltip" class="btn btn-primary">
+                                            <i class="fa fa-copy"></i>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                     {% if ratepayinvoice_details %}
@@ -63,9 +74,6 @@
                                             {% for key,operation in transaction.operations %}
                                                 <button type="submit" form="wirecard-operation" data-toggle="tooltip" style="margin: 10px 0px 0px 10px;" class="btn btn-primary pull-right" name="operation" value="{{ operation.action }}">{{ operation.text }}</button>
                                             {% endfor %}
-                                            <div style="margin-top: 10px;" onclick="saveToClipBoard()" data-toggle="tooltip" class="btn btn-primary">
-                                                <i class="fa fa-copy"></i>
-                                            </div>
                                         </form>
                                     </div>
                                 </div>

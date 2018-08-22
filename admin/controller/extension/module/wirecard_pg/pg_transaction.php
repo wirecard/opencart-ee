@@ -52,6 +52,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 
 		if (isset($this->request->get['id'])) {
 			$data['transaction'] = $this->getTransactionDetails($this->request->get['id']);
+			$data['copy_xml_text'] = $this->language->get('copy_xml_text');
 			if ('ratepayinvoice' == $data['transaction']['payment_method']) {
 				$this->load->language(self::ROUTE . '_ratepayinvoice');
 				$basket = $this->getBasketItems($this->request->get['id']);

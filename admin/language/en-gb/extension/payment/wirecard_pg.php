@@ -91,3 +91,5 @@ $_['credit'] = "Credit";
 $_['pay'] = "Capture";
 $_['refund'] = "Refund";
 $_['cancel'] = "Cancel with full amount";
+
+$_['copy_xml_text'] = 'Copy XML';
