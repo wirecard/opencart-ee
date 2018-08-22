@@ -14,19 +14,19 @@ require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
  *
  * Maestro SecureCode payment transaction controller
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
 class ControllerExtensionPaymentWirecardPGMaestro extends \ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected $type = 'maestro';
 
 	/**
 	 * @var bool
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected $has_payment_actions = true;
 
@@ -34,7 +34,7 @@ class ControllerExtensionPaymentWirecardPGMaestro extends \ControllerExtensionPa
 	 * Maestro SecureCode default configuration settings
 	 *
 	 * @var array
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected $default = array (
 		'status' => 0,
@@ -56,7 +56,7 @@ class ControllerExtensionPaymentWirecardPGMaestro extends \ControllerExtensionPa
 	 * Set data fields or load config
 	 *
 	 * @return array
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected function getRequestData() {
 		$this->config_fields = $this->getPaymentConfigFields();

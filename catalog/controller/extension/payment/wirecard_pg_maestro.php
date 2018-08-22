@@ -18,13 +18,13 @@ use Wirecard\PaymentSdk\TransactionService;
  *
  * Maestro SecureCode Transaction controller
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
 class ControllerExtensionPaymentWirecardPGMaestro extends ControllerExtensionPaymentGateway {
 
 	/**
 	 * @var string
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	protected $type = 'maestro';
 
@@ -33,7 +33,7 @@ class ControllerExtensionPaymentWirecardPGMaestro extends ControllerExtensionPay
 	 *
 	 * @param array $data
 	 * @return array
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function index($data = null) {
 		$this->load->language('extension/payment/wirecard_pg');
@@ -50,7 +50,7 @@ class ControllerExtensionPaymentWirecardPGMaestro extends ControllerExtensionPay
 	 * After the order is confirmed in frontend
 	 *
 	 * @return mixed
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function confirm() {
 		$this->load->model('checkout/order');
@@ -68,7 +68,7 @@ class ControllerExtensionPaymentWirecardPGMaestro extends ControllerExtensionPay
 	 *
 	 * @param array $currency
 	 * @return \Wirecard\PaymentSdk\Config\Config
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function getConfig($currency = null) {
 		$config = parent::getConfig($currency);
@@ -90,7 +90,7 @@ class ControllerExtensionPaymentWirecardPGMaestro extends ControllerExtensionPay
 	 * Payment specific model getter
 	 *
 	 * @return Model
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function getModel() {
 		$this->load->model('extension/payment/wirecard_pg_' . $this->type);
@@ -101,7 +101,7 @@ class ControllerExtensionPaymentWirecardPGMaestro extends ControllerExtensionPay
 	/**
 	 * Return data via ajax call for the seamless form renderer
 	 *
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function getMaestroUiRequestData() {
 		$this->transaction = new MaestroTransaction();
@@ -121,7 +121,7 @@ class ControllerExtensionPaymentWirecardPGMaestro extends ControllerExtensionPay
 	 * Get new instance of payment specific transaction
 	 *
 	 * @return MaestroTransaction
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function getTransactionInstance() {
 		return new MaestroTransaction();
@@ -133,7 +133,7 @@ class ControllerExtensionPaymentWirecardPGMaestro extends ControllerExtensionPay
 	 * @param array $parentTransaction
 	 * @param \Wirecard\PaymentSdk\Entity\Amount $amount
 	 * @return \Wirecard\PaymentSdk\Transaction\Transaction
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
 	public function createTransaction($parentTransaction, $amount) {
 		$this->transaction = $this->getTransactionInstance();
