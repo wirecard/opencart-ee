@@ -30,8 +30,20 @@ class ModelExtensionPaymentWirecardPGSofortbanking extends ModelExtensionPayment
 		$current_language = $language_helper->getActiveLanguageCode();
 		$prefix = $this->prefix . $this->type;
 		$logo_variant = $this->config->get($prefix . '_logo_variant');
+		$url = "https://cdn.klarna.com/1.0/shared/image/generic/badge/{$current_language}/pay_now/{$logo_variant}/pink.svg";
 
-		$logo = "<img src='https://cdn.klarna.com/1.0/shared/image/generic/badge/{$current_language}/pay_now/{$logo_variant}/pink.svg' width='61' style='margin: 0 18px' />";
+		/*
+		 * Since the Klarna CDN URL is extremely long we send it to an URL shortening API.
+		 * This is necessary because OpenCart cuts off the payment mehod name after 128 characters.
+		 */
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, 'https://is.gd/create.php?format=json&url=' . urlencode($url));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$data = json_decode(curl_exec($ch));
+		curl_close($ch);
+
+		$logo = "<img src='" . $data->shorturl . "' width='61' style='margin: 0 18px' />";
 		$code = $this->language->get('code');
 
 		if (isset($code) && isset($this->config->get($prefix . '_title' )[$code])) {

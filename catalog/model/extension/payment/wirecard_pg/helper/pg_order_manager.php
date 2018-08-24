@@ -82,6 +82,7 @@ class PGOrderManager extends Model {
 		$logger = $payment_controller->getLogger();
 		$backend_service = new \Wirecard\PaymentSdk\BackendService($payment_controller->getConfig(), $logger);
 		$state = $this->getOrderState($backend_service->getOrderState($response->getTransactionType()));
+
 		if (self::PENDING == $order['order_status_id'] || 0 == $order['order_status_id']) {
 			//Send notification mail -without- comments
 			$this->model_checkout_order->addOrderHistory(
