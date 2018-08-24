@@ -21,5 +21,10 @@ class ResponseProvider
 	{
 		return base64_encode("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?> <payment xmlns=\"http://www.elastic-payments.com/schema/payment\" xmlns:ns2=\"http://www.elastic-payments.com/schema/epa/transaction\"> <merchant-account-id>105ab3e8-d16b-4fa0-9f1f-18dd9b390c94</merchant-account-id> <transaction-id>24f3462c-0006-11e6-a3bd-005056b16ddc</transaction-id> <request-id>98e6ec23-d402-4a8e-bde4-afcdb16c9706</request-id> <transaction-type>authorization</transaction-type> <transaction-state>success</transaction-state> <completion-time-stamp>2016-04-11T16:55:07.000Z</completion-time-stamp> <statuses> <status code=\"201.0000\" description=\"The resource was successfully created.\" severity=\"information\"/> <status code=\"100.0000\" description=\"Transaction Processing has begun, and the outcome of the Transaction is not yet known.\" severity=\"information\"/> </statuses> <requested-amount currency=\"EUR\">10.01</requested-amount> <account-holder> <first-name>John</first-name> <last-name>Doe</last-name> <email>john.doe@test.com</email> <address> <street1>Example Street 35</street1> <city>Munich</city> <country>DE</country> </address> </account-holder> <ip-address>127.0.0.1</ip-address> <order-number>45367</order-number> <order-detail>1 XL TShirt (white)</order-detail> <descriptor>test product transaction</descriptor> <notifications> <notification transaction-state=\"success\" url=\"https://www.merchant.com/ipn\"/> </notifications> <payment-methods> <payment-method name=\"wiretransfer\"/> </payment-methods> <merchant-bank-account> <bank-name>Wirecard Bank</bank-name> <branch-city>Aschheim</branch-city> <branch-state>Germany</branch-state> <branch-address>Einsteinring 35</branch-address> <iban>DE11512308001234567890</iban> <bic>WIREDEMMXXX</bic> </merchant-bank-account> <provider-transaction-reference-id>8B05FCD5B2</provider-transaction-reference-id> </payment>");
 	}
+
+	public static function getPOIResponse()
+	{
+		return self::getPIAResponse();
+	}
 }
 

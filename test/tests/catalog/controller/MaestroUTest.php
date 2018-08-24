@@ -9,14 +9,14 @@
 
 use Mockery as m;
 
-require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_upi.php';
-require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_upi.php';
+require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_maestro.php';
+require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_maestro.php';
 
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-class UpiUTest extends \PHPUnit_Framework_TestCase
+class MaestroUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
 	private $pluginVersion = '1.1.0';
@@ -27,7 +27,7 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 	private $response;
 	private $modelOrder;
 	private $url;
-	private $modelUpi;
+	private $modelMaestro;
 	private $language;
 	private $cart;
 	private $currency;
@@ -101,7 +101,7 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 
 		$this->url = $this->getMockBuilder(Url::class)->disableOriginalConstructor()->getMock();
 
-		$this->modelUpi = $this->getMockBuilder(ModelExtensionPaymentWirecardPGUpi::class)
+		$this->modelMaestro = $this->getMockBuilder(ModelExtensionPaymentWirecardPGMaestro::class)
 			->disableOriginalConstructor()
 			->setMethods(['sendRequest'])
 			->getMock();
@@ -120,7 +120,7 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 		];
 		$this->cart->method('getProducts')->willReturn($items);
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGUpi(
+		$this->controller = new ControllerExtensionPaymentWirecardPGMaestro(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -128,7 +128,7 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelUpi,
+			$this->modelMaestro,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -141,7 +141,7 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 	public function testIndexActive() {
 		$this->config->expects($this->at(0))->method('get')->willReturn(1);
 		$this->loader->method('view')->willReturn('active');
-		$this->controller = new ControllerExtensionPaymentWirecardPGUpi(
+		$this->controller = new ControllerExtensionPaymentWirecardPGMaestro(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -149,7 +149,7 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelUpi,
+			$this->modelMaestro,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -167,15 +167,17 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
         $orderManager = m::mock('overload:PGOrderManager');
         $orderManager->shouldReceive('createResponseOrder');
 
-	    $_POST['merchant_account_id'] = '1111111111';
-	    $_POST['transaction_id'] = 'da04876d-1d92-431c-b33a-49080914c996';
-	    $_POST['transaction_type'] = 'authorization';
-	    $_POST['payment_method'] = 'upi';
-        $_POST['request_id'] = '123';
-        $_POST['transaction_state'] = 'success';
-        $_POST['status_code_1'] = '201.0000';
-        $_POST['status_description_1'] = '3d-acquirer:The resource was successfully created.';
-        $_POST['status_severity_1'] = 'information';
+		$this->controller->request->post = array (
+			'merchant_account_id' => '1111111111',
+			'transaction_id' => 'da04876d-1d92-431c-b33a-49080914c996',
+			'transaction_type' => 'authorization',
+			'payment_method' => 'creditcard',
+			'request_id' => '123',
+			'transaction_state' => 'success',
+			'status_code_1' => '201.0000',
+			'status_description_1' => '3d-acquirer:The resource was successfully created.',
+			'status_severity_1' => 'information'
+		);
 
         $this->controller->confirm();
 		$json['response'] = [];
@@ -188,13 +190,11 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetConfig() {
 		$config = $this->getMockBuilder(Config::class)->disableOriginalConstructor()->getMock();
-		$config->expects($this->at(0))->method('get')->willReturn('account123');
-		$config->expects($this->at(1))->method('get')->willReturn('secret123');
-		$config->expects($this->at(2))->method('get')->willReturn('api-test.com');
-		$config->expects($this->at(3))->method('get')->willReturn('user');
-		$config->expects($this->at(4))->method('get')->willReturn('password');
+		$config->expects($this->at(0))->method('get')->willReturn('api-test.com');
+		$config->expects($this->at(1))->method('get')->willReturn('user');
+		$config->expects($this->at(2))->method('get')->willReturn('password');
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGUpi(
+		$this->controller = new ControllerExtensionPaymentWirecardPGMaestro(
 			$this->registry,
 			$config,
 			$this->loader,
@@ -202,7 +202,7 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelUpi,
+			$this->modelMaestro,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -212,8 +212,7 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
-		$paymentConfig = new \Wirecard\PaymentSdk\Config\PaymentMethodConfig(
-			\Wirecard\PaymentSdk\Transaction\UpiTransaction::NAME,
+		$paymentConfig = new \Wirecard\PaymentSdk\Config\MaestroConfig(
 			'account123',
 			'secret123'
 		);
@@ -233,14 +232,14 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 	public function testGetModel() {
 		$actual = $this->controller->getModel();
 
-		$this->assertInstanceOf(get_class($this->modelUpi), $actual);
+		$this->assertInstanceOf(get_class($this->modelMaestro), $actual);
 	}
 
-	public function testGetUpiUiRequestData() {
+	public function testGetMaestroUiRequestData() {
         $actual = $this->controller;
         $transactionService = m::mock('overload:TransactionService');
-        $transactionService->shouldReceive('getUpiUiWithData');
-        $actual->getUpiUiRequestData();
+        $transactionService->shouldReceive('getCreditCardUiWithData');
+        $actual->getMaestroUiRequestData();
 
         $this->assertNull($actual->response->getOutput());
     }
@@ -254,11 +253,11 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testGetTransactionInstance() {
-		$this->assertTrue($this->controller->getTransactionInstance() instanceof \Wirecard\PaymentSdk\Transaction\UpiTransaction);
+		$this->assertTrue($this->controller->getTransactionInstance() instanceof \Wirecard\PaymentSdk\Transaction\MaestroTransaction);
     }
 
     public function testCreateTransaction() {
-		$expected = new \Wirecard\PaymentSdk\Transaction\UpiTransaction();
+		$expected = new \Wirecard\PaymentSdk\Transaction\MaestroTransaction();
 		$expected->setParentTransactionId('asd');
 		$expected->setAmount(new \Wirecard\PaymentSdk\Entity\Amount(20, 'EUR'));
 		$actual = $this->controller->createTransaction(['transaction_id' => 'asd'], new \Wirecard\PaymentSdk\Entity\Amount(20, 'EUR'));

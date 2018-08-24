@@ -10,17 +10,17 @@
 require_once(dirname( __FILE__ ) . '/wirecard_pg/gateway.php');
 
 /**
- * Class ModelExtensionPaymentWirecardPGPayPal
+ * Class ModelExtensionPaymentWirecardPGMaestro
  *
- * PayPal Transaction model
+ * Maestro Transaction model
  *
- * @since 1.1.0
+ * @since 1.0.0
  */
-class ModelExtensionPaymentWirecardPGPoi extends ModelExtensionPaymentGateway {
+class ModelExtensionPaymentWirecardPGMaestro extends ModelExtensionPaymentGateway {
 
 	/**
 	 * @var string
-	 * @since 1.1.0
+	 * @since 1.0.0
 	 */
-	protected $type = 'poi';
+	protected $type = 'maestro';
 }

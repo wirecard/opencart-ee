@@ -23,6 +23,7 @@ require_once __DIR__ . '/stubs/Cart.php';
 require_once __DIR__ . '/stubs/Tax.php';
 require_once __DIR__ . '/stubs/Currency.php';
 require_once __DIR__ . '/stubs/Log.php';
+require_once __DIR__ . '/stubs/DB.php';
 
 // Helpers
 require_once __DIR__ . '/helper/ResponseProvider.php';
@@ -32,4 +33,5 @@ define('DIR_SYSTEM', __DIR__ . '/../system/');
 define('HELPER_DIR', __DIR__ . '/../catalog/model/extension/payment/wirecard_pg/helper/');
 define('DIR_APPLICATION', __DIR__ . '/../catalog/');
 define('DIR_ADMIN', __DIR__ . '/../admin/');
+define('DB_PREFIX', 'oc_');
 define('VERSION', '3.0.2.0');

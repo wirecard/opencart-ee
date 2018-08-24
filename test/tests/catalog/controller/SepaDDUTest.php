@@ -7,17 +7,17 @@
  * https://github.com/wirecard/opencart-ee/blob/master/LICENSE
  */
 
-require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_alipay_crossborder.php';
-require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg_alipay_crossborder.php';
+use Mockery as m;
 
-use Wirecard\PaymentSdk\Transaction\AlipayCrossborderTransaction;
-use Wirecard\PaymentSdk\Transaction\Operation;
+require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wirecard_pg_sepadd.php';
+
+use Wirecard\PaymentSdk\Transaction\SepaTransaction;
 
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
+class SepaDDUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
 	private $pluginVersion = '1.1.0';
@@ -28,10 +28,9 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 	private $response;
 	private $modelOrder;
 	private $url;
-	private $modelAlipayCrossborder;
+	private $modelSepaDD;
 	private $language;
 	private $cart;
-	private $subController;
 	private $currency;
 	private $customer;
 
@@ -50,6 +49,7 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 		$this->config->method('get')->willReturn('somthing');
 
 		$this->session = $this->getMockBuilder(Session::class)->disableOriginalConstructor()->getMock();
+		$this->session->data['payment_method']['code'] = 'wirecard_pg_sepadd';
 
 		$this->response = $this->getMockBuilder(Response::class)
 			->disableOriginalConstructor()
@@ -98,28 +98,19 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 
 		$this->url = $this->getMockBuilder(Url::class)->disableOriginalConstructor()->getMock();
 
-		$this->modelAlipayCrossborder = $this->getMockBuilder(ModelExtensionPaymentWirecardPGAlipayCrossborder::class)
+		$this->modelSepaDD = $this->getMockBuilder(ModelExtensionPaymentWirecardPGSepaDD::class)
 			->disableOriginalConstructor()
 			->setMethods(['sendRequest'])
 			->getMock();
 
 		$this->loader = $this->getMockBuilder(Loader::class)
 			->disableOriginalConstructor()
-			->setMethods(['model', 'language', 'view', 'controller'])
+			->setMethods(['model', 'language', 'view'])
 			->getMock();
 
 		$this->language = $this->getMockBuilder(Language::class)->disableOriginalConstructor()->getMock();
 
 		$this->currency = $this->getMockBuilder(Currency::class)->disableOriginalConstructor()->getMock();
-
-		$this->request = $this->getMockBuilder(Request::class)
-			->disableOriginalConstructor()
-			->getMock();
-
-		$this->customer = $this->getMockBuilder(Customer::class)
-			->disableOriginalConstructor()
-			->setMethods(['isLogged'])
-			->getMock();
 
 		$items = [
 			["price" => 10.465, "name" => "Produkt1", "quantity" => 2, "product_id" => 2, "tax_class_id" => 2],
@@ -127,9 +118,14 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 			["price" => 3.241, "name" => "Produkt3", "quantity" => 5, "product_id" => 3, "tax_class_id" => 1]
 		];
 
+		$this->customer = $this->getMockBuilder(Customer::class)
+			->disableOriginalConstructor()
+			->setMethods(['isLogged'])
+			->getMock();
+
 		$this->cart->method('getProducts')->willReturn($items);
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGAlipayCrossborder(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepaDD(
 			$this->registry,
 			$this->config,
 			$this->loader,
@@ -137,7 +133,7 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelAlipayCrossborder,
+			$this->modelSepaDD,
 			$this->language,
 			$this->cart,
 			$this->currency,
@@ -155,8 +151,9 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 		$config->expects($this->at(2))->method('get')->willReturn('api-test.com');
 		$config->expects($this->at(3))->method('get')->willReturn('user');
 		$config->expects($this->at(4))->method('get')->willReturn('password');
+		$config->expects($this->at(5))->method('get')->willReturn('creditor_id');
 
-		$this->controller = new ControllerExtensionPaymentWirecardPGAlipayCrossborder(
+		$this->controller = new ControllerExtensionPaymentWirecardPGSepaDD(
 			$this->registry,
 			$config,
 			$this->loader,
@@ -164,28 +161,25 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 			$this->response,
 			$this->modelOrder,
 			$this->url,
-			$this->modelAlipayCrossborder,
+			$this->modelSepaDD,
 			$this->language,
 			$this->cart,
-			$this->currency,
-			null,
-			null,
-			$this->customer
+			$this->currency
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
-		$expected->add(new \Wirecard\PaymentSdk\Config\PaymentMethodConfig(
-			\Wirecard\PaymentSdk\Transaction\AlipayCrossborderTransaction::NAME,
-			'account123',
-			'secret123'
-		));
+		$sepa_config = new \Wirecard\PaymentSdk\Config\SepaConfig('sepadirectdebit', 'account123', 'secret123');
+		$sepa_config->setCreditorId('creditor_id');
+		$expected->add($sepa_config);
+
 		$expected->setShopInfo(self::SHOP, VERSION);
 		$expected->setPluginInfo(self::PLUGIN, $this->pluginVersion);
 
 		$currency = [
 			'currency_code' => 'EUR',
-			'currency_value' => 1
+			'currency_value' => 1.12
 		];
+
 		$actual = $this->controller->getConfig($currency);
 
 		$this->assertEquals($expected, $actual);
@@ -195,148 +189,29 @@ class AlipayCrossborderUTest extends \PHPUnit_Framework_TestCase
 	{
 		$actual = $this->controller->getModel();
 
-		$this->assertInstanceOf(get_class($this->modelAlipayCrossborder), $actual);
+		$this->assertInstanceOf(get_class($this->modelSepaDD), $actual);
 	}
 
-
-	public function testIndexActive()
+	public function testSuccessConfirm()
 	{
-		$this->config->expects($this->at(0))->method('get')->willReturn(1);
-		$this->loader->method('view')->willReturn('active');
-		$this->controller = new ControllerExtensionPaymentWirecardPGAlipayCrossborder(
-			$this->registry,
-			$this->config,
-			$this->loader,
-			$this->session,
-			$this->response,
-			$this->modelOrder,
-			$this->url,
-			$this->modelAlipayCrossborder,
-			$this->language,
-			$this->cart,
-			$this->currency,
-			null,
-			null,
-			$this->customer
-		);
-
-		$actual = $this->controller->index();
-
-		$this->assertNotNull($actual);
-	}
-
-	public function testConfirm()
-	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGAlipayCrossborder(
-			$this->registry,
-			$this->config,
-			$this->loader,
-			$this->session,
-			$this->response,
-			$this->modelOrder,
-			$this->url,
-			$this->modelAlipayCrossborder,
-			$this->language,
-			$this->cart,
-			$this->currency,
-			null,
-			null,
-			$this->customer
-		);
-
-		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGAlipayCrossborder::class);
-		$prop = $reflector->getProperty('transaction');
-		$prop->setAccessible(true);
+		$this->controller->request->post = array_merge($this->controller->request->post, array(
+			'mandate_confirmed' => false,
+			'iban' => '123',
+			'first_name' => 'first',
+			'last_name' => 'last',
+			'mandate_id' => '123123123',
+			'bic' => '123'
+		));
 
 		$this->controller->confirm();
+		$json['response'] = [];
+		$this->response->method('getOutput')->willReturn(json_encode($json));
+		$expected = json_encode($json);
 
-		$this->assertInstanceof(AlipayCrossborderTransaction::class, $prop->getValue($this->controller));
+		$this->assertEquals($expected, $this->response->getOutput());
 	}
 
-	public function testCreateTransaction()
-	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGAlipayCrossborder(
-			$this->registry,
-			$this->config,
-			$this->loader,
-			$this->session,
-			$this->response,
-			$this->modelOrder,
-			$this->url,
-			$this->modelAlipayCrossborder,
-			$this->language,
-			$this->cart,
-			$this->currency,
-			null,
-			null,
-			$this->customer
-		);
-
-		$reflector = new ReflectionClass(ControllerExtensionPaymentWirecardPGAlipayCrossborder::class);
-		$prop = $reflector->getProperty('transaction');
-		$prop->setAccessible(true);
-
-		$transaction = array(
-			'transaction_id' => '1234',
-			'amount' => '10'
-		);
-
-		$expected = new AlipayCrossborderTransaction();
-		$expected->setParentTransactionId('1234');
-
-		$actual = $this->controller->createTransaction($transaction, null);
-
-		$this->assertEquals($expected, $actual);
-	}
-
-	public function testGetType()
-	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGAlipayCrossborder(
-			$this->registry,
-			$this->config,
-			$this->loader,
-			$this->session,
-			$this->response,
-			$this->modelOrder,
-			$this->url,
-			$this->modelAlipayCrossborder,
-			$this->language,
-			$this->cart,
-			$this->currency,
-			null,
-			null,
-			$this->customer
-		);
-
-		$actual = $this->controller->getType();
-		$expected = 'alipay_crossborder';
-
-		$this->assertEquals($expected, $actual);
-	}
-
-	public function testGetInstance()
-	{
-		$this->controller = new ControllerExtensionPaymentWirecardPGAlipayCrossborder(
-			$this->registry,
-			$this->config,
-			$this->loader,
-			$this->session,
-			$this->response,
-			$this->modelOrder,
-			$this->url,
-			$this->modelAlipayCrossborder,
-			$this->language,
-			$this->cart,
-			$this->currency,
-			null,
-			null,
-			$this->customer
-		);
-
-		$expected = new \Wirecard\PaymentSdk\Transaction\AlipayCrossborderTransaction();
-
-		$actual = $this->controller->getTransactionInstance();
-
-		$this->assertEquals($expected, $actual);
+	public function testIndex() {
+		$this->assertNull($this->controller->index());
 	}
 }
