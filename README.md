@@ -16,6 +16,6 @@ Before proceeding, please read [general information](https://github.com/wirecard
 ## OpenCart documentation - Wiki
 
 [OpenCart Wiki](https://github.com/wirecard/opencart-ee/wiki) provides detailed technical documentation.
-It lists all available [payment methods](https://github.com/wirecard/opencart-ee/wiki#supported-payment-methods) and back-end operations.
+It lists all available [payment methods](https://github.com/wirecard/opencart-ee/wiki#supported-payment-methods) and post-processing operations.
 Furthermore, it includes extensive instructions how to [install](https://github.com/wirecard/opencart-ee/wiki/Installation) and [configure](https://github.com/wirecard/opencart-ee/wiki/Configuration).
 
