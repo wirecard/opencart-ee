@@ -45,14 +45,14 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 
 		if ($this->customer->isLogged()) {
 			$cards = $vault->getCards();
-            $shipping_data = null;
-            $last_shipping_data = $model->getLatestCustomerShipping();
+			$shipping_data = null;
+			$last_shipping_data = $model->getLatestCustomerShipping();
 
-            if (is_array($this->session->data['shipping_address'])) {
-                $shipping_data = array_filter($this->session->data['shipping_address'], function($key) use ($last_shipping_data) {
-                    return in_array($key, array_keys($last_shipping_data));
-                }, ARRAY_FILTER_USE_KEY);
-            }
+			if (is_array($this->session->data['shipping_address'])) {
+				$shipping_data = array_filter($this->session->data['shipping_address'], function($key) use ($last_shipping_data) {
+					return in_array($key, array_keys($last_shipping_data));
+				}, ARRAY_FILTER_USE_KEY);
+			}
 
 			// I'm explicitly using != instead of !== here to avoid the array being checked for key order.
 			// It *should* theoretically be the same, but there's no guarantees.
