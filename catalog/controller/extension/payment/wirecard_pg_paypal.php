@@ -101,5 +101,21 @@ class ControllerExtensionPaymentWirecardPGPayPal extends ControllerExtensionPaym
 
 		return parent::createTransaction($parentTransaction, $amount);
 	}
+
+	/**
+	 * Prepare PayPal transaction
+	 *
+	 * @since 1.2.0
+	 */
+	public function prepareTransaction() {
+		$this->load->model('checkout/order');
+
+		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config, $this->scale);
+
+		$this->transaction = $additional_helper->addAccountHolder($this->transaction, $order);
+
+		parent::prepareTransaction();
+	}
 }
 
