@@ -93,6 +93,7 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
         $orderDetails = array(
             'order_id' => '1',
             'total' => '20',
+            'comment' => '',
             'currency_code' => 'EUR',
             'language_code' => 'en-GB',
             'email' => 'test@test.com',
@@ -323,6 +324,7 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 		$address = new Address($order['payment_iso_code_2'], $order['payment_city'], $order['payment_address_1']);
 		$address->setPostalCode($order['payment_postcode']);
 		$address->setStreet2($order['payment_address_2']);
+		$address->setState('OR');
 
 		$accountHolder = new AccountHolder();
 		$accountHolder->setAddress($address);
