@@ -59,15 +59,21 @@ class PGAccountHolder {
 	 */
 	public function createAddressData($order, $type) {
 		if (self::SHIPPING == $type) {
-			$stateIsoCode = $this->mapStateToIsoCode($order['shipping_iso_code_2'], $order['shipping_zone_code']);
+			$state_iso_code = $this->mapStateToIsoCode($order['shipping_iso_code_2'], $order['shipping_zone_code']);
 			$address = new Address( $order['shipping_iso_code_2'], $order['shipping_city'], $order['shipping_address_1']);
 			$address->setPostalCode($order['shipping_postcode']);
-			$address->setState($stateIsoCode);
+
+			if (strlen($state_iso_code)) {
+				$address->setState($state_iso_code);
+			}
 		} else {
-			$stateIsoCode = $this->mapStateToIsoCode($order['payment_iso_code_2'], $order['payment_zone_code']);
+			$state_iso_code = $this->mapStateToIsoCode($order['payment_iso_code_2'], $order['payment_zone_code']);
 			$address = new Address($order['payment_iso_code_2'], $order['payment_city'], $order['payment_address_1']);
 			$address->setPostalCode($order['payment_postcode']);
-			$address->setState($stateIsoCode);
+
+			if (strlen($state_iso_code)) {
+				$address->setState($state_iso_code);
+			}
 
 			if (strlen($order['payment_address_2'])) {
 				$address->setStreet2($order['payment_address_2']);
