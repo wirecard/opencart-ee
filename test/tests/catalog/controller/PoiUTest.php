@@ -90,34 +90,36 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 			->setMethods(['getProducts'])
 			->getMock();
 
-		$orderDetails = array(
-			'order_id' => '1',
-			'total' => '20',
-			'currency_code' => 'EUR',
-			'language_code' => 'en-GB',
-			'email' => 'test@test.com',
-			'firstname' => 'Jon',
-			'lastname' => 'Doe',
-			'ip' => '1',
-			'store_name' => 'Demoshop',
-			'currency_value' => 1,
-			'customer_id' => 1,
-			'payment_iso_code_2' => 'AT',
-			'payment_city' => 'BillingCity',
-			'payment_address_1' => 'BillingStreet1',
-			'payment_address_2' => 'BillingStreet2',
-			'payment_postcode' => '0000',
-			'payment_firstname' => 'Jon',
-			'payment_lastname' => 'Doe',
-			'telephone' => '000356788990',
-			'shipping_iso_code_2' => 'AT',
-			'shipping_city' => 'ShippingCity',
-			'shipping_address_1' => 'ShippingStreet',
-			'shipping_postcode' => '0000',
-			'shipping_firstname' => 'Tina',
-			'shipping_lastname' => 'Doe',
-			'comment' => '',
-		);
+        $orderDetails = array(
+            'order_id' => '1',
+            'total' => '20',
+            'comment' => '',
+            'currency_code' => 'EUR',
+            'language_code' => 'en-GB',
+            'email' => 'test@test.com',
+            'firstname' => 'Jon',
+            'lastname' => 'Doe',
+            'ip' => '1',
+            'store_name' => 'Demoshop',
+            'currency_value' => 1.12,
+            'customer_id' => 1,
+            'payment_iso_code_2' => 'AT',
+            'payment_zone_code' => 'OR',
+            'payment_city' => 'BillingCity',
+            'payment_address_1' => 'BillingStreet1',
+            'payment_address_2' => 'BillingStreet2',
+            'payment_postcode' => '0000',
+            'payment_firstname' => 'Jon',
+            'payment_lastname' => 'Doe',
+            'telephone' => '000356788990',
+            'shipping_iso_code_2' => 'AT',
+            'shipping_zone_code' => 'OR',
+            'shipping_city' => 'ShippingCity',
+            'shipping_address_1' => 'ShippingStreet',
+            'shipping_postcode' => '0000',
+            'shipping_firstname' => 'Tina',
+            'shipping_lastname' => 'Doe',
+        );
 
 		$this->modelOrder->method('getOrder')->willReturn($orderDetails);
 
@@ -322,6 +324,7 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 		$address = new Address($order['payment_iso_code_2'], $order['payment_city'], $order['payment_address_1']);
 		$address->setPostalCode($order['payment_postcode']);
 		$address->setStreet2($order['payment_address_2']);
+		$address->setState('OR');
 
 		$accountHolder = new AccountHolder();
 		$accountHolder->setAddress($address);

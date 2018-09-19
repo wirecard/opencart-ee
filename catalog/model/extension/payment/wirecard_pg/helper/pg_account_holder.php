@@ -59,16 +59,46 @@ class PGAccountHolder {
 	 */
 	public function createAddressData($order, $type) {
 		if (self::SHIPPING == $type) {
+			$state_iso_code = $this->mapStateToIsoCode($order['shipping_iso_code_2'], $order['shipping_zone_code']);
 			$address = new Address( $order['shipping_iso_code_2'], $order['shipping_city'], $order['shipping_address_1']);
 			$address->setPostalCode($order['shipping_postcode']);
+
+			if (strlen($state_iso_code)) {
+				$address->setState($state_iso_code);
+			}
 		} else {
+			$state_iso_code = $this->mapStateToIsoCode($order['payment_iso_code_2'], $order['payment_zone_code']);
 			$address = new Address($order['payment_iso_code_2'], $order['payment_city'], $order['payment_address_1']);
 			$address->setPostalCode($order['payment_postcode']);
+
+			if (strlen($state_iso_code)) {
+				$address->setState($state_iso_code);
+			}
+
 			if (strlen($order['payment_address_2'])) {
 				$address->setStreet2($order['payment_address_2']);
 			}
 		}
 
 		return $address;
+	}
+
+	/**
+	 * Maps OpenCart state codes to ISO where necessary.
+	 *
+	 * @param $country
+	 * @param $state
+	 * @return string
+	 * @since 1.2.0
+	 */
+	public function mapStateToIsoCode($country, $state) {
+		$mapping = file_get_contents(DIR_SYSTEM . "/config/stateMapping.json");
+		$mapping = json_decode($mapping, true);
+
+		if (array_key_exists($country, $mapping) && array_key_exists($state, $mapping[$country])) {
+			return $mapping[$country][$state];
+		}
+
+		return $state;
 	}
 }
