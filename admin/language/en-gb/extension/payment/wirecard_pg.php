@@ -13,28 +13,28 @@ $_['text_extension'] = 'Extensions';
 // Admin Panel
 $_['heading_title'] = 'Wirecard Transactions';
 $_['text_list'] = 'Transactions';
-$_['error_mandatory_fields'] = 'Not all mandatory fields are set.';
+$_['error_mandatory_fields'] = 'Some mandatory fields are still empty.';
 
 // Transaction Table
 $_['panel_transaction'] = 'Transaction';
-$_['panel_order_number'] = 'Order number';
+$_['panel_order_number'] = 'Order Number';
 $_['panel_transcation_id'] = 'Transaction ID';
-$_['panel_parent_transaction_id'] = 'Parent transaction ID';
+$_['panel_parent_transaction_id'] = 'Parent Transaction ID';
 $_['panel_action'] = 'Action';
-$_['panel_payment_method'] = 'Payment method';
-$_['panel_transaction_state'] = 'Transaction state';
+$_['panel_payment_method'] = 'Payment Method';
+$_['panel_transaction_state'] = 'Transaction State';
 $_['panel_amount'] = 'Amount';
 $_['panel_currency'] = 'Currency';
 $_['panel_details'] = 'Details';
 
 // Transaction Details
 $_['text_transaction'] = 'Transaction';
-$_['heading_transaction_details'] = 'Transactiondetails';
+$_['heading_transaction_details'] = 'Transaction Details';
 $_['text_response_data'] = 'Response Data';
 $_['text_backend_operations'] = 'Possible Post-Processing Operations';
 $_['text_request_amount'] = 'Amount';
-$_['error_no_transaction'] = 'No transaction available.';
-$_['success_new_transaction'] = 'The post processing operation was successful. A new transaction was created';
+$_['error_no_transaction'] = 'No transaction found.';
+$_['success_new_transaction'] = 'The post-processing operation was successful. A new transaction was created.';
 
 // Configuration
 $_['text_enabled'] = 'Enabled';
@@ -50,7 +50,7 @@ $_['config_merchant_account_id_desc'] = 'Unique identifier assigned to your merc
 $_['config_merchant_secret'] = 'Secret Key';
 $_['config_merchant_secret_desc'] = 'Secret Key is mandatory to calculate the Digital Signature for payments.';
 $_['config_base_url'] = 'Wirecard Server Address';
-$_['config_base_url_desc'] = 'The Wirecard Server Address. (e.g. https://api.wirecard.com)';
+$_['config_base_url_desc'] = 'The Wirecard Server Address (e.g. https://api.wirecard.com).';
 $_['config_http_user'] = 'HTTP User';
 $_['config_http_user_desc'] = 'HTTP User as provided in your Wirecard contract.';
 $_['config_http_password'] = 'HTTP Password';
@@ -66,7 +66,7 @@ $_['text_payment_action_pay'] = 'Purchase';
 $_['text_payment_action_reserve'] = 'Authorization';
 $_['config_payment_action_desc'] = 'Select between "Purchase" to capture/invoice your order automatically or "Authorization" to capture/invoice manually.';
 $_['config_sort_order'] = 'Sort Order';
-$_['config_sort_order_desc'] = 'Order of the payment method on the checkout page';
+$_['config_sort_order_desc'] = 'Order of payment methods as displayed on payment page.';
 $_['config_delete_cancel_order'] = 'Delete Canceled Order';
 $_['config_delete_cancel_order_desc'] = 'Automatically delete order after canceled payment process.';
 $_['config_delete_failure_order'] = 'Delete Failed Order';
@@ -75,21 +75,21 @@ $_['config_delete_failure_order_desc'] = 'Automatically delete order after faile
 $_['text_success'] = 'Your modifications are saved!';
 $_['success_credentials'] = 'Merchant configuration was successfully tested.';
 $_['error_credentials'] = 'Test failed, please check your credentials.';
-$_['wrong_url_format'] = 'Test failed, the address is not in correct format. (e.g. https://api.wirecard.com)';
+$_['wrong_url_format'] = 'Test failed. Address format is invalid (e.g. https://api.wirecard.com).';
 
-$_['config_email'] = 'Your e-mail address:';
-$_['config_message'] = 'Your message:';
-$_['success_email'] = 'E-mail sent successfully.';
-$_['error_email'] = 'E-mail delivery error.';
+$_['config_email'] = 'Your email address';
+$_['config_message'] = 'Your message';
+$_['success_email'] = 'Email sent successfully.';
+$_['error_email'] = 'Email delivery error.';
 $_['send_email'] = 'Submit';
 $_['back_button'] = 'Back';
-$_['support_email_title'] = 'E-Mail to Support';
+$_['support_email_title'] = 'Email to Support';
 
 $_['terms_of_use'] = 'Terms of Use';
 
-$_['credit'] = "Credit";
+$_['credit'] = "Refund";
 $_['pay'] = "Capture";
 $_['refund'] = "Refund";
-$_['cancel'] = "Cancel with full amount";
+$_['cancel'] = "Cancel";
 
 $_['copy_xml_text'] = 'Copy XML';

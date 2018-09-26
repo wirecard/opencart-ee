@@ -54,4 +54,4 @@ $_['paymentMethod'] = 'Payment Method';
 $_['timeStamp'] = 'Date';
 $_['customerId'] = 'Customer ID';
 $_['ip'] = 'IP Address';
-$_['orderNumber'] = 'Order number';
+$_['orderNumber'] = 'Order Number';
