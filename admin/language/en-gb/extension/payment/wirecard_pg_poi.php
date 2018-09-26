@@ -16,4 +16,4 @@ $_['text_edit'] = 'Edit Payment On Invoice';
 $_['config_status_desc'] = 'Activate payment method Payment On Invoice to make it available for your consumers.';
 
 $_['config_details_on_invoice'] = 'Payment Details On Invoice';
-$_['config_details_on_invoice_desc'] = 'If enabled, the payment details for the customer will automatically be added to the invoice.';
+$_['config_details_on_invoice_desc'] = 'If enabled, payment details are automatically stated on the consumer\'s invoice.';

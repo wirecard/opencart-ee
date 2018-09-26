@@ -26,4 +26,4 @@ $_['config_creditor_city_desc'] = 'SEPA Direct Debit requires a Creditor City fo
 $_['config_mandate_text'] = 'Additional Text';
 $_['config_mandate_text_desc'] = 'This text appears on the SEPA Direct Debit Mandate page at the end of the first paragraph.';
 $_['config_enable_bic'] = 'BIC enabled';
-$_['config_enable_bic_desc'] = 'If BIC is activated, the consumer must enter a BIC in checkout.';
+$_['config_enable_bic_desc'] = 'If BIC is enabled, consumer must enter a BIC during checkout.';
