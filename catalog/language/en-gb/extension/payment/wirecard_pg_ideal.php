@@ -7,5 +7,5 @@
  * https://github.com/wirecard/opencart-ee/blob/master/LICENSE
  */
 
-$_['legend'] = "Select your bank";
-$_['bank_label'] = "Bank";
+$_['legend'] = 'Select your bank';
+$_['bank_label'] = 'Bank';
