@@ -83,7 +83,7 @@ $_['success_email'] = 'Email sent successfully.';
 $_['error_email'] = 'Email delivery error.';
 $_['send_email'] = 'Submit';
 $_['back_button'] = 'Back';
-$_['support_email_title'] = 'Email to Support';
+$_['support_email_title'] = 'Send support request';
 
 $_['terms_of_use'] = 'Terms of Use';
 
