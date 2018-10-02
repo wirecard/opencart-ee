@@ -29,9 +29,9 @@
  * Please do not use the plugin if you do not agree to these terms of use!
  */
 
-$_['merchant_notice'] = "Please ensure that the payment information you send to your customer is the same as the one below.";
-$_['transfer_notice'] = "Please transfer the amount using the following data:";
-$_['amount'] = "Amount";
-$_['iban'] = "IBAN";
-$_['bic'] = "BIC";
-$_['ptrid'] = "Provider transaction reference id";
+$_['merchant_notice'] = 'Please ensure that the payment information you send to your consumer is the same as the one below.';
+$_['transfer_notice'] = 'Please transfer the amount using the following data:';
+$_['amount'] = 'Amount';
+$_['iban'] = 'IBAN';
+$_['bic'] = 'BIC';
+$_['ptrid'] = 'Provider Transaction Reference ID';
