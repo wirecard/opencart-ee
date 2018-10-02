@@ -45,7 +45,7 @@ use Wirecard\PaymentSdk\Entity\Address;
 class PoiUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
-	private $pluginVersion = '1.1.0';
+	private $pluginVersion = '1.2.0';
 	private $controller;
 	private $loader;
 	private $registry;

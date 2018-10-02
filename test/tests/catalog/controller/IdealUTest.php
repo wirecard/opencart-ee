@@ -21,7 +21,7 @@ use Wirecard\PaymentSdk\Entity\IdealBic;
 class IdealUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
-	private $pluginVersion = '1.1.0';
+	private $pluginVersion = '1.2.0';
 	private $controller;
 	private $loader;
 	private $registry;
