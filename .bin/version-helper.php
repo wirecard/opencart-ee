@@ -78,6 +78,7 @@ function generateWikiRelease($shopVersions, $phpVersions) {
     file_put_contents(WIKI_FILE, $wikiPage);
 }
 
+// Doing the regex replacement for the wiki
 function generateReadmeReleaseBadge($shopVersions, $phpVersions) {
     if (!file_exists(README_FILE )) {
         fwrite(STDERR, "ERROR: README file does not exist." . PHP_EOL);
@@ -85,7 +86,6 @@ function generateReadmeReleaseBadge($shopVersions, $phpVersions) {
     }
 
     $readmeContent = file_get_contents(README_FILE);
-    $releaseVersions = makeTextVersions($shopVersions, $phpVersions);
 
     $shopBadge = $shopVersions['shopsystem'] . " v" . $shopVersions['tested'];
     $shopBadgeUrl = str_replace(" ", "-", $shopBadge);
