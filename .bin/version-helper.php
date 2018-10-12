@@ -125,7 +125,7 @@ if (key_exists('w', $options)) {
 
 // Same same but different
 if (key_exists('r', $options)) {
-    generateReadmeReleaseBadge($shopVersions);
+    generateReadmeReleaseBadge($shopVersions, $phpVersions);
     exit(0);
 }
 
