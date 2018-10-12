@@ -1,4 +1,5 @@
 {
-  "CUR": "3.0.2.0",
-  "MIN": "3.0.2.0"
+    "shopsystem": "OpenCart",
+    "tested": "3.0.2.0",
+    "compatibility": "3.0.2.0"
 }
