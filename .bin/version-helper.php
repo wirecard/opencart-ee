@@ -9,17 +9,29 @@ define ("README_FILE", SCRIPT_DIR . "/../README.md");
 define ("VERSION_FILE", SCRIPT_DIR . "/../SHOPVERSIONS");
 define ("TRAVIS_FILE", SCRIPT_DIR . "/../.travis.yml");
 
+// Update this if you're using a different shop system.
 require SCRIPT_DIR . "/../system/library/autoload.php";
 
 use Symfony\Component\Yaml\Yaml;
 
-// Using number_format on versions feels wrong, but symfony/yaml insists on returning the versions as float.
-// This just guarantees that we have versions like 7 returned as "PHP 7.0" for added clarity.
+/**
+ * Maps over the configured PHP versions and prefixes them
+ *
+ * @param $version
+ * @return string
+ */
 function prefixWithPhp($version) {
     return "PHP " . number_format($version, 1);
 }
 
-// Simple function to allow us to join arrays as "x, y and z"
+/**
+ * Joins an array with commas and a conjunction before the last item
+ * (e.g. "x, y and z")
+ *
+ * @param $list
+ * @param string $conjunction
+ * @return string
+ */
 function naturalLanguageJoin($list, $conjunction = 'and') {
     $last = array_pop($list);
 
@@ -30,12 +42,19 @@ function naturalLanguageJoin($list, $conjunction = 'and') {
     return $last;
 }
 
-// Generates the version strings for the text.
+/**
+ * Generates the necessary version string for the compatible shop versions and PHP versions.
+ *
+ * @param $shopVersions
+ * @param $phpVersions
+ * @return array
+ */
 function makeTextVersions($shopVersions, $phpVersions) {
     $versionRange = $shopVersions["tested"];
     $phpVersions = array_map("prefixWithPhp", $phpVersions);
     $phpVersionString = naturalLanguageJoin($phpVersions);
 
+    // We don't need a from-to range if the versions are the same.
     if ($shopVersions["compatibility"] !== $shopVersions["tested"]) {
         $versionRange = $shopVersions["compatibility"] . " - " . $shopVersions["tested"];
     }
@@ -46,13 +65,25 @@ function makeTextVersions($shopVersions, $phpVersions) {
     ];
 }
 
-// Makes the actual release version string. Magic!
+/**
+ * Generates the text for the release notes on GitHub
+ *
+ * @param $shopVersions
+ * @param $phpVersions
+ * @return string
+ */
 function generateReleaseVersions($shopVersions, $phpVersions) {
     $releaseVersions = makeTextVersions($shopVersions, $phpVersions);
     return "***Tested version(s):** {$shopVersions['shopsystem']} {$shopVersions['tested']} with {$releaseVersions['phpVersionString']}*<br>***Compatibility:** {$shopVersions['shopsystem']} {$releaseVersions['versionRange']} with {$releaseVersions['phpVersionString']}*";
 }
 
-// Doing some regex replacement for the wiki
+/**
+ * Updates the compatibility versions and release date on the home page of the repository wiki
+ * (NOTE: This function directly manipulates the necessary file)
+ *
+ * @param $shopVersions
+ * @param $phpVersions
+ */
 function generateWikiRelease($shopVersions, $phpVersions) {
     if (!file_exists(WIKI_FILE )) {
         fwrite(STDERR, "ERROR: Wiki files do not exist." . PHP_EOL);
@@ -63,6 +94,8 @@ function generateWikiRelease($shopVersions, $phpVersions) {
     $releaseDate = date("Y-m-d");
     $releaseVersions = makeTextVersions($shopVersions, $phpVersions);
 
+    // Matching all the replaceable table rows.
+    // The format is | **<string>** | <content> |
     $testedRegex = "/^\|\s?\*.?Tested.*\|(.*)\|/mi";
     $compatibilityRegex = "/^\|\s?\*.?Compatibility.*\|(.*)\|/mi";
     $extVersionRegex = "/^\|\s?\*.?Extension.*\|(.*)\|/mi";
@@ -78,7 +111,12 @@ function generateWikiRelease($shopVersions, $phpVersions) {
     file_put_contents(WIKI_FILE, $wikiPage);
 }
 
-// Doing the regex replacement for the wiki
+/**
+ * Updates the README badge to use the latest shop version we're compatible with.
+ * (NOTE: This function directly manipulates the necessary file)
+ *
+ * @param $shopVersions
+ */
 function generateReadmeReleaseBadge($shopVersions) {
     if (!file_exists(README_FILE )) {
         fwrite(STDERR, "ERROR: README file does not exist." . PHP_EOL);
@@ -90,6 +128,7 @@ function generateReadmeReleaseBadge($shopVersions) {
     $shopBadge = $shopVersions['shopsystem'] . " v" . $shopVersions['tested'];
     $shopBadgeUrl = str_replace(" ", "-", $shopBadge);
 
+    // We're matching the image tag in Markdown. [![Shopsytem v1.2.3] ... ]
     $badgeRegex = "/\[\!\[{$shopVersions['shopsystem']}.*\]/mi";
     $badgeReplace = "[![{$shopBadge}](https://img.shields.io/badge/{$shopBadgeUrl}-green.svg)]";
 
@@ -114,19 +153,23 @@ $shopVersions = json_decode(
 $travisConfig = Yaml::parseFile(TRAVIS_FILE);
 $phpVersions = $travisConfig['php'];
 
+// Get the arguments passed to the command line script.
 $options = getopt('wr');
 
-// For some reason php returns an options array where 'w' is false when you passed 'w' as argument.
-// It makes no sense, but we can deal with it.
+// The indication of a command line argument being passed is an entry in the array with a "false" value.
+// So instead we check if the key exists in the array.
+
+// If we get -w passed, we're doing a wiki update.
 if (key_exists('w', $options)) {
     generateWikiRelease($shopVersions, $phpVersions);
     exit(0);
 }
 
-// Same same but different
+// If -r is passed, that's for the badge in the README
 if (key_exists('r', $options)) {
     generateReadmeReleaseBadge($shopVersions);
     exit(0);
 }
 
+// Otherwise just output the release notes, the rest will be handled by Travis
 echo generateReleaseVersions($shopVersions, $phpVersions);
