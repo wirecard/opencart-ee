@@ -1,0 +1,28 @@
+phraseapp:
+  project_id: c027aa848167412b6e9ec73cf86a2f4e
+  push:
+    sources:
+    - file: admin/language/en-gb/extension/module/wirecard_pg.php
+      params:
+        tags: transaction-table
+        update_translations: false
+        locale_id: en-GB
+        file_format: php_array
+    - file: admin/language/en-gb/extension/payment/wirecard_pg.php
+      params:
+        locale_id: en-GB
+        tags: basic-config
+        update_translations: false
+        file_format: php_array
+  pull:
+    targets:
+    - file: admin/language/en-gb/extension/module/wirecard_pg.php
+      params:
+        locale_id: en-GB
+        tags: transaction-table
+        file_format: php_array
+    - file: admin/language/en-gb/extension/payment/wirecard_pg.php
+      params:
+        locale_id: en-GB
+        tags: basic-config
+        file_format: php_array
