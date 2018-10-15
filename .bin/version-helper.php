@@ -8,6 +8,7 @@ define ("WIKI_FILE", WIKI_DIR . "/Home.md");
 define ("README_FILE", SCRIPT_DIR . "/../README.md");
 define ("VERSION_FILE", SCRIPT_DIR . "/../SHOPVERSIONS");
 define ("TRAVIS_FILE", SCRIPT_DIR . "/../.travis.yml");
+define ("CHANGELOG_FILE", SCRIPT_DIR . "/../CHANGELOG.md");
 
 // Update this if you're using a different shop system.
 require SCRIPT_DIR . "/../system/library/autoload.php";
@@ -43,6 +44,16 @@ function naturalLanguageJoin($list, $conjunction = 'and') {
 }
 
 /**
+ * Wraps each line of the changelog in proper formatting.
+ *
+ * @param $change
+ * @return string
+ */
+function generateChangelogLine($change) {
+    return "<li>{$change}</li>";
+}
+
+/**
  * Generates the necessary version string for the compatible shop versions and PHP versions.
  *
  * @param $shopVersions
@@ -74,7 +85,12 @@ function makeTextVersions($shopVersions, $phpVersions) {
  */
 function generateReleaseVersions($shopVersions, $phpVersions) {
     $releaseVersions = makeTextVersions($shopVersions, $phpVersions);
-    return "***Tested version(s):** {$shopVersions['shopsystem']} {$shopVersions['tested']} with {$releaseVersions['phpVersionString']}*<br>***Compatibility:** {$shopVersions['shopsystem']} {$releaseVersions['versionRange']} with {$releaseVersions['phpVersionString']}*";
+
+    $releaseNotes  = "<ul>" . join("", array_map("generateChangelogLine", $shopVersions['changelog'])) . "</ul>";
+    $releaseNotes .= "<em><strong>Tested version(s):</strong> {$shopVersions['shopsystem']} {$shopVersions['tested']} with {$releaseVersions['phpVersionString']}</em><br>";
+    $releaseNotes .= "<em><strong>Compatibility:</strong> {$shopVersions['shopsystem']} {$releaseVersions['versionRange']} with {$releaseVersions['phpVersionString']}</em>";
+
+    return $releaseNotes;
 }
 
 /**
