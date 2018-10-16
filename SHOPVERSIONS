@@ -1,10 +1,37 @@
-{
-    "release": "1.2.0",
-    "shopsystem": "OpenCart",
-    "tested": "3.0.2.0",
-    "compatibility": "3.0.2.0",
-    "changelog": [
-        "Add state variable for PayPal transactions",
-        "Update English language strings"
-    ]
-}
+[
+    {
+        "release": "1.2.0",
+        "shopsystem": "OpenCart",
+        "tested": "3.0.2.0",
+        "compatibility": "3.0.2.0",
+        "changelog": [
+            "Add state variable for PayPal transactions",
+            "Update English language strings"
+        ]
+    },
+
+    {
+        "release": "1.1.0",
+        "shopsystem": "OpenCart",
+        "tested": "3.0.2.0",
+        "compatibility": "3.0.2.0",
+        "changelog": [
+            "Updated transaction detail view",
+            "One-click checkout for credit cards"
+        ]
+    },
+
+    {
+        "release": "1.0.0",
+        "shopsystem": "OpenCart",
+        "tested": "3.0.2.0",
+        "compatibility": "3.0.2.0",
+        "changelog": [
+            "Credit card",
+            "iDEAL",
+            "PayPal",
+            "SEPA Credit Transfer",
+            "Sofort."
+        ]
+    }
+]
