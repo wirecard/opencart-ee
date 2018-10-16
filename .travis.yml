@@ -20,6 +20,7 @@ install:
 script:
   - composer test-coverage
   - composer cs-check
+  - bash .bin/generate-language-files.sh
 
 after_script:
   - travis_retry composer upload-coverage

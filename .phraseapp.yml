@@ -1,4 +1,5 @@
 phraseapp:
+  access_token: PHRASE_APP_TOKEN
   project_id: c027aa848167412b6e9ec73cf86a2f4e
   push:
     sources:
