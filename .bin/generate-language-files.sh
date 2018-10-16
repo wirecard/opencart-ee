@@ -1,5 +1,3 @@
 #!/bin/bash
 
-wget http://github.com/phrase/phraseapp-client/releases/download/1.11.1/phraseapp_linux_386
-chmod +x phraseapp_linux_386
-phraseapp push
+sed s/\$lang/\$_/g admin/language/en-gb/extension/module/wirecard_pg.php
