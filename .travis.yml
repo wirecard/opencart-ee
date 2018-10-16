@@ -27,6 +27,10 @@ after_script:
   - bash .bin/generate-tag.sh
 
 before_deploy:
+  - export REPO_NAME=`echo $TRAVIS_REPO_SLUG | awk -F'/' '{print $2}'`
+  - export RELEASE_NOTES=$(composer make-release-notes)
+  - bash .bin/generate-wiki-notes.sh
+  - bash .bin/generate-readme-badge.sh
   - bash .bin/generate-release-package.sh $TRAVIS_TAG
 
 deploy:
@@ -34,7 +38,8 @@ deploy:
   api_key:
     secure: NNe7dKhfEjPOW3sMUdGk7AD+l7Z9uonBLPZsV2uV+cdeiWoYlEvyBBhjGEHuFNdPBJENaofF7dkRDxaYrI2nIHAQCv539AuvDwfY1Q75iLskUOlvGfe35Bwu/cpZsW6o26PIV+UEpy3wmZvuIiHeF68n9pWXo3Tv6NS+iRt/nC7Wd3meEQZZyKuKaTieKa53bIop1P3bb0yYWb6PpEzOZb4P98F7tmHV8dcHVTUF7XtFsbmmGfByVuNp6ancrcwWELUJ6TpWTUAxAWlGAaKA3BkMKdsN6de+uHM+AF+G8m9s2kR5XWF/33N0tW6lAH6t91F/iG9go9q+ovlhjZRzodXSD04uV4w+S1CSSpFRTM4gKSvW8TxYVhL/YQNhJwb1qw3M5wKoqFMJcw0Zt0tpUFuy2pF8AzCjSIA0O1X4IWviB8TS7bAYtg85GaCGQ9MOPLo7eVu2o3vtCCQgoQjOZ8WLXDGOtCyR4nViJtDGKdZEsJxy4twELZFe0QwiZaVcGWijaCL6SpGfc2FD3dAJo3P9iyIZ4Q56yAfOmN6rIVjNp7mp6yym84lu66E2BsR/cVb7oipb4dBKjN5tk5KaabFgAoc+Low9Xmpg7ntuc92qUr9Vj2NhFJmmXMXRcjBDJC/7WQUgrQk4a6CIefkL0ond0dn6E0yc/3L8eW054v8=
   file: opencart-ee.ocmod.zip
+  body: "${RELEASE_NOTES}"
   skip_cleanup: true
   on:
-    repo: wirecard/opencart-ee
+    repo: ${TRAVIS_REPO_SLUG}
     tags: true
