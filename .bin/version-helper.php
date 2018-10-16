@@ -159,8 +159,9 @@ function generateReadmeReleaseBadge($shopVersions) {
  * @param $filePath
  * @return array
  */
+
 function parseVersionsFile($filePath) {
-    // Bail out if we don't have defined shop versions and throw a loud error.
+    // Bail out if we don"t have defined shop versions and throw a loud error.
     if (!file_exists($filePath)) {
         fwrite(STDERR, "ERROR: No shop version file exists" . PHP_EOL);
         exit(1);
@@ -168,17 +169,21 @@ function parseVersionsFile($filePath) {
 
     // Load the file and parse json out of it
     $json = json_decode(
-        file_get_contents(VERSION_FILE),
-        true
+        file_get_contents(VERSION_FILE)
     );
 
-    // if file contains an array of releases return the latest
-    if (is_array($json['release'])) {
-        uasort($json['release'], 'version_compare');
-        $json['release'] = end($json['release']);
-    }
+    // compare release versions
+    $cmp = function($a, $b) {
+        return version_compare($a->release, $b->release);
+    };
 
-    return (array) $json;
+    // if file contains an array of versions return the latest
+    if (is_array($json)) {
+        uasort($json, $cmp);
+        return (array)end($json);
+    } else {
+        return (array) $json;
+    }
 }
 
 $shopVersions = parseVersionsFile(VERSION_FILE);
