@@ -1,74 +1,95 @@
 <?php
+/**
+ * Shop System Plugins:
+ * - Terms of Use can be found under:
+ * https://github.com/wirecard/opencart-ee/blob/master/_TERMS_OF_USE
+ * - License can be found under:
+ * https://github.com/wirecard/opencart-ee/blob/master/LICENSE
+ */
 
-$lang['back_button'] = 'Back';
-$lang['cancel'] = 'Cancel';
-$lang['config_additional_info'] = 'Send Additional Information';
-$lang['config_additional_info_desc'] = 'Additional data will be sent for the purpose of fraud protection. This additional data includes billing/shipping address, shopping basket and descriptor.';
-$lang['config_base_url'] = 'Wirecard Server Address';
-$lang['config_base_url_desc'] = 'The Wirecard Server Address (e.g. https://api.wirecard.com).';
-$lang['config_delete_cancel_order'] = 'Delete Canceled Order';
-$lang['config_delete_cancel_order_desc'] = 'Automatically delete order after canceled payment process.';
-$lang['config_delete_failure_order'] = 'Delete Failed Order';
-$lang['config_delete_failure_order_desc'] = 'Automatically delete order after failed payment process.';
-$lang['config_descriptor'] = 'Descriptor';
-$lang['config_descriptor_desc'] = 'Send text which is displayed on the bank statement issued to your consumer by the financial service provider.';
-$lang['config_email'] = 'Your email address';
-$lang['config_http_password'] = 'HTTP Password';
-$lang['config_http_password_desc'] = 'HTTP Password as provided in your Wirecard contract.';
-$lang['config_http_user'] = 'HTTP User';
-$lang['config_http_user_desc'] = 'HTTP User as provided in your Wirecard contract.';
-$lang['config_merchant_account_id'] = 'MAID';
-$lang['config_merchant_account_id_desc'] = 'Unique identifier assigned to your merchant account.';
-$lang['config_merchant_secret'] = 'Secret Key';
-$lang['config_merchant_secret_desc'] = 'Secret Key is mandatory to calculate the Digital Signature for payments.';
-$lang['config_message'] = 'Your message';
-$lang['config_payment_action'] = 'Payment Action';
-$lang['config_payment_action_desc'] = 'Select between "Purchase" to capture/invoice your order automatically or "Authorization" to capture/invoice manually.';
-$lang['config_shopping_basket'] = 'Shopping Basket';
-$lang['config_shopping_basket_desc'] = 'For the purpose of confirmation, payment supports shopping basket display during checkout. To enable this feature, activate Shopping Basket.';
-$lang['config_sort_order'] = 'Sort Order';
-$lang['config_sort_order_desc'] = 'Order of payment methods as displayed on payment page.';
-$lang['config_status'] = 'Status';
-$lang['config_title'] = 'Title';
-$lang['config_title_desc'] = 'Payment method name as displayed for the consumer during checkout.';
-$lang['copy_xml_text'] = 'Copy XML';
-$lang['credit'] = 'Refund';
-$lang['error_credentials'] = 'Test failed, please check your credentials.';
-$lang['error_email'] = 'Email delivery error.';
-$lang['error_mandatory_fields'] = 'Some mandatory fields are still empty.';
-$lang['error_no_transaction'] = 'No transaction found.';
-$lang['heading_transaction_details'] = 'Transaction Details';
-$lang['panel_action'] = 'Action';
-$lang['panel_amount'] = 'Amount';
-$lang['panel_currency'] = 'Currency';
-$lang['panel_details'] = 'Details';
-$lang['panel_order_number'] = 'Order Number';
-$lang['panel_parent_transaction_id'] = 'Parent Transaction ID';
-$lang['panel_payment_method'] = 'Payment Method';
-$lang['panel_transaction'] = 'Transaction';
-$lang['panel_transaction_state'] = 'Transaction State';
-$lang['panel_transcation_id'] = 'Transaction ID';
-$lang['pay'] = 'Capture';
-$lang['refund'] = 'Refund';
-$lang['send_email'] = 'Submit';
-$lang['success_credentials'] = 'Merchant configuration was successfully tested.';
-$lang['success_email'] = 'Email sent successfully.';
-$lang['success_new_transaction'] = 'The post-processing operation was successful. A new transaction was created.';
-$lang['support_email_title'] = 'Send support request';
-$lang['terms_of_use'] = 'Terms of Use';
-$lang['test_credentials'] = 'Test Credentials';
-$lang['test_payment_tag'] = 'test if is in right tag. added text which should be in a different file';
-$lang['text_advanced'] = 'Advanced Options';
-$lang['text_backend_operations'] = 'Possible Post-Processing Operations';
-$lang['text_credentials'] = 'Credentials';
-$lang['text_disabled'] = 'Disabled';
-$lang['text_enabled'] = 'Enabled';
-$lang['text_extension'] = 'Extensions';
-$lang['text_list'] = 'Transactions';
-$lang['text_payment_action_pay'] = 'Purchase';
-$lang['text_payment_action_reserve'] = 'Authorization';
-$lang['text_request_amount'] = 'Amount';
-$lang['text_response_data'] = 'Response Data';
-$lang['text_success'] = 'Your modifications are saved!';
-$lang['text_transaction'] = 'Transaction';
-$lang['wrong_url_format'] = 'Test failed. Address format is invalid (e.g. https://api.wirecard.com).';
+// Breadcrumb
+$_['text_extension'] = 'Extensions';
+
+// Admin Panel
+$_['heading_title'] = 'Wirecard Transactions';
+$_['text_list'] = 'Transactions';
+$_['error_mandatory_fields'] = 'Some mandatory fields are still empty.';
+
+// Transaction Table
+$_['panel_transaction'] = 'Transaction';
+$_['panel_order_number'] = 'Order Number';
+$_['panel_transcation_id'] = 'Transaction ID';
+$_['panel_parent_transaction_id'] = 'Parent Transaction ID';
+$_['panel_action'] = 'Action';
+$_['panel_payment_method'] = 'Payment Method';
+$_['panel_transaction_state'] = 'Transaction State';
+$_['panel_amount'] = 'Amount';
+$_['panel_currency'] = 'Currency';
+$_['panel_details'] = 'Details';
+
+// Transaction Details
+$_['text_transaction'] = 'Transaction';
+$_['heading_transaction_details'] = 'Transaction Details';
+$_['text_response_data'] = 'Response Data';
+$_['text_backend_operations'] = 'Possible Post-Processing Operations';
+$_['text_request_amount'] = 'Amount';
+$_['error_no_transaction'] = 'No transaction found.';
+$_['success_new_transaction'] = 'The post-processing operation was successful. A new transaction was created.';
+
+// Configuration
+$_['text_enabled'] = 'Enabled';
+$_['text_disabled'] = 'Disabled';
+$_['text_credentials'] = 'Credentials';
+$_['text_advanced'] = 'Advanced Options';
+$_['test_credentials'] = 'Test Credentials';
+$_['config_status'] = 'Status';
+$_['config_title'] = 'Title';
+$_['config_title_desc'] = 'Payment method name as displayed for the consumer during checkout.';
+$_['config_merchant_account_id'] = 'MAID';
+$_['config_merchant_account_id_desc'] = 'Unique identifier assigned to your merchant account.';
+$_['config_merchant_secret'] = 'Secret Key';
+$_['config_merchant_secret_desc'] = 'Secret Key is mandatory to calculate the Digital Signature for payments.';
+$_['config_base_url'] = 'Wirecard Server Address';
+$_['config_base_url_desc'] = 'The Wirecard Server Address (e.g. https://api.wirecard.com).';
+$_['config_http_user'] = 'HTTP User';
+$_['config_http_user_desc'] = 'HTTP User as provided in your Wirecard contract.';
+$_['config_http_password'] = 'HTTP Password';
+$_['config_http_password_desc'] = 'HTTP Password as provided in your Wirecard contract.';
+$_['config_shopping_basket'] = 'Shopping Basket';
+$_['config_shopping_basket_desc'] = 'For the purpose of confirmation, payment supports shopping basket display during checkout. To enable this feature, activate Shopping Basket.';
+$_['config_descriptor'] = 'Descriptor';
+$_['config_descriptor_desc'] = 'Send text which is displayed on the bank statement issued to your consumer by the financial service provider.';
+$_['config_additional_info'] = 'Send Additional Information';
+$_['config_additional_info_desc'] = 'Additional data will be sent for the purpose of fraud protection. This additional data includes billing/shipping address, shopping basket and descriptor.';
+$_['config_payment_action'] = 'Payment Action';
+$_['text_payment_action_pay'] = 'Purchase';
+$_['text_payment_action_reserve'] = 'Authorization';
+$_['config_payment_action_desc'] = 'Select between "Purchase" to capture/invoice your order automatically or "Authorization" to capture/invoice manually.';
+$_['config_sort_order'] = 'Sort Order';
+$_['config_sort_order_desc'] = 'Order of payment methods as displayed on payment page.';
+$_['config_delete_cancel_order'] = 'Delete Canceled Order';
+$_['config_delete_cancel_order_desc'] = 'Automatically delete order after canceled payment process.';
+$_['config_delete_failure_order'] = 'Delete Failed Order';
+$_['config_delete_failure_order_desc'] = 'Automatically delete order after failed payment process.';
+
+$_['text_success'] = 'Your modifications are saved!';
+$_['success_credentials'] = 'Merchant configuration was successfully tested.';
+$_['error_credentials'] = 'Test failed, please check your credentials.';
+$_['wrong_url_format'] = 'Test failed. Address format is invalid (e.g. https://api.wirecard.com).';
+
+$_['config_email'] = 'Your email address';
+$_['config_message'] = 'Your message';
+$_['success_email'] = 'Email sent successfully.';
+$_['error_email'] = 'Email delivery error.';
+$_['send_email'] = 'Submit';
+$_['back_button'] = 'Back';
+$_['support_email_title'] = 'Send support request';
+
+$_['terms_of_use'] = 'Terms of Use';
+
+$_['credit'] = "Refund";
+$_['pay'] = "Capture";
+$_['refund'] = "Refund";
+$_['cancel'] = "Cancel";
+
+$_['copy_xml_text'] = 'Copy XML';
