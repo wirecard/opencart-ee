@@ -44,3 +44,4 @@ $lang['transactionState'] = 'Transaction State';
 $lang['transactionType'] = 'Transaction Type';
 $lang['transaction_details_title'] = 'Transaction Details';
 $lang['test_github_sync'] = 'Only push if in master';
+$lang['test-2'] = 'Test2';
