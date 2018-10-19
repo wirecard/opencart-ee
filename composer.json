@@ -16,22 +16,26 @@
     "opencart/opencart": "3.0.2.0",
     "squizlabs/php_codesniffer": "^3.3",
     "mockery/mockery": "^1.1",
-    "codacy/coverage": "dev-master"
+    "codacy/coverage": "dev-master",
+    "symfony/yaml": "^3"
   },
   "type": "opencart-plugin",
   "scripts": {
+    "make-readme-badge": "@php .bin/version-helper.php -r",
+    "make-wiki-notes": "@php .bin/version-helper.php -w",
+    "make-release-notes": "@php .bin/version-helper.php",
     "upload-coverage": "codacycoverage clover build/coverage/xml",
     "cs-check": "phpcs --standard=phpcs.xml",
     "cs-fix": "phpcbf --standard=phpcs.xml",
     "test-coverage": "phpunit --coverage-clover build/coverage/xml"
   },
   "autoload": {
-      "classmap": [
-        "admin/controller/extension/payment/wirecard_pg/",
-        "catalog/model/extension/payment/wirecard_pg/helper/",
-        "catalog/model/extension/payment/wirecard_pg/handler/",
-        "admin/controller/extension/module/wirecard_pg/"
-      ]
+    "classmap": [
+      "admin/controller/extension/payment/wirecard_pg/",
+      "catalog/model/extension/payment/wirecard_pg/helper/",
+      "catalog/model/extension/payment/wirecard_pg/handler/",
+      "admin/controller/extension/module/wirecard_pg/"
+    ]
   },
   "config": {
     "vendor-dir": "system/library"
