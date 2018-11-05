@@ -11,7 +11,7 @@
 $_['text_extension'] = 'Extensions';
 
 // Admin Panel
-$_['heading_title'] = 'Wirecard Transactions';
+$_['heading_title_transaction_details'] = 'Wirecard Transactions';
 $_['text_list'] = 'Transactions';
 $_['error_mandatory_fields'] = 'Some mandatory fields are still empty.';
 
@@ -93,3 +93,5 @@ $_['refund'] = "Refund";
 $_['cancel'] = "Cancel";
 
 $_['copy_xml_text'] = 'Copy XML';
+
+$_['heading_title'] = $_['heading_title_transaction_details'];

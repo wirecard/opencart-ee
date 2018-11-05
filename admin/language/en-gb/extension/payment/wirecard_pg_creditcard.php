@@ -8,12 +8,12 @@
  */
 
 // Page Title
-$_['heading_title'] = 'Wirecard Credit Card';
+$_['heading_title_creditcard'] = 'Wirecard Credit Card';
 $_['text_wirecard_pg_creditcard'] = '<img src="./view/image/wirecard_pg/creditcard.png" />';
 
 // Payment specific configuration
-$_['text_edit'] = 'Edit Credit Card';
-$_['config_status_desc'] = 'Activate payment method Credit Card to make it available for your consumers.';
+$_['text_edit_creditcard'] = 'Edit Credit Card';
+$_['config_status_desc_creditcard'] = 'Activate payment method Credit Card to make it available for your consumers.';
 $_['config_three_d_merchant_account_id'] = '3-D Secure MAID';
 $_['config_three_d_merchant_account_id_desc'] = 'Unique identifier assigned to your 3-D Secure merchant account. Can be set to "null" to force SSL process.';
 $_['config_three_d_merchant_secret'] = '3-D Secure Secret Key';
@@ -28,3 +28,7 @@ $_['config_vault'] = "One-Click Checkout";
 $_['config_vault_desc'] = "Credit Card details are saved for later use.";
 $_['config_allow_changed_shipping'] = "Allow Shipping Address Change";
 $_['config_allow_changed_shipping_desc'] = "If disabled, consumer is required to re-enter credit card details if the shipping address has changed between two orders.";
+
+$_['heading_title'] = $_['heading_title_creditcard'];
+$_['text_edit'] = $_['text_edit_creditcard'];
+$_['config_status_desc'] = $_['config_status_desc_creditcard'];
