@@ -8,12 +8,12 @@
  */
 
 // Page Title
-$_['heading_title'] = 'Wirecard Kreditkarte';
+$_['heading_title_creditcard'] = 'Wirecard Kreditkarte';
 $_['text_wirecard_pg_creditcard'] = '<img src="./view/image/wirecard_pg/creditcard.png" />';
 
 // Payment specific configuration
-$_['text_edit'] = 'Zahlungsmittel Kreditkarte bearbeiten';
-$_['config_status_desc'] = 'Zahlungsmittel Kreditkarte aktivieren und dem Endkunden beim Checkout anbieten. ';
+$_['text_edit_creditcard'] = 'Zahlungsmittel Kreditkarte bearbeiten';
+$_['config_status_desc_creditcard'] = 'Zahlungsmittel Kreditkarte aktivieren und dem Endkunden beim Checkout anbieten. ';
 $_['config_three_d_merchant_account_id'] = '3-D Secure MAID';
 $_['config_three_d_merchant_account_id_desc'] = 'Geben Sie Ihre 3-D Secure Händler-Konto-ID (Merchant Account ID) ein. Kann auf "Null" gesetzt werden, um einen SSL-Prozess zu erzwingen.';
 $_['config_three_d_merchant_secret'] = '3-D Secure Secret Key';
@@ -29,3 +29,7 @@ $_['config_vault'] = "One-Click Checkout";
 $_['config_vault_desc'] = "Kreditkarten können gespeichert und später wieder verwendet werden.";
 $_['config_allow_changed_shipping'] = "Geänderte Lieferadresse zulassen";
 $_['config_allow_changed_shipping_desc'] = "Wenn diese Option deaktiviert ist und sich die Lieferadresse des Kunden zwischen Transaktionen ändert, müssen sie ihre Kreditkarteninformationen erneut eingeben.";
+
+$_['heading_title'] = $_['heading_title_creditcard'];
+$_['text_edit'] = $_['text_edit_creditcard'];
+$_['config_status_desc'] = $_['config_status_desc_creditcard'];

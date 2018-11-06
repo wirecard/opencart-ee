@@ -8,12 +8,12 @@
  */
 
 // Page Title
-$_['heading_title'] = 'Wirecard Garantierter Kauf auf Rechnung by Wirecard';
+$_['heading_title_ratepayinvoice'] = 'Wirecard Garantierter Kauf auf Rechnung by Wirecard';
 $_['text_wirecard_pg_ratepayinvoice'] = '<img src="./view/image/wirecard_pg/ratepayinvoice.png"/>';
 
 // Payment specific configuration
-$_['text_edit'] = 'Zahlungsmittel Garantierter Kauf auf Rechnung by Wirecard bearbeiten';
-$_['config_status_desc'] = 'Zahlungsmittel Garantierter Kauf auf Rechnung by Wirecard aktivieren und dem Endkunden beim Checkout anbieten.';
+$_['text_edit_ratepayinvoice'] = 'Zahlungsmittel Garantierter Kauf auf Rechnung by Wirecard bearbeiten';
+$_['config_status_desc_ratepayinvoice'] = 'Zahlungsmittel Garantierter Kauf auf Rechnung by Wirecard aktivieren und dem Endkunden beim Checkout anbieten.';
 
 
 $_['config_billing_shipping'] = 'Rechnungsadresse und Versandadresse müssen übereinstimmen';
@@ -35,3 +35,7 @@ $_['text_article_name'] = 'Produktname';
 $_['text_tax_rate'] = 'Steuersatz';
 $_['text_article_amount'] = '# Preis';
 $_['text_quantity'] = 'Stück';
+
+$_['heading_title'] = $_['heading_title_ratepayinvoice'];
+$_['text_edit'] = $_['text_edit_ratepayinvoice'];
+$_['config_status_desc'] = $_['config_status_desc_ratepayinvoice'];

@@ -11,7 +11,7 @@
 $_['text_extension'] = 'Erweiterungen';
 
 // Admin Panel
-$_['heading_title'] = 'Wirecard Transaktionen';
+$_['heading_title_transaction_details'] = 'Wirecard Transaktionen';
 $_['text_list'] = 'Transaktionen';
 
 // Transaction Table
@@ -92,3 +92,5 @@ $_['refund'] = "Refundieren";
 $_['cancel'] = "Stornieren mit vollem Betrag";
 
 $_['copy_xml_text'] = 'XML Kopieren';
+
+$_['heading_title'] = $_['heading_title_transaction_details'];

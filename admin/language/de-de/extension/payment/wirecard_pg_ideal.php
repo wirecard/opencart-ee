@@ -8,9 +8,13 @@
  */
 
 // Page Title
-$_['heading_title'] = 'Wirecard iDEAL';
+$_['heading_title_ideal'] = 'Wirecard iDEAL';
 $_['text_wirecard_pg_ideal'] = '<img src="./view/image/wirecard_pg/ideal.png" />';
 
 // Payment specific configuration
-$_['text_edit'] = 'Zahlungsmittel iDEAL bearbeiten';
-$_['config_status_desc'] = 'Zahlungsmittel iDEAL aktivieren und dem Endkunden beim Checkout anbieten.';
+$_['text_edit_ideal'] = 'Zahlungsmittel iDEAL bearbeiten';
+$_['config_status_desc_ideal'] = 'Zahlungsmittel iDEAL aktivieren und dem Endkunden beim Checkout anbieten.';
+
+$_['heading_title'] = $_['heading_title_ideal'];
+$_['text_edit'] = $_['text_edit_ideal'];
+$_['config_status_desc'] = $_['config_status_desc_ideal'];
