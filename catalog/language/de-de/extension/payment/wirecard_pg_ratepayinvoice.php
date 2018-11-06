@@ -7,9 +7,6 @@
  * https://github.com/wirecard/opencart-ee/blob/master/LICENSE
  */
 
-// Method Title
-$_['text_title'] = 'Wirecard Garantierter Kauf auf Rechnung by Wirecard';
-$_['button_confirm'] = 'Bestellung bestätigen';
 $_['birthdate_input'] = 'Geburtsdatum';
 
 $_['ratepayinvoice_fields_error'] = 'Für die Nutzung dieses Zahlungmittels müssen Sie mindestens 18 Jahre alt sein.';

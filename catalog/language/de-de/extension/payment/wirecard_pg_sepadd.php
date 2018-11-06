@@ -7,9 +7,6 @@
  * https://github.com/wirecard/opencart-ee/blob/master/LICENSE
  */
 
-// Method Title
-$_['text_title'] = 'Wirecard SEPA Direct Debit';
-$_['button_confirm'] = 'Bestellung bestätigen';
 $_['iban_input'] = 'IBAN';
 $_['bic_input'] = 'BIC';
 $_['creditor_id_input'] = 'Creditor ID';
