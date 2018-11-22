@@ -42,10 +42,10 @@ class ModelExtensionPaymentWirecardPG extends Model {
 		// It just changes the column type to a 6-digit decimal. Doing this right after the creation
 		// of a table causes no harm since it just updates to the same type anyways.
 
-		$this->db->query("
+        $this->db->query("
 			ALTER TABLE `" . DB_PREFIX . "wirecard_ee_transactions`
 			MODIFY COLUMN `amount` DECIMAL(10, 6) NOT NULL,
-            ADD `xml` TEXT default NULL;
+            ADD COLUMN IF NOT EXISTS `xml` TEXT default NULL;
 		");
 
 		$this->db->query("
