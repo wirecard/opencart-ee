@@ -3,6 +3,7 @@
 $_['loading_text'] = 'クレジットカードの支払フォームを読み込み中です。';
 $_['order_cancelled'] = '注文がキャンセルされました。';
 $_['order_error'] = '決済中にエラーが発生しました。再試行してください。';
+$_['button_confirm'] = '注文を確認する';
 $_['panel_action'] = 'アクション';
 $_['panel_transaction_copy'] = 'XMLをコピーする';
 $_['panel_transaction_date'] = '日付';

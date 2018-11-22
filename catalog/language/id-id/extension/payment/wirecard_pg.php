@@ -3,6 +3,7 @@
 $_['loading_text'] = 'Formulir pembayaran kartu kredit sedang dimuat.';
 $_['order_cancelled'] = 'Pesanan dibatalkan.';
 $_['order_error'] = 'Kesalahan terjadi pada saat proses pembayaran. Silakan coba lagi.';
+$_['button_confirm'] = 'Konfirmasi Pesanan';
 $_['panel_action'] = 'Tindakan';
 $_['panel_transaction_copy'] = 'Salin XML';
 $_['panel_transaction_date'] = 'Tanggal';

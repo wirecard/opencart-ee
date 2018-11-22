@@ -1,7 +1,6 @@
 <?php
 
 $_['bic_input'] = 'BIC';
-$_['button_confirm'] = '确认订单';
 $_['creditor'] = '贷方';
 $_['creditor_id_input'] = '贷方 ID';
 $_['creditor_mandate_id'] = '授权 ID';

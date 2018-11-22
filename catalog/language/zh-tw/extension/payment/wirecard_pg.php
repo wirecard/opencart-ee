@@ -3,6 +3,7 @@
 $_['loading_text'] = '正在載入信用卡表。';
 $_['order_cancelled'] = '訂單已被取消。';
 $_['order_error'] = '付款過程中發生錯誤。請再試一次。';
+$_['button_confirm'] = '確認訂單';
 $_['panel_action'] = '動作';
 $_['panel_transaction_copy'] = '複製XML';
 $_['panel_transaction_date'] = '日期';

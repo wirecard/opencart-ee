@@ -1,7 +1,6 @@
 <?php
 
 $_['bic_input'] = 'BIC';
-$_['button_confirm'] = '注文を確認する';
 $_['creditor'] = '債権者';
 $_['creditor_id_input'] = '債権者ID';
 $_['creditor_mandate_id'] = 'マンデートID';

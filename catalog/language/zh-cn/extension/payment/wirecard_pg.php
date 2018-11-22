@@ -3,6 +3,7 @@
 $_['loading_text'] = '正在加载信用卡支付表单。';
 $_['order_cancelled'] = '订单已取消。';
 $_['order_error'] = '在支付流程中发生了错误。请重试。';
+$_['button_confirm'] = '确认订单';
 $_['panel_action'] = '动作';
 $_['panel_transaction_copy'] = '复制 XML';
 $_['panel_transaction_date'] = '日期';

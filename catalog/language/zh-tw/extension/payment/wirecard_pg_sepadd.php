@@ -1,7 +1,6 @@
 <?php
 
 $_['bic_input'] = 'BIC';
-$_['button_confirm'] = '確認訂單';
 $_['creditor'] = '貸方';
 $_['creditor_id_input'] = '貸方ID';
 $_['creditor_mandate_id'] = '授權ID';

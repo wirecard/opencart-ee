@@ -3,6 +3,7 @@
 $_['loading_text'] = '신용 카드 결제 형태가 로드되고 있습니다.';
 $_['order_cancelled'] = '주문이 최소되었습니다.';
 $_['order_error'] = '결제 처리 중 오류가 발생했습니다. 다시 시도하세요.';
+$_['button_confirm'] = '주문 확인';
 $_['panel_action'] = '동작';
 $_['panel_transaction_copy'] = 'XML 복사';
 $_['panel_transaction_date'] = '날짜';
