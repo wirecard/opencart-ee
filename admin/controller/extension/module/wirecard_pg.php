@@ -80,13 +80,7 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 	 */
 	public function install() {
 		$this->load->model('extension/payment/wirecard_pg');
-		$this->load->model('localisation/order_status');
-
-		$order_status['order_status'][1] = array(
-			'name' => 'Authorized'
-		);
-
-		$this->model_localisation_order_status->addOrderStatus($order_status);
+		$this->createOrderStatus('Authorized');
 
 		$this->model_extension_payment_wirecard_pg->install();
 	}
@@ -185,4 +179,28 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 			}
 		}
 	}
+
+    /**
+     * Create order status if not existing
+     *
+     * @param string $status_name
+     * @since 1.3.0
+     */
+	private function createOrderStatus($status_name) {
+        $this->load->model('localisation/order_status');
+
+        $order_status['order_status'][1] = array(
+            'name' => $status_name
+        );
+        $order_statuses = $this->model_localisation_order_status->getOrderStatuses();
+        $create_status = true;
+        foreach($order_statuses as $status) {
+            if (in_array($status_name, $status)) {
+                $create_status = false;
+            }
+        }
+        if ($create_status) {
+            $this->model_localisation_order_status->addOrderStatus($order_status);
+        }
+    }
 }
