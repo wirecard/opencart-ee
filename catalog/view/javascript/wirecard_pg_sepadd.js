@@ -27,3 +27,4 @@ function checkSepaMandate(checkbox) {
 		$("#mandate_confirmed").val(0);
 	}
 }
+

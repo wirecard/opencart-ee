@@ -9,7 +9,6 @@
 
 // Method Title
 $_['text_title'] = 'Wirecard SEPA Direct Debit';
-$_['button_confirm'] = 'Confirm Order';
 $_['iban_input'] = 'IBAN';
 $_['bic_input'] = 'BIC';
 $_['first_name_input'] = 'First Name';

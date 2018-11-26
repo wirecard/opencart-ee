@@ -16,7 +16,7 @@ require_once DIR_ADMIN . 'controller/extension/payment/wirecard_pg/language_help
 class LanguageHelperUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
-	private $pluginVersion = '1.2.0';
+	private $pluginVersion = '1.3.0';
 	private $controller;
 	private $loader;
 	private $registry;

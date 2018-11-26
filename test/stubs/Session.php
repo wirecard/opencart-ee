@@ -12,7 +12,8 @@ class Session {
 		'shipping_method' => [
 			"cost" => 10,
 			"tax_class_id" => 2
-		]
+		],
+        'language' => 'en-en'
     );
 
 	/**
