@@ -10,8 +10,12 @@ $_['config_enable_bic'] = 'BIC 사용 설정됨';
 $_['config_enable_bic_desc'] = 'BIC가 사용 설정되면, 고객이 체크아웃할 때 BIC를 입력해야 합니다.';
 $_['config_mandate_text'] = '추가 텍스트';
 $_['config_mandate_text_desc'] = '이 텍스트는 SEPA 자동 이체 위임 페이지의 첫 번째 문단 마지막에 표시됩니다.';
-$_['config_status_desc'] = 'SEPA 자동 이체 결제 형태를 활성화하여 고객이 이용할 수 있게 하십시오.';
-$_['heading_title'] = 'Wirecard SEPA 자동 이체';
-$_['text_edit'] = 'SEPA 자동 이체 편집';
+$_['config_status_desc_sepadd'] = 'SEPA 자동 이체 결제 형태를 활성화하여 고객이 이용할 수 있게 하십시오.';
+$_['heading_title_sepadd'] = 'Wirecard SEPA 자동 이체';
+$_['text_edit_sepadd'] = 'SEPA 자동 이체 편집';
 $_['text_sepa_config'] = 'SEPA 자격증명';
 $_['text_wirecard_pg_sepadd'] = '<img src="./view/image/wirecard_pg/sepa.png" />';
+
+$_['heading_title'] = $_['heading_title_sepadd'];
+$_['text_edit'] = $_['text_edit_sepadd'];
+$_['config_status_desc'] = $_['config_status_desc_sepadd'];

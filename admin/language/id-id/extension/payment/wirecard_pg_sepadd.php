@@ -10,8 +10,12 @@ $_['config_enable_bic'] = 'BIC diaktifkan';
 $_['config_enable_bic_desc'] = 'Jika BIC diaktifkan, pelanggan harus memasukkan BIC saat checkout.';
 $_['config_mandate_text'] = 'Teks Tambahan';
 $_['config_mandate_text_desc'] = 'Teks ini ditampilkan pada halaman Mandat Debit Langsung SEPA di akhir paragraf pertama.';
-$_['config_status_desc'] = 'Aktifkan metode pembayaran Debit Langsung SEPA untuk menyediakannya kepada pelanggan Anda.';
-$_['heading_title'] = 'Debit Langsung SEPA Wirecard';
-$_['text_edit'] = 'Edit Debit Langsung SEPA';
+$_['config_status_desc_sepadd'] = 'Aktifkan metode pembayaran Debit Langsung SEPA untuk menyediakannya kepada pelanggan Anda.';
+$_['heading_title_sepadd'] = 'Debit Langsung SEPA Wirecard';
+$_['text_edit_sepadd'] = 'Edit Debit Langsung SEPA';
 $_['text_sepa_config'] = 'Kredensial SEPA';
 $_['text_wirecard_pg_sepadd'] = '<img src="./view/image/wirecard_pg/sepa.png" />';
+
+$_['heading_title'] = $_['heading_title_sepadd'];
+$_['text_edit'] = $_['text_edit_sepadd'];
+$_['config_status_desc'] = $_['config_status_desc_sepadd'];
