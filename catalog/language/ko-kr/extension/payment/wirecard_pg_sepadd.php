@@ -8,7 +8,6 @@
  */
 
 // Method Title
-$_['text_title'] = 'Wirecard SEPA 자동 이체';
 $_['iban_input'] = 'IBAN';
 $_['bic_input'] = 'BIC';
 $_['first_name_input'] = '이름';

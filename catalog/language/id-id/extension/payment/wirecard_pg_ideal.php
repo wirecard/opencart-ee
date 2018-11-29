@@ -1,4 +1,4 @@
 <?php
 
 $_['bank_label'] = 'Bank';
-$_['legend'] = 'Pilih bank Anda';
+$_['ideal_legend'] = 'Pilih bank Anda';
