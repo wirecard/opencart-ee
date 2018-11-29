@@ -10,12 +10,11 @@
 
 ***
 ## General information 
-Before proceeding, please read [general information](https://github.com/wirecard/opencart-ee/wiki/Wirecard-Shop-Extensions-General-Information), as it provides information on Wirecard shop plugins functionality and features.
+Before you proceed, please read our [General Information](https://github.com/wirecard/opencart-ee/wiki/Wirecard-Shop-Extensions-General-Information) for more details on Wirecard Shop Extension functionality and features.
 
 ***
-## OpenCart documentation - Wiki
+## OpenCart Wiki
 
-[OpenCart Wiki](https://github.com/wirecard/opencart-ee/wiki) provides detailed technical documentation.
-It lists all available [payment methods](https://github.com/wirecard/opencart-ee/wiki#supported-payment-methods) and post-processing operations.
-Furthermore, it includes extensive instructions how to [install](https://github.com/wirecard/opencart-ee/wiki/Installation) and [configure](https://github.com/wirecard/opencart-ee/wiki/Configuration).
+Our [OpenCart Wiki](https://github.com/wirecard/opencart-ee/wiki) provides detailed technical documentation: it includes extensive instructions on how to [install](https://github.com/wirecard/opencart-ee/wiki/Installation) and [configure](https://github.com/wirecard/opencart-ee/wiki/Configuration) the extension. It also lists all available [payment methods](https://github.com/wirecard/opencart-ee/wiki#supported-payment-methods) and post-processing operations.
+
 
