@@ -198,6 +198,7 @@ class ControllerExtensionPaymentWirecardPGSepaDD extends ControllerExtensionPaym
 					'debtor_acc_owner',
 					'sepa_text_1',
 					'sepa_text_2',
+					'sepa_text_2b',
 					'sepa_text_3',
 					'sepa_text_4',
 					'sepa_text_5',

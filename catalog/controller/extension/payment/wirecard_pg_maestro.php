@@ -105,6 +105,7 @@ class ControllerExtensionPaymentWirecardPGMaestro extends ControllerExtensionPay
 	 */
 	public function getMaestroUiRequestData() {
 		$this->transaction = new MaestroTransaction();
+        $language = $this->getLocale($this->getShopConfigVal('base_url'));
 		$this->prepareTransaction();
 		$this->transaction->setConfig($this->payment_config->get(MaestroTransaction::NAME));
 		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
@@ -113,7 +114,7 @@ class ControllerExtensionPaymentWirecardPGMaestro extends ControllerExtensionPay
 		$this->response->setOutput(($transaction_service->getCreditCardUiWithData(
 			$this->transaction,
 			$this->getPaymentAction($this->getShopConfigVal('payment_action')),
-			$this->language->get('code')
+			$language
 		)));
 	}
 
