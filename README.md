@@ -9,7 +9,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/2481d5c6ea2f4beda8c8e1ff33312ded)](https://www.codacy.com/app/wirecard-bot/opencart-ee?utm_source=github.com&utm_medium=referral&utm_content=wirecard/opencart-ee&utm_campaign=Badge_Coverage)
 
 ***
-## General information 
+## General Information 
 Before you proceed, please read our [General Information](https://github.com/wirecard/opencart-ee/wiki/Wirecard-Shop-Extensions-General-Information) for more details on Wirecard Shop Extension functionality and features.
 
 ***
