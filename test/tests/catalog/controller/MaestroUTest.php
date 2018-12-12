@@ -19,7 +19,7 @@ require_once __DIR__ . '/../../../../catalog/model/extension/payment/wirecard_pg
 class MaestroUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
-	private $pluginVersion = '1.3.0';
+
 	private $controller;
 	private $loader;
 	private $registry;
@@ -221,7 +221,7 @@ class MaestroUTest extends \PHPUnit_Framework_TestCase
 
 		$expected->add($paymentConfig);
 		$expected->setShopInfo(self::SHOP, VERSION);
-		$expected->setPluginInfo(self::PLUGIN, $this->pluginVersion);
+		$expected->setPluginInfo(self::PLUGIN, PLUGIN_VERSION);
 
 		$currency = [
 			'currency_code' => 'EUR',

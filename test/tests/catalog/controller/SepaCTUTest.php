@@ -19,7 +19,7 @@ require_once __DIR__ . '/../../../../catalog/controller/extension/payment/wireca
 class SepaCTUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
-	private $pluginVersion = '1.3.0';
+
 	private $controller;
 	private $loader;
 	private $registry;
@@ -170,7 +170,7 @@ class SepaCTUTest extends \PHPUnit_Framework_TestCase
 			'secret123'
 		));
 		$expected->setShopInfo(self::SHOP, VERSION);
-		$expected->setPluginInfo(self::PLUGIN, $this->pluginVersion);
+		$expected->setPluginInfo(self::PLUGIN, PLUGIN_VERSION);
 
 		$currency = [
 			'currency_code' => 'EUR',

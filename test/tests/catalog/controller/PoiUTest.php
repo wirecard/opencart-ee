@@ -45,7 +45,7 @@ use Wirecard\PaymentSdk\Entity\Address;
 class PoiUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
-	private $pluginVersion = '1.3.0';
+
 	private $controller;
 	private $loader;
 	private $registry;
@@ -203,7 +203,7 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 			'secret123'
 		));
 		$expected->setShopInfo(self::SHOP, VERSION);
-		$expected->setPluginInfo(self::PLUGIN, $this->pluginVersion);
+		$expected->setPluginInfo(self::PLUGIN, PLUGIN_VERSION);
 
 		$currency = [
 			'currency_code' => 'EUR',
@@ -381,7 +381,7 @@ class PoiUTest extends \PHPUnit_Framework_TestCase
 			'secret123'
 		));
 		$config->setShopInfo(self::SHOP, VERSION);
-		$config->setPluginInfo(self::PLUGIN, $this->pluginVersion);
+		$config->setPluginInfo(self::PLUGIN, PLUGIN_VERSION);
 
 		$responseMapper = new \Wirecard\PaymentSdk\Mapper\ResponseMapper($config);
 		$response = $responseMapper->map(ResponseProvider::getPOIResponse(), null);
