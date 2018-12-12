@@ -195,6 +195,9 @@ class MaestroUTest extends \PHPUnit_Framework_TestCase
 		$config->expects($this->at(0))->method('get')->willReturn('api-test.com');
 		$config->expects($this->at(1))->method('get')->willReturn('user');
 		$config->expects($this->at(2))->method('get')->willReturn('password');
+		$config->expects($this->at(3))->method('get')->willReturn('merchantId');
+		$config->expects($this->at(4))->method('get')->willReturn('account123');
+		$config->expects($this->at(5))->method('get')->willReturn('secret123');
 
 		$this->controller = new ControllerExtensionPaymentWirecardPGMaestro(
 			$this->registry,
@@ -214,10 +217,8 @@ class MaestroUTest extends \PHPUnit_Framework_TestCase
 		);
 
 		$expected = new \Wirecard\PaymentSdk\Config\Config('api-test.com', 'user', 'password');
-		$paymentConfig = new \Wirecard\PaymentSdk\Config\MaestroConfig(
-			'account123',
-			'secret123'
-		);
+		$paymentConfig = new \Wirecard\PaymentSdk\Config\MaestroConfig();
+		$paymentConfig->setThreeDCredentials('account123', 'secret123');
 
 		$expected->add($paymentConfig);
 		$expected->setShopInfo(self::SHOP, VERSION);
