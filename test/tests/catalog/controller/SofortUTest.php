@@ -20,7 +20,7 @@ use Wirecard\PaymentSdk\Transaction\Operation;
 class SofortUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
-	private $pluginVersion = '1.3.0';
+
 	private $controller;
 	private $loader;
 	private $registry;
@@ -195,7 +195,7 @@ class SofortUTest extends \PHPUnit_Framework_TestCase
 			'secret123'
 		));
 		$expected->setShopInfo(self::SHOP, VERSION);
-		$expected->setPluginInfo(self::PLUGIN, $this->pluginVersion);
+		$expected->setPluginInfo(self::PLUGIN, PLUGIN_VERSION);
 
 		$currency = [
 			'currency_code' => 'EUR',

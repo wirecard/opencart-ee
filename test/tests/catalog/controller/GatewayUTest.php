@@ -46,7 +46,6 @@ use Wirecard\PaymentSdk\Transaction\PoiPiaTransaction;
 class GatewayUTest extends \PHPUnit_Framework_TestCase
 {
 	protected $config;
-	private $pluginVersion = '1.3.0';
 	private $controller;
 	private $loader;
 	private $registry;
