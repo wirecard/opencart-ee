@@ -78,7 +78,9 @@ class PGBasket {
 			);
 		}
 
-		$this->setShippingItem($basket, $shipping, $currency);
+        if ($shipping) {
+            $this->setShippingItem($basket, $shipping, $currency);
+        }
 
 		$coupon_amount = bcsub($this->sum, $total_amount, $this->model->getScale());
 		if ((float)$coupon_amount > 0) {
