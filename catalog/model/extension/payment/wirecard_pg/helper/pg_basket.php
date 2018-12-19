@@ -241,7 +241,7 @@ class PGBasket {
 		$item->setDescription('Precision');
 		$item->setArticleNumber('Precision');
 		$item->setTaxRate(0);
-		$item->setTaxAmount(0);
+		$item->setTaxAmount(null);
 		$basket->add($item);
 
 		return $basket;
