@@ -59,7 +59,7 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 
 		$this->cart = $this->getMockBuilder(Cart::class)
 			->disableOriginalConstructor()
-			->setMethods(['getProducts'])
+			->setMethods(['getProducts', 'hasShipping'])
 			->getMock();
 
 		$this->currency = $this->getMockBuilder(Currency::class)->disableOriginalConstructor()->getMock();
@@ -121,6 +121,7 @@ class UpiUTest extends \PHPUnit_Framework_TestCase
 			["price" => 3.241, "name" => "Produkt3", "quantity" => 5, "product_id" => 3, "tax_class_id" => 1]
 		];
 		$this->cart->method('getProducts')->willReturn($items);
+        $this->cart->method('hasShipping')->willReturn(true);
 
 		$this->controller = new ControllerExtensionPaymentWirecardPGUpi(
 			$this->registry,
