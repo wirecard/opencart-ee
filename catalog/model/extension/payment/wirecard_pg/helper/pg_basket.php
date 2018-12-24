@@ -55,7 +55,7 @@ class PGBasket {
 	 *
 	 * @param Transaction $transaction
 	 * @param array $items
-	 * @param array $shipping
+	 * @param array|null $shipping
 	 * @param array $currency
 	 * @param float $total
 	 * @return Basket
@@ -78,7 +78,9 @@ class PGBasket {
 			);
 		}
 
-		$this->setShippingItem($basket, $shipping, $currency);
+        if (isset($shipping)) {
+            $this->setShippingItem($basket, $shipping, $currency);
+        }
 
 		$coupon_amount = bcsub($this->sum, $total_amount, $this->model->getScale());
 		if ((float)$coupon_amount > 0) {
@@ -239,7 +241,7 @@ class PGBasket {
 		$item->setDescription('Precision');
 		$item->setArticleNumber('Precision');
 		$item->setTaxRate(0);
-		$item->setTaxAmount(0);
+		$item->setTaxAmount(null);
 		$basket->add($item);
 
 		return $basket;

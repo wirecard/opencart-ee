@@ -84,7 +84,7 @@ class RatepayInvoiceUTest extends \PHPUnit_Framework_TestCase
 
 		$this->cart = $this->getMockBuilder(Cart::class)
 			->disableOriginalConstructor()
-			->setMethods(['getProducts'])
+			->setMethods(['getProducts', 'hasShipping'])
 			->getMock();
 
         $orderDetails = array(
@@ -147,6 +147,7 @@ class RatepayInvoiceUTest extends \PHPUnit_Framework_TestCase
 		];
 
 		$this->cart->method('getProducts')->willReturn($items);
+        $this->cart->method('hasShipping')->willReturn(true);
 
 		$this->controller = new ControllerExtensionPaymentWirecardPGRatepayInvoice(
 			$this->registry,

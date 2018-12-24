@@ -166,11 +166,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->transaction->setDescriptor($additional_helper->createDescriptor($order));
 		}
 
+        $shipping = null;
+
+        if ($this->cart->hasShipping()) {
+            $shipping = $this->session->data['shipping_method'];
+        }
+
 		if ($this->getShopConfigVal('shopping_basket')) {
 			$this->transaction = $additional_helper->addBasket(
 				$this->transaction,
 				$this->cart->getProducts(),
-				$this->session->data['shipping_method'],
+                $shipping,
 				$currency,
 				$order['total']
 			);
@@ -181,7 +187,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->transaction = $additional_helper->addBasket(
 				$this->transaction,
 				$this->cart->getProducts(),
-				$this->session->data['shipping_method'],
+                $shipping,
 				$currency,
 				$order['total']
 			);

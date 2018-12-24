@@ -57,7 +57,7 @@ class AdditionalInformationHelper extends Model {
 	/**
 	 * @param Transaction $transaction
 	 * @param array $items
-	 * @param array $shipping
+	 * @param array|null $shipping
 	 * @param array $currency
 	 * @param float $total
 	 * @return Transaction

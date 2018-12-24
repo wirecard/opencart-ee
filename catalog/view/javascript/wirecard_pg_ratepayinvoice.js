@@ -30,3 +30,4 @@ $(document).ready(function() {
 	$("#error-box-ratepayinvoice").hide();
 });
 
+
