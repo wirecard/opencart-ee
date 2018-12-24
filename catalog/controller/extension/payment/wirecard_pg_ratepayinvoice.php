@@ -73,7 +73,7 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 		$additional_helper = new AdditionalInformationHelper($this->registry, $this->prefix . $this->type, $this->config, $this->scale);
 		$currency = $additional_helper->getCurrency($order['currency_code'], $this->type);
 
-        $shipping = false;
+        $shipping = null;
         if ($this->cart->hasShipping()) {
             $shipping = $this->session->data['shipping_method'];
         }

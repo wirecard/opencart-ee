@@ -28,3 +28,4 @@ function checkSepaMandate(checkbox) {
 	}
 }
 
+

@@ -55,7 +55,7 @@ class PGBasket {
 	 *
 	 * @param Transaction $transaction
 	 * @param array $items
-	 * @param array $shipping
+	 * @param array|null $shipping
 	 * @param array $currency
 	 * @param float $total
 	 * @return Basket
@@ -78,7 +78,7 @@ class PGBasket {
 			);
 		}
 
-        if ($shipping) {
+        if (isset($shipping)) {
             $this->setShippingItem($basket, $shipping, $currency);
         }
 

@@ -166,7 +166,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->transaction->setDescriptor($additional_helper->createDescriptor($order));
 		}
 
-        $shipping = false;
+        $shipping = null;
 
         if ($this->cart->hasShipping()) {
             $shipping = $this->session->data['shipping_method'];
