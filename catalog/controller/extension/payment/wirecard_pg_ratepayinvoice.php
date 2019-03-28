@@ -44,7 +44,7 @@ class ControllerExtensionPaymentWirecardPGRatepayInvoice extends ControllerExten
 		$this->load->language('extension/payment/wirecard_pg_ratepayinvoice');
 		$data['birthdate_input'] = $this->language->get('birthdate_input');
 		$data['birthdate_error'] = $this->language->get('ratepayinvoice_fields_error');
-
+        $data['text_terms'] =  $this->language->get('text_terms');
 		$data['ratepay_device_ident'] = $this->getRatepayDevice();
 		$data['ratepayinvoice'] = $this->load->view('extension/payment/wirecard_pg_ratepayinvoice', $data);
 		return parent::index($data);
