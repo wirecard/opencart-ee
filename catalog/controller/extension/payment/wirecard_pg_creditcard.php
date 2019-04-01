@@ -190,7 +190,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 */
 	public function getCreditCardUiRequestData() {
 		$this->transaction = new CreditCardTransaction();
-        $language = $this->getLocale($this->getShopConfigVal('base_url'));
+		$language = $this->getLocale($this->getShopConfigVal('base_url'));
 		$this->prepareTransaction();
 		$this->transaction->setConfig($this->payment_config->get(CreditCardTransaction::NAME));
 		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));

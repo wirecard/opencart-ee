@@ -36,7 +36,7 @@ class ControllerExtensionPaymentWirecardPGAlipayCrossborder extends \ControllerE
 		'merchant_account_id' => '47cd4edf-b13c-4298-9344-53119ab8b9df',
 		'merchant_secret' => '94fe4f40-16c5-4019-9c6c-bc33ec858b1d',
 		'base_url' => 'https://api-test.wirecard.com',
-        'http_user' => '16390-testing',
+		'http_user' => '16390-testing',
 		'http_password' => '3!3013=D3fD8X7',
 		'payment_action' => 'pay',
 		'descriptor' => '0',
