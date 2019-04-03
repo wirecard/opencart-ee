@@ -166,17 +166,17 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->transaction->setDescriptor($additional_helper->createDescriptor($order));
 		}
 
-        $shipping = null;
+		$shipping = null;
 
-        if ($this->cart->hasShipping()) {
-            $shipping = $this->session->data['shipping_method'];
-        }
+		if ($this->cart->hasShipping()) {
+			$shipping = $this->session->data['shipping_method'];
+		}
 
 		if ($this->getShopConfigVal('shopping_basket')) {
 			$this->transaction = $additional_helper->addBasket(
 				$this->transaction,
 				$this->cart->getProducts(),
-                $shipping,
+				$shipping,
 				$currency,
 				$order['total']
 			);
@@ -187,7 +187,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 			$this->transaction = $additional_helper->addBasket(
 				$this->transaction,
 				$this->cart->getProducts(),
-                $shipping,
+				$shipping,
 				$currency,
 				$order['total']
 			);
@@ -515,63 +515,63 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		return $this->transaction;
 	}
 
-    /**
-     * Create notification url
-     *
-     * @return string
-     * @since 1.0.0
-     */
-    protected function getNotificationUrl() {
-        return $this->url->link(
-            self::ROUTE . $this->type . '/notify', '', 'SSL'
-        );
-    }
+	/**
+	 * Create notification url
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	protected function getNotificationUrl() {
+		return $this->url->link(
+			self::ROUTE . $this->type . '/notify', '', 'SSL'
+		);
+	}
 
-    /**
-     * Create payment specific redirects
-     *
-     * @param int $order_id
-     * @return \Wirecard\PaymentSdk\Entity\Redirect
-     * @since 1.0.0
-     */
-    protected function getRedirects($order_id) {
-        return new \Wirecard\PaymentSdk\Entity\Redirect(
-            $this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL'),
-            $this->url->link(self::ROUTE . $this->type . '/response&cancelled=1&orderId=' . $order_id, '', 'SSL'),
-            $this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL')
-        );
-    }
+	/**
+	 * Create payment specific redirects
+	 *
+	 * @param int $order_id
+	 * @return \Wirecard\PaymentSdk\Entity\Redirect
+	 * @since 1.0.0
+	 */
+	protected function getRedirects($order_id) {
+		return new \Wirecard\PaymentSdk\Entity\Redirect(
+			$this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL'),
+			$this->url->link(self::ROUTE . $this->type . '/response&cancelled=1&orderId=' . $order_id, '', 'SSL'),
+			$this->url->link(self::ROUTE . $this->type . '/response', '', 'SSL')
+		);
+	}
 
-    /**
-     * Get current locale for creditcard form
-     *
-     * @param string $base_url
-     * @return string
-     * @since 1.3.0
-     */
-    protected function getLocale($base_url) {
-        $lang = 'en';
-        $language = $this->session->data['language'];
-        switch ($language) {
-            case 'zh-cn':
-            case 'zh-CN':
-                $language = 'zh_CN';
-                break;
-            case 'zh-tw':
-            case 'zh-TW':
-                $language = 'zh_TW';
-                break;
-        }
-        try {
-            $supported_lang = json_decode(file_get_contents($base_url . '/engine/includes/i18n/languages/hpplanguages.json'));
-            if (key_exists(substr($language, 0, 2), $supported_lang)) {
-                $lang = substr($language, 0, 2);
-            } elseif (key_exists($language, $supported_lang)) {
-                $lang = $language;
-            }
-            return $lang;
-        } catch (Exception $exception) {
-            return $lang;
-        }
-    }
+	/**
+	 * Get current locale for creditcard form
+	 *
+	 * @param string $base_url
+	 * @return string
+	 * @since 1.3.0
+	 */
+	protected function getLocale($base_url) {
+		$lang = 'en';
+		$language = $this->session->data['language'];
+		switch ($language) {
+			case 'zh-cn':
+			case 'zh-CN':
+				$language = 'zh_CN';
+				break;
+			case 'zh-tw':
+			case 'zh-TW':
+				$language = 'zh_TW';
+				break;
+		}
+		try {
+			$supported_lang = json_decode(file_get_contents($base_url . '/engine/includes/i18n/languages/hpplanguages.json'));
+			if (key_exists(substr($language, 0, 2), $supported_lang)) {
+				$lang = substr($language, 0, 2);
+			} elseif (key_exists($language, $supported_lang)) {
+				$lang = $language;
+			}
+			return $lang;
+		} catch (Exception $exception) {
+			return $lang;
+		}
+	}
 }

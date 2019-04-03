@@ -197,5 +197,3 @@ $("#button-confirm").on("click", function() {
 		});
 	}
 });
-
-
