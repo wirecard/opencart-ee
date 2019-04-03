@@ -71,8 +71,7 @@
         <exclude-pattern>*.html</exclude-pattern>
         <exclude-pattern>*.ini</exclude-pattern>
         <exclude-pattern>*.txt</exclude-pattern>
-        <severity>1</severity>
-        <type>warning</type>
+        <severity>5</severity>
     </rule>
 
     <!-- To do comments should be reported and completed -->
