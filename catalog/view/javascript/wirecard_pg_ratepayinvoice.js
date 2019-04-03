@@ -54,6 +54,3 @@ $(document).ready(function () {
 	$("#error-box-ratepayinvoice").hide();
 	$("#button-confirm").prop("disabled", true);
 });
-
-
-
