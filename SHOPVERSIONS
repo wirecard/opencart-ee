@@ -6,6 +6,7 @@
         "compatibility": "3.0.2.0",
         "changelog": [
             "Add mandatory consent for Guaranteed Invoice",
+            "Update paymentSDK version to 3.6.3"
         ]
     },
     
