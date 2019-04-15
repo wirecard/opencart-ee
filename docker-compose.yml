@@ -27,6 +27,21 @@ services:
       - '.:/plugin'
     depends_on:
       - mariadb
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_HOST=mariadb
+      - PMA_PORT=3306
+      - PMA_USER=bn_opencart
+      - OPENCART_DATABASE_NAME=bitnami_opencart
+      - OPENCART_HOST=c596a2a9.ngrok.io
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "8580:80"
+    links:
+      - mariadb:db_server
+    depends_on:
+      - mariadb
 volumes:
   mariadb_data:
     driver: local
