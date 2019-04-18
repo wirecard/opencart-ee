@@ -284,5 +284,3 @@ function configurePaymentMethodInDb($db, $dbConfig, $paymentMethod)
     }
     return true;
 }
-
-
