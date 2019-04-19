@@ -173,7 +173,6 @@ function installExtension($db)
  *
  * @param mysqli $db
  * @param string $paymentMethod
- * @return mixed
  * @since   1.4.0
  */
 function addPaymentMethodToDb($db, $paymentMethod)
@@ -181,7 +180,6 @@ function addPaymentMethodToDb($db, $paymentMethod)
     echo "Adding " . $paymentMethod . " payment method to database \n";
     $tableName = DB_PREFIX . "extension";
     $db->query("INSERT INTO " . $tableName . " (type, code) VALUES ('payment','wirecard_pg_" . $paymentMethod . "')");
-    return $db->insert_id;
 }
 
 /**
@@ -189,7 +187,6 @@ function addPaymentMethodToDb($db, $paymentMethod)
  *
  * @param mysqli $db
  * @param string $paymentMethod
- * @return mixed
  * @since   1.4.0
  */
 function addPermissionToDb($db, $paymentMethod = null)
@@ -217,8 +214,6 @@ function addPermissionToDb($db, $paymentMethod = null)
     $newPermissionJson = json_encode($permissionObj);
     $dbUpdateQuery = "UPDATE " . $tableName . " SET permission = '" . $newPermissionJson . "'";
     $db->query($dbUpdateQuery);
-    return $db->insert_id;
-
 }
 
 /**
