@@ -267,7 +267,7 @@ function configurePaymentMethodInDb($db, $dbConfig, $paymentMethod)
         // remove existing config if any exists - or do nothing
         $db->query("DELETE FROM $tableName WHERE `key` = '" . $fullName . "'");
         $serialized = "0";
-        if (strpos($fullName, "title")!== false) {
+        if (strpos($fullName, "title") !== false) {
             $serialized = "1";
         }
         $db->query("INSERT INTO $tableName (`code`, `key`, `value`, `serialized`) VALUES ('" . $paymentMethodCode . "', '" . $fullName . "', '" . $value . "' , '" . $serialized . "')");
