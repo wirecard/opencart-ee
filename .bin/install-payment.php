@@ -33,6 +33,7 @@
  * @license GPLv3
  */
 
+
 define("DB_PREFIX", 'oc_');
 define("DB_DATABASE", getenv('OPENCART_DATABASE_NAME'));
 define("DB_HOSTNAME", getenv('MARIADB_HOST'));
@@ -86,16 +87,18 @@ END_USAGE;
 }
 
 $paymentMethod = trim($argv[1]);
-$db = connectDatabase();
-//installExtension($db);
-addPaymentMethodToDb($db, $paymentMethod);
-//addPermissionToDb($db);
-addPermissionToDb($db, $paymentMethod);
 $dbConfig = buildConfigByPaymentMethod($paymentMethod, $gateway);
 if (empty($dbConfig)) {
     echo "Payment method $paymentMethod is not supported\n";
     exit(1);
 }
+
+$db = connectDatabase();
+//installExtension($db);
+addPaymentMethodToDb($db, $paymentMethod);
+//addPermissionToDb($db);
+addPermissionToDb($db, $paymentMethod);
+
 configurePaymentMethodInDb($db, $dbConfig, $paymentMethod);
 $db->close();
 echo "Installation complete and " . $paymentMethod . " configured\n";
@@ -104,7 +107,7 @@ echo "Installation complete and " . $paymentMethod . " configured\n";
 /**
  * Create connection to opencart database and return mysqli connection object
  *
- * @return mysqli
+ * @return mysqli $mysqli
  * @since   1.4.0
  */
 function connectDatabase()
@@ -123,8 +126,7 @@ function connectDatabase()
 /**
  * Add extension to database
  *
- * @param $db
- * @return mixed
+ * @param mysqli $db
  * @since   1.4.0
  */
 function installExtension($db)
@@ -164,14 +166,13 @@ function installExtension($db)
 			`expiration_year` INT(10) NOT NULL,
 			PRIMARY KEY (`vault_id`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
-    return $db->insert_id;
 }
 
 /**
  * Add payment method to database
  *
- * @param $db
- * @param $paymentMethod
+ * @param mysqli $db
+ * @param string $paymentMethod
  * @return mixed
  * @since   1.4.0
  */
@@ -186,20 +187,15 @@ function addPaymentMethodToDb($db, $paymentMethod)
 /**
  * Add extension permission or payment method permission to database
  *
- * @param $db
- * @param $paymentMethod
+ * @param mysqli $db
+ * @param string $paymentMethod
  * @return mixed
  * @since   1.4.0
  */
 function addPermissionToDb($db, $paymentMethod = null)
 {
     $tableName = DB_PREFIX . "user_group";
-//    $newPermissions = ['extension/module/wirecard_pg',
-//        'extension/module/wirecard_pg/pg_transaction',
-//        'extension/module/wirecard_pg/pg_support_email',
-//        'extension/module/wirecard_pg/pg_general_terms'];
     $newPermissions = ['extension/module/wirecard_pg'];
-
 
     if (isset($paymentMethod)) {
         $newPermissions = ['extension/payment/wirecard_pg_' . $paymentMethod];
@@ -228,9 +224,9 @@ function addPermissionToDb($db, $paymentMethod = null)
 /**
  * Build configuration array for payment method
  *
- * @param $paymentMethod
- * @param $gateway
- * @return array
+ * @param string $paymentMethod
+ * @param string $gateway
+ * @return array|null
  * @since   1.4.0
  */
 function buildConfigByPaymentMethod($paymentMethod, $gateway)
@@ -258,10 +254,9 @@ function buildConfigByPaymentMethod($paymentMethod, $gateway)
 /**
  * Configure payment method in database
  *
- * @param $db
- * @param $dbConfig
- * @param $paymentMethod
- * @return boolean
+ * @param mysqli $db
+ * @param array $dbConfig
+ * @param string $paymentMethod
  * @since   1.4.0
  */
 function configurePaymentMethodInDb($db, $dbConfig, $paymentMethod)
@@ -282,5 +277,4 @@ function configurePaymentMethodInDb($db, $dbConfig, $paymentMethod)
         }
         $db->query("INSERT INTO $tableName (`code`, `key`, `value`, `serialized`) VALUES ('" . $paymentMethodCode . "', '" . $fullName . "', '" . $value . "' , '" . $serialized . "')");
     }
-    return true;
 }

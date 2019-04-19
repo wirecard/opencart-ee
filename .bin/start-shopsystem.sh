@@ -27,6 +27,6 @@ done
 docker exec ${OPENCART_CONTAINER_NAME} ./plugin/.bin/install-extension.sh
 
 #run installation from UI
-# this requires codeception preinstalled and selenium ob browserstack running
+#this requires codeception preinstalled and selenium or browserstack running
 #system/library/bin/codecept run acceptance -g installator --steps --debug
 
