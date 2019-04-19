@@ -29,4 +29,7 @@ docker exec ${OPENCART_CONTAINER_NAME} ./plugin/.bin/install-extension.sh
 #run installation from UI
 #this requires codeception preinstalled and selenium or browserstack running
 #system/library/bin/codecept run acceptance -g installator --steps --debug
+#run ui test
+#system/library/bin/codecept run acceptance -g ui_test --steps --debug
+
 
