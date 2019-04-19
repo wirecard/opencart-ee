@@ -135,6 +135,7 @@ class Checkout extends Base
         $I->selectOption($this->getElement('Credit Card Valid until month'), $data_field_values->valid_until_month);
         $I->selectOption($this->getElement('Credit Card Valid until year'), $data_field_values->valid_until_year);
         $I->switchToIFrame();
+        $I->wait(1);
     }
 
     /**

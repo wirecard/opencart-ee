@@ -17,6 +17,5 @@ Feature: checkCreditCard3DSFunctionalityHappyPath
     And I am redirected to "Verified" page
     And I enter "wirecard" in field "Password"
     And I click "Continue"
-
-#    Then I am redirected to "Order Received" page
-#    And I see "YOUR ORDER IS CONFIRMED"
+    Then I am redirected to "Order Received" page
+    And I see "Your order has been placed!"

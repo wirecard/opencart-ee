@@ -43,5 +43,5 @@ class OrderReceived extends Base
      * @var string
      * @since 1.3.4
      */
-    public $URL = 'order-confirmation';
+    public $URL = 'success';
 }
