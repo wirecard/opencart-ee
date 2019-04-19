@@ -63,10 +63,6 @@ class InstallExtensionCest
 
     public function tryToTest(AcceptanceTester $I)
     {
-        //get admin token
-        $url = $I->grabFromCurrentUrl();
-        $token = $I->getAdminToken($url);
-
         $I->click('//*[@id="menu-extension"]');
         $I->waitForElementVisible('//*[@id="collapse2"]');
         $I->click('Extensions','//*[@id="collapse2"]');
@@ -75,8 +71,6 @@ class InstallExtensionCest
         $I->wait(2);
         $I->scrollTo(['class' => 'container-fluid'], 0, 4000);
         $I->wait(2);
-        $I->click('//*[@id="extension"]/fieldset/div[2]/table/tbody/tr[31]/td[3]/a');
-        $I->pauseExecution();
-
+        $I->click('//*[@id="extension"]/fieldset/div[2]/table/tbody/tr[td//text()[contains(., \'Wirecard\')]]/td[3]/a');
     }
 }
