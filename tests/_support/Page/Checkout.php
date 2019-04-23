@@ -52,40 +52,36 @@ class Checkout extends Base
      * @since 1.4.0
      */
 
-//*[@id="collapse-checkout-option"]/div/div/div[1]/div[2]/label/input
     public $elements = array(
         'Checkout Options' => '//*[@class="radio"]',
         'Continue1' => '//*[@value="Continue"]',
-        'First Name' => "//*[@name='firstname']",
-        'Last Name' => "//*[@name='lastname']",
-        'Email' => "//*[@id='input-payment-email']",
-        'Telephone' => "//*[@name='telephone']",
-        'Address1' => "//*[@id='input-payment-address-1']",
-        'City' => "//*[@name='city']",
-        'Post Code' => "//*[@name='postcode']",
-        'Country' => "//*[@name='country_id']",
-        'Region/State' => "//*[@name='zone_id']",
+        'First Name' => '//*[@name="firstname"]',
+        'Last Name' => '//*[@name="lastname"]',
+        'Email' => '//*[@id="input-payment-email"]',
+        'Telephone' => '//*[@name="telephone"]',
+        'Address1' => '//*[@id="input-payment-address-1"]',
+        'City' => '//*[@name="city"]',
+        'Post Code' => '//*[@name="postcode"]',
+        'Country' => '//*[@name="country_id"]',
+        'Region/State' => '//*[@name="zone_id"]',
         'Continue2' => '//*[@id="button-guest"]',
         'Continue' => '//*[@id="button-payment-method"]',
         'Order Table' => '//*[@class="table-responsive"]',
-
         'Wirecard Credit Card' => '//*[@name="payment-option"]',
-
-        'Credit Card First Name' => "//*[@id='first_name']",
-        'Credit Card Last Name' => "//*[@id='last_name']",
-        'Credit Card Card number' => "//*[@id='account_number']",
-        'Credit Card CVV' => "//*[@id='card_security_code']",
-        'Credit Card Valid until month' => "//*[@id='expiration_month_list']",
-        'Credit Card Valid until year' => "//*[@id='expiration_year_list']",
+        'Credit Card First Name' => '//*[@id="first_name"]',
+        'Credit Card Last Name' => '//*[@id="last_name"]',
+        'Credit Card Card number' => '//*[@id="account_number"]',
+        'Credit Card CVV' => '//*[@id="card_security_code"]',
+        'Credit Card Valid until month' => '//*[@id="expiration_month_list"]',
+        'Credit Card Valid until year' => '//*[@id="expiration_year_list"]',
         'Confirm Order' => '//*[@id="button-confirm"]',
         'I have read and agree to the Terms & Conditions' => '//*[@name="agree"]',
-        "Order with an obligation to pay" => "//*[@class='btn btn-primary center-block']",
     );
 
     /**
      * Method fillBillingDetails
      *
-     * @since 1.3.4
+     * @since 1.4.0
      */
     public function fillBillingDetails()
     {
@@ -96,12 +92,10 @@ class Checkout extends Base
         $I->fillField($this->getElement('First Name'), $data_field_values->first_name);
         $I->waitForElementVisible($this->getElement('Last Name'));
         $I->fillField($this->getElement('Last Name'), $data_field_values->last_name);
-
         $I->waitForElementVisible($this->getElement('Email'));
         $I->fillField($this->getElement('Email'), $data_field_values->email_address);
         $I->waitForElementVisible($this->getElement('Telephone'));
         $I->fillField($this->getElement('Telephone'), $data_field_values->phone);
-
         $I->waitForElementVisible($this->getElement('Address1'));
         $I->fillField($this->getElement('Address1'), $data_field_values->street_address);
         $I->waitForElementVisible($this->getElement('City'));
@@ -120,7 +114,7 @@ class Checkout extends Base
 
     /**
      * Method fillCreditCardDetails
-     * @since 1.3.4
+     * @since 1.4.0
      */
     public function fillCreditCardDetails()
     {
@@ -140,7 +134,7 @@ class Checkout extends Base
 
     /**
      * Method switchFrame
-     * @since 1.3.4
+     * @since 1.4.0
      */
     public function switchFrame()
     {

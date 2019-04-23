@@ -40,25 +40,25 @@ class Base
 
     /**
      * @var string
-     * @since 1.3.4
+     * @since 1.4.0
      */
     protected $URL = '';
 
     /**
      * @var array
-     * @since 1.3.4
+     * @since 1.4.0
      */
     protected $elements = array();
 
     /**
      * @var string
-     * @since 1.3.4
+     * @since 1.4.0
      */
     protected $tester;
 
     /**
      * @var AcceptanceTester
-     * @since 1.3.4
+     * @since 1.4.0
      */
     public function __construct(\AcceptanceTester $I)
     {
@@ -71,7 +71,7 @@ class Base
      * @param string $name
      * @return string
      *
-     * @since 1.3.4
+     * @since 1.4.0
      */
     public function getElement($name)
     {
@@ -83,7 +83,7 @@ class Base
      *
      * @return string
      *
-     * @since 1.3.4
+     * @since 1.4.0
      */
     public function getURL()
     {
@@ -93,7 +93,7 @@ class Base
     /**
      * Method fillBillingDetails
      *
-     * @since 1.3.4
+     * @since 1.4.0
      */
     public function fillBillingDetails()
     {
@@ -103,7 +103,7 @@ class Base
     /**
      * Method fillCreditCardDetails
      *
-     * @since 1.3.4
+     * @since 1.4.0
      */
     public function fillCreditCardDetails()
     {

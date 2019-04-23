@@ -38,19 +38,18 @@ namespace Page;
 class Verified extends Base
 {
 
-    // include url of current page
     /**
      * @var string
-     * @since 1.3.4
+     * @since 1.4.0
      */
     public $URL = '/bank';
 
     /**
      * @var array
-     * @since 1.3.4
+     * @since 1.4.0
      */
     public $elements = array(
-        'Password' => "//*[@id='password']",
-        'Continue' => "//*[@name='authenticate']",
+        'Password' => '//*[@id="password"]',
+        'Continue' => '//*[@name="authenticate"]',
     );
 }

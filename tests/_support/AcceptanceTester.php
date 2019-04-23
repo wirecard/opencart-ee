@@ -38,7 +38,6 @@ use Helper\PhpBrowserAPITest;
 use Page\Base;
 use Page\Cart as CartPage;
 use Page\Checkout as CheckoutPage;
-use Page\Product as ProductPage;
 use Page\Shop as ShopPage;
 use Page\OrderReceived as OrderReceivedPage;
 use Page\Verified as VerifiedPage;
@@ -68,9 +67,6 @@ class AcceptanceTester extends \Codeception\Actor
             case 'Checkout':
                 $this->wait(1);
                 $page = new CheckoutPage($this);
-                break;
-            case 'Product':
-                $page = new ProductPage($this);
                 break;
             case 'Shop':
                 $page = new ShopPage($this);
