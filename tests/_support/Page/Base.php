@@ -97,7 +97,6 @@ class Base
      */
     public function fillBillingDetails()
     {
-        ;
     }
 
     /**
@@ -107,6 +106,5 @@ class Base
      */
     public function fillCreditCardDetails()
     {
-        ;
     }
 }
