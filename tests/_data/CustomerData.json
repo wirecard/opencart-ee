@@ -2,10 +2,10 @@
   "last_name": "test",
   "first_name": "test",
   "country": "Austria",
-  "street_address": "test",
-  "town": "Graz",
-  "post_code": "8010",
-  "phone": "123456",
+  "street_address": "test street 123",
+  "town": "Eisenstadt",
+  "post_code": "7000",
+  "phone": "+436601234567",
   "email_address": "test@example.com",
   "state": "Burgenland"
 }
