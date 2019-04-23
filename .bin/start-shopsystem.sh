@@ -15,6 +15,7 @@ while ! $(curl --silent --output /dev/null --head --fail "${OPENCART_URL}/admin"
     sleep 5
 done
 
+sleep 5
 docker exec ${OPENCART_CONTAINER_NAME} ./plugin/.bin/install-extension.sh
 
 #run installation from UI
