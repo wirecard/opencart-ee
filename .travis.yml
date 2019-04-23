@@ -17,14 +17,14 @@ matrix:
       if: type = cron
     - php: 7.1
       if: type = cron
-    - stage: acceptance-test
+    - &acceptance-test
+      stage: acceptance-test
       if: type != cron
       php: 7.1
       env: GATEWAY=API-TEST
       install:
       - chmod +x .bin/*
       - travis_retry composer require --dev $COMPOSER_ARGS codeception/codeception
-#      - travis_retry composer require --dev $COMPOSER_ARGS browserstack/browserstack-local
       - travis_retry composer install $COMPOSER_ARGS
       - composer show
       # run UI tests
@@ -32,6 +32,10 @@ matrix:
       after_script: skip
 #      after_failure:
 #      - bash ./build/bin/send-notify.sh
+    - <<: *acceptance-test
+      env: GATEWAY=API-WDCEE-TEST
+    - <<: *acceptance-test
+      env: GATEWAY=NOVA
 
 
 install:

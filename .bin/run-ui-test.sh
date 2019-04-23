@@ -12,4 +12,4 @@ sleep 5
 bash .bin/start-shopsystem.sh
 
 # run acceptance test
-system/library/bin/codecept run acceptance -g ui_test --steps --debug --html --xml
+system/library/bin/codecept run acceptance -g ui_test --steps --html --xml

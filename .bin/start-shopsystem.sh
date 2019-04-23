@@ -16,7 +16,7 @@ done
 docker exec ${OPENCART_CONTAINER_NAME} ./plugin/.bin/install-extension.sh
 
 #run installation from UI
-system/library/bin/codecept run acceptance -g installator --steps --debug
+system/library/bin/codecept run acceptance -g installator --steps
 
 
 
