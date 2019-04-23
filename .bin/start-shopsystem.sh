@@ -19,7 +19,7 @@ export VERSION=`jq .[0].release SHOPVERSIONS`
 docker-compose up -d
 
 #wait for shop system to initialize
-while ! $(curl --output /dev/null --silent --head --fail "${NGROK_URL}/admin"); do
+while ! $(curl --output /dev/null --silent --head --fail "localhost/admin"); do
     echo "Waiting for docker container to initialize"
     sleep 5
 done

@@ -2,7 +2,7 @@
 
 cd /plugin
 # should be done in travis
-composer install --no-dev
+#composer install --no-dev
 
 rsync -ah admin /opt/bitnami/opencart/
 rsync -ah image /opt/bitnami/opencart/
