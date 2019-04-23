@@ -2,15 +2,43 @@ sudo: false
 dist: trusty
 language: php
 
-php:
-  - 7.1
-  - 7.0
-  - 5.6
+addons:
+  browserstack:
+    username: ${BROWSERSTACK_USER}
+    access_key: ${BROWSERSTACK_ACCESS_KEY}
 
 env:
   global:
     - COMPOSER_ARGS="--no-interaction"
-    - github_token: GITHUB_TOKEN
+    - github_token: ${GITHUB_TOKEN}
+
+matrix:
+  allow_failures:
+    - stage: acceptance-test
+  include:
+    - php: 5.6
+      if: type = cron
+    - php: 7.0
+      if: type = cron
+    - php: 7.1
+      if: type = cron
+    - stage: acceptance-test
+      if: type != cron
+      php: 7.1
+      env: GATEWAY=API-TEST
+      install:
+      - chmod +x .bin/*
+      - travis_retry composer require --dev $COMPOSER_ARGS codeception/codeception
+      - travis_retry composer install $COMPOSER_ARGS
+      - composer show
+
+      before_script:
+      - bash ./.bin/start-shopsystem.sh
+      # run UI tests
+      script: bash ./.bin/run-ui-test.sh
+      after_script: skip
+#      after_failure:
+#      - bash ./build/bin/send-notify.sh
 
 
 install:

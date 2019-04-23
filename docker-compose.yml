@@ -17,8 +17,7 @@ services:
       - MARIADB_PORT_NUMBER=3306
       - OPENCART_DATABASE_USER=bn_opencart
       - OPENCART_DATABASE_NAME=bitnami_opencart
-    #to be changed to localhost in travis
-      - OPENCART_HOST=c596a2a9.ngrok.io
+      - OPENCART_HOST=localhost
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
       - '80:80'
