@@ -7,14 +7,13 @@ actor: AcceptanceTester
 modules:
   enabled:
      - WebDriver:
-#         host: 'hub-cloud.browserstack.com'
-#         port: 80
-         url: 'http://c596a2a9.ngrok.io'
-#         url: '%NGROK_URL%'
+         host: 'hub-cloud.browserstack.com'
+         port: 80
+         url: '%NGROK_URL%'
          browser: chrome # 'chrome' or 'firefox'
          capabilities:
            'build': '%VERSION%'
            'project': 'opencart-ee'
-#           'browserstack.user': '%BROWSERSTACK_USER%'
-#           'browserstack.key': '%BROWSERSTACK_ACCESS_KEY%'
+           'browserstack.user': '%BROWSERSTACK_USER%'
+           'browserstack.key': '%BROWSERSTACK_ACCESS_KEY%'
      - \Helper\Acceptance
