@@ -27,7 +27,6 @@ matrix:
       - travis_retry composer require --dev $COMPOSER_ARGS codeception/codeception
       - travis_retry composer install $COMPOSER_ARGS
       - composer show
-      # run UI tests
       script: bash ./.bin/run-ui-test.sh
       after_script: skip
       after_success:
