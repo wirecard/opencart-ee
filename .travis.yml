@@ -30,8 +30,10 @@ matrix:
       # run UI tests
       script: bash ./.bin/run-ui-test.sh
       after_script: skip
-#      after_failure:
-#      - bash ./build/bin/send-notify.sh
+      after_success:
+      - bash .bin/upload-logs-and-notify.sh
+      after_failure:
+      - bash .bin/upload-logs-and-notify.sh fail
     - <<: *acceptance-test
       env: GATEWAY=API-WDCEE-TEST
     - <<: *acceptance-test

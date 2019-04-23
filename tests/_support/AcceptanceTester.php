@@ -74,7 +74,7 @@ class AcceptanceTester extends \Codeception\Actor
                 $page = new CartPage($this);
                 break;
             case 'Verified':
-                $this->wait(7);
+                $this->wait(10);
                 $page = new VerifiedPage($this);
                 break;
             case 'Order Received':
