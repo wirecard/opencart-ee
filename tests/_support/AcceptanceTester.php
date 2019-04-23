@@ -171,6 +171,8 @@ class AcceptanceTester extends \Codeception\Actor
     {
         $this->iAmOnPage('Shop');
         //chose a product and open product page
+        $this->click($this->currentPage->getElement('Currency'));
+        $this->click($this->currentPage->getElement('EUR'));
         $this->click($this->currentPage->getElement('First Product in the Product List'));
         $this->iAmOnPage('Cart');
         $this->click('Checkout');

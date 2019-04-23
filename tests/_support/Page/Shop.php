@@ -50,6 +50,8 @@ class Shop extends Base
      * @since 1.4.0
      */
     public $elements = array(
+        'Currency' => '//*[@id="form-currency"]',
+        'EUR' => '//*[@name="EUR"]',
         'First Product in the Product List' => '//*[@id="content"]/div[2]/div[1]/div/div[3]/button[1]',
     );
 }

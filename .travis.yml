@@ -2,11 +2,6 @@ sudo: false
 dist: trusty
 language: php
 
-addons:
-  browserstack:
-    username: ${BROWSERSTACK_USER}
-    access_key:
-      secure: "ZXXC2wvjQ8Xy9rCIn9FCbHCGquL99ep+I2QZB0ZGF4DbzTGl14VzPzliMPpuqsWTFCWOriJ4qooJcWAXx/xOTQ+lhT7y26EckL+mbO3RuaGAMQAHnCXQjwOZEJlyu9BoeGe6vPE1Yeq7jVI+LW9InYjHDragXrXNgjx0ElnrDm0A72vmsJbqRuWxAAFKWj9R8GiXeq6l3GGH+PAv2RoP1rrUfNvNAM/fk+Ut1ay1dwmyJz2oEomxu/JvdDC91uNg6z+SKxZxyLWLu+RH+y+E9lhEwnhII5TrZUN8BKZnEyniP3R5X5uX0A8gUDc3gwLYYm16Kyt88e/i73dpz56xv8EzHYw0J8dPlEITvOiklYeVWJICtdjsRBaRWzw8jt0lNmgOfbx1nQ/0Ks0YPsbSvARp/olpKq8bUM6HF5wL4YipaAz9294lhvenzhCGaiIX5l1/EbUk1mTdbk4hkCVZMFGjV0Ou/DWRsAspfFg/uU1jdUp+wXgQcUjVH3KlVF0e9AOHgXP00FC3925InzsC5cF4cN+VFNqjOJ+zgVYrKeKV3Fpt8RKQMreNoIyJLEKyv3AqC/LhHus9HE70KZId1vNSHAV0FGSh4vkzpSQxEzAXZDIKJ6g0tAXe9NpPyi4kc6kb/ztt58L4fLEbeOZc5/jckFXSwsm31pdWTGPjtA4="
 env:
   global:
     - COMPOSER_ARGS="--no-interaction"
@@ -29,12 +24,9 @@ matrix:
       install:
       - chmod +x .bin/*
       - travis_retry composer require --dev $COMPOSER_ARGS codeception/codeception
-      - travis_retry composer require --dev $COMPOSER_ARGS require browserstack/browserstack-local
+#      - travis_retry composer require --dev $COMPOSER_ARGS browserstack/browserstack-local
       - travis_retry composer install $COMPOSER_ARGS
       - composer show
-
-      before_script:
-      - bash ./.bin/start-shopsystem.sh
       # run UI tests
       script: bash ./.bin/run-ui-test.sh
       after_script: skip

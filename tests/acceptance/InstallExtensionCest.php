@@ -33,7 +33,6 @@
  * @license GPLv3
  */
 
-use \Codeception\Util\Locator;
 
 class InstallExtensionCest
 {
@@ -41,10 +40,8 @@ class InstallExtensionCest
     public function _before(\AcceptanceTester $I)
     {
         $I->amOnPage('/admin');
-        $email = 'user';
-        $password = 'bitnami1';
-//        $email = getenv('OPENCART_USERNAME');
-//        $password = getenv('OPENCART_PASSWORD');
+        $email = getenv('OPENCART_USERNAME');
+        $password = getenv('OPENCART_PASSWORD');
 
         $I->submitForm("//*[@method='post']", [
             'username' => $email,
