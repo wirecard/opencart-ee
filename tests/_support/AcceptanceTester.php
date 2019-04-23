@@ -34,7 +34,6 @@
  */
 
 use Helper\Acceptance;
-use Helper\PhpBrowserAPITest;
 use Page\Base;
 use Page\Cart as CartPage;
 use Page\Checkout as CheckoutPage;
