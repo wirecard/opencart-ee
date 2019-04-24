@@ -5,6 +5,7 @@ language: php
 env:
   global:
     - COMPOSER_ARGS="--no-interaction"
+    - OPENCART_URL=http://127.0.0.1
     - github_token: ${GITHUB_TOKEN}
 
 matrix:
@@ -12,11 +13,11 @@ matrix:
     - stage: acceptance-test
   include:
     - php: 5.6
-      if: type != cron
+      if: type = cron
     - php: 7.0
-      if: type != cron
+      if: type = cron
     - php: 7.1
-      if: type != cron
+      if: type = cron
     - &acceptance-test
       stage: acceptance-test
       if: type != cron
@@ -28,6 +29,11 @@ matrix:
       - travis_retry composer require --dev $COMPOSER_ARGS codeception/codeception
       - travis_retry composer install $COMPOSER_ARGS
       - composer show
+      before_script:
+      - export VERSION=`cat SHOPVERSIONS | jq -r '.[0] | .release'`
+      - bash ./.bin/start-shopsystem.sh
+      - bash ./.bin/start-browserstack.sh
+      - travis_retry bash ./.bin/install-extension-ui.sh
       script: bash ./.bin/run-ui-test.sh
       after_script: skip
       after_success:

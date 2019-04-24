@@ -1,9 +1,8 @@
 #!/bin/bash
 
 export OPENCART_CONTAINER_NAME=opencart
-export VERSION=`jq .[0].release SHOPVERSIONS`
-export OPENCART_USERNAME=user
-export OPENCART_PASSWORD=bitnami1
+#export VERSION=`jq .[0].release SHOPVERSIONS`
+
 
 docker-compose up -d
 
@@ -18,9 +17,9 @@ done
 sleep 5
 docker exec ${OPENCART_CONTAINER_NAME} ./plugin/.bin/install-extension.sh
 
-#run installation from UI
-sleep 5
-system/library/bin/codecept run acceptance -g installator --steps
+##run installation from UI
+#sleep 5
+#system/library/bin/codecept run acceptance -g installator --steps
 
 
 
