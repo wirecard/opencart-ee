@@ -207,28 +207,14 @@ function addPermissionToDb($db, $paymentMethod = null)
     $jsonPermissionObj = $dbResult[0][0];
 
     $permissionObj = json_decode($jsonPermissionObj, JSON_OBJECT_AS_ARRAY);
-    addPermissions($permissionObj, $newPermissions);
+    foreach ($newPermissions as $newPermission) {
+        $permissionObj["access"][] = $newPermission;
+        $permissionObj["modify"][] = $newPermission;
+    }
     $newPermissionJson = json_encode($permissionObj);
     $dbUpdateQuery = "UPDATE " . $tableName . " SET permission = '" . $newPermissionJson . "'";
     $db->query($dbUpdateQuery);
 }
-/**
- * Add permissions to permission array
- *
- * @param array $permissions
- * @param array $newPermissions
- * @since   1.4.0
- */
-function addPermissions(&$permissions, $newPermissions) {
-    foreach ($newPermissions as $newPermission) {
-        foreach ($permissions as $listName => $list) {
-            if (!in_array($newPermission, $list)) {
-                $permissions[$listName][] = $newPermission;
-            }
-        }
-    }
-}
-
 
 /**
  * Build configuration array for payment method
