@@ -34,7 +34,7 @@ matrix:
       - bash ./.bin/start-shopsystem.sh
       - bash ./.bin/start-browserstack.sh
       - travis_retry bash ./.bin/install-extension-ui.sh
-      script: bash ./.bin/run-ui-test.sh
+      script: system/library/bin/codecept run acceptance -g ui_test --html --xml
       after_script: skip
       after_success:
       - bash .bin/upload-logs-and-notify.sh

@@ -10,12 +10,11 @@ echo "Timestamp : $(date)"
 RANDOM_VALUE=$[ ( RANDOM % 30 )  + 1 ]
 echo "Sleeping for: ${RANDOM_VALUE}"
 sleep ${RANDOM_VALUE}s
-echo "Timestamp : $(date)"
 
-#clone the repository where the screenshot should be uploaded
+# clone the repository where the screenshot should be uploaded
 git clone ${REPO_ADDRESS}
 
-#create folder with current date
+# create folder with current date
 export TODAY=$(date +%Y-%m-%d)
 
 export PROJECT_FOLDER="opencart-ee"
@@ -30,7 +29,7 @@ if [ ! -d "${DATE_FOLDER}" ]; then
 mkdir ${DATE_FOLDER}
 fi
 
-#copy report files
+# copy report files
 cp tests/_output/*.html ${DATE_FOLDER}
 cp tests/_output/*.xml ${DATE_FOLDER}
 if [[ $1 == 'fail' ]]; then
@@ -38,15 +37,15 @@ if [[ $1 == 'fail' ]]; then
 fi
 
 cd ${REPO_NAME}
-#push report files to the repository
+# push report files to the repository
 git add ${PROJECT_FOLDER}/${GATEWAY}/${TODAY}/*
 git commit -m "Add failed test screenshots from ${TRAVIS_BUILD_WEB_URL}"
 git push -q https://${GITHUB_TOKEN}@github.com/wirecard/${REPO_NAME}.git master
 
-#save commit hash
+# save commit hash
 export SCREENSHOT_COMMIT_HASH=$(git rev-parse --verify HEAD)
 if [[ $1 == 'fail' ]]; then
     cd ..
-    #send slack notification
+    # send slack notification
     bash .bin/send-notify.sh
 fi
