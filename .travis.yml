@@ -25,6 +25,8 @@ matrix:
       env: GATEWAY=API-TEST
       install:
       - chmod +x .bin/*
+      - travis_retry composer update $COMPOSER_ARGS
+      - travis_retry composer install $COMPOSER_ARGS
       - travis_retry composer global require "hirak/prestissimo:^0.3"
       - travis_retry composer require --dev $COMPOSER_ARGS codeception/codeception
       - travis_retry composer install $COMPOSER_ARGS
