@@ -258,7 +258,6 @@ function buildConfigByPaymentMethod($paymentMethod, $gateway)
 function configurePaymentMethodInDb($db, $dbConfig, $paymentMethod)
 {
     echo 'Configuring ' . $paymentMethod . " payment method in the shop system \n";
-    print_r($dbConfig);
     // table name
     $tableName = 'oc_setting';
     $paymentMethodCode = 'payment_wirecard_pg_' . $paymentMethod;
