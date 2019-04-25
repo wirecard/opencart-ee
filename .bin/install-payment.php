@@ -226,6 +226,7 @@ function addPermissionToDb($db, $paymentMethod = null)
  */
 function buildConfigByPaymentMethod($paymentMethod, $gateway)
 {
+    echo 'Getting configuration for gateway ' . $gateway . "\n";
     if (!array_key_exists($paymentMethod, $GLOBALS['defaultConfig'])) {
         return null;
     }
@@ -257,6 +258,7 @@ function buildConfigByPaymentMethod($paymentMethod, $gateway)
 function configurePaymentMethodInDb($db, $dbConfig, $paymentMethod)
 {
     echo 'Configuring ' . $paymentMethod . " payment method in the shop system \n";
+    print_r($dbConfig);
     // table name
     $tableName = 'oc_setting';
     $paymentMethodCode = 'payment_wirecard_pg_' . $paymentMethod;
