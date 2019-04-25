@@ -11,5 +11,4 @@ while ! $(curl --silent --output /dev/null --head --fail "${OPENCART_URL}/admin"
 done
 
 sleep 5
-docker exec ${OPENCART_CONTAINER_NAME} ./plugin/.bin/install-extension.sh
-
+docker exec --env GATEWAY=${GATEWAY} ${OPENCART_CONTAINER_NAME} ./plugin/.bin/install-extension.sh

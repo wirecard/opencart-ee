@@ -6,4 +6,5 @@ rsync -ah image /opt/bitnami/opencart/
 rsync -ah system /opt/bitnami/opencart/
 rsync -ah catalog /opt/bitnami/opencart/
 # configure credit card payment method
-php .bin/install-payment.php creditcard
+cd .bin
+php install-payment.php creditcard

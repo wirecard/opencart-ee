@@ -226,6 +226,7 @@ function addPermissionToDb($db, $paymentMethod = null)
  */
 function buildConfigByPaymentMethod($paymentMethod, $gateway)
 {
+    echo 'Getting configuration for gateway ' . $gateway . "\n";
     if (!array_key_exists($paymentMethod, $GLOBALS['defaultConfig'])) {
         return null;
     }
