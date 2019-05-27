@@ -17,12 +17,13 @@ git clone ${REPO_ADDRESS}
 # create folder with current date
 export TODAY=$(date +%Y-%m-%d)
 
-export PROJECT_FOLDER="opencart-ee"
+export OPENCART_CURRENT_VERSION=${OPENCART_VERSION}
+export PROJECT_FOLDER="opencart-ee-${OPENCART_CURRENT_VERSION}"
 GATEWAY_FOLDER=${REPO_NAME}/${PROJECT_FOLDER}/${GATEWAY}
 DATE_FOLDER=${GATEWAY_FOLDER}/${TODAY}
 
 if [ ! -d "${GATEWAY_FOLDER}" ]; then
-mkdir ${GATEWAY_FOLDER}
+mkdir -p ${GATEWAY_FOLDER}
 fi
 
 if [ ! -d "${DATE_FOLDER}" ]; then
@@ -47,5 +48,5 @@ export SCREENSHOT_COMMIT_HASH=$(git rev-parse --verify HEAD)
 if [[ $1 == 'fail' ]]; then
     cd ..
     # send slack notification
-    bash .bin/send-notify.sh
+#    bash .bin/send-notify.sh
 fi
