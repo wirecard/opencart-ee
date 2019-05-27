@@ -1,7 +1,6 @@
 #!/bin/bash
 
 export OPENCART_CONTAINER_NAME=opencart
-export OPENCART_CONTAINER_VERSION=${OPENCART_VERSION}
 
 docker-compose up -d
 

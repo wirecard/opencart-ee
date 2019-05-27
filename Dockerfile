@@ -1,3 +1,3 @@
-FROM bitnami/opencart:${OPENCART_VERSION}-1
+FROM bitnami/opencart:3.0.3-1
 
 RUN apt update && apt install -y rsync
