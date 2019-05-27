@@ -1,4 +1,4 @@
-FROM bitnami/opencart:1
+FROM bitnami/opencart:3.0.2.0-1
 
 ARG OPENCART_CONTAINER_VERSION=3.0.2.0
 
