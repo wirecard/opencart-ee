@@ -35,11 +35,10 @@ matrix:
     php: 7.1
     env:
     - GATEWAY=API-TEST
-    - OPENCART_VERSION=$(awk 'NR==1 {print; exit}' ${OPENCART_RELEASES_FILE})
-#   - OPENCART_RELEASE_VERSION=1
+    - OPENCART_RELEASE_VERSION=1
     install:
-#   - |
-#     export OPENCART_VERSION=$(awk "NR==$OPENCART_RELEASE_VERSION {print; exit}" ${OPENCART_RELEASES_FILE})
+    - |
+      export OPENCART_VERSION=$(awk "NR==$OPENCART_RELEASE_VERSION {print; exit}" ${OPENCART_RELEASES_FILE})
     - chmod +x .bin/*
     - travis_retry composer global require "hirak/prestissimo:^0.3"
     - travis_retry composer require --dev $COMPOSER_ARGS codeception/codeception:^2.5
@@ -59,43 +58,35 @@ matrix:
   - <<: *acceptance-test
     env:
     - GATEWAY=API-TEST
-    - OPENCART_VERSION=$(awk 'NR==2 {print; exit}' ${OPENCART_RELEASES_FILE})
-#   - OPENCART_RELEASE_VERSION=2
+    - OPENCART_RELEASE_VERSION=2
   - <<: *acceptance-test
     env:
     - GATEWAY=API-TEST
-    - OPENCART_VERSION=$(awk 'NR==3 {print; exit}' ${OPENCART_RELEASES_FILE})
-#   - OPENCART_RELEASE_VERSION=3
+    - OPENCART_RELEASE_VERSION=3
   - <<: *acceptance-test
     env:
     - GATEWAY=API-WDCEE-TEST
-    - OPENCART_VERSION=$(awk 'NR==1 {print; exit}' ${OPENCART_RELEASES_FILE})
-#   - OPENCART_RELEASE_VERSION=1
+    - OPENCART_RELEASE_VERSION=1
   - <<: *acceptance-test
     env:
     - GATEWAY=API-WDCEE-TEST
-    - OPENCART_VERSION=$(awk 'NR==2 {print; exit}' ${OPENCART_RELEASES_FILE})
-#   - OPENCART_RELEASE_VERSION=2
+    - OPENCART_RELEASE_VERSION=2
   - <<: *acceptance-test
     env:
     - GATEWAY=API-WDCEE-TEST
-    - OPENCART_VERSION=$(awk 'NR==3 {print; exit}' ${OPENCART_RELEASES_FILE})
-#   - OPENCART_RELEASE_VERSION=3
+    - OPENCART_RELEASE_VERSION=3
   - <<: *acceptance-test
     env:
     - GATEWAY=NOVA
-    - OPENCART_VERSION=$(awk 'NR==1 {print; exit}' ${OPENCART_RELEASES_FILE})
-#   - OPENCART_RELEASE_VERSION=1
+    - OPENCART_RELEASE_VERSION=1
   - <<: *acceptance-test
     env:
     - GATEWAY=NOVA
-    - OPENCART_VERSION=$(awk 'NR==2 {print; exit}' ${OPENCART_RELEASES_FILE})
-#   - OPENCART_RELEASE_VERSION=2
+    - OPENCART_RELEASE_VERSION=2
   - <<: *acceptance-test
     env:
     - GATEWAY=NOVA
-    - OPENCART_VERSION=$(awk 'NR==3 {print; exit}' ${OPENCART_RELEASES_FILE})
-#   - OPENCART_RELEASE_VERSION=3
+    - OPENCART_RELEASE_VERSION=3
 
 install:
   - travis_retry composer install $COMPOSER_ARGS
