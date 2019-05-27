@@ -10,7 +10,7 @@ services:
       - 'mariadb_data:/bitnami'
 
   opencart:
-    build: .
+    build:
       context: .
       dockerfile: Dockerfile
         args:
