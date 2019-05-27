@@ -11,10 +11,10 @@ services:
 
   opencart:
     build:
+      args:
+        OPENCART_VERSION: "${OPENCART_VERSION}"
       context: .
       dockerfile: Dockerfile
-        args:
-          OPENCART_VERSION: "${OPENCART_VERSION}"
     container_name: "${OPENCART_CONTAINER_NAME}"
     environment:
       - MARIADB_HOST=mariadb
