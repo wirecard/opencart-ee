@@ -7,44 +7,86 @@ env:
     - COMPOSER_ARGS="--no-interaction"
     - OPENCART_URL=http://127.0.0.1
     - github_token: ${GITHUB_TOKEN}
+    - OPENCART_RELEASES_FILE=${TRAVIS_BUILD_DIR}/.bin/shop-releases.txt
 
 matrix:
   allow_failures:
     - stage: acceptance-test
   include:
-    - php: 5.6
-      if: type != cron
-    - php: 7.0
-      if: type != cron
-    - php: 7.1
-      if: type != cron
-    - &acceptance-test
-      stage: acceptance-test
-      if: type = cron
-      php: 7.1
-      env: GATEWAY=API-TEST
-      install:
-      - chmod +x .bin/*
-      - travis_retry composer global require "hirak/prestissimo:^0.3"
-      - travis_retry composer require --dev $COMPOSER_ARGS codeception/codeception:^2.5
-      - travis_retry composer install $COMPOSER_ARGS
-      - composer show
-      before_script:
-      - export VERSION=`cat SHOPVERSIONS | jq -r '.[0] | .release'`
-      - bash ./.bin/start-shopsystem.sh
-      - bash ./.bin/start-browserstack.sh
-      - travis_retry bash ./.bin/install-extension-ui.sh
-      script: system/library/bin/codecept run acceptance -g ui_test --html --xml
-      after_script: skip
-      after_success:
-      - bash .bin/upload-logs-and-notify.sh
-      after_failure:
-      - bash .bin/upload-logs-and-notify.sh fail
-    - <<: *acceptance-test
-      env: GATEWAY=API-WDCEE-TEST
-    - <<: *acceptance-test
-      env: GATEWAY=NOVA
+  - php: 5.6
+    if: type != cron
+  - php: 7.0
+    if: type != cron
+  - php: 7.1
+    if: type != cron
 
+  - stage: get-opencart-versions
+    if: type != cron
+    php: 7.1
+    install: skip
+    before_script: skip
+    script: bash .bin/get-opencart-versions.sh
+    after_script: skip
+    after_failure: skip
+
+  - &acceptance-test
+    stage: acceptance-test
+    if: type != cron
+    php: 7.1
+    env:
+    - GATEWAY=API-TEST
+    - OPENCART_RELEASE_VERSION=1
+    install:
+    - |
+      export OPENCART_VERSION=$(awk "NR==$OPENCART_RELEASE_VERSION {print; exit}" ${OPENCART_RELEASES_FILE})
+    - chmod +x .bin/*
+    - travis_retry composer global require "hirak/prestissimo:^0.3"
+    - travis_retry composer require --dev $COMPOSER_ARGS codeception/codeception:^2.5
+    - travis_retry composer install $COMPOSER_ARGS
+    - composer show
+    before_script:
+    - export VERSION=`cat SHOPVERSIONS | jq -r '.[0] | .release'`
+    - bash ./.bin/start-shopsystem.sh
+    - bash ./.bin/start-browserstack.sh
+    - travis_retry bash ./.bin/install-extension-ui.sh
+    script: system/library/bin/codecept run acceptance -g ui_test --html --xml
+    after_script: skip
+    after_success:
+    - bash .bin/upload-logs-and-notify.sh
+    after_failure:
+    - bash .bin/upload-logs-and-notify.sh fail
+  - <<: *acceptance-test
+    env:
+    - GATEWAY=API-TEST
+    - OPENCART_RELEASE_VERSION=2
+  - <<: *acceptance-test
+    env:
+    - GATEWAY=API-TEST
+    - OPENCART_RELEASE_VERSION=3
+  - <<: *acceptance-test
+    env:
+    - GATEWAY=API-WDCEE-TEST
+    - OPENCART_RELEASE_VERSION=1
+  - <<: *acceptance-test
+    env:
+    - GATEWAY=API-WDCEE-TEST
+    - OPENCART_RELEASE_VERSION=2
+  - <<: *acceptance-test
+    env:
+    - GATEWAY=API-WDCEE-TEST
+    - OPENCART_RELEASE_VERSION=3
+  - <<: *acceptance-test
+    env:
+    - GATEWAY=NOVA
+    - OPENCART_RELEASE_VERSION=1
+  - <<: *acceptance-test
+    env:
+    - GATEWAY=NOVA
+    - OPENCART_RELEASE_VERSION=2
+  - <<: *acceptance-test
+    env:
+    - GATEWAY=NOVA
+    - OPENCART_RELEASE_VERSION=3
 
 install:
   - travis_retry composer install $COMPOSER_ARGS

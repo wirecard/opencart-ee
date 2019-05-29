@@ -10,7 +10,11 @@ services:
       - 'mariadb_data:/bitnami'
 
   opencart:
-    build: .
+    build:
+      args:
+        OPENCART_VERSION: "${OPENCART_VERSION}"
+      context: .
+      dockerfile: Dockerfile
     container_name: "${OPENCART_CONTAINER_NAME}"
     environment:
       - MARIADB_HOST=mariadb
