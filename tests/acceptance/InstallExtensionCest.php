@@ -61,7 +61,7 @@ class InstallExtensionCest
     public function tryToTest(AcceptanceTester $I)
     {
         $I->click('//*[@id="menu-extension"]');
-        $I->waitForElementVisible('//*[@id="collapse2"]');
+        $I->waitForElementVisible('//*[@id="collapse2"]', 30);
         $I->click('Extensions','//*[@id="collapse2"]');
         $I->wait(2);
         $I->selectOption('//*[@class="form-control"]', 'Modules');
