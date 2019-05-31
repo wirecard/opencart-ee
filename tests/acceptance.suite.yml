@@ -16,5 +16,4 @@ modules:
            'project': 'opencart-ee-%GATEWAY%'
            'browserstack.user': '%BROWSERSTACK_USER%'
            'browserstack.key': '%BROWSERSTACK_ACCESS_KEY%'
-           'browserstack.local': 'true'
      - \Helper\Acceptance

@@ -5,9 +5,11 @@ language: php
 env:
   global:
     - COMPOSER_ARGS="--no-interaction"
-    - OPENCART_URL=http://127.0.0.1
     - github_token: ${GITHUB_TOKEN}
     - OPENCART_RELEASES_FILE=${TRAVIS_BUILD_DIR}/.bin/shop-releases.txt
+    - OPENCART_DOMAIN=opencart-ui-test-api-wdcee-test
+    - NGROK_POSTFIX=.ngrok.io
+    - OPENCART_URL=https://${OPENCART_DOMAIN}${NGROK_POSTFIX}
 
 matrix:
   allow_failures:
@@ -46,8 +48,8 @@ matrix:
     - composer show
     before_script:
     - export VERSION=`cat SHOPVERSIONS | jq -r '.[0] | .release'`
+    - bash ./.bin/start-ngrok.sh
     - bash ./.bin/start-shopsystem.sh
-    - bash ./.bin/start-browserstack.sh
     - travis_retry bash ./.bin/install-extension-ui.sh
     script: system/library/bin/codecept run acceptance -g ui_test --html --xml
     after_script: skip
