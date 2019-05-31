@@ -17,12 +17,12 @@ services:
       dockerfile: Dockerfile
     container_name: "${OPENCART_CONTAINER_NAME}"
     environment:
-      - MARIADB_HOST=mariadb
-      - MARIADB_PORT_NUMBER=3306
-      - OPENCART_DATABASE_USER=bn_opencart
-      - OPENCART_DATABASE_NAME=bitnami_opencart
-      - OPENCART_HOST=127.0.0.1
-      - ALLOW_EMPTY_PASSWORD=yes
+      MARIADB_HOST: 'mariadb'
+      MARIADB_PORT_NUMBER: '3306'
+      OPENCART_DATABASE_USER: 'bn_opencart'
+      OPENCART_DATABASE_NAME: 'bitnami_opencart'
+      OPENCART_HOST: 'opencart-ui-test-api-wdcee-test.ngrok.io'
+      ALLOW_EMPTY_PASSWORD: 'yes'
     ports:
       - '80:80'
       - '443:443'
