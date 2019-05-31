@@ -11,7 +11,6 @@ chmod +x $PWD/jq
 # Open ngrok tunnel
 $PWD/ngrok authtoken $NGROK_TOKEN
 TIMESTAMP=$(date +%s)
-#$PWD/ngrok http 80 -subdomain=${TIMESTAMP}${GATEWAY}> /dev/null &
 $PWD/ngrok http 80 -subdomain="${OPENCART_DOMAIN}" > /dev/null &
 NGROK_URL=$(curl -s localhost:4040/api/tunnels/command_line | jq --raw-output .public_url)
 
