@@ -7,9 +7,8 @@ env:
     - COMPOSER_ARGS="--no-interaction"
     - github_token: ${GITHUB_TOKEN}
     - OPENCART_RELEASES_FILE=${TRAVIS_BUILD_DIR}/.bin/shop-releases.txt
-    - OPENCART_DOMAIN=opencart-ui-test-${GATEWAY}
-    - NGROK_POSTFIX=.ngrok.io
-    - OPENCART_URL=https://${OPENCART_DOMAIN}-${NGROK_POSTFIX}
+    - OPENCART_PREFIX=opencart-ui
+
 
 matrix:
   allow_failures:
@@ -69,14 +68,14 @@ matrix:
 #    env:
 #    - GATEWAY=API-WDCEE-TEST
 #    - OPENCART_RELEASE_VERSION=1
-#  - <<: *acceptance-test
-#    env:
-#    - GATEWAY=API-WDCEE-TEST
-#    - OPENCART_RELEASE_VERSION=2
-#  - <<: *acceptance-test
-#    env:
-#    - GATEWAY=API-WDCEE-TEST
-#    - OPENCART_RELEASE_VERSION=3
+  - <<: *acceptance-test
+    env:
+    - GATEWAY=API-WDCEE-TEST
+    - OPENCART_RELEASE_VERSION=2
+  - <<: *acceptance-test
+    env:
+    - GATEWAY=API-WDCEE-TEST
+    - OPENCART_RELEASE_VERSION=3
   - <<: *acceptance-test
     env:
     - GATEWAY=NOVA
