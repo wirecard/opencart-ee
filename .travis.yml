@@ -9,9 +9,6 @@ env:
     - OPENCART_RELEASES_FILE=${TRAVIS_BUILD_DIR}/.bin/shop-releases.txt
     - OPENCART_PREFIX=opencart-ui
     - NGROK_POSTFIX=.ngrok.io
-    - OPENCART_DOMAIN=${OPENCART_PREFIX}-${GATEWAY}${NGROK_POSTFIX}
-    - OPENCART_URL=https://${OPENCART_DOMAIN}
-
 
 matrix:
   allow_failures:
