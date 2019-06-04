@@ -6,11 +6,6 @@ export OPENCART_CONTAINER_NAME=opencart
 export OPENCART_DOMAIN=${OPENCART_PREFIX}-${GATEWAY}-${OPENCART_RELEASE_VERSION}${NGROK_POSTFIX}
 export OPENCART_URL=https://${OPENCART_DOMAIN}
 
-
-echo OPENCART_DOMAIN=${OPENCART_DOMAIN}
-echo OPENCART_URL=${OPENCART_URL}
-
-
 #Replace Opencart domain value and create docker-compose file from template
 sed -e "s/\${i}/1/" -e 's/\${OPENCART_DOMAIN}/'"${OPENCART_DOMAIN}"'/' docker-compose.tmpl > docker-compose.yml
 
