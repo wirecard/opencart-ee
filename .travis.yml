@@ -7,9 +7,9 @@ env:
     - COMPOSER_ARGS="--no-interaction"
     - github_token: ${GITHUB_TOKEN}
     - OPENCART_RELEASES_FILE=${TRAVIS_BUILD_DIR}/.bin/shop-releases.txt
-    - OPENCART_DOMAIN=opencart-ui-test-api-wdcee-test
+    - OPENCART_DOMAIN=opencart-ui-test-${GATEWAY}
     - NGROK_POSTFIX=.ngrok.io
-    - OPENCART_URL=https://${OPENCART_DOMAIN}${NGROK_POSTFIX}
+    - OPENCART_URL=https://${OPENCART_DOMAIN}-${NGROK_POSTFIX}
 
 matrix:
   allow_failures:

@@ -2,6 +2,9 @@
 
 export OPENCART_CONTAINER_NAME=opencart
 
+#Replace Opencart domain value and create docker-compose file from template
+sed -e "s/\${i}/1/" -e 's/\${OPENCART_DOMAIN}/'"${OPENCART_DOMAIN}"'/' docker-compose.tmpl > docker-compose.yml
+
 docker-compose up -d
 
 # wait for shop system to initialize
