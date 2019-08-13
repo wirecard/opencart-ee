@@ -98,7 +98,7 @@ $db = connectDatabase();
 addPaymentMethodToDb($db, $paymentMethod);
 //addPermissionToDb($db);
 addPermissionToDb($db, $paymentMethod);
-
+installExtension($db);
 configurePaymentMethodInDb($db, $dbConfig, $paymentMethod);
 $db->close();
 echo "Installation complete and " . $paymentMethod . " configured\n";

@@ -7,19 +7,17 @@ env:
     - COMPOSER_ARGS="--no-interaction"
     - github_token: ${GITHUB_TOKEN}
     - OPENCART_RELEASES_FILE=${TRAVIS_BUILD_DIR}/.bin/shop-releases.txt
-    - OPENCART_PREFIX=opencart-ui
-    - NGROK_POSTFIX=.ngrok.io
 
 matrix:
   allow_failures:
     - stage: acceptance-test
   include:
   - php: 5.6
-    if: type != cron
+    if: type = cron
   - php: 7.0
-    if: type != cron
+    if: type = cron
   - php: 7.1
-    if: type != cron
+    if: type = cron
 
   - stage: get-opencart-versions
     if: type = cron
@@ -32,14 +30,14 @@ matrix:
 
   - &acceptance-test
     stage: acceptance-test
-    if: type = cron
+    if: type != cron
     php: 7.1
     env:
     - GATEWAY=API-TEST
     - OPENCART_RELEASE_VERSION=1
     install:
-    - |
-      export OPENCART_VERSION=$(awk "NR==$OPENCART_RELEASE_VERSION {print; exit}" ${OPENCART_RELEASES_FILE})
+    - export OPENCART_VERSION=$(awk "NR==$OPENCART_RELEASE_VERSION {print; exit}" ${OPENCART_RELEASES_FILE})
+    - echo "Testing Opencart ${OPENCART_VERSION}"
     - chmod +x .bin/*
     - travis_retry composer global require "hirak/prestissimo:^0.3"
     - travis_retry composer require --dev $COMPOSER_ARGS codeception/codeception:^2.5
@@ -49,13 +47,13 @@ matrix:
     - export VERSION=`cat SHOPVERSIONS | jq -r '.[0] | .release'`
     - bash ./.bin/start-ngrok.sh
     - bash ./.bin/start-shopsystem.sh
-    - travis_retry bash ./.bin/install-extension-ui.sh
+#    - travis_retry bash ./.bin/install-extension-ui.sh
     script: system/library/bin/codecept run acceptance -g ui_test --html --xml
     after_script: skip
-    after_success:
-    - bash .bin/upload-logs-and-notify.sh
-    after_failure:
-    - bash .bin/upload-logs-and-notify.sh fail
+    after_success: skip
+#    - bash .bin/upload-logs-and-notify.sh
+    after_failure: skip
+#    - bash .bin/upload-logs-and-notify.sh fail
   - <<: *acceptance-test
     env:
     - GATEWAY=API-TEST
