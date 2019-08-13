@@ -48,7 +48,7 @@ matrix:
     - bash ./.bin/start-ngrok.sh
     - bash ./.bin/start-shopsystem.sh
 #    - travis_retry bash ./.bin/install-extension-ui.sh
-    script: system/library/bin/codecept run acceptance -g ui_test --html --xml
+    script: bash ./.bin/run-ui-tests.sh
     after_script: skip
     after_success: skip
 #    - bash .bin/upload-logs-and-notify.sh
