@@ -98,7 +98,7 @@ $db = connectDatabase();
 addPaymentMethodToDb($db, $paymentMethod);
 //addPermissionToDb($db);
 addPermissionToDb($db, $paymentMethod);
-installExtension($db);
+//installExtension($db);
 configurePaymentMethodInDb($db, $dbConfig, $paymentMethod);
 $db->close();
 echo "Installation complete and " . $paymentMethod . " configured\n";
@@ -274,3 +274,16 @@ function configurePaymentMethodInDb($db, $dbConfig, $paymentMethod)
         $db->query("INSERT INTO $tableName (`code`, `key`, `value`, `serialized`) VALUES ('" . $paymentMethodCode . "', '" . $fullName . "', '" . $value . "' , '" . $serialized . "')");
     }
 }
+
+///**
+// * Emulate "install" button pressing in the shopsystem
+// * @since   1.4.0
+// */
+//function installModuleButton()
+//{
+//    define('INSTALL_FILE_DIR', '');
+//
+//    require_once '/opt/bitnami/opencart/admin/controller/extension/module/wirecard_pg.php';
+//    $classname = "ControllerExtensionModuleWirecardPG";
+//    call_user_func(array($classname, 'install'));
+//}

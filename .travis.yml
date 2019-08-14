@@ -47,7 +47,7 @@ matrix:
     - export VERSION=`cat SHOPVERSIONS | jq -r '.[0] | .release'`
     - bash ./.bin/start-ngrok.sh
     - bash ./.bin/start-shopsystem.sh
-#    - travis_retry bash ./.bin/install-extension-ui.sh
+    - travis_retry bash ./.bin/install-extension-ui.sh
     script: bash ./.bin/run-ui-tests.sh
     after_script: skip
     after_success: skip
