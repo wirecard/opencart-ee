@@ -64,17 +64,7 @@ class InstallExtensionCest
 
     public function tryToTest(AcceptanceTester $I)
     {
-
-
+        //send GET request to emulate pressing "Install" button
         $I->amOnPage('/admin/index.php?route=extension/extension/module/install&user_token=' . $this->userToken .'&extension=wirecard_pg');
-//        $I->click('//*[@id="menu-extension"]');
-//        $I->waitForElementVisible('//*[@id="collapse2"]', 30);
-//        $I->click('Extensions','//*[@id="collapse2"]');
-//        $I->wait(2);
-//        $I->selectOption('//*[@class="form-control"]', 'Modules');
-//        $I->wait(2);
-//        $I->scrollTo(['class' => 'container-fluid'], 0, 4000);
-//        $I->wait(2);
-//        $I->click('//*[@id="extension"]/fieldset/div[2]/table/tbody/tr[td//text()[contains(., \'Wirecard\')]]/td[3]/a');
     }
 }

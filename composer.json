@@ -17,8 +17,7 @@
     "squizlabs/php_codesniffer": "^3.4",
     "mockery/mockery": "^1.1",
     "codacy/coverage": "dev-master",
-    "symfony/yaml": "^3",
-    "codeception/codeception": "^2.5"
+    "symfony/yaml": "^3"
   },
   "type": "opencart-plugin",
   "scripts": {
