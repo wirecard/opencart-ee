@@ -13,7 +13,7 @@ modules:
          browser: chrome # 'chrome' or 'firefox'
          capabilities:
            'build': '%VERSION%'
-           'project': 'opencart-ee-%GATEWAY%'
+           'project': 'opencart-ee-%GATEWAY%-%OPENCART_RELEASE_VERSION%'
            'browserstack.user': '%BROWSERSTACK_USER%'
            'browserstack.key': '%BROWSERSTACK_ACCESS_KEY%'
      - \Helper\Acceptance

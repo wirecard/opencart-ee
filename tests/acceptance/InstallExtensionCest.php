@@ -37,17 +37,20 @@
 class InstallExtensionCest
 {
 
+    private $userToken = '';
+
     public function _before(\AcceptanceTester $I)
     {
         $I->amOnPage('/admin');
         $email = getenv('OPENCART_USERNAME');
         $password = getenv('OPENCART_PASSWORD');
-
         $I->submitForm("//*[@method='post']", [
             'username' => $email,
             'password' => $password
         ]);
         $I->see('Dashboard');
+        //get user token to use it for extension installation
+        $this->userToken = $I->grabFromCurrentUrl('/user_token=(\w+)/i');
     }
 
 
@@ -60,14 +63,7 @@ class InstallExtensionCest
 
     public function tryToTest(AcceptanceTester $I)
     {
-        $I->click('//*[@id="menu-extension"]');
-        $I->waitForElementVisible('//*[@id="collapse2"]', 30);
-        $I->click('Extensions','//*[@id="collapse2"]');
-        $I->wait(2);
-        $I->selectOption('//*[@class="form-control"]', 'Modules');
-        $I->wait(2);
-        $I->scrollTo(['class' => 'container-fluid'], 0, 4000);
-        $I->wait(2);
-        $I->click('//*[@id="extension"]/fieldset/div[2]/table/tbody/tr[td//text()[contains(., \'Wirecard\')]]/td[3]/a');
+        //send GET request to emulate pressing "Install" button
+        $I->amOnPage('/admin/index.php?route=extension/extension/module/install&user_token=' . $this->userToken .'&extension=wirecard_pg');
     }
 }
