@@ -50,8 +50,7 @@ class InstallExtensionCest
         ]);
         $I->see('Dashboard');
         //get user token to use it for extension installation
-        $linkParts = explode('=', $I->grabFromCurrentUrl());
-        $this->userToken = end($linkParts);
+        $this->userToken = $I->grabFromCurrentUrl('/user_token=(\w+)/i');
     }
 
 
