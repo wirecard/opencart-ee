@@ -155,7 +155,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$currency = $additional_helper->getCurrency($order['currency_code'], $this->type);
 
 		$total = bcadd($additional_helper->convert($order['total'], $currency), 0.000000000000, $this->scale);
-		$amount = new \Wirecard\PaymentSdk\Entity\Amount($total, $order['currency_code']);
+		$amount = new \Wirecard\PaymentSdk\Entity\Amount((float)$total, $order['currency_code']);
 		$this->payment_config = $this->getConfig($currency);
 		$this->transaction->setRedirect($this->getRedirects($this->session->data['order_id']));
 		$this->transaction->setNotificationUrl($this->getNotificationUrl());
