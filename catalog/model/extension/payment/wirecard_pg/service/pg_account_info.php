@@ -31,12 +31,6 @@ class PGAccountInfo extends Model {
         return $this->initializeAccountInfo();
     }
 
-    protected function setCustomer() {
-        //$this->load->model('account/customer');
-
-        //$customer_info = $this->model_account_customer->getCustomer($order_info['customer_id']);
-    }
-
     protected function initializeAccountInfo() {
         $accountInfo = new AccountInfo();
         $accountInfo->setAuthMethod($this->auth_method);
@@ -66,11 +60,13 @@ class PGAccountInfo extends Model {
     }
 
     protected function fetchAuthenticationTimestamp() {
-        //addLogin in upload/&catalog/model/account/customer.php
-        //$this->db->query("INSERT INTO " . DB_PREFIX . "customer_ip SET customer_id = '" . (int)$customer_id . "', store_id = '" . (int)$this->config->get('config_store_id') . "', ip = '" . $this->db->escape($ip) . "', country = '" . $this->db->escape($country) . "', date_added = NOW()");
-        $result = $this->db->query("SELECT * FROM `" . DB_PREFIX . "customer_ip` WHERE customer_id = '" . (int)$this->customer_id . "' ORDER BY date_added DESC LIMIT 1");
-        // return login timestamp from db
-        // customer_id in order
-        return $result;
+        $time_stamp = null;
+
+        $result = $this->db->query("SELECT * FROM `" . DB_PREFIX . "customer_online` WHERE customer_id = '" . (int)$this->customer_id . "' ORDER BY date_added ASC LIMIT 1");
+        if ($result->num_rows) {
+            $time_stamp = DateTime::createFromFormat('Y-m-d H:i:s', $result->row['date_added']);
+            $time_stamp->format('Y-m-d\TH:i:s\Z');
+        }
+        return $time_stamp;
     }
 }
