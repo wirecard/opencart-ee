@@ -148,7 +148,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 			$ssl_max_limit = floatval($this->getShopConfigVal('ssl_max_limit'));
 			$payment_config->addSslMaxLimit(
 				new Amount(
-                    (float)$additional_helper->convert($ssl_max_limit, $currency),
+					(float)$additional_helper->convert($ssl_max_limit, $currency),
 					$currency['currency_code']
 				)
 			);
@@ -158,7 +158,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 			$three_d_min_limit = floatval($this->getShopConfigVal('three_d_min_limit'));
 			$payment_config->addThreeDMinLimit(
 				new Amount(
-                    (float)$additional_helper->convert(
+					(float)$additional_helper->convert(
 						$three_d_min_limit,
 						$currency
 					),
