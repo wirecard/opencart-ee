@@ -20,11 +20,7 @@ class ThreeDParamService {
 	public static function addThreeDsParameters($gateway, $registry, $transaction, $new_card_vault_request) {
 		$accountInfo = new PGAccountInfo($registry, $new_card_vault_request);
 		$transaction->getAccountHolder()->setAccountInfo($accountInfo->createAccountInfo($gateway, $new_card_vault_request));
-		// check if guest checkout, authenticated checkout or oneclick checkout
-		// pass to creators
-		// return everything as array
-		// merge return into request
-		//$transaction->getAccountHolder()->setAccountInfo($this->getAccountInfo());
+
 		return $transaction;
 	}
 }
