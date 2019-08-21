@@ -55,7 +55,8 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 		'delete_cancel_order' => 0,
 		'delete_failure_order' => 0,
 		'vault' => 0,
-		'allow_changed_shipping' => 0
+		'allow_changed_shipping' => 0,
+        'challenge_indicator' => 'no_preference',
 	);
 
 	/**
@@ -79,7 +80,9 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 			'config_vault',
 			'config_vault_desc',
 			'config_allow_changed_shipping',
-			'config_allow_changed_shipping_desc'
+			'config_allow_changed_shipping_desc',
+            'config_challenge_indicator',
+            'config_challenge_indicator_desc',
 		);
 		return parent::getConfigText($fields);
 	}
@@ -106,7 +109,11 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 		$data = parent::loadConfigBlocks($data);
 
 		$data['three_d_config'] = $this->load->view('extension/payment/wirecard_pg/three_d_config', $data);
-		$data['vault_config'] = $this->load->view('extension/payment/wirecard_pg/vault_config', $data);
+		$data['vault_config']   = $this->load->view('extension/payment/wirecard_pg/vault_config', $data);
+		$data['challenge_indicator_config'] = $this->load->view(
+		    'extension/payment/wirecard_pg/challenge_indicator_config',
+            $data
+        );
 
 		return $data;
 	}
@@ -128,6 +135,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends \ControllerExtensio
 				'sort_order',
 				'vault',
 				'allow_changed_shipping',
+                'challenge_indicator',
 			)
 		);
 	}

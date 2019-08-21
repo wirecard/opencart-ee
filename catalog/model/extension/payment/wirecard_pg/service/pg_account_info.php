@@ -7,6 +7,7 @@
  * https://github.com/wirecard/opencart-ee/blob/master/LICENSE
  */
 
+use Wirecard\PaymentSdk\Constant\ChallengeInd;
 use Wirecard\PaymentSdk\Entity\AccountInfo;
 use Wirecard\PaymentSdk\Constant\AuthMethod;
 
@@ -15,19 +16,24 @@ class PGAccountInfo extends Model {
     protected $auth_timestamp;
     protected $order;
     protected $customer_id;
+    protected $challenge_indicator;
 
     /**
      * @return AccountInfo
      */
     public function createAccountInfo() {
+        // Authentication method and timestamp
         $this->auth_method    = AuthMethod::GUEST_CHECKOUT;
         $this->auth_timestamp = null;
-
         $this->load->model('account/customer');
         if ($this->isAuthenticatedUser()) {
             $this->setAuthenticated();
         }
 
+        // Challenge Indicator
+        $this->challenge_indicator = $this->getChallengeIndicator();
+
+        // Map all settings and create SDK account info
         return $this->initializeAccountInfo();
     }
 
@@ -35,6 +41,7 @@ class PGAccountInfo extends Model {
         $accountInfo = new AccountInfo();
         $accountInfo->setAuthMethod($this->auth_method);
         $accountInfo->setAuthTimestamp($this->auth_timestamp);
+        $accountInfo->setChallengeInd($this->challenge_indicator);
 
         return $accountInfo;
     }
@@ -57,6 +64,20 @@ class PGAccountInfo extends Model {
 
     protected function setCustomerId($customer_id) {
         $this->customer_id = $customer_id;
+    }
+
+    protected function getChallengeIndicator() {
+        $challenge_indicator =  ChallengeInd::NO_PREFERENCE;
+        // fetch from db
+        $challenge_indicator = $this->fetchChallengeIndicator();
+        // If save creditcard (vault) checkout overwrite with CHALLENGE_MANDATE
+        $challenge_indicator = ChallengeInd::CHALLENGE_MANDATE;
+
+        return $challenge_indicator;
+    }
+
+    protected function fetchChallengeIndicator() {
+      return '';//FETCH FROM DB
     }
 
     protected function fetchAuthenticationTimestamp() {

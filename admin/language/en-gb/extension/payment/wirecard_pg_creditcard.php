@@ -28,3 +28,9 @@ $_['config_vault'] = "One-Click Checkout";
 $_['config_vault_desc'] = "Credit Card details are saved for later use.";
 $_['config_allow_changed_shipping'] = "Allow Shipping Address Change";
 $_['config_allow_changed_shipping_desc'] = "If disabled, consumer is required to re-enter credit card details if the shipping address has changed between two orders.";
+
+$_['config_challenge_indicator'] = 'Challenge Indicator';
+$_['config_challenge_indicator_desc'] = 'Indicates whether a challenge is requested for this transaction';
+$_['text_challenge_indicator_no_preference'] = 'No preference';
+$_['text_challenge_indicator_no_challenge'] = 'No challenge';
+$_['text_challenge_indicator_challenge_threed'] = 'Challenge Three D';
