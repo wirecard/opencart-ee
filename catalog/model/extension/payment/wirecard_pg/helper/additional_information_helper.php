@@ -9,7 +9,6 @@
 
 require_once(dirname(__FILE__) . '/pg_basket.php');
 require_once(dirname(__FILE__) . '/pg_account_holder.php');
-require_once(dirname(__FILE__) . '/../service/three_d_param_service.php');
 include_once(DIR_SYSTEM . 'library/autoload.php');
 
 use Wirecard\PaymentSdk\Transaction\Transaction;
@@ -88,8 +87,6 @@ class AdditionalInformationHelper extends Model {
 		if ($include_shipping) {
 			$transaction->setShipping($account_holder->createAccountHolder($order, $account_holder::SHIPPING));
 		}
-
-		$transaction->getAccountHolder()->setAccountInfo(ThreeDParamService::getAccountInfo($this->registry));
 
 		return $transaction;
 	}

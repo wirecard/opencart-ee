@@ -17,21 +17,26 @@ class PGAccountInfo extends Model {
 	protected $order;
 	protected $customer_id;
 	protected $challenge_indicator;
+	/** @var ControllerExtensionPaymentGateway */
+	protected $gateway;
+	protected $new_cart_vault_request;
 
 	/**
 	 * @return AccountInfo
 	 */
-	public function createAccountInfo() {
+	public function createAccountInfo($gateway, $new_cart_vault_request) {
 		// Authentication method and timestamp
 		$this->auth_method    = AuthMethod::GUEST_CHECKOUT;
 		$this->auth_timestamp = null;
+		$this->gateway        = $gateway;
 		$this->load->model('account/customer');
+		$this->new_cart_vault_request = $new_cart_vault_request;
 		if ($this->isAuthenticatedUser()) {
 			$this->setAuthenticated();
 		}
 
 		// Challenge Indicator
-		$this->challenge_indicator = $this->getChallengeIndicator();
+		$this->setChallengeIndicator();
 
 		// Map all settings and create SDK account info
 		return $this->initializeAccountInfo();
@@ -66,18 +71,40 @@ class PGAccountInfo extends Model {
 		$this->customer_id = $customer_id;
 	}
 
-	protected function getChallengeIndicator() {
-		$challenge_indicator =  ChallengeInd::NO_PREFERENCE;
-		// fetch from db
+	protected function setChallengeIndicator() {
 		$challenge_indicator = $this->fetchChallengeIndicator();
-		// If save creditcard (vault) checkout overwrite with CHALLENGE_MANDATE
-		$challenge_indicator = ChallengeInd::CHALLENGE_MANDATE;
+		// Check if first time oneclick - if true change indicator to challenge_threed
+		if (isset($this->new_cart_vault_request)) {
+			$challenge_indicator = 'challenge_threed';
+		}
+		$challenge_indicator = $this->mapChallengeIndicator($challenge_indicator);
+
+		$this->challenge_indicator = $challenge_indicator;
+	}
+
+	protected function fetchChallengeIndicator() {
+		$challenge_indicator = $this->gateway->getShopConfigVal('challenge_indicator');
 
 		return $challenge_indicator;
 	}
 
-	protected function fetchChallengeIndicator() {
-	  return '';//FETCH FROM DB
+	protected function mapChallengeIndicator($challenge_indicator) {
+		switch ($challenge_indicator) {
+			case 'no_challenge':
+				$indicator = ChallengeInd::NO_CHALLENGE;
+				break;
+			case 'challenge_threed':
+				$indicator = ChallengeInd::CHALLENGE_THREED;
+				break;
+			case 'challenge_mandate':
+				$indicator = ChallengeInd::CHALLENGE_MANDATE;
+				break;
+			default:
+				$indicator = ChallengeInd::NO_PREFERENCE;
+				break;
+		}
+
+		return $indicator;
 	}
 
 	protected function fetchAuthenticationTimestamp() {

@@ -21,10 +21,14 @@ class ModelExtensionPaymentWirecardPGVault extends Model {
 	 * @since 1.1.0
 	 */
 	public function getCards() {
+		$address_id = $this->session->data['payment_address']['address_id'];
+		if (isset($this->session->data['shipping_address']['address_id'])) {
+			$address_id = $this->session->data['shipping_address']['address_id'];
+		}
 		$cards = $this->db->query(
 			"SELECT * FROM `" . DB_PREFIX . "wirecard_ee_vault` 
 			WHERE user_id=" . $this->customer->getId() . "
-			AND address_id=" . $this->session->data['shipping_address']['address_id'] . "
+			AND address_id=" . $address_id . "
 			ORDER BY vault_id DESC"
 		)->rows;
 
