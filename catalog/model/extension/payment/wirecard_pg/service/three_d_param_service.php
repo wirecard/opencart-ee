@@ -12,15 +12,14 @@ include_once(DIR_SYSTEM . 'library/autoload.php');
 
 class ThreeDParamService {
 	/**
+	 * Adds three ds parameters to the passed transaction
+	 *
 	 * @param ControllerExtensionPaymentGateway $gateway
 	 * @param Registry $registry
 	 * @param \Wirecard\PaymentSdk\Transaction\Transaction $transaction
-	 * @return mixed
 	 */
 	public static function addThreeDsParameters($gateway, $registry, $transaction, $new_card_vault_request) {
 		$accountInfo = new PGAccountInfo($registry, $new_card_vault_request);
 		$transaction->getAccountHolder()->setAccountInfo($accountInfo->createAccountInfo($gateway, $new_card_vault_request));
-
-		return $transaction;
 	}
 }

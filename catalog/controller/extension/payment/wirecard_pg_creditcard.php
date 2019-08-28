@@ -203,7 +203,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		if (isset($this->session->data['save_card'])) {
 			$save_card = true;
 		}
-		$this->transaction = ThreeDParamService::addThreeDsParameters($this, $this->registry, $this->transaction, $save_card);
+		ThreeDParamService::addThreeDsParameters($this, $this->registry, $this->transaction, $save_card);
 		$transaction_service = new TransactionService($this->payment_config, $this->getLogger());
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(($transaction_service->getCreditCardUiWithData(
