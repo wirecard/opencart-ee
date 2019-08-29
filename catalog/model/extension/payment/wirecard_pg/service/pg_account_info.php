@@ -212,8 +212,8 @@ class PGAccountInfo extends Model {
 	}
 
 	/**
-	 * Select account creation date
-	 * For authenticated user
+	 * Select card creation date
+	 * For vaulted card
 	 *
 	 * @return DateTime
 	 *
