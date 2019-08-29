@@ -17,13 +17,14 @@ class ThreeDParamService {
 	 * @param ControllerExtensionPaymentGateway $gateway
 	 * @param Registry $registry
 	 * @param \Wirecard\PaymentSdk\Transaction\Transaction $transaction
+	 * @param bool $new_card_vault_request
 	 *
 	 * @since 1.5.0
 	 */
 	public static function addThreeDsParameters($gateway, $registry, $transaction, $new_card_vault_request) {
 		$account_holder = $transaction->getAccountHolder();
 		if ($account_holder instanceof \Wirecard\PaymentSdk\Entity\AccountHolder) {
-			$accountInfo = new PGAccountInfo($registry, $gateway, $new_card_vault_request, $account_holder);
+			$accountInfo = new PGAccountInfo($registry, $gateway, $account_holder, $new_card_vault_request);
 			$account_holder->setAccountInfo($accountInfo->createAccountInfo());
 		}
 	}

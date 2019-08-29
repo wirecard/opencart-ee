@@ -193,7 +193,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 * @since 1.0.0
 	 */
 	public function getCreditCardUiRequestData() {
-		$save_card = null;
+		$save_card = false;
 		$this->transaction = new CreditCardTransaction();
 		$language = $this->getLocale($this->getShopConfigVal('base_url'));
 		$this->prepareTransaction();

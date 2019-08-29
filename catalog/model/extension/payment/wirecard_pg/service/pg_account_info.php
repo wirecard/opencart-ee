@@ -15,8 +15,8 @@ use Wirecard\PaymentSdk\Constant\AuthMethod;
 class PGAccountInfo extends Model {
 	/** @var ControllerExtensionPaymentGateway $gateway */
 	protected $gateway;
-	/** @var bool $new_cart_vault_request */
-	protected $new_cart_vault_request;
+	/** @var bool $new_card_vault_request */
+	protected $new_card_vault_request;
 	/** @var int $customer_id */
 	protected $customer_id;
 	/** @var string $auth_method */
@@ -25,18 +25,17 @@ class PGAccountInfo extends Model {
 	protected $auth_timestamp;
 	/** @var string $challenge_indicator */
 	protected $challenge_indicator;
-
-	// If vaulted credit card, date it was saved
-	protected $card_creation_date; //@TODO Add
 	/** @var AccountHolder $account_holder */
 	protected $account_holder;
+	// If vaulted credit card, date it was saved
+	protected $card_creation_date; //@TODO Add
 
 
-	public function __construct($registry, $gateway, $new_cart_vault_request, $account_holder) {
+	public function __construct($registry, $gateway, $account_holder, $new_card_vault_request) {
 		parent::__construct($registry);
 		$this->load->model('account/customer');
 		$this->gateway = $gateway;
-		$this->new_cart_vault_request = $new_cart_vault_request;
+		$this->new_card_vault_request = $new_card_vault_request;
 		$this->account_holder = $account_holder;
 	}
 
@@ -134,7 +133,7 @@ class PGAccountInfo extends Model {
 	protected function setChallengeIndicator() {
 		$challenge_indicator = $this->fetchChallengeIndicator();
 		// Check if first time oneclick - if true change indicator to challenge_threed
-		if (isset($this->new_cart_vault_request)) {
+		if (isset($this->new_card_vault_request)) {
 			$challenge_indicator = 'challenge_mandate';
 		}
 		$challenge_indicator = $this->mapChallengeIndicator($challenge_indicator);
