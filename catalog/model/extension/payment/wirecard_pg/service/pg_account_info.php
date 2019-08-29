@@ -27,16 +27,16 @@ class PGAccountInfo extends Model {
 	protected $challenge_indicator;
 	/** @var AccountHolder $account_holder */
 	protected $account_holder;
-	// If vaulted credit card, date it was saved
-	protected $card_creation_date; //@TODO Add
+	/** @var bool $one_click_checkout */
+	protected $vault_token;
 
-
-	public function __construct($registry, $gateway, $account_holder, $new_card_vault_request) {
+	public function __construct($registry, $gateway, $account_holder, $new_card_vault_request, $vault_token) {
 		parent::__construct($registry);
 		$this->load->model('account/customer');
 		$this->gateway = $gateway;
 		$this->new_card_vault_request = $new_card_vault_request;
 		$this->account_holder = $account_holder;
+		$this->vault_token = $vault_token;
 	}
 
 	/**
@@ -154,7 +154,9 @@ class PGAccountInfo extends Model {
 		$accountInfo->setAmountTransactionsLastDay($this->fetchTransactionsLastDay());
 		$accountInfo->setAmountTransactionsLastYear($this->fetchTransactionsLastYear());
 		$accountInfo->setAmountPurchasesLastSixMonths($this->fetchPurchasesLastSixMonths());
-		//@TODO add card creation date
+		if (isset($this->vault_token)) {
+			$accountInfo->setCardCreationDate($this->fetchCardCreationDate());
+		}
 	}
 
 	/**
@@ -194,7 +196,7 @@ class PGAccountInfo extends Model {
 	 * Select account creation date
 	 * For authenticated user
 	 *
-	 * @return bool|DateTime
+	 * @return DateTime
 	 *
 	 * @since 1.5.0
 	 */
@@ -202,6 +204,25 @@ class PGAccountInfo extends Model {
 		$creation_date = new DateTime();
 
 		$result = $this->db->query("SELECT date_added FROM `" . DB_PREFIX . "customer` WHERE customer_id = '" . (int)$this->customer_id . "'");
+		if ($result->num_rows) {
+			$creation_date = DateTime::createFromFormat('Y-m-d H:i:s', $result->row['date_added']);
+		}
+
+		return $creation_date;
+	}
+
+	/**
+	 * Select account creation date
+	 * For authenticated user
+	 *
+	 * @return DateTime
+	 *
+	 * @since 1.5.0
+	 */
+	protected function fetchCardCreationDate() {
+		$creation_date = new DateTime();
+
+		$result = $this->db->query("SELECT date_added FROM `" . DB_PREFIX . ModelExtensionPaymentWirecardPG::VAULT_TABLE . "` WHERE vault_id = '" . (int)$this->vault_token . "'");
 		if ($result->num_rows) {
 			$creation_date = DateTime::createFromFormat('Y-m-d H:i:s', $result->row['date_added']);
 		}

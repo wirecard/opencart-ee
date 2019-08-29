@@ -104,13 +104,15 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 */
 	protected function confirmTokenBasedTransaction() {
 		$model = $this->getModel();
+		$token_id = $this->request->post['token'];
 
 		$this->transaction = $this->getTransactionInstance();
 		$this->prepareTransaction(true);
 
 		$this->transaction->setConfig($this->payment_config->get(CreditCardTransaction::NAME));
 		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
-		$this->transaction->setTokenId($this->request->post['token']);
+		$this->transaction->setTokenId($token_id);
+		ThreeDParamService::addThreeDsParameters($this, $this->registry, $this->transaction, false, $token_id);
 
 		$response = $model->sendRequest($this->payment_config, $this->transaction, $this->getShopConfigVal('payment_action'));
 		if (!isset($this->session->data['error'])) {

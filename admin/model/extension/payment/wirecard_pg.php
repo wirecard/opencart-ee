@@ -14,10 +14,13 @@
  */
 class ModelExtensionPaymentWirecardPG extends Model {
 
+	const VAULT_TABLE = 'wirecard_ee_vault';
+
 	/**
 	 * Create transaction table in install process
 	 *
 	 * @since 1.0.0
+	 * @since 1.5.0 Add vault created_at and updated_at columns
 	 */
 	public function install() {
 		$this->db->query("
@@ -53,7 +56,7 @@ class ModelExtensionPaymentWirecardPG extends Model {
 		}
 
 		$this->db->query("
-			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "wirecard_ee_vault` (
+			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . self::VAULT_TABLE . "` (
 			`vault_id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
 			`user_id` INT(10) NOT NULL,
 			`address_id` INT(10) NOT NULL,
@@ -63,6 +66,16 @@ class ModelExtensionPaymentWirecardPG extends Model {
 			`expiration_year` INT(10) NOT NULL,
 			PRIMARY KEY (`vault_id`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
+
+		$vault_query = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . self::VAULT_TABLE . "` LIKE 'created_at'");
+
+		if ($vault_query->num_rows == 0) {
+			$this->db->query("
+                ALTER TABLE `" . DB_PREFIX . self::VAULT_TABLE . "`
+                ADD COLUMN `date_added` timestamp NOT NULL default CURRENT_TIMESTAMP,
+                ADD COLUMN `date_updated` timestamp NULL ON UPDATE CURRENT_TIMESTAMP
+		    ");
+		}
 	}
 
 	/**
