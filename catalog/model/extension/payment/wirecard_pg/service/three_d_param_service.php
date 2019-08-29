@@ -8,6 +8,7 @@
  */
 
 require_once(dirname(__FILE__) . '/pg_account_info.php');
+require_once(dirname(__FILE__) . '/pg_risk_info.php');
 include_once(DIR_SYSTEM . 'library/autoload.php');
 
 class ThreeDParamService {
@@ -23,10 +24,18 @@ class ThreeDParamService {
 	 * @since 1.5.0
 	 */
 	public static function addThreeDsParameters($gateway, $registry, $transaction, $new_card_vault_request = false, $vault_token = null) {
+		// Account Info
 		$account_holder = $transaction->getAccountHolder();
 		if ($account_holder instanceof \Wirecard\PaymentSdk\Entity\AccountHolder) {
 			$accountInfo = new PGAccountInfo($registry, $gateway, $account_holder, $new_card_vault_request, $vault_token);
-			$account_holder->setAccountInfo($accountInfo->createAccountInfo());
+			$accountInfo->mapAccountInfo();
 		}
+
+		// Risk Info
+		$risk_info = new PGRiskInfo($registry, $transaction);
+		$risk_info->mapRiskInfo();
+
+		// Hardcoded
+		$transaction->setIsoTransactionType(\Wirecard\PaymentSdk\Constant\IsoTransactionType::GOODS_SERVICE_PURCHASE);
 	}
 }

@@ -49,14 +49,14 @@ class PGAccountInfo extends Model {
 	 *
 	 * @since 1.5.0
 	 */
-	public function createAccountInfo() {
+	public function mapAccountInfo() {
 		// Set auth method and auth timestamp
 		$this->setAuthenticatedData();
 		// Challenge Indicator
 		$this->setChallengeIndicator();
 
 		// Map all settings and create SDK account info
-		return $this->initializeAccountInfo();
+		$this->account_holder->setAccountInfo($this->initializeAccountInfo());
 	}
 
 	/**

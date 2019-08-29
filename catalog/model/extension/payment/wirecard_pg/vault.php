@@ -14,7 +14,7 @@
  */
 class ModelExtensionPaymentWirecardPGVault extends Model {
 
-    const VAULT_TABLE = 'wirecard_ee_vault';
+	const VAULT_TABLE = 'wirecard_ee_vault';
 
 	/**
 	 * Get all Credit Cards associated with a user.
