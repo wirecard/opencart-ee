@@ -67,6 +67,10 @@ class ModelExtensionPaymentWirecardPG extends Model {
 			PRIMARY KEY (`vault_id`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
 
+		$this->updateVaultTable();
+	}
+
+	public function updateVaultTable() {
 		$vault_query = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . self::VAULT_TABLE . "` LIKE 'created_at'");
 
 		if ($vault_query->num_rows == 0) {

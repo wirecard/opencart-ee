@@ -12,6 +12,8 @@ use Wirecard\PaymentSdk\Entity\AccountHolder;
 use Wirecard\PaymentSdk\Entity\AccountInfo;
 use Wirecard\PaymentSdk\Constant\AuthMethod;
 
+require_once(dirname(__FILE__) . '/../vault.php');
+
 class PGAccountInfo extends Model {
 	/** @var ControllerExtensionPaymentGateway $gateway */
 	protected $gateway;
@@ -133,7 +135,7 @@ class PGAccountInfo extends Model {
 	protected function setChallengeIndicator() {
 		$challenge_indicator = $this->fetchChallengeIndicator();
 		// Check if first time oneclick - if true change indicator to challenge_threed
-		if (isset($this->new_card_vault_request)) {
+		if ($this->new_card_vault_request) {
 			$challenge_indicator = 'challenge_mandate';
 		}
 		$challenge_indicator = $this->mapChallengeIndicator($challenge_indicator);
@@ -222,12 +224,27 @@ class PGAccountInfo extends Model {
 	protected function fetchCardCreationDate() {
 		$creation_date = new DateTime();
 
-		$result = $this->db->query("SELECT date_added FROM `" . DB_PREFIX . ModelExtensionPaymentWirecardPG::VAULT_TABLE . "` WHERE vault_id = '" . (int)$this->vault_token . "'");
+		if (!$this->vaultContainsCreatedAt()) {
+			return $creation_date;
+		}
+
+		$result = $this->db->query("SELECT date_added FROM `" . DB_PREFIX . ModelExtensionPaymentWirecardPGVault::VAULT_TABLE . "` WHERE token = '" . (int)$this->vault_token . "'");
 		if ($result->num_rows) {
 			$creation_date = DateTime::createFromFormat('Y-m-d H:i:s', $result->row['date_added']);
 		}
 
 		return $creation_date;
+	}
+
+	protected function vaultContainsCreatedAt() {
+		$contains_created_at = true;
+		$vault_query = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . ModelExtensionPaymentWirecardPGVault::VAULT_TABLE . "` LIKE 'created_at'");
+		if ($vault_query->num_rows == 0) {
+			$contains_created_at = false;
+		}
+
+		return $contains_created_at;
+
 	}
 
 	/**
