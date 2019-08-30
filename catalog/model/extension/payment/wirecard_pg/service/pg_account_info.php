@@ -17,8 +17,6 @@ require_once(dirname(__FILE__) . '/../vault.php');
 class PGAccountInfo extends Model {
 	/** @var ControllerExtensionPaymentGateway $gateway */
 	protected $gateway;
-	/** @var bool $new_card_vault_request */
-	protected $new_card_vault_request;
 	/** @var int $customer_id */
 	protected $customer_id;
 	/** @var string $auth_method */
@@ -32,11 +30,10 @@ class PGAccountInfo extends Model {
 	/** @var bool $one_click_checkout */
 	protected $vault_token;
 
-	public function __construct($registry, $gateway, $account_holder, $new_card_vault_request, $vault_token) {
+	public function __construct($registry, $gateway, $account_holder, $vault_token) {
 		parent::__construct($registry);
 		$this->load->model('account/customer');
 		$this->gateway = $gateway;
-		$this->new_card_vault_request = $new_card_vault_request;
 		$this->account_holder = $account_holder;
 		$this->vault_token = $vault_token;
 	}
@@ -134,10 +131,6 @@ class PGAccountInfo extends Model {
 	 */
 	protected function setChallengeIndicator() {
 		$challenge_indicator = $this->fetchChallengeIndicator();
-		// Check if first time oneclick - if true change indicator to challenge_threed
-		if ($this->new_card_vault_request) {
-			$challenge_indicator = 'challenge_mandate';
-		}
 		$challenge_indicator = $this->mapChallengeIndicator($challenge_indicator);
 
 		$this->challenge_indicator = $challenge_indicator;

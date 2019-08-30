@@ -23,11 +23,11 @@ class ThreeDParamService {
 	 *
 	 * @since 1.5.0
 	 */
-	public static function addThreeDsParameters($gateway, $registry, $transaction, $new_card_vault_request = false, $vault_token = null) {
+	public static function addThreeDsParameters($gateway, $registry, $transaction, $vault_token = null) {
 		// Account Info
 		$account_holder = $transaction->getAccountHolder();
 		if ($account_holder instanceof \Wirecard\PaymentSdk\Entity\AccountHolder) {
-			$accountInfo = new PGAccountInfo($registry, $gateway, $account_holder, $new_card_vault_request, $vault_token);
+			$accountInfo = new PGAccountInfo($registry, $gateway, $account_holder, $vault_token);
 			$accountInfo->mapAccountInfo();
 		}
 
