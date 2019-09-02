@@ -15,6 +15,9 @@ use Wirecard\PaymentSdk\Constant\AuthMethod;
 require_once(dirname(__FILE__) . '/../vault.php');
 
 class PGAccountInfo extends Model {
+	const SDK_DATE_FORMAT = 'Y-m-d\TH:i:s\Z';
+	const DB_DATE_FORMAT = 'Y-m-d H:i:s';
+
 	/** @var ControllerExtensionPaymentGateway $gateway */
 	protected $gateway;
 	/** @var int $customer_id */
@@ -177,11 +180,30 @@ class PGAccountInfo extends Model {
 
 		$result = $this->db->query("SELECT * FROM `" . DB_PREFIX . "customer_online` WHERE customer_id = '" . (int)$this->customer_id . "' ORDER BY date_added ASC LIMIT 1");
 		if ($result->num_rows) {
-			$time_stamp = DateTime::createFromFormat('Y-m-d H:i:s', $result->row['date_added']);
-			$time_stamp->format('Y-m-d\TH:i:s\Z');
+			$time_stamp = $this->reformatDateString(
+				$result['date_added'],
+				self::DB_DATE_FORMAT,
+				self::SDK_DATE_FORMAT
+			);
 		}
 
 		return $time_stamp;
+	}
+
+	/**
+	 * Reformat a date string
+	 *
+	 * @param $date
+	 * @param $previous_format
+	 * @param $new_format
+	 * @return string
+	 *
+	 * @since 1.5.0
+	 */
+	protected function reformatDateString($date, $previous_format, $new_format) {
+		$date = DateTime::createFromFormat($previous_format, $date);
+
+		return $date->format($new_format);
 	}
 
 	/**
@@ -197,7 +219,11 @@ class PGAccountInfo extends Model {
 
 		$result = $this->db->query("SELECT date_added FROM `" . DB_PREFIX . "customer` WHERE customer_id = '" . (int)$this->customer_id . "'");
 		if ($result->num_rows) {
-			$creation_date = DateTime::createFromFormat('Y-m-d H:i:s', $result->row['date_added']);
+			$creation_date = $this->reformatDateString(
+				$result->row['date_added'],
+				self::DB_DATE_FORMAT,
+				self::SDK_DATE_FORMAT
+			);
 		}
 
 		return $creation_date;
