@@ -130,10 +130,7 @@ class PGAccountInfo extends Model {
 	 * @since 1.5.0
 	 */
 	protected function setChallengeIndicator() {
-		$challenge_indicator = $this->fetchChallengeIndicator();
-		$challenge_indicator = $this->mapChallengeIndicator($challenge_indicator);
-
-		$this->challenge_indicator = $challenge_indicator;
+		$this->challenge_indicator = $this->fetchChallengeIndicator();
 	}
 
 	/**
@@ -323,33 +320,6 @@ class PGAccountInfo extends Model {
 		}
 
 		return $total;
-	}
-
-	/**
-	 * Map given indicator to SDK states
-	 *
-	 * @param $challenge_indicator
-	 * @return string
-	 *
-	 * @since 1.5.0
-	 */
-	protected function mapChallengeIndicator($challenge_indicator) {
-		switch ($challenge_indicator) {
-			case 'no_challenge':
-				$indicator = ChallengeInd::NO_CHALLENGE;
-				break;
-			case 'challenge_threed':
-				$indicator = ChallengeInd::CHALLENGE_THREED;
-				break;
-			case 'challenge_mandate':
-				$indicator = ChallengeInd::CHALLENGE_MANDATE;
-				break;
-			default:
-				$indicator = ChallengeInd::NO_PREFERENCE;
-				break;
-		}
-
-		return $indicator;
 	}
 
 	/**
