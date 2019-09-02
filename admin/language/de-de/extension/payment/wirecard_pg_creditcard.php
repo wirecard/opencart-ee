@@ -31,7 +31,7 @@ $_['config_allow_changed_shipping'] = "Geänderte Lieferadresse zulassen";
 $_['config_allow_changed_shipping_desc'] = "Wenn diese Option deaktiviert ist und sich die Lieferadresse des Kunden zwischen Transaktionen ändert, müssen sie ihre Kreditkarteninformationen erneut eingeben.";
 
 $_['config_challenge_indicator'] = 'Challenge Indicator';
-$_['config_challenge_indicator_desc'] = 'Indicates whether a challenge is requested for this transaction';
-$_['text_challenge_indicator_no_preference'] = 'No preference';
-$_['text_challenge_indicator_no_challenge'] = 'No challenge';
-$_['text_challenge_indicator_challenge_threed'] = 'Challenge Three D';
+$_['config_challenge_indicator_desc'] = 'Indicates whether a challenge is requested for this transaction.';
+$_['config_challenge_no_preference'] = 'No preference';
+$_['config_challenge_no_challenge'] = 'No challenge requested';
+$_['config_challenge_challenge_threed'] = 'Challenge requested';
