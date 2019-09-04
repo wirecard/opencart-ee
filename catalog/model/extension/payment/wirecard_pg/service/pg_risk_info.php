@@ -65,56 +65,56 @@ class PGRiskInfo extends Model
 	/**
 	 * Add delivery email address to risk info
 	 *
-	 * @param RiskInfo $riskInfo
+	 * @param RiskInfo $risk_info
 	 *
 	 * @since 1.5.0
 	 */
-	protected function addDeliveryEmailAddress($riskInfo) {
+	protected function addDeliveryEmailAddress($risk_info) {
 		//@TODO If clarified - send if atleast 1 item in basket is digital good?
-		$riskInfo->setDeliveryEmailAddress($this->customer->getEmail());
+		$risk_info->setDeliveryEmailAddress($this->customer->getEmail());
 	}
 
 	/**
 	 * Add if preorder flag
 	 *
-	 * @param RiskInfo $riskInfo
+	 * @param RiskInfo $risk_info
 	 *
 	 * @since 1.5.0
 	 */
-	protected function addInfoAvailability($riskInfo) {
+	protected function addInfoAvailability($risk_info) {
 		//@TODO If clarified - send if atleast 1 item in basket is out of stock?
-		$riskInfo->setAvailability(RiskInfoAvailability::MERCHANDISE_AVAILABLE);
+		$risk_info->setAvailability(RiskInfoAvailability::MERCHANDISE_AVAILABLE);
 		// if product status_id != 7 (in stock)
-		$riskInfo->setAvailability(RiskInfoAvailability::FUTURE_AVAILABILITY);
-		$this->addDateAvailable($riskInfo);
+		$risk_info->setAvailability(RiskInfoAvailability::FUTURE_AVAILABILITY);
+		$this->addDateAvailable($risk_info);
 		//endif
 	}
 
 	/**
 	 * Add product date available of preordered product
 	 *
-	 * @param RiskInfo $riskInfo
+	 * @param RiskInfo $risk_info
 	 *
 	 * @since 1.5.0
 	 */
-	protected function addDateAvailable($riskInfo) {
+	protected function addDateAvailable($risk_info) {
 		//@TODO If clarified - send if atleast 1 item in basket is out of stock?
 		// if product stock_status_id = 8 (Pre-Order) or 6 (2-3 Days) set date available = product date_available
 		$date = new DateTime();
-		$riskInfo->setPreOrderDate($date);
+		$risk_info->setPreOrderDate($date);
 	}
 
 	/**
 	 * Add reordered flag
 	 *
-	 * @param RiskInfo $riskInfo
+	 * @param RiskInfo $risk_info
 	 *
 	 * @since 1.5.0
 	 */
-	protected function addReorderItemsIndicator($riskInfo) {
-		$riskInfo->setReorderItems(RiskInfoReorder::FIRST_TIME_ORDERED);
+	protected function addReorderItemsIndicator($risk_info) {
+		$risk_info->setReorderItems(RiskInfoReorder::FIRST_TIME_ORDERED);
 		//@TODO If clarified - send if atleast 1 item in basket is reordered?
-			//@TODO Check if item reordered
-			$riskInfo->setReorderItems(RiskInfoReorder::REORDERED);
+		//@TODO Check if item reordered
+		$risk_info->setReorderItems(RiskInfoReorder::REORDERED);
 	}
 }

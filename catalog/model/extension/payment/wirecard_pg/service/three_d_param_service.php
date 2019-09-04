@@ -27,8 +27,8 @@ class ThreeDParamService {
 		// Account Info
 		$account_holder = $transaction->getAccountHolder();
 		if ($account_holder instanceof \Wirecard\PaymentSdk\Entity\AccountHolder) {
-			$accountInfo = new PGAccountInfo($registry, $gateway, $account_holder, $vault_token);
-			$accountInfo->mapAccountInfo();
+			$account_info = new PGAccountInfo($registry, $gateway, $account_holder, $vault_token);
+			$account_info->mapAccountInfo();
 		}
 
 		// Risk Info

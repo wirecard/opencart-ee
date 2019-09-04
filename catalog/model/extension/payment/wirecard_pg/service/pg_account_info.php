@@ -68,17 +68,17 @@ class PGAccountInfo extends Model {
 	 * @since 1.5.0
 	 */
 	protected function initializeAccountInfo() {
-		$accountInfo = new AccountInfo();
+		$account_info = new AccountInfo();
 
-		$accountInfo->setAuthMethod($this->auth_method);
-		$accountInfo->setAuthTimestamp($this->auth_timestamp);
-		$accountInfo->setChallengeInd($this->challenge_indicator);
+		$account_info->setAuthMethod($this->auth_method);
+		$account_info->setAuthTimestamp($this->auth_timestamp);
+		$account_info->setChallengeInd($this->challenge_indicator);
 
 		if ($this->isAuthenticatedUser()) {
-			$this->addAccountInfoData($accountInfo);
+			$this->addAccountInfoData($account_info);
 		}
 
-		return $accountInfo;
+		return $account_info;
 	}
 
 	/**
@@ -140,17 +140,17 @@ class PGAccountInfo extends Model {
 	 * Add database information to given AccountHolder AccountInfo
 	 * For authenticated User
 	 *
-	 * @param AccountInfo $accountInfo
+	 * @param AccountInfo $account_info
 	 *
 	 * @since 1.5.0
 	 */
-	protected function addAccountInfoData($accountInfo) {
-		$accountInfo->setCreationDate($this->fetchAccountCreationDate());
-		$accountInfo->setAmountTransactionsLastDay($this->fetchTransactionsLastDay());
-		$accountInfo->setAmountTransactionsLastYear($this->fetchTransactionsLastYear());
-		$accountInfo->setAmountPurchasesLastSixMonths($this->fetchPurchasesLastSixMonths());
+	protected function addAccountInfoData($account_info) {
+		$account_info->setCreationDate($this->fetchAccountCreationDate());
+		$account_info->setAmountTransactionsLastDay($this->fetchTransactionsLastDay());
+		$account_info->setAmountTransactionsLastYear($this->fetchTransactionsLastYear());
+		$account_info->setAmountPurchasesLastSixMonths($this->fetchPurchasesLastSixMonths());
 		if (isset($this->vault_token)) {
-			$accountInfo->setCardCreationDate($this->fetchCardCreationDate());
+			$account_info->setCardCreationDate($this->fetchCardCreationDate());
 		}
 	}
 
