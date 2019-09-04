@@ -18,7 +18,6 @@ class ThreeDParamService {
 	 * @param ControllerExtensionPaymentGateway $gateway
 	 * @param Registry $registry
 	 * @param \Wirecard\PaymentSdk\Transaction\Transaction $transaction
-	 * @param bool $new_card_vault_request
 	 * @param int|null $vault_token
 	 *
 	 * @since 1.5.0

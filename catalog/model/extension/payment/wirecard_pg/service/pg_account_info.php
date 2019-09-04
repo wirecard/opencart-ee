@@ -45,8 +45,6 @@ class PGAccountInfo extends Model {
 	 * Create SDK\AccountInfo
 	 * Map all existing data
 	 *
-	 * @return AccountInfo
-	 *
 	 * @since 1.5.0
 	 */
 	public function mapAccountInfo() {
@@ -104,9 +102,9 @@ class PGAccountInfo extends Model {
 		if ($this->isAuthenticatedUser()) {
 			$customer_id = $this->customer->getId();
 			$this->setCustomerId($customer_id);
+			$this->addAccountHolderCrmId($customer_id);
 			$this->auth_method = AuthMethod::USER_CHECKOUT;
 			$this->auth_timestamp = $this->fetchAuthenticationTimestamp();
-			$this->addAccountHolderCrmId($customer_id);
 		}
 	}
 
@@ -180,30 +178,11 @@ class PGAccountInfo extends Model {
 
 		$result = $this->db->query("SELECT * FROM `" . DB_PREFIX . "customer_online` WHERE customer_id = '" . (int)$this->customer_id . "' ORDER BY date_added ASC LIMIT 1");
 		if ($result->num_rows) {
-			$time_stamp = $this->reformatDateString(
-				$result['date_added'],
-				self::DB_DATE_FORMAT,
-				self::SDK_DATE_FORMAT
-			);
+			$time_stamp = DateTime::createFromFormat(self::DB_DATE_FORMAT, $result->row['date_added']);
+			$time_stamp->format(self::SDK_DATE_FORMAT);
 		}
 
 		return $time_stamp;
-	}
-
-	/**
-	 * Reformat a date string
-	 *
-	 * @param $date
-	 * @param $previous_format
-	 * @param $new_format
-	 * @return string
-	 *
-	 * @since 1.5.0
-	 */
-	protected function reformatDateString($date, $previous_format, $new_format) {
-		$date = DateTime::createFromFormat($previous_format, $date);
-
-		return $date->format($new_format);
 	}
 
 	/**
@@ -219,11 +198,7 @@ class PGAccountInfo extends Model {
 
 		$result = $this->db->query("SELECT date_added FROM `" . DB_PREFIX . "customer` WHERE customer_id = '" . (int)$this->customer_id . "'");
 		if ($result->num_rows) {
-			$creation_date = $this->reformatDateString(
-				$result->row['date_added'],
-				self::DB_DATE_FORMAT,
-				self::SDK_DATE_FORMAT
-			);
+			$creation_date = DateTime::createFromFormat(self::DB_DATE_FORMAT, $result->row['date_added']);
 		}
 
 		return $creation_date;
@@ -246,7 +221,7 @@ class PGAccountInfo extends Model {
 
 		$result = $this->db->query("SELECT date_added FROM `" . DB_PREFIX . ModelExtensionPaymentWirecardPGVault::VAULT_TABLE . "` WHERE token = '" . (int)$this->vault_token . "'");
 		if ($result->num_rows) {
-			$creation_date = DateTime::createFromFormat('Y-m-d H:i:s', $result->row['date_added']);
+			$creation_date = DateTime::createFromFormat(self::DB_DATE_FORMAT, $result->row['date_added']);
 		}
 
 		return $creation_date;
@@ -282,8 +257,8 @@ class PGAccountInfo extends Model {
 		$yesterday_end = $yesterday_end->setTime(23, 59, 59);
 		$transactions_last_day = $this->fetchCountForDate(
 			$table,
-			$yesterday_start->format('Y-m-d H:i:s'),
-			$yesterday_end->format('Y-m-d H:i:s')
+			$yesterday_start->format(self::DB_DATE_FORMAT),
+			$yesterday_end->format(self::DB_DATE_FORMAT)
 		);
 
 		return $transactions_last_day;
