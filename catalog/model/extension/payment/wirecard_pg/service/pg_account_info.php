@@ -67,10 +67,10 @@ class PGAccountInfo extends Model {
 	protected function initializeAccountInfo() {
 		$account_info = new AccountInfo();
 
-		$this->addDataGeneric($account_info);
+		$this->addAccountInfoDataGeneric($account_info);
 
 		if ($this->isAuthenticatedUser()) {
-			$this->addDataAuthenticated($account_info);
+			$this->addAccountInfoDataAuthenticated($account_info);
 		}
 
 		return $account_info;
@@ -138,7 +138,7 @@ class PGAccountInfo extends Model {
 	 *
 	 * @since 1.5.0
 	 */
-	protected function addDataGeneric($account_info) {
+	protected function addAccountInfoDataGeneric($account_info) {
 		$account_info->setAuthMethod($this->auth_method);
 		$account_info->setAuthTimestamp($this->auth_timestamp);
 		$account_info->setChallengeInd($this->challenge_indicator);
@@ -152,7 +152,7 @@ class PGAccountInfo extends Model {
 	 *
 	 * @since 1.5.0
 	 */
-	protected function addDataAuthenticated($account_info) {
+	protected function addAccountInfoDataAuthenticated($account_info) {
 		$account_info->setCreationDate($this->fetchAccountCreationDate());
 		$account_info->setAmountTransactionsLastDay($this->fetchTransactionsLastDay());
 		$account_info->setAmountTransactionsLastYear($this->fetchTransactionsLastYear());
