@@ -39,6 +39,10 @@ class PGAccountInfo extends Model {
 		$this->gateway = $gateway;
 		$this->account_holder = $account_holder;
 		$this->vault_token = $vault_token;
+		// Set auth method and auth timestamp
+		$this->setAuthenticatedData();
+		// Challenge Indicator
+		$this->setChallengeIndicator();
 	}
 
 	/**
@@ -48,11 +52,6 @@ class PGAccountInfo extends Model {
 	 * @since 1.5.0
 	 */
 	public function mapAccountInfo() {
-		// Set auth method and auth timestamp
-		$this->setAuthenticatedData();
-		// Challenge Indicator
-		$this->setChallengeIndicator();
-
 		// Map all settings and create SDK account info
 		$this->account_holder->setAccountInfo($this->initializeAccountInfo());
 	}
@@ -68,12 +67,10 @@ class PGAccountInfo extends Model {
 	protected function initializeAccountInfo() {
 		$account_info = new AccountInfo();
 
-		$account_info->setAuthMethod($this->auth_method);
-		$account_info->setAuthTimestamp($this->auth_timestamp);
-		$account_info->setChallengeInd($this->challenge_indicator);
+		$this->addDataGeneric($account_info);
 
 		if ($this->isAuthenticatedUser()) {
-			$this->addAccountInfoData($account_info);
+			$this->addDataAuthenticated($account_info);
 		}
 
 		return $account_info;
@@ -101,8 +98,7 @@ class PGAccountInfo extends Model {
 		$this->auth_timestamp = null;
 		if ($this->isAuthenticatedUser()) {
 			$customer_id = $this->customer->getId();
-			$this->setCustomerId($customer_id);
-			$this->addAccountHolderCrmId($customer_id);
+			$this->customer_id = $customer_id;
 			$this->auth_method = AuthMethod::USER_CHECKOUT;
 			$this->auth_timestamp = $this->fetchAuthenticationTimestamp();
 		}
@@ -136,17 +132,32 @@ class PGAccountInfo extends Model {
 
 	/**
 	 * Add database information to given AccountHolder AccountInfo
+	 * For guest and authenticated User
+	 *
+	 * @param AccountInfo $account_info
+	 *
+	 * @since 1.5.0
+	 */
+	protected function addDataGeneric($account_info) {
+		$account_info->setAuthMethod($this->auth_method);
+		$account_info->setAuthTimestamp($this->auth_timestamp);
+		$account_info->setChallengeInd($this->challenge_indicator);
+	}
+
+	/**
+	 * Add database information to given AccountHolder AccountInfo
 	 * For authenticated User
 	 *
 	 * @param AccountInfo $account_info
 	 *
 	 * @since 1.5.0
 	 */
-	protected function addAccountInfoData($account_info) {
+	protected function addDataAuthenticated($account_info) {
 		$account_info->setCreationDate($this->fetchAccountCreationDate());
 		$account_info->setAmountTransactionsLastDay($this->fetchTransactionsLastDay());
 		$account_info->setAmountTransactionsLastYear($this->fetchTransactionsLastYear());
 		$account_info->setAmountPurchasesLastSixMonths($this->fetchPurchasesLastSixMonths());
+		$this->addAccountHolderCrmId($this->customer_id);
 		if (isset($this->vault_token)) {
 			$account_info->setCardCreationDate($this->fetchCardCreationDate());
 		}
