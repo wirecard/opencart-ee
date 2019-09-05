@@ -19,21 +19,28 @@ class ThreeDParamService {
 	 * @param Registry $registry
 	 * @param \Wirecard\PaymentSdk\Transaction\Transaction $transaction
 	 * @param int|null $vault_token
+	 * @param array|null $order
 	 *
 	 * @since 1.5.0
 	 */
-	public static function addThreeDsParameters($gateway, $registry, $transaction, $vault_token = null) {
+	public static function addThreeDsParameters($gateway, $registry, $transaction, $vault_token = null, $order = null) {
 		// Account Info
 		$account_holder = $transaction->getAccountHolder();
 
+		// If there is no account holder set
+		// Create an account holder and shipping and add to the transaction
 		if (!$account_holder instanceof \Wirecard\PaymentSdk\Entity\AccountHolder) {
-            $account_holder = new \Wirecard\PaymentSdk\Entity\AccountHolder();
-            $transaction->setAccountHolder($account_holder);
-        }
+			$account_holder_helper = new PGAccountHolder();
+			$account_holder = $account_holder_helper->createBasicAccountHolder($order, PGAccountHolder::BILLING);
+			$account_holder_shipping = $account_holder_helper->createBasicAccountHolder($order, PGAccountHolder::SHIPPING);
 
-        // Account Info
-        $account_info = new PGAccountInfo($registry, $gateway, $account_holder, $vault_token);
-        $account_info->mapAccountInfo();
+			$transaction->setAccountHolder($account_holder);
+			$transaction->setShipping($account_holder_shipping);
+		}
+
+		// Account Info
+		$account_info = new PGAccountInfo($registry, $gateway, $account_holder, $vault_token);
+		$account_info->mapAccountInfo();
 
 		// Risk Info
 		$risk_info = new PGRiskInfo($registry, $transaction);
