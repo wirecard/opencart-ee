@@ -25,10 +25,15 @@ class ThreeDParamService {
 	public static function addThreeDsParameters($gateway, $registry, $transaction, $vault_token = null) {
 		// Account Info
 		$account_holder = $transaction->getAccountHolder();
-		if ($account_holder instanceof \Wirecard\PaymentSdk\Entity\AccountHolder) {
-			$account_info = new PGAccountInfo($registry, $gateway, $account_holder, $vault_token);
-			$account_info->mapAccountInfo();
-		}
+
+		if (!$account_holder instanceof \Wirecard\PaymentSdk\Entity\AccountHolder) {
+            $account_holder = new \Wirecard\PaymentSdk\Entity\AccountHolder();
+            $transaction->setAccountHolder($account_holder);
+        }
+
+        // Account Info
+        $account_info = new PGAccountInfo($registry, $gateway, $account_holder, $vault_token);
+        $account_info->mapAccountInfo();
 
 		// Risk Info
 		$risk_info = new PGRiskInfo($registry, $transaction);
