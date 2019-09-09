@@ -166,7 +166,7 @@ class ControllerExtensionModuleWirecardPGPGTransaction extends Controller {
 			$transaction = $this->model_extension_payment_wirecard_pg->getTransaction($this->request->get['id']);
 			$operation = $this->request->post['operation'];
 			$payment_method = $this->request->post['payment-method'];
-			$amount = new \Wirecard\PaymentSdk\Entity\Amount($this->request->post['amount'], $this->request->post['currency']);
+			$amount = new \Wirecard\PaymentSdk\Entity\Amount((float)$this->request->post['amount'], $this->request->post['currency']);
 			if ('ratepayinvoice' == $payment_method) {
 				$transaction['basket'] = $this->addResponseBasket($transaction);
 			}
