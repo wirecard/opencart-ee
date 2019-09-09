@@ -100,6 +100,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 * Handles the confirmation flow for one-click checkout transactions.
 	 *
 	 * @return mixed
+	 * @since 1.5.0 Add PSD 2 parameters
 	 * @since 1.1.0
 	 */
 	protected function confirmTokenBasedTransaction() {
@@ -192,9 +193,11 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	/**
 	 * Return data via ajax call for the seamless form renderer
 	 *
+	 * @since 1.5.0 Add PSD 2 parameters
 	 * @since 1.0.0
 	 */
 	public function getCreditCardUiRequestData() {
+		$this->load->model('checkout/order');
 		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 		$this->transaction = new CreditCardTransaction();
 		$language = $this->getLocale($this->getShopConfigVal('base_url'));

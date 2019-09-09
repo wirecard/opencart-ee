@@ -29,7 +29,7 @@ class ThreeDParamService {
 
 		// If there is no account holder set
 		// Create an account holder and shipping and add to the transaction
-		if (!$account_holder instanceof \Wirecard\PaymentSdk\Entity\AccountHolder) {
+		if (!$account_holder instanceof \Wirecard\PaymentSdk\Entity\AccountHolder && !empty($order)) {
 			$account_holder_helper = new PGAccountHolder();
 			$account_holder = $account_holder_helper->createBasicAccountHolder($order, PGAccountHolder::BILLING);
 			$account_holder_shipping = $account_holder_helper->createBasicAccountHolder($order, PGAccountHolder::SHIPPING);
