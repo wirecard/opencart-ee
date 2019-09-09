@@ -37,7 +37,10 @@ class PGRiskInfo extends Model
 	public function mapRiskInfo() {
 		// Map all settings and create SDK account info
 
-		$this->transaction->setRiskInfo($this->initializeRiskInfo());
+		//@TODO Clarification pending
+		if (false) {
+			$this->transaction->setRiskInfo($this->initializeRiskInfo());
+		}
 	}
 
 	/**
@@ -50,14 +53,11 @@ class PGRiskInfo extends Model
 	protected function initializeRiskInfo() {
 		$riskInfo = new RiskInfo();
 
-		//@TODO Clarification pending
-		if (false) {
-			if ($this->customer->isLogged()) {
-				$this->addDeliveryEmailAddress($riskInfo);
-				$this->addReorderItemsIndicator($riskInfo);
-			}
-			$this->addInfoAvailability($riskInfo);
+		if ($this->customer->isLogged()) {
+			$this->addDeliveryEmailAddress($riskInfo);
+			$this->addReorderItemsIndicator($riskInfo);
 		}
+		$this->addInfoAvailability($riskInfo);
 
 		return $riskInfo;
 	}
