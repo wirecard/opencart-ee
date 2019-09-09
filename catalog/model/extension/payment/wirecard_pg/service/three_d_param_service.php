@@ -18,18 +18,18 @@ class ThreeDParamService {
 	 * @param ControllerExtensionPaymentGateway $gateway
 	 * @param Registry $registry
 	 * @param \Wirecard\PaymentSdk\Transaction\Transaction $transaction
+	 * @param array $order
 	 * @param int|null $vault_token
-	 * @param array|null $order
 	 *
 	 * @since 1.5.0
 	 */
-	public static function addThreeDsParameters($gateway, $registry, $transaction, $vault_token = null, $order = null) {
+	public static function addThreeDsParameters($gateway, $registry, $transaction, $order, $vault_token = null) {
 		// Account Info
 		$account_holder = $transaction->getAccountHolder();
 
 		// If there is no account holder set
 		// Create an account holder and shipping and add to the transaction
-		if (!$account_holder instanceof \Wirecard\PaymentSdk\Entity\AccountHolder && !empty($order)) {
+		if (!$account_holder instanceof \Wirecard\PaymentSdk\Entity\AccountHolder) {
 			$account_holder_helper = new PGAccountHolder();
 			$account_holder = $account_holder_helper->createBasicAccountHolder($order, PGAccountHolder::BILLING);
 			$account_holder_shipping = $account_holder_helper->createBasicAccountHolder($order, PGAccountHolder::SHIPPING);

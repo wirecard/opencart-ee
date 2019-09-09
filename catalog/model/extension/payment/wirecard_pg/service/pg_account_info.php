@@ -17,6 +17,7 @@ require_once(dirname(__FILE__) . '/../vault.php');
 class PGAccountInfo extends Model {
 	const SDK_DATE_FORMAT = 'Y-m-d\TH:i:s\Z';
 	const DB_DATE_FORMAT = 'Y-m-d H:i:s';
+	const ROW_DATE_ADDED = 'date_added';
 
 	/** @var ControllerExtensionPaymentGateway $gateway */
 	protected $gateway;
@@ -187,10 +188,10 @@ class PGAccountInfo extends Model {
 	protected function fetchAuthenticationTimestamp() {
 		$time_stamp = null;
 
-		$result = $this->db->query("SELECT * FROM `" . DB_PREFIX . "customer_online` WHERE customer_id = '" . (int)$this->customer_id . "' ORDER BY date_added ASC LIMIT 1");
+		$result = $this->db->query("SELECT * FROM `" . DB_PREFIX . "customer_online` WHERE customer_id = '" . (int)$this->customer_id . "' ORDER BY " . self::ROW_DATE_ADDED . " ASC LIMIT 1");
 		if ($result->num_rows) {
-			$time_stamp = DateTime::createFromFormat(self::DB_DATE_FORMAT, $result->row['date_added']);
-			$time_stamp->format(self::SDK_DATE_FORMAT);
+			$time_stamp = DateTime::createFromFormat(self::DB_DATE_FORMAT, $result->row[self::ROW_DATE_ADDED]);
+			$time_stamp = $time_stamp->format(self::SDK_DATE_FORMAT);
 		}
 
 		return $time_stamp;
@@ -207,9 +208,9 @@ class PGAccountInfo extends Model {
 	protected function fetchAccountCreationDate() {
 		$creation_date = new DateTime();
 
-		$result = $this->db->query("SELECT date_added FROM `" . DB_PREFIX . "customer` WHERE customer_id = '" . (int)$this->customer_id . "'");
+		$result = $this->db->query("SELECT " . self::ROW_DATE_ADDED . " FROM `" . DB_PREFIX . "customer` WHERE customer_id = '" . (int)$this->customer_id . "'");
 		if ($result->num_rows) {
-			$creation_date = DateTime::createFromFormat(self::DB_DATE_FORMAT, $result->row['date_added']);
+			$creation_date = DateTime::createFromFormat(self::DB_DATE_FORMAT, $result->row[self::ROW_DATE_ADDED]);
 		}
 
 		return $creation_date;
@@ -230,9 +231,9 @@ class PGAccountInfo extends Model {
 			return $creation_date;
 		}
 
-		$result = $this->db->query("SELECT date_added FROM `" . DB_PREFIX . ModelExtensionPaymentWirecardPGVault::VAULT_TABLE . "` WHERE token = '" . (int)$this->vault_token . "'");
+		$result = $this->db->query("SELECT " . self::ROW_DATE_ADDED . " FROM `" . DB_PREFIX . ModelExtensionPaymentWirecardPGVault::VAULT_TABLE . "` WHERE token = '" . (int)$this->vault_token . "'");
 		if ($result->num_rows) {
-			$creation_date = DateTime::createFromFormat(self::DB_DATE_FORMAT, $result->row['date_added']);
+			$creation_date = DateTime::createFromFormat(self::DB_DATE_FORMAT, $result->row[self::ROW_DATE_ADDED]);
 		}
 
 		return $creation_date;
@@ -326,7 +327,7 @@ class PGAccountInfo extends Model {
 	private function fetchCountForDate($table, $date_start, $date_end) {
 		$total = 0;
 
-		$result = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . $table . " WHERE customer_id = '" . (int)$this->customer_id . "' AND date_added BETWEEN '" . $this->db->escape($date_start) . "' AND '" . $this->db->escape($date_end) . "'");
+		$result = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . $table . " WHERE customer_id = '" . (int)$this->customer_id . "' AND " . self::ROW_DATE_ADDED . " BETWEEN '" . $this->db->escape($date_start) . "' AND '" . $this->db->escape($date_end) . "'");
 		if ($result->num_rows) {
 			$total = $result->row['total'];
 		}

@@ -107,13 +107,16 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		$model = $this->getModel();
 		$token_id = $this->request->post['token'];
 
+		$this->load->model('checkout/order');
+		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+
 		$this->transaction = $this->getTransactionInstance();
 		$this->prepareTransaction(true);
 
 		$this->transaction->setConfig($this->payment_config->get(CreditCardTransaction::NAME));
 		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
 		$this->transaction->setTokenId($token_id);
-		ThreeDParamService::addThreeDsParameters($this, $this->registry, $this->transaction, $token_id);
+		ThreeDParamService::addThreeDsParameters($this, $this->registry, $this->transaction, $order, $token_id);
 
 		$response = $model->sendRequest($this->payment_config, $this->transaction, $this->getShopConfigVal('payment_action'));
 		if (!isset($this->session->data['error'])) {
@@ -204,7 +207,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 		$this->prepareTransaction();
 		$this->transaction->setConfig($this->payment_config->get(CreditCardTransaction::NAME));
 		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
-		ThreeDParamService::addThreeDsParameters($this, $this->registry, $this->transaction, null, $order);
+		ThreeDParamService::addThreeDsParameters($this, $this->registry, $this->transaction, $order);
 		$transaction_service = new TransactionService($this->payment_config, $this->getLogger());
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(($transaction_service->getCreditCardUiWithData(
