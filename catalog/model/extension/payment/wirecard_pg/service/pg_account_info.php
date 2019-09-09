@@ -19,6 +19,14 @@ class PGAccountInfo extends Model {
 	const DB_DATE_FORMAT = 'Y-m-d H:i:s';
 	const ROW_DATE_ADDED = 'date_added';
 
+	// Filtered order_status for purchases last six months
+	const ORDER_STATUS_PROCESSING = '2';
+	const ORDER_STATUS_CANCELED = '7';
+	const ORDER_STATUS_COMPLETE = '5';
+	const ORDER_STATUS_REFUNDED = '11';
+	const ORDER_STATUS_PROCESSED = '15';
+	const ORDER_STATUS_AUTHORIZED = '17';
+
 	/** @var ControllerExtensionPaymentGateway $gateway */
 	protected $gateway;
 	/** @var int $customer_id */
@@ -304,12 +312,20 @@ class PGAccountInfo extends Model {
 	 * @since 1.5.0
 	 */
 	protected function fetchPurchasesLastSixMonths() {
-		//@TODO Add order_status (check oc_order_status for available) check
 		$table = 'order';
 		$six_months_ago = date('Y-m-d', strtotime('-6 months'));
 		$today = date('Y-m-d');
+		$additional_clause = sprintf(
+			"order_status_id IN (%s, %s, %s, %s, %s, %s)",
+			self::ORDER_STATUS_PROCESSING,
+			self::ORDER_STATUS_COMPLETE,
+			self::ORDER_STATUS_CANCELED,
+			self::ORDER_STATUS_REFUNDED,
+			self::ORDER_STATUS_PROCESSED,
+			self::ORDER_STATUS_AUTHORIZED
+		);
 
-		return $this->fetchCountForDate($table, $six_months_ago, $today);
+		return $this->fetchCountForDate($table, $six_months_ago, $today, $additional_clause);
 	}
 
 	/**
@@ -320,14 +336,19 @@ class PGAccountInfo extends Model {
 	 * @param $table
 	 * @param $date_start
 	 * @param $date_end
+	 * @param $additional_clause
 	 * @return int
 	 *
 	 * @since 1.5.0
 	 */
-	private function fetchCountForDate($table, $date_start, $date_end) {
+	private function fetchCountForDate($table, $date_start, $date_end, $additional_clause = null) {
 		$total = 0;
 
-		$result = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . $table . " WHERE customer_id = '" . (int)$this->customer_id . "' AND " . self::ROW_DATE_ADDED . " BETWEEN '" . $this->db->escape($date_start) . "' AND '" . $this->db->escape($date_end) . "'");
+		$query = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . $table . " WHERE customer_id = '" . (int)$this->customer_id . "' AND " . self::ROW_DATE_ADDED . " BETWEEN '" . $this->db->escape($date_start) . "' AND '" . $this->db->escape($date_end) . "'";
+		if (!empty($additional_clause)) {
+			$query = sprintf('%s AND %s', $query, $additional_clause);
+		}
+		$result = $this->db->query($query);
 		if ($result->num_rows) {
 			$total = $result->row['total'];
 		}
