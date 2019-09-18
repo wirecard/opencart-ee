@@ -8,6 +8,7 @@
  */
 
 require_once(dirname(__FILE__) . '/wirecard_pg/gateway.php');
+require_once(dirname(__FILE__) . '/../../../model/extension/payment/wirecard_pg/service/three_d_param_service.php');
 
 use Wirecard\PaymentSdk\Transaction\CreditCardTransaction;
 use Wirecard\PaymentSdk\Entity\Amount;
@@ -48,10 +49,12 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 			$shipping_data = null;
 			$last_shipping_data = $model->getLatestCustomerShipping();
 
-			if (is_array($this->session->data['shipping_address']) && is_array($last_shipping_data)) {
-				$shipping_data = array_filter($this->session->data['shipping_address'], function($key) use ($last_shipping_data) {
-					return in_array($key, array_keys($last_shipping_data));
-				}, ARRAY_FILTER_USE_KEY);
+			if (isset($this->session->data['shipping_address'])) {
+				if (is_array($this->session->data['shipping_address']) && is_array($last_shipping_data)) {
+					$shipping_data = array_filter($this->session->data['shipping_address'], function ($key) use ($last_shipping_data) {
+						return in_array($key, array_keys($last_shipping_data));
+					}, ARRAY_FILTER_USE_KEY);
+				}
 			}
 
 			// I'm explicitly using != instead of !== here to avoid the array being checked for key order.
@@ -97,17 +100,23 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	 * Handles the confirmation flow for one-click checkout transactions.
 	 *
 	 * @return mixed
+	 * @since 1.5.0 Add PSD 2 parameters
 	 * @since 1.1.0
 	 */
 	protected function confirmTokenBasedTransaction() {
 		$model = $this->getModel();
+		$token_id = $this->request->post['token'];
+
+		$this->load->model('checkout/order');
+		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
 		$this->transaction = $this->getTransactionInstance();
 		$this->prepareTransaction(true);
 
 		$this->transaction->setConfig($this->payment_config->get(CreditCardTransaction::NAME));
 		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
-		$this->transaction->setTokenId($this->request->post['token']);
+		$this->transaction->setTokenId($token_id);
+		ThreeDParamService::addThreeDsParameters($this, $this->registry, $this->transaction, $order, $token_id);
 
 		$response = $model->sendRequest($this->payment_config, $this->transaction, $this->getShopConfigVal('payment_action'));
 		if (!isset($this->session->data['error'])) {
@@ -148,7 +157,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 			$ssl_max_limit = floatval($this->getShopConfigVal('ssl_max_limit'));
 			$payment_config->addSslMaxLimit(
 				new Amount(
-					$additional_helper->convert($ssl_max_limit, $currency),
+					(float)$additional_helper->convert($ssl_max_limit, $currency),
 					$currency['currency_code']
 				)
 			);
@@ -158,7 +167,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 			$three_d_min_limit = floatval($this->getShopConfigVal('three_d_min_limit'));
 			$payment_config->addThreeDMinLimit(
 				new Amount(
-					$additional_helper->convert(
+					(float)$additional_helper->convert(
 						$three_d_min_limit,
 						$currency
 					),
@@ -166,6 +175,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 				)
 			);
 		}
+
 		$config->add($payment_config);
 
 		return $config;
@@ -186,14 +196,18 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 	/**
 	 * Return data via ajax call for the seamless form renderer
 	 *
+	 * @since 1.5.0 Add PSD 2 parameters
 	 * @since 1.0.0
 	 */
 	public function getCreditCardUiRequestData() {
+		$this->load->model('checkout/order');
+		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 		$this->transaction = new CreditCardTransaction();
 		$language = $this->getLocale($this->getShopConfigVal('base_url'));
 		$this->prepareTransaction();
 		$this->transaction->setConfig($this->payment_config->get(CreditCardTransaction::NAME));
 		$this->transaction->setTermUrl($this->url->link('extension/payment/wirecard_pg_' . $this->type . '/response', '', 'SSL'));
+		ThreeDParamService::addThreeDsParameters($this, $this->registry, $this->transaction, $order);
 		$transaction_service = new TransactionService($this->payment_config, $this->getLogger());
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(($transaction_service->getCreditCardUiWithData(
@@ -201,6 +215,7 @@ class ControllerExtensionPaymentWirecardPGCreditCard extends ControllerExtension
 			$this->getPaymentAction($this->getShopConfigVal('payment_action')),
 			$language
 		)));
+
 	}
 
 	/**

@@ -117,7 +117,7 @@ class PGBasket {
 		$request_amount = 0;
 		foreach ($response_basket as $key => $value) {
 			if ($value['quantity']) {
-				$amount = new Amount($value['amount'], $value['currency']);
+				$amount = new Amount((float)$value['amount'], $value['currency']);
 				$item = new Item($value['name'], $amount, $value['quantity']);
 				$item->setDescription($value['description']);
 				$item->setArticleNumber($value['article_number']);
@@ -161,13 +161,13 @@ class PGBasket {
 		$tax_amount = bcsub($gross_amount, $net_amount, $this->model->getScale());
 		$full_amount = bcmul($gross_amount, $item[self::QUANTITY], $this->model->getScale());
 		$this->sum = bcsub($this->sum, $full_amount, $this->model->getScale());
-		$amount = new Amount(bcadd($gross_amount, 0.000000000000, $this->model->getScale()), $currency[self::CURRENCYCODE]);
+		$amount = new Amount((float)bcadd($gross_amount, 0.000000000000, $this->model->getScale()), $currency[self::CURRENCYCODE]);
 		$basket_item = new Item($item[self::NAME], $amount, $item[self::QUANTITY]);
 		$basket_item->setDescription($item[self::NAME]);
 		$basket_item->setArticleNumber($item[self::ID]);
 		$basket_item->setTaxRate($tax_rate);
 		if ('ratepayinvoice' != $transaction::NAME) {
-			$basket_item->setTaxAmount(new Amount($tax_amount, $currency[self::CURRENCYCODE]));
+			$basket_item->setTaxAmount(new Amount((float)$tax_amount, $currency[self::CURRENCYCODE]));
 		}
 		$basket->add($basket_item);
 
@@ -199,11 +199,11 @@ class PGBasket {
 			}
 		}
 		$this->sum = bcsub($this->sum, $gross_amount, $this->model->getScale());
-		$item = new Item('Shipping', new Amount(number_format($gross_amount, $this->model->getScale()), $currency[self::CURRENCYCODE]), 1);
+		$item = new Item('Shipping', new Amount((float)number_format($gross_amount, $this->model->getScale()), $currency[self::CURRENCYCODE]), 1);
 		$item->setDescription('Shipping');
 		$item->setArticleNumber('Shipping');
 		$item->setTaxRate(number_format($tax_rate, 2));
-		$item->setTaxAmount(new Amount($tax_amount, $currency[self::CURRENCYCODE]));
+		$item->setTaxAmount(new Amount((float)$tax_amount, $currency[self::CURRENCYCODE]));
 		$basket->add($item);
 
 		return $basket;
@@ -219,7 +219,7 @@ class PGBasket {
 	 * @since 1.0.0
 	 */
 	private function setCouponItem($basket, $amount, $currency) {
-		$item = new Item('Coupon', new Amount(bcmul($amount, -1, $this->model->getScale()), $currency[self::CURRENCYCODE]), 1);
+		$item = new Item('Coupon', new Amount((float)bcmul($amount, -1, $this->model->getScale()), $currency[self::CURRENCYCODE]), 1);
 		$item->setDescription('Coupon');
 		$item->setArticleNumber('Coupon');
 		$basket->add($item);
@@ -237,7 +237,7 @@ class PGBasket {
 	 * @since 1.1.0
 	 */
 	private function setPrecisionItem($basket, $amount, $currency) {
-		$item = new Item('Precision', new Amount($amount, $currency[self::CURRENCYCODE]), 1);
+		$item = new Item('Precision', new Amount((float)$amount, $currency[self::CURRENCYCODE]), 1);
 		$item->setDescription('Precision');
 		$item->setArticleNumber('Precision');
 		$item->setTaxRate(0);
