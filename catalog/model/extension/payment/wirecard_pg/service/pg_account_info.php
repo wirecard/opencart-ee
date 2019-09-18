@@ -306,8 +306,8 @@ class PGAccountInfo extends Model {
 	 * Select successful purchases done
 	 * For authenticated user
 	 * In last six months
-     * 1 day is added to today
-     * to prevent sql time issues
+	 * 1 day is added to today
+	 * to prevent sql time issues
 	 *
 	 * @return int
 	 *
