@@ -30,16 +30,34 @@ class PGAccountHolder {
 	 * @since 1.0.0
 	 */
 	public function createAccountHolder($order, $type = self::BILLING, $birthdate = null) {
-		$account_holder = new AccountHolder();
+		$account_holder = $this->createBasicAccountHolder($order, $type = self::BILLING);
 
-		$account_holder->setAddress($this->createAddressData($order, $type));
 		$account_holder->setFirstName($order['payment_firstname']);
 		$account_holder->setLastName($order['payment_lastname']);
-		$account_holder->setEmail($order['email']);
-		$account_holder->setPhone($order['telephone']);
 		if (!is_null($birthdate)) {
 			$account_holder->setDateOfBirth(new \DateTime($birthdate));
 		}
+
+		return $account_holder;
+	}
+
+	/**
+	 * Create a basic account holder
+	 * without first and last name
+	 *
+	 * @param $order
+	 * @param string $type
+	 * @return AccountHolder
+	 *
+	 * @since 1.5.0
+	 */
+	public function createBasicAccountHolder($order, $type = self::BILLING) {
+		$account_holder = new AccountHolder();
+
+		$account_holder->setAddress($this->createAddressData($order, $type));
+		$account_holder->setEmail($order['email']);
+		$account_holder->setPhone($order['telephone']);
+
 		if (self::SHIPPING == $type) {
 			$account_holder->setAddress($this->createAddressData($order, $type));
 			$account_holder->setFirstName($order['shipping_firstname']);
