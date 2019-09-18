@@ -306,6 +306,8 @@ class PGAccountInfo extends Model {
 	 * Select successful purchases done
 	 * For authenticated user
 	 * In last six months
+     * 1 day is added to today
+     * to prevent sql time issues
 	 *
 	 * @return int
 	 *
@@ -314,7 +316,7 @@ class PGAccountInfo extends Model {
 	protected function fetchPurchasesLastSixMonths() {
 		$table = 'order';
 		$six_months_ago = date('Y-m-d', strtotime('-6 months'));
-		$today = date('Y-m-d');
+		$today = date('Y-m-d', strtotime('+1 day'));
 		$additional_clause = sprintf(
 			"order_status_id IN (%s, %s, %s, %s, %s, %s)",
 			self::ORDER_STATUS_PROCESSING,
