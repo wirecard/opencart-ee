@@ -21,6 +21,5 @@ modules:
      - Asserts
      - Db:
          dsn: 'mysql:host=localhost:3306;dbname=bitnami_opencart'
-         user: 'root'
-         password: ''
+         user: 'bn_opencart'
          waitlock: 10
