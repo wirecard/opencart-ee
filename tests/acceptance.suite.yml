@@ -20,6 +20,7 @@ modules:
      - \Helper\DbHelper
      - Asserts
      - Db:
-         dsn: 'mysql:host=localhost:3306;dbname=bitnami_opencart'
-         user: 'bn_opencart'
+         dsn: 'mysql:host=localhost:3306;dbname=%MARIADB_DATABASE%'
+         user: '%MARIADB_USER%'
+         password: ''
          waitlock: 10
