@@ -1,36 +1,10 @@
 <?php
 /**
- * Shop System Plugins - Terms of Use
- *
- * The plugins offered are provided free of charge by Wirecard AG and are explicitly not part
- * of the Wirecard AG range of products and services.
- *
- * They have been tested and approved for full functionality in the standard configuration
- * (status on delivery) of the corresponding shop system. They are under General Public
- * License version 3 (GPLv3) and can be used, developed and passed on to third parties under
- * the same terms.
- *
- * However, Wirecard AG does not provide any guarantee or accept any liability for any errors
- * occurring when used in an enhanced, customized shop system configuration.
- *
- * Operation in an enhanced, customized configuration is at your own risk and requires a
- * comprehensive test phase by the user of the plugin.
- *
- * Customers use the plugins at their own risk. Wirecard AG does not guarantee their full
- * functionality neither does Wirecard AG assume liability for any disadvantages related to
- * the use of the plugins. Additionally, Wirecard AG does not guarantee the full functionality
- * for customized shop systems or installed plugins of other vendors of plugins within the same
- * shop system.
- *
- * Customers are responsible for testing the plugin's functionality before starting productive
- * operation.
- *
- * By installing the plugin into the shop system the customer agrees to these terms of use.
- * Please do not use the plugin if you do not agree to these terms of use!
- *
- * @author Wirecard AG
- * @copyright Wirecard AG
- * @license GPLv3
+ * Shop System Extensions:
+ * - Terms of Use can be found at:
+ * https://github.com/wirecard/opencart-ee/blob/master/_TERMS_OF_USE
+ * - License can be found under:
+ * https://github.com/wirecard/opencart-ee/blob/master/LICENSE
  */
 
 use Helper\Acceptance;
@@ -51,6 +25,23 @@ class AcceptanceTester extends \Codeception\Actor
      * @since 1.4.0
      */
     private $currentPage;
+
+    /**
+     * @var array
+     * @since 1.5.0
+     */
+    private $mappedPaymentActions = [
+        'creditcard' => [
+            'config' => [
+                'reserve' => 'reserve',
+                'pay' => 'pay',
+            ],
+            'tx_table' => [
+                'authorization' => 'authorization',
+                'purchase' => 'purchase'
+            ]
+        ]
+    ];
 
     /**
      * Method selectPage
@@ -188,5 +179,39 @@ class AcceptanceTester extends \Codeception\Actor
     public function iCheck($box)
     {
         $this->checkOption($this->currentPage->getElement($box));
+    }
+
+    /**
+     * @Given I activate :paymentMethod payment action :paymentAction in configuration
+     * @param string $paymentMethod
+     * @param string $paymentAction
+     * @since 1.5.0
+     */
+    public function iActivatePaymentActionInConfiguration($paymentMethod, $paymentAction)
+    {
+        $this->updateInDatabase(
+            'oc_setting',
+            ['value' => $this->mappedPaymentActions[$paymentMethod]['config'][$paymentAction]],
+            ['key' => 'payment_wirecard_pg_'.$paymentMethod.'_payment_action']
+        );
+    }
+
+    /**
+     * @Then I see :paymentMethod :paymentAction in transaction table
+     * @param string $paymentMethod
+     * @param string $paymentAction
+     * @since 1.5.0
+     */
+    public function iSeeInTransactionTable($paymentMethod, $paymentAction)
+    {
+        # wait for transaction to appear in transaction table
+        $this->wait(10);
+        $this->seeInDatabase(
+            'oc_wirecard_ee_transactions',
+            ['transaction_type' => $this->mappedPaymentActions[$paymentMethod]['tx_table'][$paymentAction]]
+        );
+        //check that last transaction in the table is the one under test
+        $transactionTypes = $this->getColumnFromDatabaseNoCriteria('oc_wirecard_ee_transactions', 'transaction_type');
+        $this->assertEquals(end($transactionTypes), $this->mappedPaymentActions[$paymentMethod]['tx_table'][$paymentAction]);
     }
 }

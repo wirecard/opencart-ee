@@ -17,5 +17,10 @@ modules:
            'browserstack.user': '%BROWSERSTACK_USER%'
            'browserstack.key': '%BROWSERSTACK_ACCESS_KEY%'
      - \Helper\Acceptance
-
-
+     - \Helper\DbHelper
+     - Asserts
+     - Db:
+         dsn: 'mysql:host=localhost:3307;dbname=bitnami_opencart'
+         user: 'bn_opencart'
+         password: 'password'
+         waitlock: 10
