@@ -11,9 +11,9 @@ docker network create opencart-tier
 docker volume create --name mariadb_data
 #start database
 docker run -d --name mariadb -p 9900:3306 \
- -e ALLOW_EMPTY_PASSWORD=yes \
- -e MARIADB_USER=bn_opencart \
- -e MARIADB_DATABASE=bitnami_opencart \
+ -e ALLOW_EMPTY_PASSWORD=${ALLOW_EMPTY_PASSWORD} \
+ -e MARIADB_USER=${MARIADB_USER} \
+ -e MARIADB_DATABASE=${MARIADB_DATABASE} \
  --net opencart-tier \
  --volume mariadb_data:/bitnami \
  bitnami/mariadb:latest
@@ -24,14 +24,13 @@ docker run -d --name ${OPENCART_CONTAINER_NAME} -p 80:80 -p 443:443 \
  -e ALLOW_EMPTY_PASSWORD=${ALLOW_EMPTY_PASSWORD} \
  -e OPENCART_DATABASE_USER=${MARIADB_USER} \
  -e OPENCART_DATABASE_NAME=${MARIADB_DATABASE} \
- -e OPENCART_DATABASE_PASSWORD=${MARIADB_PASSWORD} \
  -e OPENCART_HOST=${OPENCART_HOST} \
  -e OPENCART_USERNAME=${OPENCART_USERNAME} \
  -e OPENCART_PASSWORD=${OPENCART_PASSWORD} \
  --net opencart-tier \
  --volume opencart_data:/bitnami \
  -v $(pwd):/plugin \
- bitnami/opencart:${OPENCART_VERSION}
+ opencart:${OPENCART_VERSION}
 
 # wait for shop system to initialize
 while ! $(curl --silent --output /dev/null --head --fail "${OPENCART_URL}/admin"); do
