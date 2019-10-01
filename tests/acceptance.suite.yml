@@ -16,11 +16,11 @@ modules:
            'project': 'opencart-ee-%GATEWAY%-%OPENCART_RELEASE_VERSION%'
            'browserstack.user': '%BROWSERSTACK_USER%'
            'browserstack.key': '%BROWSERSTACK_ACCESS_KEY%'
+     - \Helper\DbHelper
      - \Helper\Acceptance
-#     - \Helper\DbHelper
-#     - Asserts
-#     - Db:
-#         dsn: 'mysql:host=localhost:3306;dbname=bitnami_opencart'
-#         user: 'bn_opencart'
-#         password: ''
-#         waitlock: 10
+     - Asserts
+     - Db:
+         dsn: 'mysql:host=localhost:3306;dbname=bitnami_opencart'
+         user: 'bn_opencart'
+         password: 'password'
+         waitlock: 10
