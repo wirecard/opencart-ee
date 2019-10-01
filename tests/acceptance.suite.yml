@@ -22,5 +22,5 @@ modules:
      - Db:
          dsn: 'mysql:host=localhost:3306;dbname=bitnami_opencart'
          user: 'bn_opencart'
-         password: 'yes'
+         password: 'password'
          waitlock: 10
