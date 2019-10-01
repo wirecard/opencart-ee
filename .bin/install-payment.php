@@ -42,6 +42,15 @@ define("DB_PASSWORD", getenv('MARIADB_ROOT_PASSWORD'));
 // the path for different config files, each named as <paymentmethod>.json
 define('GATEWAY_CONFIG_PATH', 'gateway_configs');
 
+echo "DB_DATABASE" . DB_DATABASE;
+echo "DB_HOSTNAME" . DB_HOSTNAME;
+echo "DB_USERNAME" . DB_USERNAME;
+echo "DB_PASSWORD" . DB_PASSWORD;
+
+echo "getenv('OPENCART_DATABASE_NAME')" . getenv('OPENCART_DATABASE_NAME');
+echo "getenv('MARIADB_HOST')" . getenv('MARIADB_HOST');
+echo "getenv('MARIADB_ROOT_USER')" . getenv('MARIADB_ROOT_USER');
+echo "getenv('MARIADB_ROOT_PASSWORD')" . getenv('MARIADB_ROOT_PASSWORD');
 
 $gateway = getenv('GATEWAY');
 if (!$gateway) {
