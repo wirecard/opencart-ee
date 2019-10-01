@@ -9,7 +9,7 @@ modules:
      - WebDriver:
          host: 'hub-cloud.browserstack.com'
          port: 80
-         url: 'https://%OPENCART_PREFIX%-%GATEWAY%-%OPENCART_RELEASE_VERSION%%NGROK_POSTFIX%'
+         url: 'http://%OPENCART_PREFIX%-%GATEWAY%-%OPENCART_RELEASE_VERSION%%NGROK_POSTFIX%'
          browser: chrome # 'chrome' or 'firefox'
          capabilities:
            'build': '%VERSION%'
