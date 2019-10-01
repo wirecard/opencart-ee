@@ -1,10 +1,10 @@
-Feature: CreditCard3DSPurchaseHappyPath
+Feature: CreditCard3DSAuthorizationHappyPath
   As a guest  user
-  I want to make a purchase with a Credit Card 3DS
+  I want to make an authorization with a Credit Card 3DS
   And to see that transaction was successful
 
   Background:
-    Given I activate "creditcard" payment action "pay" in configuration
+    Given I activate "creditcard" payment action "reserve" in configuration
     And I prepare checkout
     And I fill fields with "Customer data"
     Then I see "Wirecard Credit Card"
@@ -20,4 +20,4 @@ Feature: CreditCard3DSPurchaseHappyPath
     And I click "Continue"
     Then I am redirected to "Order Received" page
     And I see "Your order has been placed!"
-    And I see "creditcard" "purchase" in transaction table
+    And I see "creditcard" "authorization" in transaction table
