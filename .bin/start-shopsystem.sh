@@ -10,11 +10,10 @@ docker build --build-arg OPENCART_VERSION=${OPENCART_VERSION} . -t opencart:${OP
 docker network create opencart-tier
 docker volume create --name mariadb_data
 #start database
-docker run -d --name mariadb  -p 3306:3306 \
- -e ALLOW_EMPTY_PASSWORD=${ALLOW_EMPTY_PASSWORD} \
- -e MARIADB_USER=${MARIADB_USER} \
- -e MARIADB_PASSWORD=${MARIADB_PASSWORD} \
- -e MARIADB_DATABASE=${MARIADB_DATABASE} \
+docker run -d --name mariadb \
+ -e ALLOW_EMPTY_PASSWORD=yes \
+ -e MARIADB_USER=bn_opencart \
+ -e MARIADB_DATABASE=bitnami_opencart \
  --net opencart-tier \
  --volume mariadb_data:/bitnami \
  bitnami/mariadb:latest
