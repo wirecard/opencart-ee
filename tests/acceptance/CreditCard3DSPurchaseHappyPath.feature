@@ -4,8 +4,9 @@ Feature: CreditCard3DSPurchaseHappyPath
   And to see that transaction was successful
 
   Background:
-    Given I activate "creditcard" payment action "pay" in configuration
-    And I prepare checkout
+#    Given I activate "creditcard" payment action "pay" in configuration
+#    And I prepare checkout
+    Given I prepare checkout
     And I fill fields with "Customer data"
     Then I see "Wirecard Credit Card"
 
@@ -20,4 +21,4 @@ Feature: CreditCard3DSPurchaseHappyPath
     And I click "Continue"
     Then I am redirected to "Order Received" page
     And I see "Your order has been placed!"
-    And I see "creditcard" "purchase" in transaction table
+#    And I see "creditcard" "purchase" in transaction table
