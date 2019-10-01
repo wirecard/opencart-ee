@@ -24,7 +24,6 @@ class DbHelper extends \Codeception\Module
 	 */
 	public function getColumnFromDatabaseNoCriteria($table, $column)
 	{
-	    var_dump("Envirnoment:". var_export($_ENV, true));
 		$dbh = $this->getModule('Db')->dbh;
 		$query = "select %s from %s";
 		$query = sprintf($query, $column, $table);
