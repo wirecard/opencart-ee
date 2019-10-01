@@ -10,7 +10,7 @@ docker build --build-arg OPENCART_VERSION=${OPENCART_VERSION} . -t opencart:${OP
 docker network create opencart-tier
 docker volume create --name mariadb_data
 #start database
-docker run -d --name mariadb \
+docker run -d --name mariadb  -p 3306:3306 \
  -e ALLOW_EMPTY_PASSWORD=${ALLOW_EMPTY_PASSWORD} \
  -e MARIADB_USER=${MARIADB_USER} \
  -e MARIADB_PASSWORD=${MARIADB_PASSWORD} \
