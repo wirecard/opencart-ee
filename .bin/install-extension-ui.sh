@@ -8,5 +8,3 @@ set +a
 sleep 5
 
 system/library/bin/codecept run acceptance -g installator --steps
-
-docker ps
