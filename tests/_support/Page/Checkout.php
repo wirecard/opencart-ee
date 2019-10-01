@@ -141,7 +141,7 @@ class Checkout extends Base
         // Switch to Credit Card UI frame
         $I = $this->tester;
         //wait for Javascript to load iframe and it's contents
-        $I->wait(20);
+        $I->wait(1200);
         //get wirecard seemless frame name
         $wirecard_frame_name = $I->executeJS('return document.querySelector(".wirecard-seamless-frame").getAttribute("name")');
         $I->switchToIFrame("$wirecard_frame_name");
