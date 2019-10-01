@@ -20,7 +20,7 @@ modules:
      - \Helper\Acceptance
      - Asserts
      - Db:
-         dsn: 'mysql:host=localhost:3306;dbname=bitnami_opencart'
+         dsn: 'mysql:host=127.0.0.1:3306;dbname=bitnami_opencart'
          user: 'bn_opencart'
          password: ''
          waitlock: 10
