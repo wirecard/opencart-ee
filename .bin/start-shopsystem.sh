@@ -43,4 +43,7 @@ sleep 5
 echo "Pronadji php.ini"
 find . -name 'php.ini' -exec cat {} \;
 
+echo "Nasao /home/travis/.phpenv/versions/7.1.11/etc/php.ini"
+cat /home/travis/.phpenv/versions/7.1.11/etc/php.ini
+
 docker exec --env GATEWAY=${GATEWAY} ${OPENCART_CONTAINER_NAME} ./plugin/.bin/install-extension.sh
