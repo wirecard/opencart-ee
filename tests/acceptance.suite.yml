@@ -10,12 +10,13 @@ modules:
          host: 'hub-cloud.browserstack.com'
          port: 80
          url: 'http://%OPENCART_PREFIX%-%GATEWAY%-%OPENCART_RELEASE_VERSION%%NGROK_POSTFIX%'
-         browser: chrome # 'chrome' or 'firefox'
+         browser: firefox # 'chrome' or 'firefox'
          capabilities:
            'build': '%VERSION%'
            'project': 'opencart-ee-%GATEWAY%-%OPENCART_RELEASE_VERSION%'
            'browserstack.user': '%BROWSERSTACK_USER%'
            'browserstack.key': '%BROWSERSTACK_ACCESS_KEY%'
+
 #     - \Helper\DbHelper
      - \Helper\Acceptance
 #     - Asserts
