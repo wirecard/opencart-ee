@@ -40,9 +40,6 @@ done
 #install extension and configure payment method (part1)
 sleep 5
 
-echo "Pronadji php.ini"
-find . -name 'php.ini' -exec cat {} \;
-
 echo "Nasao /home/travis/.phpenv/versions/7.1.11/etc/php.ini"
 cat /home/travis/.phpenv/versions/7.1.11/etc/php.ini
 
