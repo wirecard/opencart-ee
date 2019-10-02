@@ -9,22 +9,18 @@ modules:
      - WebDriver:
          host: 'hub-cloud.browserstack.com'
          port: 80
-         url: 'http://%OPENCART_PREFIX%-%GATEWAY%-%OPENCART_RELEASE_VERSION%%NGROK_POSTFIX%'
+         url: 'https://%OPENCART_PREFIX%-%GATEWAY%-%OPENCART_RELEASE_VERSION%%NGROK_POSTFIX%'
          browser: chrome # 'chrome' or 'firefox'
          capabilities:
            'build': '%VERSION%'
            'project': 'opencart-ee-%GATEWAY%-%OPENCART_RELEASE_VERSION%'
            'browserstack.user': '%BROWSERSTACK_USER%'
            'browserstack.key': '%BROWSERSTACK_ACCESS_KEY%'
-           'unexpectedAlertBehaviour': 'accept'
-           'goog:chromeOptions':
-             args: ["--enable-javascript"]
-
-#     - \Helper\DbHelper
      - \Helper\Acceptance
-#     - Asserts
-#     - Db:
-#         dsn: 'mysql:host=mariadb:9900;dbname=bitnami_opencart'
-#         user: 'bn_opencart'
-#         password: ''
-#         waitlock: 10
+     - \Helper\DbHelper
+     - Asserts
+     - Db:
+         dsn: 'mysql:host=localhost:9900;dbname=bitnami_opencart'
+         user: 'bn_opencart'
+         password: ''
+         waitlock: 10

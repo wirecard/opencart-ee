@@ -39,4 +39,8 @@ while ! $(curl --silent --output /dev/null --head --fail "${OPENCART_URL}/admin"
 done
 #install extension and configure payment method (part1)
 sleep 5
+
+echo "Pronadji php.ini"
+find . -name 'php.ini' -exec cat {} \;
+
 docker exec --env GATEWAY=${GATEWAY} ${OPENCART_CONTAINER_NAME} ./plugin/.bin/install-extension.sh
