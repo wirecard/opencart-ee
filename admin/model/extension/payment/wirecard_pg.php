@@ -71,7 +71,7 @@ class ModelExtensionPaymentWirecardPG extends Model {
 	}
 
 	public function updateVaultTable() {
-		$vault_query = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . self::VAULT_TABLE . "` LIKE 'created_at'");
+		$vault_query = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . self::VAULT_TABLE . "` LIKE 'date_updated'");
 
 		if ($vault_query->num_rows == 0) {
 			$this->db->query("
