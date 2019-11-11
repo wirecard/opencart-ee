@@ -65,5 +65,8 @@ class InstallExtensionCest
     {
         //send GET request to emulate pressing "Install" button
         $I->amOnPage('/admin/index.php?route=extension/extension/module/install&user_token=' . $this->userToken .'&extension=wirecard_pg');
+        // make sure payment method is installed
+        $I->amOnPage('/admin/index.php?route=extension/payment/wirecard_pg_creditcard&user_token=' . $this->userToken );
+        $I->click('//*[@class="fa fa-save"]');
     }
 }

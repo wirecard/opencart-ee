@@ -8,7 +8,7 @@ Feature: CreditCard3DSPurchaseHappyPath
     And I fill fields with "Customer data"
     Then I see "Wirecard Credit Card"
 
-  @ui_test
+  @ui_test @patch @minor @major
   Scenario: purchase
     Given I check "I have read and agree to the Terms & Conditions"
     And I click "Continue"
