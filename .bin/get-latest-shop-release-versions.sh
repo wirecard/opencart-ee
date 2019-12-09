@@ -9,5 +9,5 @@ sort -nr tmp.txt > ${OPENCART_COMPATIBILITY_FILE}
 if [[ $(git diff HEAD ${OPENCART_COMPATIBILITY_FILE}) != '' ]]; then
   git add  ${OPENCART_COMPATIBILITY_FILE}
   git commit -m "[skip ci] Update latest shop releases"
-  git push --quiet https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG} HEAD:TPWDCEE-5684-configuration
+  git push --quiet https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG} HEAD:master
 fi

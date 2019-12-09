@@ -10,5 +10,5 @@ if [[ ${COMPATIBILITY_CHECK}  == "1" ]]; then
     git config --global user.email "wirecard@travis-ci.org"
     git add  ${OPENCART_RELEASES_FILE}
     git commit -m "${SHOP_SYSTEM_UPDATE_COMMIT}"
-    git push --quiet https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG} HEAD:TPWDCEE-5684-configuration
+    git push --quiet https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG} HEAD:master
 fi
