@@ -13,6 +13,7 @@ env:
     - PATCH_RELEASE="patch"
     - MINOR_RELEASE="minor"
     - MAJOR_RELEASE="major"
+    - OPENCART_COMPATIBILITY_FILE=${TRAVIS_BUILD_DIR}/.bin/new-shop-releases.txt
 
 matrix:
   # these stages are allowed to fail
@@ -35,33 +36,36 @@ matrix:
     if: type != cron AND commit_message !~ env(SHOP_SYSTEM_UPDATE_COMMIT) AND commit_message !~ env(MANUAL_UITEST_TRIGGER_COMMIT)
   - php: 7.1
     if: type != cron AND commit_message !~ env(SHOP_SYSTEM_UPDATE_COMMIT) AND commit_message !~ env(MANUAL_UITEST_TRIGGER_COMMIT)
-  
-  - stage: get-opencart-versions
-    if: type = cron
+
+  - stage: get-latest-shop-release-versions
+    if: type != cron
     php: 7.1
     install: skip
     before_script: skip
-    script: bash .bin/get-opencart-versions.sh
+    script: bash .bin/get-latest-shop-release-versions.sh
     after_script: skip
     after_failure: skip
-  
+
   - &acceptance-test
     stage: acceptance-test
     #   run this stage on pull request if head branch name contains one of these words (patch, major, minor)
     #   or when build triggered ad-hoc with special commit message
     #   tests will use extension version = branch which originated pull request
     #   or branch which was defined in ad-hoc trigger in Travis UI
-    if: (type = pull_request AND (head_branch =~ env(PATCH_RELEASE) OR head_branch =~ env(MINOR_RELEASE) OR head_branch =~ env(MAJOR_RELEASE))) OR (commit_message =~ env(MANUAL_UITEST_TRIGGER_COMMIT))
+    if: type != cron
     php: 7.1
     env:
       - GATEWAY=API-TEST
       - OPENCART_RELEASE_VERSION=1
     install:
-      - export OPENCART_VERSION=$(awk "NR==$OPENCART_RELEASE_VERSION {print; exit}" ${OPENCART_RELEASES_FILE})
-      #   get latest release shop extension version from SHOPVERSIONS file
+      # check if files are same or not
+      - cmp --silent ${OPENCART_RELEASES_FILE} ${OPENCART_COMPATIBILITY_FILE} && export COMPATIBILITY_CHECK=0 || export COMPATIBILITY_CHECK=1
+      # check from which file to take versions
+      - if [[ ${COMPATIBILITY_CHECK}  == "0" ]]; then export OPENCART_VERSION=$(awk "NR==${OPENCART_RELEASE_VERSION} {print; exit}" ${OPENCART_RELEASES_FILE}); else export OPENCART_VERSION=$(awk "NR==${OPENCART_RELEASE_VERSION} {print; exit}" ${OPENCART_COMPATIBILITY_FILE}); fi
+      - echo "Testing with Opencart ${OPENCART_VERSION} version."
+      # get latest release shop extension version from SHOPVERSIONS file
       - export LATEST_RELEASED_SHOP_EXTENSION_VERSION=`jq .[0].release ${TRAVIS_BUILD_DIR}/SHOPVERSIONS | tr -d '"'`
       - if [[ ${LATEST_EXTENSION_RELEASE}  == "1" ]]; then git checkout tags/${LATEST_RELEASED_SHOP_EXTENSION_VERSION};fi
-      - echo "Testing Opencart ${OPENCART_VERSION}"
       - chmod +x .bin/*
       - travis_retry composer global require "hirak/prestissimo:^0.3"
       - travis_retry composer require --dev $COMPOSER_ARGS codeception/codeception:^2.5
@@ -77,9 +81,10 @@ matrix:
     after_script: skip
     after_success:
       - bash .bin/upload-logs-and-notify.sh
+      - bash .bin/update-shop-release-versions.sh
     after_failure:
       - bash .bin/upload-logs-and-notify.sh fail
-  
+
   #   run this stage on pull request if head branch name contains major
   #   tests will use extension version = branch which originated pull request
   - <<: *acceptance-test
@@ -87,7 +92,7 @@ matrix:
     env:
       - GATEWAY=API-TEST
       - OPENCART_RELEASE_VERSION=2
-  
+
   #   run this stage on pull request if head branch name contains major
   #   tests will use extension version = branch which originated pull request
   - <<: *acceptance-test
@@ -95,7 +100,7 @@ matrix:
     env:
       - GATEWAY=API-TEST
       - OPENCART_RELEASE_VERSION=3
-  
+
   #   run this stage when shop system updated with latest shop extension release version
   #   tests will use latest released extension version
   - <<: *acceptance-test
