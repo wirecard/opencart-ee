@@ -10,8 +10,8 @@ Feature: CreditCard3DSPurchaseHappyPath
 
   @ui_test @patch @minor @major
   Scenario: purchase
-    Given I check "I have read and agree to the Terms & Conditions"
-    And I click "Continue"
+#    Given I check "I have read and agree to the Terms & Conditions"
+    Given I click "Continue"
     When I fill fields with "Valid Credit Card Data"
     And I click "Confirm Order"
     And I am redirected to "Verified" page
