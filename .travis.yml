@@ -10,11 +10,11 @@ env:
     - RANDOM_PREFIX=${RANDOM}
     - SHOP_SYSTEM_UPDATE_COMMIT="Update latest shop releases"
     - MANUAL_UITEST_TRIGGER_COMMIT="Test my build"
-    - PATCH_RELEASE="patch"
-    - MINOR_RELEASE="minor"
-    - MAJOR_RELEASE="major"
+    - PATCH_RELEASE=patch
+    - MINOR_RELEASE=minor
+    - MAJOR_RELEASE=major
 
-matrix:
+jobs:
   # these stages are allowed to fail
   allow_failures:
   - stage: acceptance-test
@@ -35,7 +35,7 @@ matrix:
     if: type != cron AND commit_message !~ env(SHOP_SYSTEM_UPDATE_COMMIT) AND commit_message !~ env(MANUAL_UITEST_TRIGGER_COMMIT)
   - php: 7.1
     if: type != cron AND commit_message !~ env(SHOP_SYSTEM_UPDATE_COMMIT) AND commit_message !~ env(MANUAL_UITEST_TRIGGER_COMMIT)
-  
+
   - stage: get-opencart-versions
     if: type = cron
     php: 7.1
@@ -44,7 +44,7 @@ matrix:
     script: bash .bin/get-opencart-versions.sh
     after_script: skip
     after_failure: skip
-  
+
   - &acceptance-test
     stage: acceptance-test
     #   run this stage on pull request if head branch name contains one of these words (patch, major, minor)
@@ -79,7 +79,7 @@ matrix:
       - bash .bin/upload-logs-and-notify.sh
     after_failure:
       - bash .bin/upload-logs-and-notify.sh fail
-  
+
   #   run this stage on pull request if head branch name contains major
   #   tests will use extension version = branch which originated pull request
   - <<: *acceptance-test
@@ -87,7 +87,7 @@ matrix:
     env:
       - GATEWAY=API-TEST
       - OPENCART_RELEASE_VERSION=2
-  
+
   #   run this stage on pull request if head branch name contains major
   #   tests will use extension version = branch which originated pull request
   - <<: *acceptance-test
@@ -95,7 +95,7 @@ matrix:
     env:
       - GATEWAY=API-TEST
       - OPENCART_RELEASE_VERSION=3
-  
+
   #   run this stage when shop system updated with latest shop extension release version
   #   tests will use latest released extension version
   - <<: *acceptance-test
@@ -130,26 +130,6 @@ script:
 
 after_script:
   - travis_retry composer upload-coverage
-  - bash .bin/generate-tag.sh
-
-before_deploy:
-  - export REPO_NAME=`echo $TRAVIS_REPO_SLUG | awk -F'/' '{print $2}'`
-  - export RELEASE_NOTES=$(composer make-release-notes)
-  - bash .bin/generate-wiki-notes.sh
-  - bash .bin/generate-readme-badge.sh
-  - bash .bin/generate-release-package.sh $TRAVIS_TAG
-
-deploy:
-  provider: releases
-  github_token: ${GITHUB_TOKEN}
-  api_key: ${GITHUB_TOKEN}
-  file: opencart-ee.ocmod.zip
-  name: "${REPO_NAME} ${TRAVIS_TAG}"
-  body: "${RELEASE_NOTES}"
-  skip_cleanup: true
-  on:
-    repo: ${TRAVIS_REPO_SLUG}
-    tags: true
 
 notifications:
   email: false
