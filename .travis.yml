@@ -4,12 +4,12 @@ language: php
 
 env:
   global:
-    - COMPOSER_ARGS="--no-interaction"
+    - COMPOSER_ARGS=--no-interaction
     - github_token: ${GITHUB_TOKEN}
     - OPENCART_RELEASES_FILE=${TRAVIS_BUILD_DIR}/.bin/shop-releases.txt
     - RANDOM_PREFIX=${RANDOM}
-    - SHOP_SYSTEM_UPDATE_COMMIT="Update latest shop releases"
-    - MANUAL_UITEST_TRIGGER_COMMIT="Test my build"
+    - SHOP_SYSTEM_UPDATE_COMMIT=UpdateLatestShopReleases
+    - MANUAL_UITEST_TRIGGER_COMMIT=TestMyBuild
     - PATCH_RELEASE=patch
     - MINOR_RELEASE=minor
     - MAJOR_RELEASE=major
