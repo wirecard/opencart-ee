@@ -72,12 +72,12 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 		}
 
 		$plugin_config = array();
-		foreach ($this->getPaymentOptions() as $option) {
-			$plugin_config[$option] = $this->model_setting_setting->getSetting(self::PREFIX . $option);
-			unset(
-				$plugin_config[$option][self::PREFIX . $option . '_merchant_secret'],
-				$plugin_config[$option][self::PREFIX . $option . '_three_d_merchant_secret']
-			);
+		foreach ($this->getPaymentOptions() as $payment_method_code) {
+			$payment_option_list = $this->model_setting_setting->getSetting(self::PREFIX . $payment_method_code);
+            $plugin_config[$payment_method_code] = $this->paymentWhiteListedConfig(
+                $payment_method_code,
+                $payment_option_list
+            );
 		}
 
 		$info = array(
@@ -126,16 +126,85 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 	 * @since 1.0.0
 	 */
 	private function getPaymentOptions() {
-		return array(
-			'creditcard',
-			'ideal',
-			'paypal',
-			'sepact',
-			'sofortbanking',
-			'poi',
-			'pia'
-		);
+		return [
+            'creditcard',
+            'ideal',
+            'paypal',
+            'sepact',
+            'sofortbanking',
+            'poi',
+            'pia',
+            'alipay_crossborder',
+            'maestro',
+            'masterpass',
+            'ratepayinvoice',
+            'sepadd',
+            'upi'
+        ];
 	}
+
+    /**
+     * @return array
+     */
+    private function getWhiteListOptionList()
+    {
+        return [
+            // General options
+            'title',
+            'status',
+            'sort_order',
+            'payment_action',
+            'additional_info',
+            'base_url',
+            'descriptor',
+            'delete_cancel_order',
+            'delete_failure_order',
+            'merchant_account_id',
+            // Payment specific options
+            'allowed_currencies',
+            'allow_changed_shipping',
+            'basket_max',
+            'basket_min',
+            'billing_countries',
+            'billing_shipping',
+            'challenge_indicator',
+            'creditor_city',
+            'details_on_invoice',
+            'enable_bic',
+            'logo_variant',
+            'mandate_text',
+            'shipping_countries',
+            'shopping_basket',
+            'ssl_max_limit',
+            'three_d_merchant_account_id',
+            'three_d_min_limit',
+            'vault',
+        ];
+    }
+
+    /**
+     * Sanitize payment config with whitelist options
+     *
+     * @param string $payment_method_code
+     * @param array $unsafe_config
+     * @return array
+     */
+    protected function paymentWhiteListedConfig($payment_method_code, $unsafe_config) {
+        $payment_method_prefix = sprintf(
+            "%s%s_",
+            self::PREFIX,
+            $payment_method_code
+        );
+        $safe_config = [];
+	    foreach ($unsafe_config as $key => $value) {
+	        $extracted_option = substr($key, strlen($payment_method_prefix));
+	        if (!in_array($extracted_option, $this->getWhiteListOptionList())) {
+	            continue;
+            }
+            $safe_config[$key] = $value;
+        }
+	    return $safe_config;
+    }
 
 	/**
 	 * @param string $email_content
