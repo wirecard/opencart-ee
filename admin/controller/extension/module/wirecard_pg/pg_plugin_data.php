@@ -13,7 +13,7 @@
  * @since 1.0.0
  */
 class ExtensionModuleWirecardPGPluginData {
-	const OPENCART_GATEWAY_WIRECARD_VERSION = '1.5.0';
+	const OPENCART_GATEWAY_WIRECARD_VERSION = '1.5.1';
 	const OPENCART_GATEWAY_WIRECARD_NAME = 'Wirecard OpenCart Extension';
 	const SHOP_NAME = 'OpenCart';
 
