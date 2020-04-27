@@ -1,5 +1,15 @@
 [
     {
+        "release": "1.5.0",
+        "shopsystem": "OpenCart",
+        "tested": "3.0.2.0",
+        "compatibility": "3.0.2.0",
+        "changelog": [
+            "Update paymentSDK version to 3.8.1",
+            "Add Credit Card 3D Secure 2 parameters"
+        ]
+    },
+    {
         "release": "1.4.0",
         "shopsystem": "OpenCart",
         "tested": "3.0.2.0",

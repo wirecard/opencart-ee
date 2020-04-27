@@ -1,0 +1,20 @@
+<div class="form-group required">
+    <label class="col-sm-2 control-label" for="input-status">{{ config_challenge_indicator }}</label>
+    <div class="col-sm-10">
+        {% set no_preference_value = available_challenge_indicators['config_challenge_no_preference'] %}
+        {% set no_challenge_value = available_challenge_indicators['config_challenge_no_challenge'] %}
+        {% set challenge_threed_value = available_challenge_indicators['config_challenge_challenge_threed'] %}
+        <select name="{{ prefix ~ 'challenge_indicator' }}" id="input-challenge-indicator" class="form-control">
+                <option value="{{ no_preference_value }}" {% if not challenge_indicator == no_challenge_value and not challenge_indicator == challenge_threed_value %}selected="selected"{% endif %}>{{ config_challenge_no_preference }}</option>
+                <option value="{{ no_challenge_value }}" {% if challenge_indicator == no_challenge_value %}selected="selected"{% endif %}>{{ config_challenge_no_challenge }}</option>
+                <option value="{{ challenge_threed_value }}" {% if challenge_indicator == challenge_threed_value %}selected="selected"{% endif %}>{{ config_challenge_challenge_threed }}</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 description">
+            <i>{{ config_challenge_indicator_desc }}</i>
+        </div>
+    </div>
+</div>
+<hr>

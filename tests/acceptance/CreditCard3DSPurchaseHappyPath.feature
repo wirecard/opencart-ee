@@ -1,4 +1,4 @@
-Feature: checkCreditCard3DSFunctionalityHappyPath
+Feature: CreditCard3DSPurchaseHappyPath
   As a guest  user
   I want to make a purchase with a Credit Card 3DS
   And to see that transaction was successful
@@ -8,8 +8,8 @@ Feature: checkCreditCard3DSFunctionalityHappyPath
     And I fill fields with "Customer data"
     Then I see "Wirecard Credit Card"
 
-  @ui_test
-  Scenario: try purchaseCheck
+  @ui_test @patch @minor @major
+  Scenario: purchase
     Given I check "I have read and agree to the Terms & Conditions"
     And I click "Continue"
     When I fill fields with "Valid Credit Card Data"

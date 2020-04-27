@@ -14,6 +14,8 @@
  */
 class ModelExtensionPaymentWirecardPGVault extends Model {
 
+	const VAULT_TABLE = 'wirecard_ee_vault';
+
 	/**
 	 * Get all Credit Cards associated with a user.
 	 *
@@ -21,10 +23,14 @@ class ModelExtensionPaymentWirecardPGVault extends Model {
 	 * @since 1.1.0
 	 */
 	public function getCards() {
+		$address_id = $this->session->data['payment_address']['address_id'];
+		if (isset($this->session->data['shipping_address']['address_id'])) {
+			$address_id = $this->session->data['shipping_address']['address_id'];
+		}
 		$cards = $this->db->query(
-			"SELECT * FROM `" . DB_PREFIX . "wirecard_ee_vault` 
+			"SELECT * FROM `" . DB_PREFIX . self::VAULT_TABLE . "` 
 			WHERE user_id=" . $this->customer->getId() . "
-			AND address_id=" . $this->session->data['shipping_address']['address_id'] . "
+			AND address_id=" . $address_id . "
 			ORDER BY vault_id DESC"
 		)->rows;
 
@@ -52,6 +58,9 @@ class ModelExtensionPaymentWirecardPGVault extends Model {
 		$masked_pan = $response->getMaskedAccountNumber();
 		$expiration_month = $card['expiration-month'];
 		$expiration_year = $card['expiration-year'];
+		if (!isset($this->session->data['shipping_address']['address_id'])) {
+			return;
+		}
 		$address_id = $this->session->data['shipping_address']['address_id'];
 
 		$existing_cards = $this->getCards();
@@ -64,9 +73,9 @@ class ModelExtensionPaymentWirecardPGVault extends Model {
 		}
 
 		$this->db->query(
-			"INSERT INTO `" . DB_PREFIX . "wirecard_ee_vault` SET
+			"INSERT INTO `" . DB_PREFIX . self::VAULT_TABLE . "` SET
 			`user_id` = " . $this->customer->getId() . ",
-			`address_id` = " . $this->session->data['shipping_address']['address_id'] . ",
+			`address_id` = " . $address_id . ",
 			`token` = '" . $this->db->escape($token) . "',
 			`masked_pan` = '" . $this->db->escape($masked_pan) . "',
 			`expiration_month` = " . $expiration_month . ",
@@ -83,7 +92,7 @@ class ModelExtensionPaymentWirecardPGVault extends Model {
 	 */
 	public function deleteCard($card_id) {
 		return $this->db->query(
-			"DELETE FROM `" . DB_PREFIX . "wirecard_ee_vault` 
+			"DELETE FROM `" . DB_PREFIX . self::VAULT_TABLE . "` 
 			WHERE user_id=" . $this->customer->getId() . "
 			AND vault_id=" . $this->db->escape($card_id) . ";"
 		);
