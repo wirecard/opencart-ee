@@ -35,4 +35,4 @@ define('DIR_APPLICATION', __DIR__ . '/../catalog/');
 define('DIR_ADMIN', __DIR__ . '/../admin/');
 define('DB_PREFIX', 'oc_');
 define('VERSION', '3.0.2.0');
-define('PLUGIN_VERSION', '1.5.0');
+define('PLUGIN_VERSION', '1.5.1');
