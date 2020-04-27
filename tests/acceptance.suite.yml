@@ -9,12 +9,13 @@ modules:
      - WebDriver:
          host: 'hub-cloud.browserstack.com'
          port: 80
-         url: '%OPENCART_URL%'
+         url: 'https://%OPENCART_PREFIX%-%GATEWAY%-%OPENCART_RELEASE_VERSION%%NGROK_POSTFIX%'
          browser: chrome # 'chrome' or 'firefox'
          capabilities:
            'build': '%VERSION%'
-           'project': 'opencart-ee-%GATEWAY%'
+           'project': 'opencart-ee-%GATEWAY%-%OPENCART_RELEASE_VERSION%'
            'browserstack.user': '%BROWSERSTACK_USER%'
            'browserstack.key': '%BROWSERSTACK_ACCESS_KEY%'
-           'browserstack.local': 'true'
      - \Helper\Acceptance
+
+

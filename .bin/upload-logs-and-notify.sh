@@ -7,33 +7,48 @@ export REPO_ADDRESS="${REPO_LINK}.git"
 
 # add random sleep time to minimize conflict possibility
 echo "Timestamp : $(date)"
-RANDOM_VALUE=$[ ( RANDOM % 30 )  + 1 ]
+RANDOM_VALUE=$[ ( RANDOM % 30 ) * $OPENCART_RELEASE_VERSION + 1 ]
 echo "Sleeping for: ${RANDOM_VALUE}"
 sleep ${RANDOM_VALUE}s
 
 # clone the repository where the screenshot should be uploaded
 git clone ${REPO_ADDRESS}
 
-# create folder with current date
+# get current date to create a folder
 export TODAY=$(date +%Y-%m-%d)
 
-export PROJECT_FOLDER="opencart-ee"
-GATEWAY_FOLDER=${REPO_NAME}/${PROJECT_FOLDER}/${GATEWAY}
-DATE_FOLDER=${GATEWAY_FOLDER}/${TODAY}
+export OPENCART_CURRENT_VERSION="${OPENCART_VERSION//-/.}"
+export PROJECT_FOLDER="opencart-ee-${OPENCART_CURRENT_VERSION}"
 
-if [ ! -d "${GATEWAY_FOLDER}" ]; then
-mkdir ${GATEWAY_FOLDER}
+if [ ! -d "${REPO_NAME}/${PROJECT_FOLDER}/${GATEWAY}" ]; then
+    mkdir -p ${REPO_NAME}/${PROJECT_FOLDER}/${GATEWAY}
 fi
 
-if [ ! -d "${DATE_FOLDER}" ]; then
-mkdir ${DATE_FOLDER}
+if [ ! -d "${REPO_NAME}/${PROJECT_FOLDER}/${GATEWAY}/${TODAY}" ]; then
+    mkdir ${REPO_NAME}/${PROJECT_FOLDER}/${GATEWAY}/${TODAY}
+fi
+
+export BRANCH_FOLDER=${TRAVIS_BRANCH}
+
+# if tests triggered by PR, use different Travis variable to get branch name
+if [ ${TRAVIS_PULL_REQUEST} != "false" ]; then
+    export BRANCH_FOLDER="${TRAVIS_PULL_REQUEST_BRANCH}"
+# if we were testing latest released extension version
+elif [ "${LATEST_EXTENSION_RELEASE}" == "1" ]; then
+    export BRANCH_FOLDER="Release-${LATEST_RELEASED_SHOP_EXTENSION_VERSION}"
+fi
+
+export RELATIVE_REPORTS_LOCATION=${PROJECT_FOLDER}/${GATEWAY}/${TODAY}/${BRANCH_FOLDER}
+
+if [ ! -d "${REPO_NAME}/${RELATIVE_REPORTS_LOCATION}" ]; then
+    mkdir ${REPO_NAME}/${RELATIVE_REPORTS_LOCATION}
 fi
 
 # copy report files
-cp tests/_output/*.html ${DATE_FOLDER}
-cp tests/_output/*.xml ${DATE_FOLDER}
+cp tests/_output/*.html ${REPO_NAME}/${RELATIVE_REPORTS_LOCATION}
+cp tests/_output/*.xml ${REPO_NAME}/${RELATIVE_REPORTS_LOCATION}
 if [[ $1 == 'fail' ]]; then
-    cp tests/_output/*.fail.png ${DATE_FOLDER}
+    cp tests/_output/*.fail.png ${REPO_NAME}/${RELATIVE_REPORTS_LOCATION}
 fi
 
 cd ${REPO_NAME}

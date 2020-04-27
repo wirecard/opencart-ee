@@ -94,11 +94,8 @@ if (empty($dbConfig)) {
 }
 
 $db = connectDatabase();
-//installExtension($db);
 addPaymentMethodToDb($db, $paymentMethod);
-//addPermissionToDb($db);
 addPermissionToDb($db, $paymentMethod);
-
 configurePaymentMethodInDb($db, $dbConfig, $paymentMethod);
 $db->close();
 echo "Installation complete and " . $paymentMethod . " configured\n";
@@ -121,51 +118,6 @@ function connectDatabase()
         exit();
     }
     return $mysqli;
-}
-
-/**
- * Add extension to database
- *
- * @param mysqli $db
- * @since   1.4.0
- */
-function installExtension($db)
-{
-    echo "Installing extension \n";
-    $tableName = DB_PREFIX . "extension";
-    //add extension module to DB
-    $db->query("INSERT INTO " . $tableName . " (type, code) VALUES ('module','wirecard_pg')");
-    //create transaction table
-    $db->query("
-          CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "wirecard_ee_transactions` (
-            `tx_id` INT(11) NOT NULL AUTO_INCREMENT,
-            `order_id` INT(11) NOT NULL,
-            `transaction_id` VARCHAR(128) NOT NULL,
-            `parent_transaction_id` VARCHAR(128) DEFAULT NULL,
-            `transaction_type` VARCHAR(32) NOT NULL,
-            `payment_method` VARCHAR(32) NOT NULL,
-            `transaction_state` VARCHAR(32) NOT NULL,
-            `amount` DECIMAL(10, 6) NOT NULL,
-            `currency` VARCHAR(3) NOT NULL,
-            `response` TEXT default NULL,
-            `transaction_link` VARCHAR(255) default NULL,
-			`date_added` DATETIME NOT NULL,
-			`date_modified` DATETIME NOT NULL,
-            PRIMARY KEY (`tx_id`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-
-    //create vault table
-    $db->query("
-			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "wirecard_ee_vault` (
-			`vault_id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
-			`user_id` INT(10) NOT NULL,
-			`address_id` INT(10) NOT NULL,
-			`token` VARCHAR(20) NOT NULL,
-			`masked_pan` VARCHAR(30) NOT NULL,
-			`expiration_month` INT(10) NOT NULL,
-			`expiration_year` INT(10) NOT NULL,
-			PRIMARY KEY (`vault_id`)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
 }
 
 /**
@@ -226,6 +178,7 @@ function addPermissionToDb($db, $paymentMethod = null)
  */
 function buildConfigByPaymentMethod($paymentMethod, $gateway)
 {
+    echo 'Getting configuration for gateway ' . $gateway . "\n";
     if (!array_key_exists($paymentMethod, $GLOBALS['defaultConfig'])) {
         return null;
     }
