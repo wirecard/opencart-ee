@@ -49,8 +49,8 @@ jobs:
       - OPENCART_RELEASE_VERSION=1
     install:
       - export OPENCART_VERSION=$(awk "NR==$OPENCART_RELEASE_VERSION {print; exit}" ${OPENCART_RELEASES_FILE})
-      #   get latest release shop extension version from SHOPVERSIONS file
-      - export LATEST_RELEASED_SHOP_EXTENSION_VERSION=`jq .[0].release ${TRAVIS_BUILD_DIR}/SHOPVERSIONS | tr -d '"'`
+      #   get latest release shop extension version from tags
+      - export LATEST_RELEASED_SHOP_EXTENSION_VERSION=$(git describe --abbrev=0 --tags)
       - if [[ ${LATEST_EXTENSION_RELEASE}  == "1" ]]; then git checkout tags/${LATEST_RELEASED_SHOP_EXTENSION_VERSION};fi
       - echo "Testing Opencart ${OPENCART_VERSION}"
       - chmod +x .bin/*
@@ -59,7 +59,7 @@ jobs:
       - travis_retry composer install $COMPOSER_ARGS
       - composer show
     before_script:
-      - export VERSION=`cat SHOPVERSIONS | jq -r '.[0] | .release'`
+      - export VERSION=$(git describe --abbrev=0 --tags)
       - bash ./.bin/start-ngrok.sh
       - bash ./.bin/start-shopsystem.sh
       #2nd part of extension installation - through the UI

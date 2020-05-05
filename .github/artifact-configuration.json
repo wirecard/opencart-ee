@@ -13,7 +13,6 @@
       "phpcs.xml",
       "phpunit.xml",
       "README.md",
-      "SHOPVERSIONS",
       "composer.json",
       "upload/composer.json",
       "upload/composer.lock"
