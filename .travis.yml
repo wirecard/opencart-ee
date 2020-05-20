@@ -8,7 +8,6 @@ env:
     - github_token: ${GITHUB_TOKEN}
     - OPENCART_RELEASES_FILE=${TRAVIS_BUILD_DIR}/.bin/shop-releases.txt
     - RANDOM_PREFIX=${RANDOM}
-    - SHOP_SYSTEM_UPDATE_COMMIT=UpdateLatestShopReleases
     - MANUAL_UITEST_TRIGGER_COMMIT=TestMyBuild
     - PATCH_RELEASE=patch
     - MINOR_RELEASE=minor
@@ -22,19 +21,13 @@ jobs:
       - GATEWAY=API-TEST
       - OPENCART_RELEASE_VERSION=1
       - ALLOW_FAIL=1
-  - stage: acceptance-test
-    env:
-      - GATEWAY=API-TEST
-      - OPENCART_RELEASE_VERSION=1
-      - LATEST_EXTENSION_RELEASE=1
-      - ALLOW_FAIL=1
   include:
   - php: 5.6
-    if: type != cron AND commit_message !~ env(SHOP_SYSTEM_UPDATE_COMMIT) AND commit_message !~ env(MANUAL_UITEST_TRIGGER_COMMIT)
+    if: type != cron AND commit_message !~ env(MANUAL_UITEST_TRIGGER_COMMIT)
   - php: 7.0
-    if: type != cron AND commit_message !~ env(SHOP_SYSTEM_UPDATE_COMMIT) AND commit_message !~ env(MANUAL_UITEST_TRIGGER_COMMIT)
+    if: type != cron AND commit_message !~ env(MANUAL_UITEST_TRIGGER_COMMIT)
   - php: 7.1
-    if: type != cron AND commit_message !~ env(SHOP_SYSTEM_UPDATE_COMMIT) AND commit_message !~ env(MANUAL_UITEST_TRIGGER_COMMIT)
+    if: type != cron AND commit_message !~ env(MANUAL_UITEST_TRIGGER_COMMIT)
 
   - &acceptance-test
     stage: acceptance-test
@@ -49,9 +42,6 @@ jobs:
       - OPENCART_RELEASE_VERSION=1
     install:
       - export OPENCART_VERSION=$(awk "NR==$OPENCART_RELEASE_VERSION {print; exit}" ${OPENCART_RELEASES_FILE})
-      #   get latest release shop extension version from tags
-      - export LATEST_RELEASED_SHOP_EXTENSION_VERSION=$(git describe --abbrev=0 --tags)
-      - if [[ ${LATEST_EXTENSION_RELEASE}  == "1" ]]; then git checkout tags/${LATEST_RELEASED_SHOP_EXTENSION_VERSION};fi
       - echo "Testing Opencart ${OPENCART_VERSION}"
       - chmod +x .bin/*
       - travis_retry composer global require "hirak/prestissimo:^0.3"
@@ -70,46 +60,6 @@ jobs:
       - bash .bin/upload-logs-and-notify.sh
     after_failure:
       - bash .bin/upload-logs-and-notify.sh fail
-
-  #   run this stage on pull request if head branch name contains major
-  #   tests will use extension version = branch which originated pull request
-  - <<: *acceptance-test
-    if: (type = pull_request AND (head_branch =~ env(MAJOR_RELEASE)))
-    env:
-      - GATEWAY=API-TEST
-      - OPENCART_RELEASE_VERSION=2
-
-  #   run this stage on pull request if head branch name contains major
-  #   tests will use extension version = branch which originated pull request
-  - <<: *acceptance-test
-    if: (type = pull_request AND (head_branch =~ env(MAJOR_RELEASE)))
-    env:
-      - GATEWAY=API-TEST
-      - OPENCART_RELEASE_VERSION=3
-
-  #   run this stage when shop system updated with latest shop extension release version
-  #   tests will use latest released extension version
-  - <<: *acceptance-test
-    # when commit message contains string "Update latest shop releases"
-    if: commit_message =~ env(SHOP_SYSTEM_UPDATE_COMMIT)
-    env:
-      - GATEWAY=API-TEST
-      - OPENCART_RELEASE_VERSION=1
-      # will check latest released extension version with latest shop version
-      - LATEST_EXTENSION_RELEASE=1
-      # if this stage fails, it will not fail the whole build
-      - ALLOW_FAIL=1
-    #   run this stage when shop system updated with latest shop extension release version
-    #   tests will use latest master
-  - <<: *acceptance-test
-    # when commit message contains string "Update latest shop releases"
-    if: commit_message =~ env(SHOP_SYSTEM_UPDATE_COMMIT)
-    env:
-      # will check master branch with latest shop version
-      - GATEWAY=API-TEST
-      - OPENCART_RELEASE_VERSION=1
-      # if this stage fails, it will not fail the whole build
-      - ALLOW_FAIL=1
 
 install:
   - travis_retry composer install $COMPOSER_ARGS
