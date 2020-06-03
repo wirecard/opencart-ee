@@ -39,6 +39,12 @@
         </div>
     {% endfor %}
 {% endif %}
+<div class="form-group">
+    <label class="col-sm-2 text-right" for="psd-two-link">{{ config_psd_two_heading }}</label>
+    <div class="col-sm-10 description">
+        <i>{{ config_psd_two_text }}</i>
+    </div>
+</div>
 {% if type != 'sepact' %}
     <div class="form-group required">
         <label class="col-sm-2 control-label" for="input-sort-order">{{ config_sort_order }}</label>
