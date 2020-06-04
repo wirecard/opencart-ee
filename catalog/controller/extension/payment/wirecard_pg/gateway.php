@@ -233,9 +233,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		// All errors are already caught and handled in handleNotification.
 		// So there's no need to check for an else here.
 		if ($response) {
-			if ($this->isIgnorableMasterpassResult($response)) {
-				return;
-			}
 
 			$order_manager = new PGOrderManager($this->registry);
 			$order_manager->createNotifyOrder($response, $this);
@@ -349,9 +346,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$errors = '';
 
 		if ($result instanceof \Wirecard\PaymentSdk\Response\SuccessResponse) {
-			if (!$this->isIgnorableMasterpassResult($result)) {
-				$order_manager->createResponseOrder($result, $this);
-			}
 
 			if ('creditcard' == $this->type && isset($this->session->data['save_card'])) {
 				$transaction_details = $transaction_service->getTransactionByTransactionId(
@@ -472,22 +466,6 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		}
 
 		return $data;
-	}
-
-	/**
-	 * @param \Wirecard\PaymentSdk\Response\Response
-	 * @return bool
-	 * @since 1.1.0
-	 */
-	public function isIgnorableMasterpassResult($result) {
-		try {
-			return 'masterpass' == $result->getPaymentMethod() &&
-				(\Wirecard\PaymentSdk\Transaction\Transaction::TYPE_DEBIT == $result->getTransactionType() ||
-					\Wirecard\PaymentSdk\Transaction\Transaction::TYPE_AUTHORIZATION == $result->getTransactionType());
-		} catch(Exception $e) {
-			$this->getLogger()->error(get_class($e) . ": " . $e->getMessage());
-			return false;
-		}
 	}
 
 	/**

@@ -142,7 +142,6 @@ class ControllerExtensionModuleWirecardPGPGSupportEmail extends Controller {
 			'pia',
 			'alipay_crossborder',
 			'maestro',
-			'masterpass',
 			'ratepayinvoice',
 			'sepadd',
 			'upi'
