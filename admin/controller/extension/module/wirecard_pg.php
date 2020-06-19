@@ -151,9 +151,6 @@ class ControllerExtensionModuleWirecardPG extends Controller {
 	 */
 	public function getCommons() {
 		$data[self::USER_TOKEN] = $this->session->data[self::USER_TOKEN];
-
-		$data['live_chat'] = $this->load->view('extension/wirecard_pg/live_chat', $data);
-
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
