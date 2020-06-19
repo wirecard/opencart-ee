@@ -160,6 +160,7 @@ abstract class ControllerExtensionPaymentGateway extends Controller {
 		$this->transaction->setRedirect($this->getRedirects($this->session->data['order_id']));
 		$this->transaction->setNotificationUrl($this->getNotificationUrl());
 		$this->transaction->setAmount($amount);
+		$this->transaction->setOrderNumber($order['order_id']);
 
 		$this->transaction = $additional_helper->setIdentificationData($this->transaction, $order);
 		if ($this->getShopConfigVal('descriptor')) {
