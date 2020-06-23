@@ -117,33 +117,8 @@ class ModuleUTest extends \PHPUnit_Framework_TestCase
 		$commonsData = $this->controller->getCommons();
 
 		$this->assertArrayHasKey('user_token', $commonsData);
-		$this->assertArrayHasKey('live_chat', $commonsData);
 		$this->assertArrayHasKey('header', $commonsData);
 		$this->assertArrayHasKey('column_left', $commonsData);
 		$this->assertArrayHasKey('footer', $commonsData);
-	}
-
-	public function testGetLiveChatModule()
-	{
-		// Local require here because we get naming conflicts otherwise.
-		require_once DIR_ADMIN . 'controller/extension/payment/wirecard_pg_paypal.php';
-
-		$this->controller = new ControllerExtensionPaymentWirecardPGPayPal(
-			$this->registry,
-			$this->config,
-			$this->loader,
-			$this->session,
-			$this->response,
-			null,
-			$this->url,
-			null,
-			$this->language,
-			$this->cart,
-			$this->currency
-		);
-
-		$liveChatBlock = $this->controller->loadLiveChat(array());
-
-		$this->assertArrayHasKey('live_chat', $liveChatBlock);
 	}
 }

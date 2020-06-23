@@ -28,6 +28,8 @@ $_['config_vault'] = "One-Click Checkout";
 $_['config_vault_desc'] = "Credit Card details are saved for later use.";
 $_['config_allow_changed_shipping'] = "Allow Shipping Address Change";
 $_['config_allow_changed_shipping_desc'] = "If disabled, consumer is required to re-enter credit card details if the shipping address has changed between two orders.";
+$_['config_psd_two_heading'] = 'PSD 2';
+$_['config_psd_two_text'] = 'With regards to PSD2 requirements, you should request certain personal information from your consumers during <a href="https://github.com/wirecard/opencart-ee/wiki/Credit-Card" target="_blank">checkout</a> to reduce the risk of transactions being rejected.';
 
 $_['config_challenge_indicator'] = 'Challenge Indicator';
 $_['config_challenge_indicator_desc'] = 'Indicates whether a challenge is requested for this transaction.';

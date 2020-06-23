@@ -29,6 +29,8 @@ $_['config_vault'] = "One-Click Checkout";
 $_['config_vault_desc'] = "Kreditkarten können gespeichert und später wieder verwendet werden.";
 $_['config_allow_changed_shipping'] = "Geänderte Lieferadresse zulassen";
 $_['config_allow_changed_shipping_desc'] = "Wenn diese Option deaktiviert ist und sich die Lieferadresse des Kunden zwischen Transaktionen ändert, müssen sie ihre Kreditkarteninformationen erneut eingeben.";
+$_['config_psd_two_heading'] = 'PSD 2';
+$_['config_psd_two_text'] = 'Angesichts der Bestimmungen der PSD 2 sollten Sie beim <a href="https://github.com/wirecard/opencart-ee/wiki/Credit-Card" target="_blank">Checkout</a> bestimmte persönliche Daten von Ihren Kunden anfordern, um das Risiko, dass Transaktionen abgelehnt werden, zu reduzieren.';
 
 $_['config_challenge_indicator'] = 'Challenge Indicator';
 $_['config_challenge_indicator_desc'] = 'Indicates whether a challenge is requested for this transaction.';
